@@ -1,0 +1,10 @@
+docs/
+.idea/
+.php-cs-fixer.cache
+.php-cs-fixer.php
+.phpunit.cache
+phpunit.xml
+playground/
+*.swo
+*.swp
+vendor/
