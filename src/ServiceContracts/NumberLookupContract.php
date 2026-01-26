@@ -16,12 +16,17 @@ interface NumberLookupContract
     /**
      * @api
      *
+     * @param string $phoneNumber Query param
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieve(
         string $phoneNumber,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): NumberLookupGetResponse;
 }

@@ -37,10 +37,12 @@ final class TemplatesService implements TemplatesContract
      *
      * Creates a new message template for the authenticated customer with comprehensive template definitions including headers, body, footer, and interactive buttons. Supports automatic metadata generation using AI (display name, language, category). Optionally submits the template for WhatsApp review. The customer ID is extracted from the authentication token.
      *
-     * @param TemplateDefinition|TemplateDefinitionShape $definition Template definition containing header, body, footer, and buttons
-     * @param string|null $category The template category (e.g., MARKETING, UTILITY, AUTHENTICATION). Can only be set when creating a new template. If not provided, will be auto-generated using AI.
-     * @param string|null $language The template language code (e.g., en_US, es_ES). Can only be set when creating a new template. If not provided, will be auto-detected using AI.
-     * @param bool $submitForReview When false, the template will be saved as draft.
+     * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Template definition containing header, body, footer, and buttons
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
+     * @param string|null $category Body param: The template category (e.g., MARKETING, UTILITY, AUTHENTICATION). Can only be set when creating a new template. If not provided, will be auto-generated using AI.
+     * @param string|null $language Body param: The template language code (e.g., en_US, es_ES). Can only be set when creating a new template. If not provided, will be auto-detected using AI.
+     * @param bool $submitForReview Body param: When false, the template will be saved as draft.
      * When true, the template will be submitted for review.
      * @param RequestOpts|null $requestOptions
      *
@@ -48,6 +50,8 @@ final class TemplatesService implements TemplatesContract
      */
     public function create(
         TemplateDefinition|array $definition,
+        string $xAPIKey,
+        string $xSenderID,
         ?string $category = null,
         ?string $language = null,
         ?bool $submitForReview = null,
@@ -56,6 +60,8 @@ final class TemplatesService implements TemplatesContract
         $params = Util::removeNulls(
             [
                 'definition' => $definition,
+                'xAPIKey' => $xAPIKey,
+                'xSenderID' => $xSenderID,
                 'category' => $category,
                 'language' => $language,
                 'submitForReview' => $submitForReview,
@@ -79,10 +85,16 @@ final class TemplatesService implements TemplatesContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): TemplateResponse {
+        $params = Util::removeNulls(
+            ['xAPIKey' => $xAPIKey, 'xSenderID' => $xSenderID]
+        );
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieve($id, requestOptions: $requestOptions);
+        $response = $this->raw->retrieve($id, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -92,11 +104,13 @@ final class TemplatesService implements TemplatesContract
      *
      * Retrieves all message templates available for the authenticated customer with comprehensive template definitions including headers, body, footer, and interactive buttons. Supports advanced filtering by search term, status, and category, plus pagination. The customer ID is extracted from the authentication token.
      *
-     * @param int $page The page number (zero-indexed). Default is 0.
-     * @param int $pageSize The number of items per page (1-1000). Default is 100.
-     * @param string|null $category Optional filter by template category (e.g., MARKETING, UTILITY, AUTHENTICATION)
-     * @param string|null $search Optional search term to filter templates by name or content
-     * @param string|null $status Optional filter by template status (e.g., APPROVED, PENDING, REJECTED, DRAFT)
+     * @param int $page Query param: The page number (zero-indexed). Default is 0.
+     * @param int $pageSize Query param: The number of items per page (1-1000). Default is 100.
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
+     * @param string|null $category Query param: Optional filter by template category (e.g., MARKETING, UTILITY, AUTHENTICATION)
+     * @param string|null $search Query param: Optional search term to filter templates by name or content
+     * @param string|null $status Query param: Optional filter by template status (e.g., APPROVED, PENDING, REJECTED, DRAFT)
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -104,6 +118,8 @@ final class TemplatesService implements TemplatesContract
     public function list(
         int $page,
         int $pageSize,
+        string $xAPIKey,
+        string $xSenderID,
         ?string $category = null,
         ?string $search = null,
         ?string $status = null,
@@ -113,6 +129,8 @@ final class TemplatesService implements TemplatesContract
             [
                 'page' => $page,
                 'pageSize' => $pageSize,
+                'xAPIKey' => $xAPIKey,
+                'xSenderID' => $xSenderID,
                 'category' => $category,
                 'search' => $search,
                 'status' => $status,
@@ -137,10 +155,16 @@ final class TemplatesService implements TemplatesContract
      */
     public function delete(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): mixed {
+        $params = Util::removeNulls(
+            ['xAPIKey' => $xAPIKey, 'xSenderID' => $xSenderID]
+        );
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->delete($id, requestOptions: $requestOptions);
+        $response = $this->raw->delete($id, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }

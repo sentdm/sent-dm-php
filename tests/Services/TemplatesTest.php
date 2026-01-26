@@ -24,8 +24,8 @@ final class TemplatesTest extends TestCase
 
         $testUrl = getenv('TEST_API_BASE_URL') ?: 'http://127.0.0.1:4010';
         $client = new Client(
-            adminAuthScheme: 'My Admin Auth Scheme',
-            customerAuthScheme: 'My Customer Auth Scheme',
+            apiKey: 'My API Key',
+            senderID: 'My Sender ID',
             baseUrl: $testUrl,
         );
 
@@ -39,7 +39,11 @@ final class TemplatesTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->templates->create(definition: ['body' => []]);
+        $result = $this->client->templates->create(
+            definition: ['body' => []],
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(TemplateResponse::class, $result);
@@ -176,6 +180,8 @@ final class TemplatesTest extends TestCase
                     ],
                 ],
             ],
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
             category: 'MARKETING',
             language: 'en_US',
             submitForReview: false,
@@ -193,7 +199,26 @@ final class TemplatesTest extends TestCase
         }
 
         $result = $this->client->templates->retrieve(
-            '7ba7b820-9dad-11d1-80b4-00c04fd430c8'
+            '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(TemplateResponse::class, $result);
+    }
+
+    #[Test]
+    public function testRetrieveWithOptionalParams(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Prism tests are disabled');
+        }
+
+        $result = $this->client->templates->retrieve(
+            '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -207,7 +232,12 @@ final class TemplatesTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->templates->list(page: 0, pageSize: 0);
+        $result = $this->client->templates->list(
+            page: 0,
+            pageSize: 0,
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(TemplateListResponse::class, $result);
@@ -223,6 +253,8 @@ final class TemplatesTest extends TestCase
         $result = $this->client->templates->list(
             page: 0,
             pageSize: 0,
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
             category: 'category',
             search: 'search',
             status: 'status',
@@ -240,7 +272,26 @@ final class TemplatesTest extends TestCase
         }
 
         $result = $this->client->templates->delete(
-            '7ba7b820-9dad-11d1-80b4-00c04fd430c8'
+            '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testDeleteWithOptionalParams(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Prism tests are disabled');
+        }
+
+        $result = $this->client->templates->delete(
+            '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

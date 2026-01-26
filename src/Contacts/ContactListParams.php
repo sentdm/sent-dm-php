@@ -14,7 +14,9 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\ContactsService::list()
  *
- * @phpstan-type ContactListParamsShape = array{page: int, pageSize: int}
+ * @phpstan-type ContactListParamsShape = array{
+ *   page: int, pageSize: int, xAPIKey: string, xSenderID: string
+ * }
  */
 final class ContactListParams implements BaseModel
 {
@@ -34,18 +36,28 @@ final class ContactListParams implements BaseModel
     #[Required]
     public int $pageSize;
 
+    #[Required]
+    public string $xAPIKey;
+
+    #[Required]
+    public string $xSenderID;
+
     /**
      * `new ContactListParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * ContactListParams::with(page: ..., pageSize: ...)
+     * ContactListParams::with(page: ..., pageSize: ..., xAPIKey: ..., xSenderID: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new ContactListParams)->withPage(...)->withPageSize(...)
+     * (new ContactListParams)
+     *   ->withPage(...)
+     *   ->withPageSize(...)
+     *   ->withXAPIKey(...)
+     *   ->withXSenderID(...)
      * ```
      */
     public function __construct()
@@ -58,12 +70,18 @@ final class ContactListParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(int $page, int $pageSize): self
-    {
+    public static function with(
+        int $page,
+        int $pageSize,
+        string $xAPIKey,
+        string $xSenderID
+    ): self {
         $self = new self;
 
         $self['page'] = $page;
         $self['pageSize'] = $pageSize;
+        $self['xAPIKey'] = $xAPIKey;
+        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }
@@ -86,6 +104,22 @@ final class ContactListParams implements BaseModel
     {
         $self = clone $this;
         $self['pageSize'] = $pageSize;
+
+        return $self;
+    }
+
+    public function withXAPIKey(string $xAPIKey): self
+    {
+        $self = clone $this;
+        $self['xAPIKey'] = $xAPIKey;
+
+        return $self;
+    }
+
+    public function withXSenderID(string $xSenderID): self
+    {
+        $self = clone $this;
+        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

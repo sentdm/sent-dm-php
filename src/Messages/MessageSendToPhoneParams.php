@@ -18,6 +18,8 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type MessageSendToPhoneParamsShape = array{
  *   phoneNumber: string,
  *   templateID: string,
+ *   xAPIKey: string,
+ *   xSenderID: string,
  *   templateVariables?: array<string,string>|null,
  * }
  */
@@ -39,6 +41,12 @@ final class MessageSendToPhoneParams implements BaseModel
     #[Required('templateId')]
     public string $templateID;
 
+    #[Required]
+    public string $xAPIKey;
+
+    #[Required]
+    public string $xSenderID;
+
     /**
      * Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }.
      *
@@ -52,13 +60,19 @@ final class MessageSendToPhoneParams implements BaseModel
      *
      * To enforce required parameters use
      * ```
-     * MessageSendToPhoneParams::with(phoneNumber: ..., templateID: ...)
+     * MessageSendToPhoneParams::with(
+     *   phoneNumber: ..., templateID: ..., xAPIKey: ..., xSenderID: ...
+     * )
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new MessageSendToPhoneParams)->withPhoneNumber(...)->withTemplateID(...)
+     * (new MessageSendToPhoneParams)
+     *   ->withPhoneNumber(...)
+     *   ->withTemplateID(...)
+     *   ->withXAPIKey(...)
+     *   ->withXSenderID(...)
      * ```
      */
     public function __construct()
@@ -76,12 +90,16 @@ final class MessageSendToPhoneParams implements BaseModel
     public static function with(
         string $phoneNumber,
         string $templateID,
-        ?array $templateVariables = null
+        string $xAPIKey,
+        string $xSenderID,
+        ?array $templateVariables = null,
     ): self {
         $self = new self;
 
         $self['phoneNumber'] = $phoneNumber;
         $self['templateID'] = $templateID;
+        $self['xAPIKey'] = $xAPIKey;
+        $self['xSenderID'] = $xSenderID;
 
         null !== $templateVariables && $self['templateVariables'] = $templateVariables;
 
@@ -106,6 +124,22 @@ final class MessageSendToPhoneParams implements BaseModel
     {
         $self = clone $this;
         $self['templateID'] = $templateID;
+
+        return $self;
+    }
+
+    public function withXAPIKey(string $xAPIKey): self
+    {
+        $self = clone $this;
+        $self['xAPIKey'] = $xAPIKey;
+
+        return $self;
+    }
+
+    public function withXSenderID(string $xSenderID): self
+    {
+        $self = clone $this;
+        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

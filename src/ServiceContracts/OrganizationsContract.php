@@ -34,6 +34,8 @@ interface OrganizationsContract
      */
     public function retrieveProfiles(
         string $orgID,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): OrganizationGetProfilesResponse;
 }

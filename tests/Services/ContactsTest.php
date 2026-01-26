@@ -24,8 +24,8 @@ final class ContactsTest extends TestCase
 
         $testUrl = getenv('TEST_API_BASE_URL') ?: 'http://127.0.0.1:4010';
         $client = new Client(
-            adminAuthScheme: 'My Admin Auth Scheme',
-            customerAuthScheme: 'My Customer Auth Scheme',
+            apiKey: 'My API Key',
+            senderID: 'My Sender ID',
             baseUrl: $testUrl,
         );
 
@@ -39,7 +39,12 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->list(page: 0, pageSize: 0);
+        $result = $this->client->contacts->list(
+            page: 0,
+            pageSize: 0,
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListResponse::class, $result);
@@ -52,7 +57,12 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->list(page: 0, pageSize: 0);
+        $result = $this->client->contacts->list(
+            page: 0,
+            pageSize: 0,
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListResponse::class, $result);
@@ -66,7 +76,9 @@ final class ContactsTest extends TestCase
         }
 
         $result = $this->client->contacts->retrieveByPhone(
-            phoneNumber: 'phoneNumber'
+            phoneNumber: 'phoneNumber',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -81,7 +93,9 @@ final class ContactsTest extends TestCase
         }
 
         $result = $this->client->contacts->retrieveByPhone(
-            phoneNumber: 'phoneNumber'
+            phoneNumber: 'phoneNumber',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -95,7 +109,11 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->retrieveID(id: 'id');
+        $result = $this->client->contacts->retrieveID(
+            id: 'id',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListItem::class, $result);
@@ -108,7 +126,11 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->retrieveID(id: 'id');
+        $result = $this->client->contacts->retrieveID(
+            id: 'id',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListItem::class, $result);

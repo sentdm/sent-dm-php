@@ -35,8 +35,10 @@ final class ContactsService implements ContactsContract
      *
      * Retrieves a paginated list of contacts for the authenticated customer. Supports server-side pagination with configurable page size. The customer ID is extracted from the authentication token.
      *
-     * @param int $page The page number (zero-indexed). Default is 0.
-     * @param int $pageSize The number of items per page. Default is 20.
+     * @param int $page Query param: The page number (zero-indexed). Default is 0.
+     * @param int $pageSize Query param: The number of items per page. Default is 20.
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -44,9 +46,18 @@ final class ContactsService implements ContactsContract
     public function list(
         int $page,
         int $pageSize,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): ContactListResponse {
-        $params = Util::removeNulls(['page' => $page, 'pageSize' => $pageSize]);
+        $params = Util::removeNulls(
+            [
+                'page' => $page,
+                'pageSize' => $pageSize,
+                'xAPIKey' => $xAPIKey,
+                'xSenderID' => $xSenderID,
+            ],
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->list(params: $params, requestOptions: $requestOptions);
@@ -59,16 +70,26 @@ final class ContactsService implements ContactsContract
      *
      * Retrieves a contact by their phone number for the authenticated customer. Phone number should be in international format (e.g., +1234567890). The customer ID is extracted from the authentication token.
      *
-     * @param string $phoneNumber The phone number in international format (e.g., +1234567890)
+     * @param string $phoneNumber Query param: The phone number in international format (e.g., +1234567890)
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieveByPhone(
         string $phoneNumber,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): ContactListItem {
-        $params = Util::removeNulls(['phoneNumber' => $phoneNumber]);
+        $params = Util::removeNulls(
+            [
+                'phoneNumber' => $phoneNumber,
+                'xAPIKey' => $xAPIKey,
+                'xSenderID' => $xSenderID,
+            ],
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->retrieveByPhone(params: $params, requestOptions: $requestOptions);
@@ -81,16 +102,22 @@ final class ContactsService implements ContactsContract
      *
      * Retrieves a specific contact by their unique identifier for the authenticated customer. The customer ID is extracted from the authentication token. Returns detailed contact information including phone number and creation timestamp.
      *
-     * @param string $id The unique identifier (GUID) of the resource to retrieve
+     * @param string $id Query param: The unique identifier (GUID) of the resource to retrieve
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieveID(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): ContactListItem {
-        $params = Util::removeNulls(['id' => $id]);
+        $params = Util::removeNulls(
+            ['id' => $id, 'xAPIKey' => $xAPIKey, 'xSenderID' => $xSenderID]
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->retrieveID(params: $params, requestOptions: $requestOptions);

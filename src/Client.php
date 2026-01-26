@@ -15,14 +15,13 @@ use SentDm\Services\OrganizationsService;
 use SentDm\Services\TemplatesService;
 
 /**
- * @phpstan-import-type NormalizedRequest from \SentDm\Core\BaseClient
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 class Client extends BaseClient
 {
-    public string $adminAuthScheme;
+    public string $apiKey;
 
-    public string $customerAuthScheme;
+    public string $senderID;
 
     /**
      * @api
@@ -53,13 +52,13 @@ class Client extends BaseClient
      * @param RequestOpts|null $requestOptions
      */
     public function __construct(
-        ?string $adminAuthScheme = null,
-        ?string $customerAuthScheme = null,
+        ?string $apiKey = null,
+        ?string $senderID = null,
         ?string $baseUrl = null,
         RequestOptions|array|null $requestOptions = null,
     ) {
-        $this->adminAuthScheme = (string) ($adminAuthScheme ?? getenv('SENT_DM_ADMIN_AUTH_SCHEME'));
-        $this->customerAuthScheme = (string) ($customerAuthScheme ?? getenv('SENT_DM_CUSTOMER_AUTH_SCHEME'));
+        $this->apiKey = (string) ($apiKey ?? getenv('SENT_DM_API_KEY'));
+        $this->senderID = (string) ($senderID ?? getenv('SENT_DM_SENDER_ID'));
 
         $baseUrl ??= getenv('SENT_DM_BASE_URL') ?: 'https://api.sent.dm';
 
@@ -94,57 +93,5 @@ class Client extends BaseClient
         $this->messages = new MessagesService($this);
         $this->numberLookup = new NumberLookupService($this);
         $this->organizations = new OrganizationsService($this);
-    }
-
-    /** @return array<string,string> */
-    protected function authHeaders(): array
-    {
-        return [
-            ...$this->adminAuthenticationScheme(),
-            ...$this->customerAuthenticationScheme(),
-        ];
-    }
-
-    /** @return array<string,string> */
-    protected function adminAuthenticationScheme(): array
-    {
-        return $this->adminAuthScheme ? ['x-api-key' => $this->adminAuthScheme] : [
-        ];
-    }
-
-    /** @return array<string,string> */
-    protected function customerAuthenticationScheme(): array
-    {
-        return $this->customerAuthScheme ? [
-            'x-sender-id' => $this->customerAuthScheme,
-        ] : [];
-    }
-
-    /**
-     * @internal
-     *
-     * @param string|list<string> $path
-     * @param array<string,mixed> $query
-     * @param array<string,string|int|list<string|int>|null> $headers
-     * @param RequestOpts|null $opts
-     *
-     * @return array{NormalizedRequest, RequestOptions}
-     */
-    protected function buildRequest(
-        string $method,
-        string|array $path,
-        array $query,
-        array $headers,
-        mixed $body,
-        RequestOptions|array|null $opts,
-    ): array {
-        return parent::buildRequest(
-            method: $method,
-            path: $path,
-            query: $query,
-            headers: [...$this->authHeaders(), ...$headers],
-            body: $body,
-            opts: $opts,
-        );
     }
 }

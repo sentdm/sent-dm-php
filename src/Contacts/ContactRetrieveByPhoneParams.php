@@ -14,7 +14,9 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\ContactsService::retrieveByPhone()
  *
- * @phpstan-type ContactRetrieveByPhoneParamsShape = array{phoneNumber: string}
+ * @phpstan-type ContactRetrieveByPhoneParamsShape = array{
+ *   phoneNumber: string, xAPIKey: string, xSenderID: string
+ * }
  */
 final class ContactRetrieveByPhoneParams implements BaseModel
 {
@@ -28,18 +30,29 @@ final class ContactRetrieveByPhoneParams implements BaseModel
     #[Required]
     public string $phoneNumber;
 
+    #[Required]
+    public string $xAPIKey;
+
+    #[Required]
+    public string $xSenderID;
+
     /**
      * `new ContactRetrieveByPhoneParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * ContactRetrieveByPhoneParams::with(phoneNumber: ...)
+     * ContactRetrieveByPhoneParams::with(
+     *   phoneNumber: ..., xAPIKey: ..., xSenderID: ...
+     * )
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new ContactRetrieveByPhoneParams)->withPhoneNumber(...)
+     * (new ContactRetrieveByPhoneParams)
+     *   ->withPhoneNumber(...)
+     *   ->withXAPIKey(...)
+     *   ->withXSenderID(...)
      * ```
      */
     public function __construct()
@@ -52,11 +65,16 @@ final class ContactRetrieveByPhoneParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(string $phoneNumber): self
-    {
+    public static function with(
+        string $phoneNumber,
+        string $xAPIKey,
+        string $xSenderID
+    ): self {
         $self = new self;
 
         $self['phoneNumber'] = $phoneNumber;
+        $self['xAPIKey'] = $xAPIKey;
+        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }
@@ -68,6 +86,22 @@ final class ContactRetrieveByPhoneParams implements BaseModel
     {
         $self = clone $this;
         $self['phoneNumber'] = $phoneNumber;
+
+        return $self;
+    }
+
+    public function withXAPIKey(string $xAPIKey): self
+    {
+        $self = clone $this;
+        $self['xAPIKey'] = $xAPIKey;
+
+        return $self;
+    }
+
+    public function withXSenderID(string $xSenderID): self
+    {
+        $self = clone $this;
+        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

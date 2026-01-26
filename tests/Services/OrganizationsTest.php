@@ -24,8 +24,8 @@ final class OrganizationsTest extends TestCase
 
         $testUrl = getenv('TEST_API_BASE_URL') ?: 'http://127.0.0.1:4010';
         $client = new Client(
-            adminAuthScheme: 'My Admin Auth Scheme',
-            customerAuthScheme: 'My Customer Auth Scheme',
+            apiKey: 'My API Key',
+            senderID: 'My Sender ID',
             baseUrl: $testUrl,
         );
 
@@ -53,7 +53,26 @@ final class OrganizationsTest extends TestCase
         }
 
         $result = $this->client->organizations->retrieveProfiles(
-            '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
+            '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(OrganizationGetProfilesResponse::class, $result);
+    }
+
+    #[Test]
+    public function testRetrieveProfilesWithOptionalParams(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Prism tests are disabled');
+        }
+
+        $result = $this->client->organizations->retrieveProfiles(
+            '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+            xAPIKey: '',
+            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

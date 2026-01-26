@@ -22,14 +22,18 @@ interface MessagesContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        string $xAPIKey,
+        string $xSenderID,
+        RequestOptions|array|null $requestOptions = null,
     ): MessageGetResponse;
 
     /**
      * @api
      *
-     * @param string $customMessage The custom message content to include in the template
-     * @param string $phoneNumber The phone number to send the message to, in international format (e.g., +1234567890)
+     * @param string $customMessage Body param: The custom message content to include in the template
+     * @param string $phoneNumber Body param: The phone number to send the message to, in international format (e.g., +1234567890)
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -37,15 +41,19 @@ interface MessagesContract
     public function sendQuickMessage(
         string $customMessage,
         string $phoneNumber,
+        string $xAPIKey,
+        string $xSenderID,
         RequestOptions|array|null $requestOptions = null,
     ): mixed;
 
     /**
      * @api
      *
-     * @param string $contactID The unique identifier of the contact to send the message to
-     * @param string $templateID The unique identifier of the template to use for the message
-     * @param array<string,string>|null $templateVariables Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
+     * @param string $contactID Body param: The unique identifier of the contact to send the message to
+     * @param string $templateID Body param: The unique identifier of the template to use for the message
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
+     * @param array<string,string>|null $templateVariables Body param: Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -53,6 +61,8 @@ interface MessagesContract
     public function sendToContact(
         string $contactID,
         string $templateID,
+        string $xAPIKey,
+        string $xSenderID,
         ?array $templateVariables = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed;
@@ -60,9 +70,11 @@ interface MessagesContract
     /**
      * @api
      *
-     * @param string $phoneNumber The phone number to send the message to, in international format (e.g., +1234567890)
-     * @param string $templateID The unique identifier of the template to use for the message
-     * @param array<string,string>|null $templateVariables Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
+     * @param string $phoneNumber Body param: The phone number to send the message to, in international format (e.g., +1234567890)
+     * @param string $templateID Body param: The unique identifier of the template to use for the message
+     * @param string $xAPIKey Header param
+     * @param string $xSenderID Header param
+     * @param array<string,string>|null $templateVariables Body param: Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -70,6 +82,8 @@ interface MessagesContract
     public function sendToPhone(
         string $phoneNumber,
         string $templateID,
+        string $xAPIKey,
+        string $xSenderID,
         ?array $templateVariables = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed;

@@ -19,6 +19,8 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-type TemplateCreateParamsShape = array{
  *   definition: TemplateDefinition|TemplateDefinitionShape,
+ *   xAPIKey: string,
+ *   xSenderID: string,
  *   category?: string|null,
  *   language?: string|null,
  *   submitForReview?: bool|null,
@@ -35,6 +37,12 @@ final class TemplateCreateParams implements BaseModel
      */
     #[Required]
     public TemplateDefinition $definition;
+
+    #[Required]
+    public string $xAPIKey;
+
+    #[Required]
+    public string $xSenderID;
 
     /**
      * The template category (e.g., MARKETING, UTILITY, AUTHENTICATION). Can only be set when creating a new template. If not provided, will be auto-generated using AI.
@@ -60,13 +68,16 @@ final class TemplateCreateParams implements BaseModel
      *
      * To enforce required parameters use
      * ```
-     * TemplateCreateParams::with(definition: ...)
+     * TemplateCreateParams::with(definition: ..., xAPIKey: ..., xSenderID: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new TemplateCreateParams)->withDefinition(...)
+     * (new TemplateCreateParams)
+     *   ->withDefinition(...)
+     *   ->withXAPIKey(...)
+     *   ->withXSenderID(...)
      * ```
      */
     public function __construct()
@@ -83,6 +94,8 @@ final class TemplateCreateParams implements BaseModel
      */
     public static function with(
         TemplateDefinition|array $definition,
+        string $xAPIKey,
+        string $xSenderID,
         ?string $category = null,
         ?string $language = null,
         ?bool $submitForReview = null,
@@ -90,6 +103,8 @@ final class TemplateCreateParams implements BaseModel
         $self = new self;
 
         $self['definition'] = $definition;
+        $self['xAPIKey'] = $xAPIKey;
+        $self['xSenderID'] = $xSenderID;
 
         null !== $category && $self['category'] = $category;
         null !== $language && $self['language'] = $language;
@@ -107,6 +122,22 @@ final class TemplateCreateParams implements BaseModel
     {
         $self = clone $this;
         $self['definition'] = $definition;
+
+        return $self;
+    }
+
+    public function withXAPIKey(string $xAPIKey): self
+    {
+        $self = clone $this;
+        $self['xAPIKey'] = $xAPIKey;
+
+        return $self;
+    }
+
+    public function withXSenderID(string $xSenderID): self
+    {
+        $self = clone $this;
+        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

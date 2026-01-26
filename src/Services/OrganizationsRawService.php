@@ -7,8 +7,10 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Core\Util;
 use SentDm\Organizations\OrganizationGetProfilesResponse;
 use SentDm\Organizations\OrganizationListResponse;
+use SentDm\Organizations\OrganizationRetrieveProfilesParams;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\OrganizationsRawContract;
 
@@ -51,6 +53,9 @@ final class OrganizationsRawService implements OrganizationsRawContract
      *
      * Retrieves all sender profiles within an organization that the authenticated user has access to. Returns filtered list based on user's permissions.
      *
+     * @param array{
+     *   xAPIKey: string, xSenderID: string
+     * }|OrganizationRetrieveProfilesParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<OrganizationGetProfilesResponse>
@@ -59,13 +64,23 @@ final class OrganizationsRawService implements OrganizationsRawContract
      */
     public function retrieveProfiles(
         string $orgID,
-        RequestOptions|array|null $requestOptions = null
+        array|OrganizationRetrieveProfilesParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = OrganizationRetrieveProfilesParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v2/organizations/%1$s/profiles', $orgID],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xAPIKey' => 'x-api-key', 'xSenderID' => 'x-sender-id']
+            ),
+            options: $options,
             convert: OrganizationGetProfilesResponse::class,
         );
     }
