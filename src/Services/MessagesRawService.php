@@ -7,9 +7,7 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Core\Util;
 use SentDm\Messages\MessageGetResponse;
-use SentDm\Messages\MessageRetrieveParams;
 use SentDm\Messages\MessageSendQuickMessageParams;
 use SentDm\Messages\MessageSendToContactParams;
 use SentDm\Messages\MessageSendToPhoneParams;
@@ -32,7 +30,6 @@ final class MessagesRawService implements MessagesRawContract
      *
      * Retrieves comprehensive details about a specific message using the message ID. Returns complete message data including delivery status, channel information, template details, contact information, and pricing. The customer ID is extracted from the authentication token to ensure the message belongs to the authenticated customer.
      *
-     * @param array{xAPIKey: string, xSenderID: string}|MessageRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<MessageGetResponse>
@@ -41,23 +38,13 @@ final class MessagesRawService implements MessagesRawContract
      */
     public function retrieve(
         string $id,
-        array|MessageRetrieveParams $params,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse {
-        [$parsed, $options] = MessageRetrieveParams::parseRequest(
-            $params,
-            $requestOptions,
-        );
-
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v2/messages/%1$s', $id],
-            headers: Util::array_transform_keys(
-                $parsed,
-                ['xAPIKey' => 'x-api-key', 'xSenderID' => 'x-sender-id']
-            ),
-            options: $options,
+            options: $requestOptions,
             convert: MessageGetResponse::class,
         );
     }
@@ -68,7 +55,7 @@ final class MessagesRawService implements MessagesRawContract
      * Sends a message to a phone number using the default template. This endpoint is rate limited to 5 messages per customer per day. The customer ID is extracted from the authentication token.
      *
      * @param array{
-     *   customMessage: string, phoneNumber: string, xAPIKey: string, xSenderID: string
+     *   customMessage: string, phoneNumber: string
      * }|MessageSendQuickMessageParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -84,20 +71,12 @@ final class MessagesRawService implements MessagesRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['xAPIKey' => 'x-api-key', 'xSenderID' => 'x-sender-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'post',
             path: 'v2/messages/quick-message',
-            headers: Util::array_transform_keys(
-                array_intersect_key($parsed, array_flip(array_keys($header_params))),
-                $header_params,
-            ),
-            body: (object) array_diff_key(
-                $parsed,
-                array_flip(array_keys($header_params))
-            ),
+            body: (object) $parsed,
             options: $options,
             convert: null,
         );
@@ -111,8 +90,6 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{
      *   contactID: string,
      *   templateID: string,
-     *   xAPIKey: string,
-     *   xSenderID: string,
      *   templateVariables?: array<string,string>|null,
      * }|MessageSendToContactParams $params
      * @param RequestOpts|null $requestOptions
@@ -129,20 +106,12 @@ final class MessagesRawService implements MessagesRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['xAPIKey' => 'x-api-key', 'xSenderID' => 'x-sender-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'post',
             path: 'v2/messages/contact',
-            headers: Util::array_transform_keys(
-                array_intersect_key($parsed, array_flip(array_keys($header_params))),
-                $header_params,
-            ),
-            body: (object) array_diff_key(
-                $parsed,
-                array_flip(array_keys($header_params))
-            ),
+            body: (object) $parsed,
             options: $options,
             convert: null,
         );
@@ -156,8 +125,6 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{
      *   phoneNumber: string,
      *   templateID: string,
-     *   xAPIKey: string,
-     *   xSenderID: string,
      *   templateVariables?: array<string,string>|null,
      * }|MessageSendToPhoneParams $params
      * @param RequestOpts|null $requestOptions
@@ -174,20 +141,12 @@ final class MessagesRawService implements MessagesRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['xAPIKey' => 'x-api-key', 'xSenderID' => 'x-sender-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'post',
             path: 'v2/messages/phone',
-            headers: Util::array_transform_keys(
-                array_intersect_key($parsed, array_flip(array_keys($header_params))),
-                $header_params,
-            ),
-            body: (object) array_diff_key(
-                $parsed,
-                array_flip(array_keys($header_params))
-            ),
+            body: (object) $parsed,
             options: $options,
             convert: null,
         );

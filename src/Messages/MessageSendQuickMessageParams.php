@@ -15,7 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\MessagesService::sendQuickMessage()
  *
  * @phpstan-type MessageSendQuickMessageParamsShape = array{
- *   customMessage: string, phoneNumber: string, xAPIKey: string, xSenderID: string
+ *   customMessage: string, phoneNumber: string
  * }
  */
 final class MessageSendQuickMessageParams implements BaseModel
@@ -36,20 +36,12 @@ final class MessageSendQuickMessageParams implements BaseModel
     #[Required]
     public string $phoneNumber;
 
-    #[Required]
-    public string $xAPIKey;
-
-    #[Required]
-    public string $xSenderID;
-
     /**
      * `new MessageSendQuickMessageParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * MessageSendQuickMessageParams::with(
-     *   customMessage: ..., phoneNumber: ..., xAPIKey: ..., xSenderID: ...
-     * )
+     * MessageSendQuickMessageParams::with(customMessage: ..., phoneNumber: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
@@ -58,8 +50,6 @@ final class MessageSendQuickMessageParams implements BaseModel
      * (new MessageSendQuickMessageParams)
      *   ->withCustomMessage(...)
      *   ->withPhoneNumber(...)
-     *   ->withXAPIKey(...)
-     *   ->withXSenderID(...)
      * ```
      */
     public function __construct()
@@ -74,16 +64,12 @@ final class MessageSendQuickMessageParams implements BaseModel
      */
     public static function with(
         string $customMessage,
-        string $phoneNumber,
-        string $xAPIKey,
-        string $xSenderID,
+        string $phoneNumber
     ): self {
         $self = new self;
 
         $self['customMessage'] = $customMessage;
         $self['phoneNumber'] = $phoneNumber;
-        $self['xAPIKey'] = $xAPIKey;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }
@@ -106,22 +92,6 @@ final class MessageSendQuickMessageParams implements BaseModel
     {
         $self = clone $this;
         $self['phoneNumber'] = $phoneNumber;
-
-        return $self;
-    }
-
-    public function withXAPIKey(string $xAPIKey): self
-    {
-        $self = clone $this;
-        $self['xAPIKey'] = $xAPIKey;
-
-        return $self;
-    }
-
-    public function withXSenderID(string $xSenderID): self
-    {
-        $self = clone $this;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

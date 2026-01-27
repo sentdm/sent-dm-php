@@ -38,11 +38,7 @@ final class NumberLookupTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->numberLookup->retrieve(
-            phoneNumber: 'phoneNumber',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
-        );
+        $result = $this->client->numberLookup->retrieve(phoneNumber: 'phoneNumber');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(NumberLookupGetResponse::class, $result);
@@ -55,11 +51,7 @@ final class NumberLookupTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->numberLookup->retrieve(
-            phoneNumber: 'phoneNumber',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
-        );
+        $result = $this->client->numberLookup->retrieve(phoneNumber: 'phoneNumber');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(NumberLookupGetResponse::class, $result);

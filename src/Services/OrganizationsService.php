@@ -6,7 +6,6 @@ namespace SentDm\Services;
 
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Core\Util;
 use SentDm\Organizations\OrganizationGetProfilesResponse;
 use SentDm\Organizations\OrganizationListResponse;
 use SentDm\RequestOptions;
@@ -66,16 +65,10 @@ final class OrganizationsService implements OrganizationsContract
      */
     public function retrieveProfiles(
         string $orgID,
-        string $xAPIKey,
-        string $xSenderID,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): OrganizationGetProfilesResponse {
-        $params = Util::removeNulls(
-            ['xAPIKey' => $xAPIKey, 'xSenderID' => $xSenderID]
-        );
-
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieveProfiles($orgID, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->retrieveProfiles($orgID, requestOptions: $requestOptions);
 
         return $response->parse();
     }

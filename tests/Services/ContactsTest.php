@@ -39,12 +39,7 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->list(
-            page: 0,
-            pageSize: 0,
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
-        );
+        $result = $this->client->contacts->list(page: 0, pageSize: 0);
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListResponse::class, $result);
@@ -57,12 +52,7 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->list(
-            page: 0,
-            pageSize: 0,
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
-        );
+        $result = $this->client->contacts->list(page: 0, pageSize: 0);
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListResponse::class, $result);
@@ -76,9 +66,7 @@ final class ContactsTest extends TestCase
         }
 
         $result = $this->client->contacts->retrieveByPhone(
-            phoneNumber: 'phoneNumber',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
+            phoneNumber: 'phoneNumber'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -93,9 +81,7 @@ final class ContactsTest extends TestCase
         }
 
         $result = $this->client->contacts->retrieveByPhone(
-            phoneNumber: 'phoneNumber',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
+            phoneNumber: 'phoneNumber'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -109,11 +95,7 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->retrieveID(
-            id: 'id',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000'
-        );
+        $result = $this->client->contacts->retrieveID(id: 'id');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListItem::class, $result);
@@ -126,11 +108,7 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->retrieveID(
-            id: 'id',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000'
-        );
+        $result = $this->client->contacts->retrieveID(id: 'id');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListItem::class, $result);

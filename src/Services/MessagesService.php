@@ -40,16 +40,10 @@ final class MessagesService implements MessagesContract
      */
     public function retrieve(
         string $id,
-        string $xAPIKey,
-        string $xSenderID,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): MessageGetResponse {
-        $params = Util::removeNulls(
-            ['xAPIKey' => $xAPIKey, 'xSenderID' => $xSenderID]
-        );
-
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieve($id, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->retrieve($id, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -59,10 +53,8 @@ final class MessagesService implements MessagesContract
      *
      * Sends a message to a phone number using the default template. This endpoint is rate limited to 5 messages per customer per day. The customer ID is extracted from the authentication token.
      *
-     * @param string $customMessage Body param: The custom message content to include in the template
-     * @param string $phoneNumber Body param: The phone number to send the message to, in international format (e.g., +1234567890)
-     * @param string $xAPIKey Header param
-     * @param string $xSenderID Header param
+     * @param string $customMessage The custom message content to include in the template
+     * @param string $phoneNumber The phone number to send the message to, in international format (e.g., +1234567890)
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -70,17 +62,10 @@ final class MessagesService implements MessagesContract
     public function sendQuickMessage(
         string $customMessage,
         string $phoneNumber,
-        string $xAPIKey,
-        string $xSenderID,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
         $params = Util::removeNulls(
-            [
-                'customMessage' => $customMessage,
-                'phoneNumber' => $phoneNumber,
-                'xAPIKey' => $xAPIKey,
-                'xSenderID' => $xSenderID,
-            ],
+            ['customMessage' => $customMessage, 'phoneNumber' => $phoneNumber]
         );
 
         // @phpstan-ignore-next-line argument.type
@@ -94,11 +79,9 @@ final class MessagesService implements MessagesContract
      *
      * Sends a message to a specific contact using a template. The message can be sent via SMS or WhatsApp depending on the contact's capabilities. Optionally specify a webhook URL to receive delivery status updates. The customer ID is extracted from the authentication token.
      *
-     * @param string $contactID Body param: The unique identifier of the contact to send the message to
-     * @param string $templateID Body param: The unique identifier of the template to use for the message
-     * @param string $xAPIKey Header param
-     * @param string $xSenderID Header param
-     * @param array<string,string>|null $templateVariables Body param: Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
+     * @param string $contactID The unique identifier of the contact to send the message to
+     * @param string $templateID The unique identifier of the template to use for the message
+     * @param array<string,string>|null $templateVariables Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -106,8 +89,6 @@ final class MessagesService implements MessagesContract
     public function sendToContact(
         string $contactID,
         string $templateID,
-        string $xAPIKey,
-        string $xSenderID,
         ?array $templateVariables = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
@@ -115,8 +96,6 @@ final class MessagesService implements MessagesContract
             [
                 'contactID' => $contactID,
                 'templateID' => $templateID,
-                'xAPIKey' => $xAPIKey,
-                'xSenderID' => $xSenderID,
                 'templateVariables' => $templateVariables,
             ],
         );
@@ -132,11 +111,9 @@ final class MessagesService implements MessagesContract
      *
      * Sends a message to a phone number using a template. The phone number doesn't need to be a pre-existing contact. The message can be sent via SMS or WhatsApp. Optionally specify a webhook URL to receive delivery status updates. The customer ID is extracted from the authentication token.
      *
-     * @param string $phoneNumber Body param: The phone number to send the message to, in international format (e.g., +1234567890)
-     * @param string $templateID Body param: The unique identifier of the template to use for the message
-     * @param string $xAPIKey Header param
-     * @param string $xSenderID Header param
-     * @param array<string,string>|null $templateVariables Body param: Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
+     * @param string $phoneNumber The phone number to send the message to, in international format (e.g., +1234567890)
+     * @param string $templateID The unique identifier of the template to use for the message
+     * @param array<string,string>|null $templateVariables Optional key-value pairs of template variables to replace in the template body. For example, if your template contains "Hello {{name}}", you would provide { "name": "John Doe" }
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -144,8 +121,6 @@ final class MessagesService implements MessagesContract
     public function sendToPhone(
         string $phoneNumber,
         string $templateID,
-        string $xAPIKey,
-        string $xSenderID,
         ?array $templateVariables = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
@@ -153,8 +128,6 @@ final class MessagesService implements MessagesContract
             [
                 'phoneNumber' => $phoneNumber,
                 'templateID' => $templateID,
-                'xAPIKey' => $xAPIKey,
-                'xSenderID' => $xSenderID,
                 'templateVariables' => $templateVariables,
             ],
         );

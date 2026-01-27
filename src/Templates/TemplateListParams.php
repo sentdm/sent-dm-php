@@ -18,8 +18,6 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type TemplateListParamsShape = array{
  *   page: int,
  *   pageSize: int,
- *   xAPIKey: string,
- *   xSenderID: string,
  *   category?: string|null,
  *   search?: string|null,
  *   status?: string|null,
@@ -42,12 +40,6 @@ final class TemplateListParams implements BaseModel
      */
     #[Required]
     public int $pageSize;
-
-    #[Required]
-    public string $xAPIKey;
-
-    #[Required]
-    public string $xSenderID;
 
     /**
      * Optional filter by template category (e.g., MARKETING, UTILITY, AUTHENTICATION).
@@ -72,17 +64,13 @@ final class TemplateListParams implements BaseModel
      *
      * To enforce required parameters use
      * ```
-     * TemplateListParams::with(page: ..., pageSize: ..., xAPIKey: ..., xSenderID: ...)
+     * TemplateListParams::with(page: ..., pageSize: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new TemplateListParams)
-     *   ->withPage(...)
-     *   ->withPageSize(...)
-     *   ->withXAPIKey(...)
-     *   ->withXSenderID(...)
+     * (new TemplateListParams)->withPage(...)->withPageSize(...)
      * ```
      */
     public function __construct()
@@ -98,8 +86,6 @@ final class TemplateListParams implements BaseModel
     public static function with(
         int $page,
         int $pageSize,
-        string $xAPIKey,
-        string $xSenderID,
         ?string $category = null,
         ?string $search = null,
         ?string $status = null,
@@ -108,8 +94,6 @@ final class TemplateListParams implements BaseModel
 
         $self['page'] = $page;
         $self['pageSize'] = $pageSize;
-        $self['xAPIKey'] = $xAPIKey;
-        $self['xSenderID'] = $xSenderID;
 
         null !== $category && $self['category'] = $category;
         null !== $search && $self['search'] = $search;
@@ -136,22 +120,6 @@ final class TemplateListParams implements BaseModel
     {
         $self = clone $this;
         $self['pageSize'] = $pageSize;
-
-        return $self;
-    }
-
-    public function withXAPIKey(string $xAPIKey): self
-    {
-        $self = clone $this;
-        $self['xAPIKey'] = $xAPIKey;
-
-        return $self;
-    }
-
-    public function withXSenderID(string $xSenderID): self
-    {
-        $self = clone $this;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

@@ -14,9 +14,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\NumberLookupService::retrieve()
  *
- * @phpstan-type NumberLookupRetrieveParamsShape = array{
- *   phoneNumber: string, xAPIKey: string, xSenderID: string
- * }
+ * @phpstan-type NumberLookupRetrieveParamsShape = array{phoneNumber: string}
  */
 final class NumberLookupRetrieveParams implements BaseModel
 {
@@ -27,27 +25,18 @@ final class NumberLookupRetrieveParams implements BaseModel
     #[Required]
     public string $phoneNumber;
 
-    #[Required]
-    public string $xAPIKey;
-
-    #[Required]
-    public string $xSenderID;
-
     /**
      * `new NumberLookupRetrieveParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * NumberLookupRetrieveParams::with(phoneNumber: ..., xAPIKey: ..., xSenderID: ...)
+     * NumberLookupRetrieveParams::with(phoneNumber: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new NumberLookupRetrieveParams)
-     *   ->withPhoneNumber(...)
-     *   ->withXAPIKey(...)
-     *   ->withXSenderID(...)
+     * (new NumberLookupRetrieveParams)->withPhoneNumber(...)
      * ```
      */
     public function __construct()
@@ -60,16 +49,11 @@ final class NumberLookupRetrieveParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(
-        string $phoneNumber,
-        string $xAPIKey,
-        string $xSenderID
-    ): self {
+    public static function with(string $phoneNumber): self
+    {
         $self = new self;
 
         $self['phoneNumber'] = $phoneNumber;
-        $self['xAPIKey'] = $xAPIKey;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }
@@ -78,22 +62,6 @@ final class NumberLookupRetrieveParams implements BaseModel
     {
         $self = clone $this;
         $self['phoneNumber'] = $phoneNumber;
-
-        return $self;
-    }
-
-    public function withXAPIKey(string $xAPIKey): self
-    {
-        $self = clone $this;
-        $self['xAPIKey'] = $xAPIKey;
-
-        return $self;
-    }
-
-    public function withXSenderID(string $xSenderID): self
-    {
-        $self = clone $this;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

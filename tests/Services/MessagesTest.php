@@ -39,26 +39,7 @@ final class MessagesTest extends TestCase
         }
 
         $result = $this->client->messages->retrieve(
-            '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageGetResponse::class, $result);
-    }
-
-    #[Test]
-    public function testRetrieveWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
-        }
-
-        $result = $this->client->messages->retrieve(
-            '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
+            '7ba7b820-9dad-11d1-80b4-00c04fd430c8'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -75,8 +56,6 @@ final class MessagesTest extends TestCase
         $result = $this->client->messages->sendQuickMessage(
             customMessage: 'Hello, this is a test message!',
             phoneNumber: '+1234567890',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -93,8 +72,6 @@ final class MessagesTest extends TestCase
         $result = $this->client->messages->sendQuickMessage(
             customMessage: 'Hello, this is a test message!',
             phoneNumber: '+1234567890',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -111,8 +88,6 @@ final class MessagesTest extends TestCase
         $result = $this->client->messages->sendToContact(
             contactID: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
             templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -129,8 +104,6 @@ final class MessagesTest extends TestCase
         $result = $this->client->messages->sendToContact(
             contactID: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
             templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
             templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
         );
 
@@ -148,8 +121,6 @@ final class MessagesTest extends TestCase
         $result = $this->client->messages->sendToPhone(
             phoneNumber: '+1234567890',
             templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -166,8 +137,6 @@ final class MessagesTest extends TestCase
         $result = $this->client->messages->sendToPhone(
             phoneNumber: '+1234567890',
             templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
             templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
         );
 

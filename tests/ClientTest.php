@@ -36,8 +36,6 @@ class ClientTest extends TestCase
         $client->messages->sendToPhone(
             phoneNumber: '+1234567890',
             templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-            xAPIKey: '',
-            xSenderID: '00000000-0000-0000-0000-000000000000',
         );
 
         $this->assertNotFalse($requested = $transporter->getRequests()[0] ?? false);

@@ -8,7 +8,6 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Organizations\OrganizationGetProfilesResponse;
 use SentDm\Organizations\OrganizationListResponse;
-use SentDm\Organizations\OrganizationRetrieveProfilesParams;
 use SentDm\RequestOptions;
 
 /**
@@ -32,7 +31,6 @@ interface OrganizationsRawContract
     /**
      * @api
      *
-     * @param array<string,mixed>|OrganizationRetrieveProfilesParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<OrganizationGetProfilesResponse>
@@ -41,7 +39,6 @@ interface OrganizationsRawContract
      */
     public function retrieveProfiles(
         string $orgID,
-        array|OrganizationRetrieveProfilesParams $params,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse;
 }

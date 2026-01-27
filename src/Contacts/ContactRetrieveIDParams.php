@@ -14,9 +14,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\ContactsService::retrieveID()
  *
- * @phpstan-type ContactRetrieveIDParamsShape = array{
- *   id: string, xAPIKey: string, xSenderID: string
- * }
+ * @phpstan-type ContactRetrieveIDParamsShape = array{id: string}
  */
 final class ContactRetrieveIDParams implements BaseModel
 {
@@ -30,24 +28,18 @@ final class ContactRetrieveIDParams implements BaseModel
     #[Required]
     public string $id;
 
-    #[Required]
-    public string $xAPIKey;
-
-    #[Required]
-    public string $xSenderID;
-
     /**
      * `new ContactRetrieveIDParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * ContactRetrieveIDParams::with(id: ..., xAPIKey: ..., xSenderID: ...)
+     * ContactRetrieveIDParams::with(id: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new ContactRetrieveIDParams)->withID(...)->withXAPIKey(...)->withXSenderID(...)
+     * (new ContactRetrieveIDParams)->withID(...)
      * ```
      */
     public function __construct()
@@ -60,16 +52,11 @@ final class ContactRetrieveIDParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(
-        string $id,
-        string $xAPIKey,
-        string $xSenderID
-    ): self {
+    public static function with(string $id): self
+    {
         $self = new self;
 
         $self['id'] = $id;
-        $self['xAPIKey'] = $xAPIKey;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }
@@ -81,22 +68,6 @@ final class ContactRetrieveIDParams implements BaseModel
     {
         $self = clone $this;
         $self['id'] = $id;
-
-        return $self;
-    }
-
-    public function withXAPIKey(string $xAPIKey): self
-    {
-        $self = clone $this;
-        $self['xAPIKey'] = $xAPIKey;
-
-        return $self;
-    }
-
-    public function withXSenderID(string $xSenderID): self
-    {
-        $self = clone $this;
-        $self['xSenderID'] = $xSenderID;
 
         return $self;
     }

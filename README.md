@@ -46,10 +46,7 @@ $client = new Client(
 );
 
 $result = $client->messages->sendToPhone(
-  phoneNumber: '+1234567890',
-  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  xAPIKey: '',
-  xSenderID: '00000000-0000-0000-0000-000000000000',
+  phoneNumber: '+1234567890', templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8'
 );
 
 var_dump($result);
@@ -77,8 +74,6 @@ try {
   $result = $client->messages->sendToPhone(
     phoneNumber: '+1234567890',
     templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    xAPIKey: '',
-    xSenderID: '00000000-0000-0000-0000-000000000000',
   );
 } catch (APIConnectionException $e) {
   echo "The server could not be reached", PHP_EOL;
@@ -131,8 +126,6 @@ $client = new Client(
 $result = $client->messages->sendToPhone(
   phoneNumber: '+1234567890',
   templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  xAPIKey: '',
-  xSenderID: '00000000-0000-0000-0000-000000000000',
   requestOptions: ['maxRetries' => 5],
 );
 ```
@@ -153,8 +146,6 @@ Note: the `extra*` parameters of the same name overrides the documented paramete
 $result = $client->messages->sendToPhone(
   phoneNumber: '+1234567890',
   templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  xAPIKey: '',
-  xSenderID: '00000000-0000-0000-0000-000000000000',
   requestOptions: [
     'extraQueryParams' => ['my_query_parameter' => 'value'],
     'extraBodyParams' => ['my_body_parameter' => 'value'],

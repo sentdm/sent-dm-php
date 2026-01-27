@@ -8,11 +8,9 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Templates\TemplateCreateParams;
-use SentDm\Templates\TemplateDeleteParams;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
 use SentDm\Templates\TemplateResponse;
-use SentDm\Templates\TemplateRetrieveParams;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -37,7 +35,6 @@ interface TemplatesRawContract
     /**
      * @api
      *
-     * @param array<string,mixed>|TemplateRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<TemplateResponse>
@@ -46,8 +43,7 @@ interface TemplatesRawContract
      */
     public function retrieve(
         string $id,
-        array|TemplateRetrieveParams $params,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse;
 
     /**
@@ -69,7 +65,6 @@ interface TemplatesRawContract
      * @api
      *
      * @param string $id The unique identifier (GUID) of the resource to retrieve
-     * @param array<string,mixed>|TemplateDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -78,7 +73,6 @@ interface TemplatesRawContract
      */
     public function delete(
         string $id,
-        array|TemplateDeleteParams $params,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse;
 }

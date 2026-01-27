@@ -7,7 +7,6 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Messages\MessageGetResponse;
-use SentDm\Messages\MessageRetrieveParams;
 use SentDm\Messages\MessageSendQuickMessageParams;
 use SentDm\Messages\MessageSendToContactParams;
 use SentDm\Messages\MessageSendToPhoneParams;
@@ -21,7 +20,6 @@ interface MessagesRawContract
     /**
      * @api
      *
-     * @param array<string,mixed>|MessageRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<MessageGetResponse>
@@ -30,8 +28,7 @@ interface MessagesRawContract
      */
     public function retrieve(
         string $id,
-        array|MessageRetrieveParams $params,
-        RequestOptions|array|null $requestOptions = null,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse;
 
     /**
