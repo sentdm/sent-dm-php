@@ -6,24 +6,14 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Documentation
 
-## Installation
+The REST API documentation can be found on [docs.sent.dm](https://docs.sent.dm).
 
-To use this package, install via Composer by adding the following to your application's `composer.json`:
+## Installation
 
 <!-- x-release-please-start-version -->
 
-```json
-{
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:sentdm/sent-dm-php.git"
-    }
-  ],
-  "require": {
-    "org-placeholder/sent-dm": "dev-main"
-  }
-}
+```
+composer require "sentdm/sent-dm-php 0.0.1"
 ```
 
 <!-- x-release-please-end -->
