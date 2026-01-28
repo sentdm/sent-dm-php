@@ -35,12 +35,15 @@ Parameters with a default value must be set by name.
 use SentDm\Client;
 
 $client = new Client(
-  customerAuthScheme: getenv(
-    'SENT_DM_CUSTOMER_AUTH_SCHEME'
-  ) ?: 'My Customer Auth Scheme',
+  apiKey: getenv('SENT_DM_API_KEY') ?: 'My API Key',
+  senderID: getenv('SENT_DM_SENDER_ID') ?: 'My Sender ID',
 );
 
-$result = $client->templates->delete('REPLACE_ME');
+$result = $client->messages->sendToPhone(
+  phoneNumber: '+1234567890',
+  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
+);
 
 var_dump($result);
 ```
@@ -64,7 +67,10 @@ use SentDm\Core\Exceptions\RateLimitException;
 use SentDm\Core\Exceptions\APIStatusException;
 
 try {
-  $result = $client->templates->delete('REPLACE_ME');
+  $result = $client->messages->sendToPhone(
+    phoneNumber: '+1234567890',
+    templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  );
 } catch (APIConnectionException $e) {
   echo "The server could not be reached", PHP_EOL;
   var_dump($e->getPrevious());
@@ -109,8 +115,11 @@ use SentDm\Client;
 $client = new Client(requestOptions: ['maxRetries' => 0]);
 
 // Or, configure per-request:
-$result = $client->templates->delete(
-  'REPLACE_ME', requestOptions: ['maxRetries' => 5]
+$result = $client->messages->sendToPhone(
+  phoneNumber: '+1234567890',
+  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
+  requestOptions: ['maxRetries' => 5],
 );
 ```
 
@@ -127,8 +136,10 @@ Note: the `extra*` parameters of the same name overrides the documented paramete
 ```php
 <?php
 
-$result = $client->templates->delete(
-  'REPLACE_ME',
+$result = $client->messages->sendToPhone(
+  phoneNumber: '+1234567890',
+  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
   requestOptions: [
     'extraQueryParams' => ['my_query_parameter' => 'value'],
     'extraBodyParams' => ['my_body_parameter' => 'value'],

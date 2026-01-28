@@ -24,8 +24,8 @@ final class ContactsTest extends TestCase
 
         $testUrl = getenv('TEST_API_BASE_URL') ?: 'http://127.0.0.1:4010';
         $client = new Client(
-            adminAuthScheme: 'My Admin Auth Scheme',
-            customerAuthScheme: 'My Customer Auth Scheme',
+            apiKey: 'My API Key',
+            senderID: 'My Sender ID',
             baseUrl: $testUrl,
         );
 
@@ -95,7 +95,9 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->retrieveID(id: 'id');
+        $result = $this->client->contacts->retrieveID(
+            id: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListItem::class, $result);
@@ -108,7 +110,9 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Prism tests are disabled');
         }
 
-        $result = $this->client->contacts->retrieveID(id: 'id');
+        $result = $this->client->contacts->retrieveID(
+            id: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactListItem::class, $result);

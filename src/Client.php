@@ -20,9 +20,9 @@ use SentDm\Services\TemplatesService;
  */
 class Client extends BaseClient
 {
-    public string $adminAuthScheme;
+    public string $apiKey;
 
-    public string $customerAuthScheme;
+    public string $senderID;
 
     /**
      * @api
@@ -53,13 +53,13 @@ class Client extends BaseClient
      * @param RequestOpts|null $requestOptions
      */
     public function __construct(
-        ?string $adminAuthScheme = null,
-        ?string $customerAuthScheme = null,
+        ?string $apiKey = null,
+        ?string $senderID = null,
         ?string $baseUrl = null,
         RequestOptions|array|null $requestOptions = null,
     ) {
-        $this->adminAuthScheme = (string) ($adminAuthScheme ?? getenv('SENT_DM_ADMIN_AUTH_SCHEME'));
-        $this->customerAuthScheme = (string) ($customerAuthScheme ?? getenv('SENT_DM_CUSTOMER_AUTH_SCHEME'));
+        $this->apiKey = (string) ($apiKey ?? getenv('SENT_DM_API_KEY'));
+        $this->senderID = (string) ($senderID ?? getenv('SENT_DM_SENDER_ID'));
 
         $baseUrl ??= getenv('SENT_DM_BASE_URL') ?: 'https://api.sent.dm';
 
@@ -99,25 +99,19 @@ class Client extends BaseClient
     /** @return array<string,string> */
     protected function authHeaders(): array
     {
-        return [
-            ...$this->adminAuthenticationScheme(),
-            ...$this->customerAuthenticationScheme(),
-        ];
+        return [...$this->customerAPIKey(), ...$this->customerSenderID()];
     }
 
     /** @return array<string,string> */
-    protected function adminAuthenticationScheme(): array
+    protected function customerAPIKey(): array
     {
-        return $this->adminAuthScheme ? ['x-api-key' => $this->adminAuthScheme] : [
-        ];
+        return $this->apiKey ? ['x-api-key' => $this->apiKey] : [];
     }
 
     /** @return array<string,string> */
-    protected function customerAuthenticationScheme(): array
+    protected function customerSenderID(): array
     {
-        return $this->customerAuthScheme ? [
-            'x-sender-id' => $this->customerAuthScheme,
-        ] : [];
+        return $this->senderID ? ['x-sender-id' => $this->senderID] : [];
     }
 
     /**
