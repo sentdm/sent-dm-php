@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 (2026-01-30)
+
+Full Changelog: [v0.2.0...v0.2.1](https://github.com/sentdm/sent-dm-php/compare/v0.2.0...v0.2.1)
+
+### Chores
+
+* **internal:** ignore stainless-internal artifacts ([6225030](https://github.com/sentdm/sent-dm-php/commit/62250305adb0cafe5e29574bc9244da3850d53db))
+
 ## 0.2.0 (2026-01-28)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/sentdm/sent-dm-php/compare/v0.1.0...v0.2.0)
