@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2 (2026-01-31)
+
+Full Changelog: [v0.2.1...v0.2.2](https://github.com/sentdm/sent-dm-php/compare/v0.2.1...v0.2.2)
+
+### Bug Fixes
+
+* used redirect count instead of retry count in base client ([03e3921](https://github.com/sentdm/sent-dm-php/commit/03e392189b376b7db15d6feb04bb148510cd9095))
+
 ## 0.2.1 (2026-01-30)
 
 Full Changelog: [v0.2.0...v0.2.1](https://github.com/sentdm/sent-dm-php/compare/v0.2.0...v0.2.1)
