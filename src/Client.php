@@ -58,10 +58,10 @@ class Client extends BaseClient
         ?string $baseUrl = null,
         RequestOptions|array|null $requestOptions = null,
     ) {
-        $this->apiKey = (string) ($apiKey ?? getenv('SENT_DM_API_KEY'));
-        $this->senderID = (string) ($senderID ?? getenv('SENT_DM_SENDER_ID'));
+        $this->apiKey = (string) ($apiKey ?? Util::getenv('SENT_DM_API_KEY'));
+        $this->senderID = (string) ($senderID ?? Util::getenv('SENT_DM_SENDER_ID'));
 
-        $baseUrl ??= getenv('SENT_DM_BASE_URL') ?: 'https://api.sent.dm';
+        $baseUrl ??= Util::getenv('SENT_DM_BASE_URL') ?: 'https://api.sent.dm';
 
         $options = RequestOptions::parse(
             RequestOptions::with(
