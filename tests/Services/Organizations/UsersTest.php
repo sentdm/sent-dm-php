@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
+use SentDm\Core\Util;
 use SentDm\Organizations\Users\CustomerUser;
 use SentDm\Organizations\Users\UserListResponse;
 use Tests\UnsupportedMockTests;
@@ -22,7 +23,7 @@ final class UsersTest extends TestCase
     {
         parent::setUp();
 
-        $testUrl = getenv('TEST_API_BASE_URL') ?: 'http://127.0.0.1:4010';
+        $testUrl = Util::getenv('TEST_API_BASE_URL') ?: 'http://127.0.0.1:4010';
         $client = new Client(
             apiKey: 'My API Key',
             senderID: 'My Sender ID',
