@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 (2026-02-04)
+
+Full Changelog: [v0.2.2...v0.3.0](https://github.com/sentdm/sent-dm-php/compare/v0.2.2...v0.3.0)
+
+### Features
+
+* use `$_ENV` aware getenv helper ([fd90ce5](https://github.com/sentdm/sent-dm-php/commit/fd90ce5dfe166c4fc95f8eae14eb323867450ac1))
+
+
+### Chores
+
+* **internal:** php cs fixer should not be memory limited ([b39580a](https://github.com/sentdm/sent-dm-php/commit/b39580a339d376351d09bf27bc3984277a084978))
+
 ## 0.2.2 (2026-01-31)
 
 Full Changelog: [v0.2.1...v0.2.2](https://github.com/sentdm/sent-dm-php/compare/v0.2.1...v0.2.2)
