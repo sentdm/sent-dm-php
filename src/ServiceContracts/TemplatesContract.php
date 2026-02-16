@@ -8,7 +8,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateResponse;
+use SentDm\Templates\TemplateResponseV2;
 
 /**
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
@@ -34,7 +34,7 @@ interface TemplatesContract
         ?string $language = null,
         ?bool $submitForReview = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateResponse;
+    ): TemplateResponseV2;
 
     /**
      * @api
@@ -46,7 +46,7 @@ interface TemplatesContract
     public function retrieve(
         string $id,
         RequestOptions|array|null $requestOptions = null
-    ): TemplateResponse;
+    ): TemplateResponseV2;
 
     /**
      * @api

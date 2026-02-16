@@ -9,10 +9,10 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-import-type TemplateResponseShape from \SentDm\Templates\TemplateResponse
+ * @phpstan-import-type TemplateResponseV2Shape from \SentDm\Templates\TemplateResponseV2
  *
  * @phpstan-type TemplateListResponseShape = array{
- *   items?: list<TemplateResponse|TemplateResponseShape>|null,
+ *   items?: list<TemplateResponseV2|TemplateResponseV2Shape>|null,
  *   page?: int|null,
  *   pageSize?: int|null,
  *   totalCount?: int|null,
@@ -24,8 +24,8 @@ final class TemplateListResponse implements BaseModel
     /** @use SdkModel<TemplateListResponseShape> */
     use SdkModel;
 
-    /** @var list<TemplateResponse>|null $items */
-    #[Optional(list: TemplateResponse::class)]
+    /** @var list<TemplateResponseV2>|null $items */
+    #[Optional(list: TemplateResponseV2::class)]
     public ?array $items;
 
     #[Optional]
@@ -50,7 +50,7 @@ final class TemplateListResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<TemplateResponse|TemplateResponseShape>|null $items
+     * @param list<TemplateResponseV2|TemplateResponseV2Shape>|null $items
      */
     public static function with(
         ?array $items = null,
@@ -71,7 +71,7 @@ final class TemplateListResponse implements BaseModel
     }
 
     /**
-     * @param list<TemplateResponse|TemplateResponseShape> $items
+     * @param list<TemplateResponseV2|TemplateResponseV2Shape> $items
      */
     public function withItems(array $items): self
     {
