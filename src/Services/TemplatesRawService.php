@@ -13,7 +13,7 @@ use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateResponse;
+use SentDm\Templates\TemplateResponseV2;
 
 /**
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
@@ -40,7 +40,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateResponse>
+     * @return BaseResponse<TemplateResponseV2>
      *
      * @throws APIException
      */
@@ -59,7 +59,7 @@ final class TemplatesRawService implements TemplatesRawContract
             path: 'v2/templates',
             body: (object) $parsed,
             options: $options,
-            convert: TemplateResponse::class,
+            convert: TemplateResponseV2::class,
         );
     }
 
@@ -70,7 +70,7 @@ final class TemplatesRawService implements TemplatesRawContract
      *
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateResponse>
+     * @return BaseResponse<TemplateResponseV2>
      *
      * @throws APIException
      */
@@ -83,7 +83,7 @@ final class TemplatesRawService implements TemplatesRawContract
             method: 'get',
             path: ['v2/templates/%1$s', $id],
             options: $requestOptions,
-            convert: TemplateResponse::class,
+            convert: TemplateResponseV2::class,
         );
     }
 

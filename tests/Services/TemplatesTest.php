@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateResponse;
+use SentDm\Templates\TemplateResponseV2;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -43,7 +43,7 @@ final class TemplatesTest extends TestCase
         $result = $this->client->templates->create(definition: ['body' => []]);
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateResponse::class, $result);
+        $this->assertInstanceOf(TemplateResponseV2::class, $result);
     }
 
     #[Test]
@@ -183,7 +183,7 @@ final class TemplatesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateResponse::class, $result);
+        $this->assertInstanceOf(TemplateResponseV2::class, $result);
     }
 
     #[Test]
@@ -198,7 +198,7 @@ final class TemplatesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateResponse::class, $result);
+        $this->assertInstanceOf(TemplateResponseV2::class, $result);
     }
 
     #[Test]

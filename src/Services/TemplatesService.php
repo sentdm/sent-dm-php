@@ -11,7 +11,7 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesContract;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateResponse;
+use SentDm\Templates\TemplateResponseV2;
 
 /**
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
@@ -52,7 +52,7 @@ final class TemplatesService implements TemplatesContract
         ?string $language = null,
         ?bool $submitForReview = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateResponse {
+    ): TemplateResponseV2 {
         $params = Util::removeNulls(
             [
                 'definition' => $definition,
@@ -80,7 +80,7 @@ final class TemplatesService implements TemplatesContract
     public function retrieve(
         string $id,
         RequestOptions|array|null $requestOptions = null
-    ): TemplateResponse {
+    ): TemplateResponseV2 {
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->retrieve($id, requestOptions: $requestOptions);
 

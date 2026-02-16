@@ -13,7 +13,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  *
- * @phpstan-type TemplateResponseShape = array{
+ * @phpstan-type TemplateResponseV2Shape = array{
  *   id?: string|null,
  *   category?: string|null,
  *   createdAt?: \DateTimeInterface|null,
@@ -27,9 +27,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   whatsappTemplateName?: string|null,
  * }
  */
-final class TemplateResponse implements BaseModel
+final class TemplateResponseV2 implements BaseModel
 {
-    /** @use SdkModel<TemplateResponseShape> */
+    /** @use SdkModel<TemplateResponseV2Shape> */
     use SdkModel;
 
     /**

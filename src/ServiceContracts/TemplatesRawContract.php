@@ -10,7 +10,7 @@ use SentDm\RequestOptions;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateResponse;
+use SentDm\Templates\TemplateResponseV2;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -23,7 +23,7 @@ interface TemplatesRawContract
      * @param array<string,mixed>|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateResponse>
+     * @return BaseResponse<TemplateResponseV2>
      *
      * @throws APIException
      */
@@ -37,7 +37,7 @@ interface TemplatesRawContract
      *
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateResponse>
+     * @return BaseResponse<TemplateResponseV2>
      *
      * @throws APIException
      */

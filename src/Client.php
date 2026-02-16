@@ -11,7 +11,6 @@ use SentDm\Core\Util;
 use SentDm\Services\ContactsService;
 use SentDm\Services\MessagesService;
 use SentDm\Services\NumberLookupService;
-use SentDm\Services\OrganizationsService;
 use SentDm\Services\TemplatesService;
 
 /**
@@ -27,11 +26,6 @@ class Client extends BaseClient
     /**
      * @api
      */
-    public TemplatesService $templates;
-
-    /**
-     * @api
-     */
     public ContactsService $contacts;
 
     /**
@@ -42,12 +36,12 @@ class Client extends BaseClient
     /**
      * @api
      */
-    public NumberLookupService $numberLookup;
+    public TemplatesService $templates;
 
     /**
      * @api
      */
-    public OrganizationsService $organizations;
+    public NumberLookupService $numberLookup;
 
     /**
      * @param RequestOpts|null $requestOptions
@@ -89,11 +83,10 @@ class Client extends BaseClient
             options: $options
         );
 
-        $this->templates = new TemplatesService($this);
         $this->contacts = new ContactsService($this);
         $this->messages = new MessagesService($this);
+        $this->templates = new TemplatesService($this);
         $this->numberLookup = new NumberLookupService($this);
-        $this->organizations = new OrganizationsService($this);
     }
 
     /** @return array<string,string> */
