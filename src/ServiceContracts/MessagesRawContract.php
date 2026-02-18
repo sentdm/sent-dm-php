@@ -6,10 +6,10 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Messages\MessageGetResponse;
-use SentDm\Messages\MessageSendQuickMessageParams;
-use SentDm\Messages\MessageSendToContactParams;
-use SentDm\Messages\MessageSendToPhoneParams;
+use SentDm\Messages\MessageGetActivitiesResponse;
+use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageSendParams;
+use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -20,13 +20,14 @@ interface MessagesRawContract
     /**
      * @api
      *
+     * @param string $id Message ID from route parameter
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetResponse>
+     * @return BaseResponse<MessageGetActivitiesResponse>
      *
      * @throws APIException
      */
-    public function retrieve(
+    public function retrieveActivities(
         string $id,
         RequestOptions|array|null $requestOptions = null
     ): BaseResponse;
@@ -34,45 +35,30 @@ interface MessagesRawContract
     /**
      * @api
      *
-     * @param array<string,mixed>|MessageSendQuickMessageParams $params
+     * @param string $id Message ID
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<mixed>
+     * @return BaseResponse<MessageGetStatusResponse>
      *
      * @throws APIException
      */
-    public function sendQuickMessage(
-        array|MessageSendQuickMessageParams $params,
-        RequestOptions|array|null $requestOptions = null,
+    public function retrieveStatus(
+        string $id,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse;
 
     /**
      * @api
      *
-     * @param array<string,mixed>|MessageSendToContactParams $params
+     * @param array<string,mixed>|MessageSendParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<mixed>
+     * @return BaseResponse<MessageSendResponse>
      *
      * @throws APIException
      */
-    public function sendToContact(
-        array|MessageSendToContactParams $params,
-        RequestOptions|array|null $requestOptions = null,
-    ): BaseResponse;
-
-    /**
-     * @api
-     *
-     * @param array<string,mixed>|MessageSendToPhoneParams $params
-     * @param RequestOpts|null $requestOptions
-     *
-     * @return BaseResponse<mixed>
-     *
-     * @throws APIException
-     */
-    public function sendToPhone(
-        array|MessageSendToPhoneParams $params,
+    public function send(
+        array|MessageSendParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 }

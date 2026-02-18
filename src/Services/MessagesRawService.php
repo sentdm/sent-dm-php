@@ -7,14 +7,17 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Messages\MessageGetResponse;
-use SentDm\Messages\MessageSendQuickMessageParams;
-use SentDm\Messages\MessageSendToContactParams;
-use SentDm\Messages\MessageSendToPhoneParams;
+use SentDm\Core\Util;
+use SentDm\Messages\MessageGetActivitiesResponse;
+use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageSendParams;
+use SentDm\Messages\MessageSendParams\Template;
+use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MessagesRawContract;
 
 /**
+ * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class MessagesRawService implements MessagesRawContract
@@ -28,127 +31,95 @@ final class MessagesRawService implements MessagesRawContract
     /**
      * @api
      *
-     * Retrieves comprehensive details about a specific message using the message ID. Returns complete message data including delivery status, channel information, template details, contact information, and pricing. The customer ID is extracted from the authentication token to ensure the message belongs to the authenticated customer.
+     * Retrieves the activity log for a specific message. Activities track the message lifecycle including acceptance, processing, sending, delivery, and any errors.
      *
+     * @param string $id Message ID from route parameter
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetResponse>
+     * @return BaseResponse<MessageGetActivitiesResponse>
      *
      * @throws APIException
      */
-    public function retrieve(
+    public function retrieveActivities(
         string $id,
         RequestOptions|array|null $requestOptions = null
     ): BaseResponse {
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
-            path: ['v2/messages/%1$s', $id],
+            path: ['v3/messages/%1$s/activities', $id],
             options: $requestOptions,
-            convert: MessageGetResponse::class,
+            convert: MessageGetActivitiesResponse::class,
         );
     }
 
     /**
      * @api
      *
-     * Sends a message to a phone number using the default template. This endpoint is rate limited to 5 messages per customer per day. The customer ID is extracted from the authentication token.
+     * Retrieves the current status and details of a message by ID. Includes delivery status, timestamps, and error information if applicable.
      *
-     * @param array{
-     *   customMessage: string, phoneNumber: string
-     * }|MessageSendQuickMessageParams $params
+     * @param string $id Message ID
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<mixed>
+     * @return BaseResponse<MessageGetStatusResponse>
      *
      * @throws APIException
      */
-    public function sendQuickMessage(
-        array|MessageSendQuickMessageParams $params,
-        RequestOptions|array|null $requestOptions = null,
+    public function retrieveStatus(
+        string $id,
+        RequestOptions|array|null $requestOptions = null
     ): BaseResponse {
-        [$parsed, $options] = MessageSendQuickMessageParams::parseRequest(
-            $params,
-            $requestOptions,
-        );
-
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
-            method: 'post',
-            path: 'v2/messages/quick-message',
-            body: (object) $parsed,
-            options: $options,
-            convert: null,
+            method: 'get',
+            path: ['v3/messages/%1$s', $id],
+            options: $requestOptions,
+            convert: MessageGetStatusResponse::class,
         );
     }
 
     /**
      * @api
      *
-     * Sends a message to a specific contact using a template. The message can be sent via SMS or WhatsApp depending on the contact's capabilities. Optionally specify a webhook URL to receive delivery status updates. The customer ID is extracted from the authentication token.
+     * Sends a message to one or more recipients using a template. Supports multi-channel broadcast — when multiple channels are specified (e.g. ["sms", "whatsapp"]), a separate message is created for each (recipient, channel) pair. Returns immediately with per-recipient message IDs for async tracking via webhooks or the GET /messages/{id} endpoint.
      *
      * @param array{
-     *   contactID: string,
-     *   templateID: string,
-     *   templateVariables?: array<string,string>|null,
-     * }|MessageSendToContactParams $params
+     *   channel?: list<string>|null,
+     *   template?: Template|TemplateShape,
+     *   testMode?: bool,
+     *   to?: list<string>,
+     *   idempotencyKey?: string,
+     * }|MessageSendParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<mixed>
+     * @return BaseResponse<MessageSendResponse>
      *
      * @throws APIException
      */
-    public function sendToContact(
-        array|MessageSendToContactParams $params,
+    public function send(
+        array|MessageSendParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
-        [$parsed, $options] = MessageSendToContactParams::parseRequest(
+        [$parsed, $options] = MessageSendParams::parseRequest(
             $params,
             $requestOptions,
         );
+        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'post',
-            path: 'v2/messages/contact',
-            body: (object) $parsed,
+            path: 'v3/messages',
+            headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
             options: $options,
-            convert: null,
-        );
-    }
-
-    /**
-     * @api
-     *
-     * Sends a message to a phone number using a template. The phone number doesn't need to be a pre-existing contact. The message can be sent via SMS or WhatsApp. Optionally specify a webhook URL to receive delivery status updates. The customer ID is extracted from the authentication token.
-     *
-     * @param array{
-     *   phoneNumber: string,
-     *   templateID: string,
-     *   templateVariables?: array<string,string>|null,
-     * }|MessageSendToPhoneParams $params
-     * @param RequestOpts|null $requestOptions
-     *
-     * @return BaseResponse<mixed>
-     *
-     * @throws APIException
-     */
-    public function sendToPhone(
-        array|MessageSendToPhoneParams $params,
-        RequestOptions|array|null $requestOptions = null,
-    ): BaseResponse {
-        [$parsed, $options] = MessageSendToPhoneParams::parseRequest(
-            $params,
-            $requestOptions,
-        );
-
-        // @phpstan-ignore-next-line return.type
-        return $this->client->request(
-            method: 'post',
-            path: 'v2/messages/phone',
-            body: (object) $parsed,
-            options: $options,
-            convert: null,
+            convert: MessageSendResponse::class,
         );
     }
 }

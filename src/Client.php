@@ -8,10 +8,15 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use SentDm\Core\BaseClient;
 use SentDm\Core\Util;
+use SentDm\Services\BrandsService;
 use SentDm\Services\ContactsService;
+use SentDm\Services\LookupService;
+use SentDm\Services\MeService;
 use SentDm\Services\MessagesService;
-use SentDm\Services\NumberLookupService;
+use SentDm\Services\ProfilesService;
 use SentDm\Services\TemplatesService;
+use SentDm\Services\UsersService;
+use SentDm\Services\WebhooksService;
 
 /**
  * @phpstan-import-type NormalizedRequest from \SentDm\Core\BaseClient
@@ -21,17 +26,15 @@ class Client extends BaseClient
 {
     public string $apiKey;
 
-    public string $senderID;
+    /**
+     * @api
+     */
+    public WebhooksService $webhooks;
 
     /**
      * @api
      */
-    public ContactsService $contacts;
-
-    /**
-     * @api
-     */
-    public MessagesService $messages;
+    public UsersService $users;
 
     /**
      * @api
@@ -41,19 +44,42 @@ class Client extends BaseClient
     /**
      * @api
      */
-    public NumberLookupService $numberLookup;
+    public ProfilesService $profiles;
+
+    /**
+     * @api
+     */
+    public MessagesService $messages;
+
+    /**
+     * @api
+     */
+    public LookupService $lookup;
+
+    /**
+     * @api
+     */
+    public ContactsService $contacts;
+
+    /**
+     * @api
+     */
+    public BrandsService $brands;
+
+    /**
+     * @api
+     */
+    public MeService $me;
 
     /**
      * @param RequestOpts|null $requestOptions
      */
     public function __construct(
         ?string $apiKey = null,
-        ?string $senderID = null,
         ?string $baseUrl = null,
         RequestOptions|array|null $requestOptions = null,
     ) {
         $this->apiKey = (string) ($apiKey ?? Util::getenv('SENT_DM_API_KEY'));
-        $this->senderID = (string) ($senderID ?? Util::getenv('SENT_DM_SENDER_ID'));
 
         $baseUrl ??= Util::getenv('SENT_DM_BASE_URL') ?: 'https://api.sent.dm';
 
@@ -83,28 +109,21 @@ class Client extends BaseClient
             options: $options
         );
 
-        $this->contacts = new ContactsService($this);
-        $this->messages = new MessagesService($this);
+        $this->webhooks = new WebhooksService($this);
+        $this->users = new UsersService($this);
         $this->templates = new TemplatesService($this);
-        $this->numberLookup = new NumberLookupService($this);
+        $this->profiles = new ProfilesService($this);
+        $this->messages = new MessagesService($this);
+        $this->lookup = new LookupService($this);
+        $this->contacts = new ContactsService($this);
+        $this->brands = new BrandsService($this);
+        $this->me = new MeService($this);
     }
 
     /** @return array<string,string> */
     protected function authHeaders(): array
     {
-        return [...$this->customerAPIKey(), ...$this->customerSenderID()];
-    }
-
-    /** @return array<string,string> */
-    protected function customerAPIKey(): array
-    {
         return $this->apiKey ? ['x-api-key' => $this->apiKey] : [];
-    }
-
-    /** @return array<string,string> */
-    protected function customerSenderID(): array
-    {
-        return $this->senderID ? ['x-sender-id' => $this->senderID] : [];
     }
 
     /**

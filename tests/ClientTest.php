@@ -29,14 +29,10 @@ class ClientTest extends TestCase
         $client = new \SentDm\Client(
             baseUrl: 'http://localhost',
             apiKey: 'My API Key',
-            senderID: 'My Sender ID',
             requestOptions: ['transporter' => $transporter],
         );
 
-        $client->messages->sendToPhone(
-            phoneNumber: '+1234567890',
-            templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-        );
+        $client->messages->send();
 
         $this->assertNotFalse($requested = $transporter->getRequests()[0] ?? false);
 
