@@ -11,7 +11,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Retrieves all message templates available for the authenticated customer with comprehensive template definitions including headers, body, footer, and interactive buttons. Supports advanced filtering by search term, status, and category, plus pagination. The customer ID is extracted from the authentication token.
+ * Retrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.
  *
  * @see SentDm\Services\TemplatesService::list()
  *
@@ -30,31 +30,28 @@ final class TemplateListParams implements BaseModel
     use SdkParams;
 
     /**
-     * The page number (zero-indexed). Default is 0.
+     * Page number (1-indexed).
      */
     #[Required]
     public int $page;
 
-    /**
-     * The number of items per page (1-1000). Default is 100.
-     */
     #[Required]
     public int $pageSize;
 
     /**
-     * Optional filter by template category (e.g., MARKETING, UTILITY, AUTHENTICATION).
+     * Optional category filter: MARKETING, UTILITY, AUTHENTICATION.
      */
     #[Optional(nullable: true)]
     public ?string $category;
 
     /**
-     * Optional search term to filter templates by name or content.
+     * Optional search term for filtering templates.
      */
     #[Optional(nullable: true)]
     public ?string $search;
 
     /**
-     * Optional filter by template status (e.g., APPROVED, PENDING, REJECTED, DRAFT).
+     * Optional status filter: APPROVED, PENDING, REJECTED.
      */
     #[Optional(nullable: true)]
     public ?string $status;
@@ -103,7 +100,7 @@ final class TemplateListParams implements BaseModel
     }
 
     /**
-     * The page number (zero-indexed). Default is 0.
+     * Page number (1-indexed).
      */
     public function withPage(int $page): self
     {
@@ -113,9 +110,6 @@ final class TemplateListParams implements BaseModel
         return $self;
     }
 
-    /**
-     * The number of items per page (1-1000). Default is 100.
-     */
     public function withPageSize(int $pageSize): self
     {
         $self = clone $this;
@@ -125,7 +119,7 @@ final class TemplateListParams implements BaseModel
     }
 
     /**
-     * Optional filter by template category (e.g., MARKETING, UTILITY, AUTHENTICATION).
+     * Optional category filter: MARKETING, UTILITY, AUTHENTICATION.
      */
     public function withCategory(?string $category): self
     {
@@ -136,7 +130,7 @@ final class TemplateListParams implements BaseModel
     }
 
     /**
-     * Optional search term to filter templates by name or content.
+     * Optional search term for filtering templates.
      */
     public function withSearch(?string $search): self
     {
@@ -147,7 +141,7 @@ final class TemplateListParams implements BaseModel
     }
 
     /**
-     * Optional filter by template status (e.g., APPROVED, PENDING, REJECTED, DRAFT).
+     * Optional status filter: APPROVED, PENDING, REJECTED.
      */
     public function withStatus(?string $status): self
     {

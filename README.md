@@ -13,7 +13,7 @@ The REST API documentation can be found on [docs.sent.dm](https://docs.sent.dm).
 <!-- x-release-please-start-version -->
 
 ```
-composer require "sentdm/sent-dm-php 0.5.0"
+composer require "sentdm/sent-dm-php 0.6.0"
 ```
 
 <!-- x-release-please-end -->
@@ -28,18 +28,19 @@ Parameters with a default value must be set by name.
 
 use SentDm\Client;
 
-$client = new Client(
-  apiKey: getenv('SENT_DM_API_KEY') ?: 'My API Key',
-  senderID: getenv('SENT_DM_SENDER_ID') ?: 'My Sender ID',
+$client = new Client(apiKey: getenv('SENT_DM_API_KEY') ?: 'My API Key');
+
+$response = $client->messages->send(
+  channel: ['sms', 'whatsapp'],
+  template: [
+    'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    'name' => 'order_confirmation',
+    'parameters' => ['name' => 'John Doe', 'order_id' => '12345'],
+  ],
+  to: ['+14155551234', '+14155555678'],
 );
 
-$result = $client->messages->sendToPhone(
-  phoneNumber: '+1234567890',
-  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
-);
-
-var_dump($result);
+var_dump($response->data);
 ```
 
 ### Value Objects
@@ -61,10 +62,7 @@ use SentDm\Core\Exceptions\RateLimitException;
 use SentDm\Core\Exceptions\APIStatusException;
 
 try {
-  $result = $client->messages->sendToPhone(
-    phoneNumber: '+1234567890',
-    templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  );
+  $response = $client->messages->send();
 } catch (APIConnectionException $e) {
   echo "The server could not be reached", PHP_EOL;
   var_dump($e->getPrevious());
@@ -109,10 +107,14 @@ use SentDm\Client;
 $client = new Client(requestOptions: ['maxRetries' => 0]);
 
 // Or, configure per-request:
-$result = $client->messages->sendToPhone(
-  phoneNumber: '+1234567890',
-  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
+$result = $client->messages->send(
+  channel: ['sms'],
+  template: [
+    'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    'name' => 'order_confirmation',
+    'parameters' => ['name' => 'John Doe', 'order_id' => '12345'],
+  ],
+  to: ['+14155551234'],
   requestOptions: ['maxRetries' => 5],
 );
 ```
@@ -130,10 +132,14 @@ Note: the `extra*` parameters of the same name overrides the documented paramete
 ```php
 <?php
 
-$result = $client->messages->sendToPhone(
-  phoneNumber: '+1234567890',
-  templateID: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: ['name' => 'John Doe', 'order_id' => '12345'],
+$response = $client->messages->send(
+  channel: ['sms'],
+  template: [
+    'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    'name' => 'order_confirmation',
+    'parameters' => ['name' => 'John Doe', 'order_id' => '12345'],
+  ],
+  to: ['+14155551234'],
   requestOptions: [
     'extraQueryParams' => ['my_query_parameter' => 'value'],
     'extraBodyParams' => ['my_body_parameter' => 'value'],

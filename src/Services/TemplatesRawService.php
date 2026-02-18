@@ -7,13 +7,16 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesRawContract;
+use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDefinition;
+use SentDm\Templates\TemplateDeleteParams;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateResponseV2;
+use SentDm\Templates\TemplateUpdateParams;
 
 /**
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
@@ -30,17 +33,20 @@ final class TemplatesRawService implements TemplatesRawContract
     /**
      * @api
      *
-     * Creates a new message template for the authenticated customer with comprehensive template definitions including headers, body, footer, and interactive buttons. Supports automatic metadata generation using AI (display name, language, category). Optionally submits the template for WhatsApp review. The customer ID is extracted from the authentication token.
+     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission.
      *
      * @param array{
-     *   definition: TemplateDefinition|TemplateDefinitionShape,
      *   category?: string|null,
+     *   creationSource?: string|null,
+     *   definition?: TemplateDefinition|TemplateDefinitionShape,
      *   language?: string|null,
      *   submitForReview?: bool,
+     *   testMode?: bool,
+     *   idempotencyKey?: string,
      * }|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateResponseV2>
+     * @return BaseResponse<APIResponseTemplate>
      *
      * @throws APIException
      */
@@ -52,25 +58,34 @@ final class TemplatesRawService implements TemplatesRawContract
             $params,
             $requestOptions,
         );
+        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'post',
-            path: 'v2/templates',
-            body: (object) $parsed,
+            path: 'v3/templates',
+            headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
             options: $options,
-            convert: TemplateResponseV2::class,
+            convert: APIResponseTemplate::class,
         );
     }
 
     /**
      * @api
      *
-     * Retrieves a specific message template by its unique identifier for the authenticated customer with comprehensive template definitions including headers, body, footer, and interactive buttons. The customer ID is extracted from the authentication token.
+     * Retrieves a specific template by its ID. Returns template details including name, category, language, status, and definition.
      *
+     * @param string $id Template ID from route parameter
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateResponseV2>
+     * @return BaseResponse<APIResponseTemplate>
      *
      * @throws APIException
      */
@@ -81,16 +96,65 @@ final class TemplatesRawService implements TemplatesRawContract
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
-            path: ['v2/templates/%1$s', $id],
+            path: ['v3/templates/%1$s', $id],
             options: $requestOptions,
-            convert: TemplateResponseV2::class,
+            convert: APIResponseTemplate::class,
         );
     }
 
     /**
      * @api
      *
-     * Retrieves all message templates available for the authenticated customer with comprehensive template definitions including headers, body, footer, and interactive buttons. Supports advanced filtering by search term, status, and category, plus pagination. The customer ID is extracted from the authentication token.
+     * Updates an existing template's name, category, language, definition, or submits it for review.
+     *
+     * @param string $id Path param: Template ID from route parameter
+     * @param array{
+     *   category?: string|null,
+     *   definition?: TemplateDefinition|TemplateDefinitionShape|null,
+     *   language?: string|null,
+     *   name?: string|null,
+     *   submitForReview?: bool,
+     *   testMode?: bool,
+     *   idempotencyKey?: string,
+     * }|TemplateUpdateParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<APIResponseTemplate>
+     *
+     * @throws APIException
+     */
+    public function update(
+        string $id,
+        array|TemplateUpdateParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse {
+        [$parsed, $options] = TemplateUpdateParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+
+        // @phpstan-ignore-next-line return.type
+        return $this->client->request(
+            method: 'put',
+            path: ['v3/templates/%1$s', $id],
+            headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
+            options: $options,
+            convert: APIResponseTemplate::class,
+        );
+    }
+
+    /**
+     * @api
+     *
+     * Retrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.
      *
      * @param array{
      *   page: int,
@@ -117,7 +181,7 @@ final class TemplatesRawService implements TemplatesRawContract
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
-            path: 'v2/templates',
+            path: 'v3/templates',
             query: $parsed,
             options: $options,
             convert: TemplateListResponse::class,
@@ -127,9 +191,12 @@ final class TemplatesRawService implements TemplatesRawContract
     /**
      * @api
      *
-     * Deletes a specific message template by its unique identifier for the authenticated customer with smart deletion strategy. Deletion behavior: - If template has NO messages: Permanently deleted from database (hard delete). - If template has messages: Marked as deleted but preserved for message history (soft delete with snapshot). The template must exist and belong to the authenticated customer to be deleted successfully. The customer ID is extracted from the authentication token.
+     * Deletes a template by ID. Optionally, you can also delete the template from WhatsApp/Meta by setting delete_from_meta=true.
      *
-     * @param string $id The unique identifier (GUID) of the resource to retrieve
+     * @param string $id Template ID from route parameter
+     * @param array{
+     *   deleteFromMeta?: bool|null, testMode?: bool
+     * }|TemplateDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -138,13 +205,21 @@ final class TemplatesRawService implements TemplatesRawContract
      */
     public function delete(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|TemplateDeleteParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = TemplateDeleteParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
-            path: ['v2/templates/%1$s', $id],
-            options: $requestOptions,
+            path: ['v3/templates/%1$s', $id],
+            headers: ['Content-Type' => '*/*'],
+            body: (object) $parsed,
+            options: $options,
             convert: null,
         );
     }
