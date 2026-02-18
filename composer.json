@@ -27,7 +27,7 @@
     "sort-packages": true
   },
   "description": "Sent Dm PHP SDK",
-  "name": "sentdm/sent-dm-php",
+  "name": "org-placeholder/sent-dm",
   "require": {
     "php": "^8.1",
     "php-http/discovery": "^1",

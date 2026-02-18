@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace SentDm\Contacts;
 
+use SentDm\Contacts\ContactListResponse\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\APIError;
+use SentDm\Webhooks\APIMeta;
 
 /**
- * @phpstan-import-type ContactListItemShape from \SentDm\Contacts\ContactListItem
+ * Standard API response envelope for all v3 endpoints.
+ *
+ * @phpstan-import-type DataShape from \SentDm\Contacts\ContactListResponse\Data
+ * @phpstan-import-type APIErrorShape from \SentDm\Webhooks\APIError
+ * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type ContactListResponseShape = array{
- *   items?: list<ContactListItem|ContactListItemShape>|null,
- *   page?: int|null,
- *   pageSize?: int|null,
- *   totalCount?: int|null,
- *   totalPages?: int|null,
+ *   data?: null|Data|DataShape,
+ *   error?: null|APIError|APIErrorShape,
+ *   meta?: null|APIMeta|APIMetaShape,
+ *   success?: bool|null,
  * }
  */
 final class ContactListResponse implements BaseModel
@@ -24,21 +30,29 @@ final class ContactListResponse implements BaseModel
     /** @use SdkModel<ContactListResponseShape> */
     use SdkModel;
 
-    /** @var list<ContactListItem>|null $items */
-    #[Optional(list: ContactListItem::class)]
-    public ?array $items;
+    /**
+     * The response data (null if error).
+     */
+    #[Optional(nullable: true)]
+    public ?Data $data;
 
-    #[Optional]
-    public ?int $page;
+    /**
+     * Error details (null if successful).
+     */
+    #[Optional(nullable: true)]
+    public ?APIError $error;
 
+    /**
+     * Metadata about the request and response.
+     */
     #[Optional]
-    public ?int $pageSize;
+    public ?APIMeta $meta;
 
+    /**
+     * Indicates whether the request was successful.
+     */
     #[Optional]
-    public ?int $totalCount;
-
-    #[Optional]
-    public ?int $totalPages;
+    public ?bool $success;
 
     public function __construct()
     {
@@ -50,65 +64,72 @@ final class ContactListResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<ContactListItem|ContactListItemShape>|null $items
+     * @param Data|DataShape|null $data
+     * @param APIError|APIErrorShape|null $error
+     * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        ?array $items = null,
-        ?int $page = null,
-        ?int $pageSize = null,
-        ?int $totalCount = null,
-        ?int $totalPages = null,
+        Data|array|null $data = null,
+        APIError|array|null $error = null,
+        APIMeta|array|null $meta = null,
+        ?bool $success = null,
     ): self {
         $self = new self;
 
-        null !== $items && $self['items'] = $items;
-        null !== $page && $self['page'] = $page;
-        null !== $pageSize && $self['pageSize'] = $pageSize;
-        null !== $totalCount && $self['totalCount'] = $totalCount;
-        null !== $totalPages && $self['totalPages'] = $totalPages;
+        null !== $data && $self['data'] = $data;
+        null !== $error && $self['error'] = $error;
+        null !== $meta && $self['meta'] = $meta;
+        null !== $success && $self['success'] = $success;
 
         return $self;
     }
 
     /**
-     * @param list<ContactListItem|ContactListItemShape> $items
+     * The response data (null if error).
+     *
+     * @param Data|DataShape|null $data
      */
-    public function withItems(array $items): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
-        $self['items'] = $items;
+        $self['data'] = $data;
 
         return $self;
     }
 
-    public function withPage(int $page): self
+    /**
+     * Error details (null if successful).
+     *
+     * @param APIError|APIErrorShape|null $error
+     */
+    public function withError(APIError|array|null $error): self
     {
         $self = clone $this;
-        $self['page'] = $page;
+        $self['error'] = $error;
 
         return $self;
     }
 
-    public function withPageSize(int $pageSize): self
+    /**
+     * Metadata about the request and response.
+     *
+     * @param APIMeta|APIMetaShape $meta
+     */
+    public function withMeta(APIMeta|array $meta): self
     {
         $self = clone $this;
-        $self['pageSize'] = $pageSize;
+        $self['meta'] = $meta;
 
         return $self;
     }
 
-    public function withTotalCount(int $totalCount): self
+    /**
+     * Indicates whether the request was successful.
+     */
+    public function withSuccess(bool $success): self
     {
         $self = clone $this;
-        $self['totalCount'] = $totalCount;
-
-        return $self;
-    }
-
-    public function withTotalPages(int $totalPages): self
-    {
-        $self = clone $this;
-        $self['totalPages'] = $totalPages;
+        $self['success'] = $success;
 
         return $self;
     }
