@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Brands\Campaigns\CampaignData;
+namespace SentDm\Brands\Campaigns;
 
-use SentDm\Brands\Campaigns\MessagingUseCaseUs;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -12,14 +11,16 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Campaign use case with sample messages.
  *
- * @phpstan-type UseCaseShape = array{
+ * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape = array{
  *   messagingUseCaseUs: MessagingUseCaseUs|value-of<MessagingUseCaseUs>,
  *   sampleMessages: list<string>,
  * }
  */
-final class UseCase implements BaseModel
+final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData implements BaseModel
 {
-    /** @use SdkModel<UseCaseShape> */
+    /**
+     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape>
+     */
     use SdkModel;
 
     /**
@@ -39,17 +40,21 @@ final class UseCase implements BaseModel
     public array $sampleMessages;
 
     /**
-     * `new UseCase()` is missing required properties by the API.
+     * `new SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * UseCase::with(messagingUseCaseUs: ..., sampleMessages: ...)
+     * SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData::with(
+     *   messagingUseCaseUs: ..., sampleMessages: ...
+     * )
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new UseCase)->withMessagingUseCaseUs(...)->withSampleMessages(...)
+     * (new SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData)
+     *   ->withMessagingUseCaseUs(...)
+     *   ->withSampleMessages(...)
      * ```
      */
     public function __construct()
