@@ -2,43 +2,42 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates\TemplateDefinition;
+namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateVariable;
 
 /**
- * Optional template header with optional variables.
+ * Footer section of a message template.
  *
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
- * @phpstan-type HeaderShape = array{
+ * @phpstan-type SentDmServicesCommonContractsPocOsTemplateFooterShape = array{
  *   template?: string|null,
  *   type?: string|null,
  *   variables?: list<TemplateVariable|TemplateVariableShape>|null,
  * }
  */
-final class Header implements BaseModel
+final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseModel
 {
-    /** @use SdkModel<HeaderShape> */
+    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateFooterShape> */
     use SdkModel;
 
     /**
-     * The header template text with optional variable placeholders (e.g., "Welcome to {{0:variable}}").
+     * The footer template text with optional variable placeholders.
      */
     #[Optional]
     public ?string $template;
 
     /**
-     * The type of header (e.g., "text", "image", "video", "document").
+     * The type of footer (typically "text").
      */
     #[Optional(nullable: true)]
     public ?string $type;
 
     /**
-     * List of variables used in the header template.
+     * List of variables used in the footer template.
      *
      * @var list<TemplateVariable>|null $variables
      */
@@ -72,7 +71,7 @@ final class Header implements BaseModel
     }
 
     /**
-     * The header template text with optional variable placeholders (e.g., "Welcome to {{0:variable}}").
+     * The footer template text with optional variable placeholders.
      */
     public function withTemplate(string $template): self
     {
@@ -83,7 +82,7 @@ final class Header implements BaseModel
     }
 
     /**
-     * The type of header (e.g., "text", "image", "video", "document").
+     * The type of footer (typically "text").
      */
     public function withType(?string $type): self
     {
@@ -94,7 +93,7 @@ final class Header implements BaseModel
     }
 
     /**
-     * List of variables used in the header template.
+     * List of variables used in the footer template.
      *
      * @param list<TemplateVariable|TemplateVariableShape>|null $variables
      */

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SentDm\Brands\Campaigns;
 
-use SentDm\Brands\Campaigns\CampaignData\UseCase;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
@@ -13,13 +12,13 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Campaign data for create or update operation.
  *
- * @phpstan-import-type UseCaseShape from \SentDm\Brands\Campaigns\CampaignData\UseCase
+ * @phpstan-import-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape from \SentDm\Brands\Campaigns\SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData
  *
  * @phpstan-type CampaignDataShape = array{
  *   description: string,
  *   name: string,
  *   type: string,
- *   useCases: list<UseCase|UseCaseShape>,
+ *   useCases: list<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData|SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape>,
  *   helpKeywords?: string|null,
  *   helpMessage?: string|null,
  *   messageFlow?: string|null,
@@ -57,9 +56,11 @@ final class CampaignData implements BaseModel
     /**
      * List of use cases with sample messages.
      *
-     * @var list<UseCase> $useCases
+     * @var list<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData> $useCases
      */
-    #[Required(list: UseCase::class)]
+    #[Required(
+        list: SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData::class,
+    )]
     public array $useCases;
 
     /**
@@ -144,7 +145,7 @@ final class CampaignData implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<UseCase|UseCaseShape> $useCases
+     * @param list<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData|SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape> $useCases
      */
     public static function with(
         string $description,
@@ -217,7 +218,7 @@ final class CampaignData implements BaseModel
     /**
      * List of use cases with sample messages.
      *
-     * @param list<UseCase|UseCaseShape> $useCases
+     * @param list<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData|SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape> $useCases
      */
     public function withUseCases(array $useCases): self
     {
