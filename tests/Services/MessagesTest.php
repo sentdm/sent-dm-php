@@ -34,7 +34,7 @@ final class MessagesTest extends TestCase
     public function testRetrieveActivities(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->messages->retrieveActivities(
@@ -49,7 +49,7 @@ final class MessagesTest extends TestCase
     public function testRetrieveStatus(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->messages->retrieveStatus(
@@ -64,7 +64,7 @@ final class MessagesTest extends TestCase
     public function testSend(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->messages->send();
