@@ -13,6 +13,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesContract;
 
 /**
+ * Manage organization profiles.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ProfilesService implements ProfilesContract

@@ -19,6 +19,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ContactsRawContract;
 
 /**
+ * Create, update, and manage customer contact lists.
+ *
  * @phpstan-import-type BodyShape from \SentDm\Contacts\ContactDeleteParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */

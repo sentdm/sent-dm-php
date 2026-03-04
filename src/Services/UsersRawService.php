@@ -17,6 +17,8 @@ use SentDm\Users\UserRemoveParams;
 use SentDm\Users\UserUpdateRoleParams;
 
 /**
+ * Invite, update, and manage organization users and roles.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class UsersRawService implements UsersRawContract

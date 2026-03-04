@@ -11,6 +11,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MeContract;
 
 /**
+ * Retrieve account details.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class MeService implements MeContract

@@ -13,6 +13,8 @@ use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserListResponse;
 
 /**
+ * Invite, update, and manage organization users and roles.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class UsersService implements UsersContract

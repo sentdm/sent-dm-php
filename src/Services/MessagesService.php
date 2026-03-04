@@ -15,6 +15,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MessagesContract;
 
 /**
+ * Send and track SMS and WhatsApp messages.
+ *
  * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */

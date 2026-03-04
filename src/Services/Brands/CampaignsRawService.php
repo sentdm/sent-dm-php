@@ -19,6 +19,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Brands\CampaignsRawContract;
 
 /**
+ * Register and manage 10DLC brands for SMS compliance.
+ *
  * @phpstan-import-type BodyShape from \SentDm\Brands\Campaigns\CampaignDeleteParams\Body
  * @phpstan-import-type CampaignDataShape from \SentDm\Brands\Campaigns\CampaignData
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
