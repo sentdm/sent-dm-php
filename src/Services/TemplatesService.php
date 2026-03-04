@@ -14,6 +14,8 @@ use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateListResponse;
 
 /**
+ * Manage message templates with variable substitution.
+ *
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */

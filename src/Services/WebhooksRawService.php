@@ -26,6 +26,8 @@ use SentDm\Webhooks\WebhookToggleStatusParams;
 use SentDm\Webhooks\WebhookUpdateParams;
 
 /**
+ * Configure webhook endpoints for real-time event delivery.
+ *
  * @phpstan-import-type BodyShape from \SentDm\Webhooks\WebhookRotateSecretParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */

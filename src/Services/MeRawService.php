@@ -12,6 +12,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MeRawContract;
 
 /**
+ * Retrieve account details.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class MeRawService implements MeRawContract

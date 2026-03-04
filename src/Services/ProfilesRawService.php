@@ -18,6 +18,8 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesRawContract;
 
 /**
+ * Manage organization profiles.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ProfilesRawService implements ProfilesRawContract
