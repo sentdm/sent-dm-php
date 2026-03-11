@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\BrandsBrandData;
+namespace SentDm\Profiles;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\BrandsBrandData\Business\EntityType;
+use SentDm\Profiles\SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo\EntityType;
 
 /**
- * Business details and address information.
+ * Business details and address for brand KYC.
  *
- * @phpstan-type BusinessShape = array{
+ * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape = array{
  *   city?: string|null,
  *   country?: string|null,
  *   countryOfRegistration?: string|null,
@@ -26,9 +26,11 @@ use SentDm\Profiles\BrandsBrandData\Business\EntityType;
  *   url?: string|null,
  * }
  */
-final class Business implements BaseModel
+final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo implements BaseModel
 {
-    /** @use SdkModel<BusinessShape> */
+    /**
+     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape>
+     */
     use SdkModel;
 
     /**

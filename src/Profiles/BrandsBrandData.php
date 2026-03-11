@@ -8,21 +8,18 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\BrandsBrandData\Business;
-use SentDm\Profiles\BrandsBrandData\Compliance;
-use SentDm\Profiles\BrandsBrandData\Contact;
 
 /**
  * Brand and KYC data grouped into contact, business, and compliance sections.
  *
- * @phpstan-import-type ComplianceShape from \SentDm\Profiles\BrandsBrandData\Compliance
- * @phpstan-import-type ContactShape from \SentDm\Profiles\BrandsBrandData\Contact
- * @phpstan-import-type BusinessShape from \SentDm\Profiles\BrandsBrandData\Business
+ * @phpstan-import-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape from \SentDm\Profiles\SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo
+ * @phpstan-import-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape from \SentDm\Profiles\SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo
+ * @phpstan-import-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape from \SentDm\Profiles\SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo
  *
  * @phpstan-type BrandsBrandDataShape = array{
- *   compliance: Compliance|ComplianceShape,
- *   contact: Contact|ContactShape,
- *   business?: null|Business|BusinessShape,
+ *   compliance: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape,
+ *   contact: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape,
+ *   business?: null|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape,
  * }
  */
 final class BrandsBrandData implements BaseModel
@@ -34,19 +31,19 @@ final class BrandsBrandData implements BaseModel
      * Compliance and TCR-related information.
      */
     #[Required]
-    public Compliance $compliance;
+    public SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo $compliance;
 
     /**
      * Contact information for the brand.
      */
     #[Required]
-    public Contact $contact;
+    public SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo $contact;
 
     /**
      * Business details and address information.
      */
     #[Optional(nullable: true)]
-    public ?Business $business;
+    public ?SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo $business;
 
     /**
      * `new BrandsBrandData()` is missing required properties by the API.
@@ -72,14 +69,14 @@ final class BrandsBrandData implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Compliance|ComplianceShape $compliance
-     * @param Contact|ContactShape $contact
-     * @param Business|BusinessShape|null $business
+     * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape $compliance
+     * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape $contact
+     * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape|null $business
      */
     public static function with(
-        Compliance|array $compliance,
-        Contact|array $contact,
-        Business|array|null $business = null,
+        SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo|array $compliance,
+        SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo|array $contact,
+        SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo|array|null $business = null,
     ): self {
         $self = new self;
 
@@ -94,10 +91,11 @@ final class BrandsBrandData implements BaseModel
     /**
      * Compliance and TCR-related information.
      *
-     * @param Compliance|ComplianceShape $compliance
+     * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape $compliance
      */
-    public function withCompliance(Compliance|array $compliance): self
-    {
+    public function withCompliance(
+        SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo|array $compliance,
+    ): self {
         $self = clone $this;
         $self['compliance'] = $compliance;
 
@@ -107,10 +105,11 @@ final class BrandsBrandData implements BaseModel
     /**
      * Contact information for the brand.
      *
-     * @param Contact|ContactShape $contact
+     * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape $contact
      */
-    public function withContact(Contact|array $contact): self
-    {
+    public function withContact(
+        SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo|array $contact,
+    ): self {
         $self = clone $this;
         $self['contact'] = $contact;
 
@@ -120,10 +119,11 @@ final class BrandsBrandData implements BaseModel
     /**
      * Business details and address information.
      *
-     * @param Business|BusinessShape|null $business
+     * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape|null $business
      */
-    public function withBusiness(Business|array|null $business): self
-    {
+    public function withBusiness(
+        SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo|array|null $business,
+    ): self {
         $self = clone $this;
         $self['business'] = $business;
 
