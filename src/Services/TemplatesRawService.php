@@ -19,6 +19,8 @@ use SentDm\Templates\TemplateListResponse;
 use SentDm\Templates\TemplateUpdateParams;
 
 /**
+ * Manage message templates with variable substitution.
+ *
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */

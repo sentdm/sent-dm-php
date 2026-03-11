@@ -37,7 +37,7 @@ final class WebhooksTest extends TestCase
     public function testCreate(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->create();
@@ -50,7 +50,7 @@ final class WebhooksTest extends TestCase
     public function testRetrieve(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->retrieve(
@@ -65,7 +65,7 @@ final class WebhooksTest extends TestCase
     public function testUpdate(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->update(
@@ -80,7 +80,7 @@ final class WebhooksTest extends TestCase
     public function testList(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->list(page: 0, pageSize: 0);
@@ -93,7 +93,7 @@ final class WebhooksTest extends TestCase
     public function testListWithOptionalParams(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->list(
@@ -111,7 +111,7 @@ final class WebhooksTest extends TestCase
     public function testDelete(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->delete(
@@ -126,7 +126,7 @@ final class WebhooksTest extends TestCase
     public function testListEventTypes(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->listEventTypes();
@@ -139,7 +139,7 @@ final class WebhooksTest extends TestCase
     public function testListEvents(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->listEvents(
@@ -156,7 +156,7 @@ final class WebhooksTest extends TestCase
     public function testListEventsWithOptionalParams(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->listEvents(
@@ -174,7 +174,7 @@ final class WebhooksTest extends TestCase
     public function testRotateSecret(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->rotateSecret(
@@ -190,7 +190,7 @@ final class WebhooksTest extends TestCase
     public function testRotateSecretWithOptionalParams(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->rotateSecret(
@@ -207,7 +207,7 @@ final class WebhooksTest extends TestCase
     public function testTest(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->test(
@@ -222,7 +222,7 @@ final class WebhooksTest extends TestCase
     public function testToggleStatus(): void
     {
         if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Prism tests are disabled');
+            $this->markTestSkipped('Mock server tests are disabled');
         }
 
         $result = $this->client->webhooks->toggleStatus(
