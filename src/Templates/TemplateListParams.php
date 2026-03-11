@@ -19,8 +19,10 @@ use SentDm\Core\Contracts\BaseModel;
  *   page: int,
  *   pageSize: int,
  *   category?: string|null,
+ *   isWelcomePlayground?: bool|null,
  *   search?: string|null,
  *   status?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class TemplateListParams implements BaseModel
@@ -35,6 +37,9 @@ final class TemplateListParams implements BaseModel
     #[Required]
     public int $page;
 
+    /**
+     * Number of items per page.
+     */
     #[Required]
     public int $pageSize;
 
@@ -43,6 +48,12 @@ final class TemplateListParams implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?string $category;
+
+    /**
+     * Optional filter by welcome playground flag.
+     */
+    #[Optional(nullable: true)]
+    public ?bool $isWelcomePlayground;
 
     /**
      * Optional search term for filtering templates.
@@ -55,6 +66,9 @@ final class TemplateListParams implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?string $status;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
      * `new TemplateListParams()` is missing required properties by the API.
@@ -84,8 +98,10 @@ final class TemplateListParams implements BaseModel
         int $page,
         int $pageSize,
         ?string $category = null,
+        ?bool $isWelcomePlayground = null,
         ?string $search = null,
         ?string $status = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
@@ -93,8 +109,10 @@ final class TemplateListParams implements BaseModel
         $self['pageSize'] = $pageSize;
 
         null !== $category && $self['category'] = $category;
+        null !== $isWelcomePlayground && $self['isWelcomePlayground'] = $isWelcomePlayground;
         null !== $search && $self['search'] = $search;
         null !== $status && $self['status'] = $status;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -110,6 +128,9 @@ final class TemplateListParams implements BaseModel
         return $self;
     }
 
+    /**
+     * Number of items per page.
+     */
     public function withPageSize(int $pageSize): self
     {
         $self = clone $this;
@@ -125,6 +146,17 @@ final class TemplateListParams implements BaseModel
     {
         $self = clone $this;
         $self['category'] = $category;
+
+        return $self;
+    }
+
+    /**
+     * Optional filter by welcome playground flag.
+     */
+    public function withIsWelcomePlayground(?bool $isWelcomePlayground): self
+    {
+        $self = clone $this;
+        $self['isWelcomePlayground'] = $isWelcomePlayground;
 
         return $self;
     }
@@ -147,6 +179,14 @@ final class TemplateListParams implements BaseModel
     {
         $self = clone $this;
         $self['status'] = $status;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

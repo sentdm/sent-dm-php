@@ -5,17 +5,21 @@ declare(strict_types=1);
 namespace SentDm\Users;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Users\UserRemoveParams\Body;
 
 /**
  * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
  *
  * @see SentDm\Services\UsersService::remove()
  *
+ * @phpstan-import-type BodyShape from \SentDm\Users\UserRemoveParams\Body
+ *
  * @phpstan-type UserRemoveParamsShape = array{
- *   testMode?: bool|null, userID?: string|null
+ *   body: Body|BodyShape, xProfileID?: string|null
  * }
  */
 final class UserRemoveParams implements BaseModel
@@ -25,18 +29,28 @@ final class UserRemoveParams implements BaseModel
     use SdkParams;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
+     * Request to remove a user from an organization.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
+    #[Required]
+    public Body $body;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
-     * User ID from route parameter.
+     * `new UserRemoveParams()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * UserRemoveParams::with(body: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new UserRemoveParams)->withBody(...)
+     * ```
      */
-    #[Optional('user_id')]
-    public ?string $userID;
-
     public function __construct()
     {
         $this->initialize();
@@ -46,38 +60,39 @@ final class UserRemoveParams implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param Body|BodyShape $body
      */
     public static function with(
-        ?bool $testMode = null,
-        ?string $userID = null
+        Body|array $body,
+        ?string $xProfileID = null
     ): self {
         $self = new self;
 
-        null !== $testMode && $self['testMode'] = $testMode;
-        null !== $userID && $self['userID'] = $userID;
+        $self['body'] = $body;
+
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
+     * Request to remove a user from an organization.
+     *
+     * @param Body|BodyShape $body
      */
-    public function withTestMode(bool $testMode): self
+    public function withBody(Body|array $body): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
+        $self['body'] = $body;
 
         return $self;
     }
 
-    /**
-     * User ID from route parameter.
-     */
-    public function withUserID(string $userID): self
+    public function withXProfileID(string $xProfileID): self
     {
         $self = clone $this;
-        $self['userID'] = $userID;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

@@ -11,6 +11,7 @@ use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactDeleteParams\Body;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
@@ -38,7 +39,10 @@ final class ContactsRawService implements ContactsRawContract
      * Creates a new contact by phone number and associates it with the authenticated customer.
      *
      * @param array{
-     *   phoneNumber?: string, testMode?: bool, idempotencyKey?: string
+     *   phoneNumber?: string,
+     *   sandbox?: bool,
+     *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -54,7 +58,9 @@ final class ContactsRawService implements ContactsRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
@@ -79,6 +85,7 @@ final class ContactsRawService implements ContactsRawContract
      * Retrieves a specific contact by their unique identifier. Returns detailed contact information including phone formats, available channels, and opt-out status.
      *
      * @param string $id Contact ID from route parameter
+     * @param array{xProfileID?: string}|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseContact>
@@ -87,13 +94,23 @@ final class ContactsRawService implements ContactsRawContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|ContactRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = ContactRetrieveParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v3/contacts/%1$s', $id],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: APIResponseContact::class,
         );
     }
@@ -107,8 +124,9 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{
      *   defaultChannel?: string|null,
      *   optOut?: bool|null,
-     *   testMode?: bool,
+     *   sandbox?: bool,
      *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -125,7 +143,9 @@ final class ContactsRawService implements ContactsRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
@@ -155,6 +175,7 @@ final class ContactsRawService implements ContactsRawContract
      *   channel?: string|null,
      *   phone?: string|null,
      *   search?: string|null,
+     *   xProfileID?: string,
      * }|ContactListParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -170,12 +191,25 @@ final class ContactsRawService implements ContactsRawContract
             $params,
             $requestOptions,
         );
+        $query_params = array_flip(
+            ['page', 'pageSize', 'channel', 'phone', 'search']
+        );
+
+        /** @var array<string,string> */
+        $header_params = array_diff_key($parsed, $query_params);
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: 'v3/contacts',
-            query: $parsed,
+            query: Util::array_transform_keys(
+                array_intersect_key($parsed, $query_params),
+                ['pageSize' => 'page_size']
+            ),
+            headers: Util::array_transform_keys(
+                $header_params,
+                ['xProfileID' => 'x-profile-id']
+            ),
             options: $options,
             convert: ContactListResponse::class,
         );
@@ -186,8 +220,10 @@ final class ContactsRawService implements ContactsRawContract
      *
      * Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.
      *
-     * @param string $id Contact ID from route parameter
-     * @param array{body: Body|BodyShape}|ContactDeleteParams $params
+     * @param string $id Path param: Contact ID from route parameter
+     * @param array{
+     *   body: Body|BodyShape, xProfileID?: string
+     * }|ContactDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -208,7 +244,10 @@ final class ContactsRawService implements ContactsRawContract
         return $this->client->request(
             method: 'delete',
             path: ['v3/contacts/%1$s', $id],
-            headers: ['Content-Type' => '*/*'],
+            headers: Util::array_transform_keys(
+                array_diff_key($parsed, array_flip(['body'])),
+                ['xProfileID' => 'x-profile-id'],
+            ),
             body: (object) $parsed['body'],
             options: $options,
             convert: null,

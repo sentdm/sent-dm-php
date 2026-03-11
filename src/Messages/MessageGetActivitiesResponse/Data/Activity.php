@@ -12,8 +12,9 @@ use SentDm\Core\Contracts\BaseModel;
  * A single message activity event for v3 API.
  *
  * @phpstan-type ActivityShape = array{
- *   content?: string|null,
+ *   activeContactPrice?: string|null,
  *   description?: string|null,
+ *   price?: string|null,
  *   status?: string|null,
  *   timestamp?: \DateTimeInterface|null,
  * }
@@ -24,16 +25,22 @@ final class Activity implements BaseModel
     use SdkModel;
 
     /**
-     * Additional content or payload for the activity (e.g., channel response).
+     * Active contact markup applied on top of the channel cost, formatted to 4 decimal places.
      */
-    #[Optional(nullable: true)]
-    public ?string $content;
+    #[Optional('active_contact_price', nullable: true)]
+    public ?string $activeContactPrice;
 
     /**
      * Human-readable description of the activity.
      */
     #[Optional]
     public ?string $description;
+
+    /**
+     * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to 4 decimal places.
+     */
+    #[Optional(nullable: true)]
+    public ?string $price;
 
     /**
      * Activity status (e.g., ACCEPTED, PROCESSED, SENT, DELIVERED, FAILED).
@@ -58,15 +65,17 @@ final class Activity implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        ?string $content = null,
+        ?string $activeContactPrice = null,
         ?string $description = null,
+        ?string $price = null,
         ?string $status = null,
         ?\DateTimeInterface $timestamp = null,
     ): self {
         $self = new self;
 
-        null !== $content && $self['content'] = $content;
+        null !== $activeContactPrice && $self['activeContactPrice'] = $activeContactPrice;
         null !== $description && $self['description'] = $description;
+        null !== $price && $self['price'] = $price;
         null !== $status && $self['status'] = $status;
         null !== $timestamp && $self['timestamp'] = $timestamp;
 
@@ -74,12 +83,12 @@ final class Activity implements BaseModel
     }
 
     /**
-     * Additional content or payload for the activity (e.g., channel response).
+     * Active contact markup applied on top of the channel cost, formatted to 4 decimal places.
      */
-    public function withContent(?string $content): self
+    public function withActiveContactPrice(?string $activeContactPrice): self
     {
         $self = clone $this;
-        $self['content'] = $content;
+        $self['activeContactPrice'] = $activeContactPrice;
 
         return $self;
     }
@@ -91,6 +100,17 @@ final class Activity implements BaseModel
     {
         $self = clone $this;
         $self['description'] = $description;
+
+        return $self;
+    }
+
+    /**
+     * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to 4 decimal places.
+     */
+    public function withPrice(?string $price): self
+    {
+        $self = clone $this;
+        $self['price'] = $price;
 
         return $self;
     }

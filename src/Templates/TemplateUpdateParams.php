@@ -21,9 +21,10 @@ use SentDm\Core\Contracts\BaseModel;
  *   definition?: null|TemplateDefinition|TemplateDefinitionShape,
  *   language?: string|null,
  *   name?: string|null,
+ *   sandbox?: bool|null,
  *   submitForReview?: bool|null,
- *   testMode?: bool|null,
  *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class TemplateUpdateParams implements BaseModel
@@ -57,20 +58,23 @@ final class TemplateUpdateParams implements BaseModel
     public ?string $name;
 
     /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    #[Optional]
+    public ?bool $sandbox;
+
+    /**
      * Whether to submit the template for review after updating (default: false).
      */
     #[Optional('submit_for_review')]
     public ?bool $submitForReview;
 
-    /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
-     */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
-
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     public function __construct()
     {
@@ -89,9 +93,10 @@ final class TemplateUpdateParams implements BaseModel
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
         ?string $name = null,
+        ?bool $sandbox = null,
         ?bool $submitForReview = null,
-        ?bool $testMode = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
@@ -99,9 +104,10 @@ final class TemplateUpdateParams implements BaseModel
         null !== $definition && $self['definition'] = $definition;
         null !== $language && $self['language'] = $language;
         null !== $name && $self['name'] = $name;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $submitForReview && $self['submitForReview'] = $submitForReview;
-        null !== $testMode && $self['testMode'] = $testMode;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -154,6 +160,18 @@ final class TemplateUpdateParams implements BaseModel
     }
 
     /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    public function withSandbox(bool $sandbox): self
+    {
+        $self = clone $this;
+        $self['sandbox'] = $sandbox;
+
+        return $self;
+    }
+
+    /**
      * Whether to submit the template for review after updating (default: false).
      */
     public function withSubmitForReview(bool $submitForReview): self
@@ -164,22 +182,18 @@ final class TemplateUpdateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
-     */
-    public function withTestMode(bool $testMode): self
-    {
-        $self = clone $this;
-        $self['testMode'] = $testMode;
-
-        return $self;
-    }
-
     public function withIdempotencyKey(string $idempotencyKey): self
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

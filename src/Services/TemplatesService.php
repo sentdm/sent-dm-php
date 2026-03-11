@@ -43,10 +43,11 @@ final class TemplatesService implements TemplatesContract
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
      * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Template definition including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US) (optional, auto-detected if not provided)
-     * @param bool $submitForReview Body param: Whether to submit the template for review after creation (default: false)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param bool $submitForReview Body param: Whether to submit the template for review after creation (default: false)
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -56,9 +57,10 @@ final class TemplatesService implements TemplatesContract
         ?string $creationSource = null,
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
+        ?bool $sandbox = null,
         ?bool $submitForReview = null,
-        ?bool $testMode = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseTemplate {
         $params = Util::removeNulls(
@@ -67,9 +69,10 @@ final class TemplatesService implements TemplatesContract
                 'creationSource' => $creationSource,
                 'definition' => $definition,
                 'language' => $language,
+                'sandbox' => $sandbox,
                 'submitForReview' => $submitForReview,
-                'testMode' => $testMode,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -85,16 +88,20 @@ final class TemplatesService implements TemplatesContract
      * Retrieves a specific template by its ID. Returns template details including name, category, language, status, and definition.
      *
      * @param string $id Template ID from route parameter
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): APIResponseTemplate {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieve($id, requestOptions: $requestOptions);
+        $response = $this->raw->retrieve($id, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -109,10 +116,11 @@ final class TemplatesService implements TemplatesContract
      * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Template definition including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US)
      * @param string|null $name Body param: Template display name
-     * @param bool $submitForReview Body param: Whether to submit the template for review after updating (default: false)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param bool $submitForReview Body param: Whether to submit the template for review after updating (default: false)
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -123,9 +131,10 @@ final class TemplatesService implements TemplatesContract
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
         ?string $name = null,
+        ?bool $sandbox = null,
         ?bool $submitForReview = null,
-        ?bool $testMode = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseTemplate {
         $params = Util::removeNulls(
@@ -134,9 +143,10 @@ final class TemplatesService implements TemplatesContract
                 'definition' => $definition,
                 'language' => $language,
                 'name' => $name,
+                'sandbox' => $sandbox,
                 'submitForReview' => $submitForReview,
-                'testMode' => $testMode,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -151,10 +161,13 @@ final class TemplatesService implements TemplatesContract
      *
      * Retrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.
      *
-     * @param int $page Page number (1-indexed)
-     * @param string|null $category Optional category filter: MARKETING, UTILITY, AUTHENTICATION
-     * @param string|null $search Optional search term for filtering templates
-     * @param string|null $status Optional status filter: APPROVED, PENDING, REJECTED
+     * @param int $page Query param: Page number (1-indexed)
+     * @param int $pageSize Query param: Number of items per page
+     * @param string|null $category Query param: Optional category filter: MARKETING, UTILITY, AUTHENTICATION
+     * @param bool|null $isWelcomePlayground Query param: Optional filter by welcome playground flag
+     * @param string|null $search Query param: Optional search term for filtering templates
+     * @param string|null $status Query param: Optional status filter: APPROVED, PENDING, REJECTED
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -163,8 +176,10 @@ final class TemplatesService implements TemplatesContract
         int $page,
         int $pageSize,
         ?string $category = null,
+        ?bool $isWelcomePlayground = null,
         ?string $search = null,
         ?string $status = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): TemplateListResponse {
         $params = Util::removeNulls(
@@ -172,8 +187,10 @@ final class TemplatesService implements TemplatesContract
                 'page' => $page,
                 'pageSize' => $pageSize,
                 'category' => $category,
+                'isWelcomePlayground' => $isWelcomePlayground,
                 'search' => $search,
                 'status' => $status,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -188,10 +205,11 @@ final class TemplatesService implements TemplatesContract
      *
      * Deletes a template by ID. Optionally, you can also delete the template from WhatsApp/Meta by setting delete_from_meta=true.
      *
-     * @param string $id Template ID from route parameter
-     * @param bool|null $deleteFromMeta Whether to also delete the template from WhatsApp/Meta (optional, defaults to false)
-     * @param bool $testMode Test mode flag - when true, the operation is simulated without side effects
+     * @param string $id Path param: Template ID from route parameter
+     * @param bool|null $deleteFromMeta Body param: Whether to also delete the template from WhatsApp/Meta (optional, defaults to false)
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -199,11 +217,16 @@ final class TemplatesService implements TemplatesContract
     public function delete(
         string $id,
         ?bool $deleteFromMeta = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
         $params = Util::removeNulls(
-            ['deleteFromMeta' => $deleteFromMeta, 'testMode' => $testMode]
+            [
+                'deleteFromMeta' => $deleteFromMeta,
+                'sandbox' => $sandbox,
+                'xProfileID' => $xProfileID,
+            ],
         );
 
         // @phpstan-ignore-next-line argument.type

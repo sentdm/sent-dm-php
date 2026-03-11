@@ -19,7 +19,7 @@ use SentDm\Webhooks\WebhookRotateSecretParams\Body;
  * @phpstan-import-type BodyShape from \SentDm\Webhooks\WebhookRotateSecretParams\Body
  *
  * @phpstan-type WebhookRotateSecretParamsShape = array{
- *   body: Body|BodyShape, idempotencyKey?: string|null
+ *   body: Body|BodyShape, idempotencyKey?: string|null, xProfileID?: string|null
  * }
  */
 final class WebhookRotateSecretParams implements BaseModel
@@ -33,6 +33,9 @@ final class WebhookRotateSecretParams implements BaseModel
 
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
      * `new WebhookRotateSecretParams()` is missing required properties by the API.
@@ -62,13 +65,15 @@ final class WebhookRotateSecretParams implements BaseModel
      */
     public static function with(
         Body|array $body,
-        ?string $idempotencyKey = null
+        ?string $idempotencyKey = null,
+        ?string $xProfileID = null
     ): self {
         $self = new self;
 
         $self['body'] = $body;
 
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -88,6 +93,14 @@ final class WebhookRotateSecretParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

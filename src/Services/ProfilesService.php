@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace SentDm\Services;
 
+use SentDm\Brands\BrandData;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\Profiles\APIResponseOfProfileDetail;
+use SentDm\Profiles\ProfileCreateParams\BillingContact;
+use SentDm\Profiles\ProfileCreateParams\PaymentDetails;
+use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
+use SentDm\Profiles\ProfileDeleteParams\Body;
 use SentDm\Profiles\ProfileListResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesContract;
@@ -15,6 +20,13 @@ use SentDm\ServiceContracts\ProfilesContract;
 /**
  * Manage organization profiles.
  *
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileCreateParams\BillingContact
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileCreateParams\PaymentDetails
+ * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact as BillingContactShape1
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails as PaymentDetailsShape1
+ * @phpstan-import-type BodyShape from \SentDm\Profiles\ProfileDeleteParams\Body
+ * @phpstan-import-type BrandDataShape from \SentDm\Brands\BrandData
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ProfilesService implements ProfilesContract
@@ -37,9 +49,35 @@ final class ProfilesService implements ProfilesContract
      *
      * Creates a new sender profile within an organization. Profiles represent different brands, departments, or use cases, each with their own messaging configuration and settings. Requires admin role in the organization.
      *
+     * ## WhatsApp Business Account
+     *
+     * Every profile must be linked to a WhatsApp Business Account. There are two ways to do this:
+     *
+     * **1. Inherit from organization (default)** — Omit the `whatsapp_business_account` field. The profile will share the organization's WhatsApp Business Account, which must have been set up via WhatsApp Embedded Signup. This is the recommended path for most use cases.
+     *
+     * **2. Direct credentials** — Provide a `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and `access_token`. Use this when the profile needs its own independent WhatsApp Business Account. Obtain these from Meta Business Manager by creating a System User with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
+     *
+     * If the `whatsapp_business_account` field is omitted and the organization has no WhatsApp Business Account configured, the request will be rejected with HTTP 422.
+     *
+     * ## Brand
+     *
+     * Include the optional `brand` field to create the brand for this profile at the same time. Cannot be used when `inherit_tcr_brand` is `true`.
+     *
+     * ## Payment Details
+     *
+     * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
+     *
      * @param bool $allowContactSharing Body param: Whether contacts are shared across profiles (default: false)
      * @param bool $allowTemplateSharing Body param: Whether templates are shared across profiles (default: false)
-     * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (default: profile)
+     * @param BillingContact|BillingContactShape|null $billingContact Body param: Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization".
+     * Identifies who receives invoices and who is responsible for payment.
+     * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (default: profile).
+     * - "organization": the organization's billing details are used; no profile-level billing info needed.
+     * - "profile": the profile is billed independently; billing_contact is required.
+     * - "profile_and_organization": the profile is billed first with the organization as fallback; billing_contact is required.
+     * @param BrandData|BrandDataShape|null $brand Body param: Brand and KYC information for this profile (optional).
+     * When provided, creates the brand associated with this profile.
+     * Cannot be set when inherit_tcr_brand is true.
      * @param string|null $description Body param: Profile description (optional)
      * @param string|null $icon Body param: Profile icon URL (optional)
      * @param bool|null $inheritContacts Body param: Whether this profile inherits contacts from organization (default: true)
@@ -47,10 +85,19 @@ final class ProfilesService implements ProfilesContract
      * @param bool|null $inheritTcrCampaign Body param: Whether this profile inherits TCR campaign from organization (default: true)
      * @param bool|null $inheritTemplates Body param: Whether this profile inherits templates from organization (default: true)
      * @param string $name Body param: Profile name (required)
-     * @param string|null $shortName Body param: Profile short name/abbreviation (optional)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails Body param: Payment card details for this profile (optional).
+     * Accepted when billing_model is "profile" or "profile_and_organization".
+     * Not persisted on our servers — forwarded to the payment processor.
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param string|null $shortName Body param: Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,
+     * and spaces, and include at least one letter. Example: "SALES", "Mkt 2", "Support1".
+     * @param WhatsappBusinessAccount|WhatsappBusinessAccountShape|null $whatsappBusinessAccount Body param: Direct WhatsApp Business Account credentials for this profile.
+     * When provided, the profile uses its own WhatsApp Business Account instead of inheriting from the organization.
+     * When omitted, the profile inherits the organization's WhatsApp Business Account (requires the organization
+     * to have completed WhatsApp Embedded Signup).
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -58,7 +105,9 @@ final class ProfilesService implements ProfilesContract
     public function create(
         ?bool $allowContactSharing = null,
         ?bool $allowTemplateSharing = null,
+        BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
+        BrandData|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -66,16 +115,21 @@ final class ProfilesService implements ProfilesContract
         ?bool $inheritTcrCampaign = null,
         ?bool $inheritTemplates = null,
         ?string $name = null,
+        PaymentDetails|array|null $paymentDetails = null,
+        ?bool $sandbox = null,
         ?string $shortName = null,
-        ?bool $testMode = null,
+        WhatsappBusinessAccount|array|null $whatsappBusinessAccount = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfProfileDetail {
         $params = Util::removeNulls(
             [
                 'allowContactSharing' => $allowContactSharing,
                 'allowTemplateSharing' => $allowTemplateSharing,
+                'billingContact' => $billingContact,
                 'billingModel' => $billingModel,
+                'brand' => $brand,
                 'description' => $description,
                 'icon' => $icon,
                 'inheritContacts' => $inheritContacts,
@@ -83,9 +137,12 @@ final class ProfilesService implements ProfilesContract
                 'inheritTcrCampaign' => $inheritTcrCampaign,
                 'inheritTemplates' => $inheritTemplates,
                 'name' => $name,
+                'paymentDetails' => $paymentDetails,
+                'sandbox' => $sandbox,
                 'shortName' => $shortName,
-                'testMode' => $testMode,
+                'whatsappBusinessAccount' => $whatsappBusinessAccount,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -98,18 +155,22 @@ final class ProfilesService implements ProfilesContract
     /**
      * @api
      *
-     * Retrieves detailed information about a specific sender profile within an organization.
+     * Retrieves detailed information about a specific sender profile within an organization, including brand and KYC information if a brand has been configured.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieve(
         string $profileID,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfProfileDetail {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieve($profileID, requestOptions: $requestOptions);
+        $response = $this->raw->retrieve($profileID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -119,11 +180,28 @@ final class ProfilesService implements ProfilesContract
      *
      * Updates a profile's configuration and settings. Requires admin role in the organization. Only provided fields will be updated (partial update).
      *
-     * @param string $profileID_ Path param
+     * ## Brand Management
+     *
+     * Include the optional `brand` field to create or update the brand associated with this profile. The brand holds KYC and TCR compliance data (legal business info, contact details, messaging vertical). Once a brand has been submitted to TCR it cannot be modified. Setting `inherit_tcr_brand: true` and providing `brand` in the same request is not allowed.
+     *
+     * ## Payment Details
+     *
+     * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
+     *
+     * @param string $profileID Path param
      * @param bool|null $allowContactSharing Body param: Whether contacts are shared across profiles (optional)
      * @param bool|null $allowNumberChangeDuringOnboarding Body param: Whether number changes are allowed during onboarding (optional)
      * @param bool|null $allowTemplateSharing Body param: Whether templates are shared across profiles (optional)
-     * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (optional)
+     * @param \SentDm\Profiles\ProfileUpdateParams\BillingContact|BillingContactShape1|null $billingContact Body param: Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
+     * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
+     * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (optional).
+     * - "organization": the organization's billing details are used; no profile-level billing info needed.
+     * - "profile": the profile is billed independently; billing_contact is required.
+     * - "profile_and_organization": the profile is billed first with the organization as fallback; billing_contact is required.
+     * @param BrandData|BrandDataShape|null $brand Body param: Brand and KYC information for this profile (optional).
+     * When provided, creates or updates the brand associated with this profile.
+     * Cannot be set when inherit_tcr_brand is true.
+     * Once a brand has been submitted to TCR it cannot be modified.
      * @param string|null $description Body param: Profile description (optional)
      * @param string|null $icon Body param: Profile icon URL (optional)
      * @param bool|null $inheritContacts Body param: Whether this profile inherits contacts from organization (optional)
@@ -131,25 +209,31 @@ final class ProfilesService implements ProfilesContract
      * @param bool|null $inheritTcrCampaign Body param: Whether this profile inherits TCR campaign from organization (optional)
      * @param bool|null $inheritTemplates Body param: Whether this profile inherits templates from organization (optional)
      * @param string|null $name Body param: Profile name (optional)
-     * @param string $profileID Body param: Profile ID from route parameter
+     * @param \SentDm\Profiles\ProfileUpdateParams\PaymentDetails|PaymentDetailsShape1|null $paymentDetails Body param: Payment card details for this profile (optional).
+     * Accepted when billing_model is "profile" or "profile_and_organization".
+     * Not persisted on our servers — forwarded to the payment processor.
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
      * @param string|null $sendingPhoneNumber Body param: Direct phone number for SMS sending (optional)
      * @param string|null $sendingPhoneNumberProfileID Body param: Reference to another profile to use for SMS/Telnyx configuration (optional)
      * @param string|null $sendingWhatsappNumberProfileID Body param: Reference to another profile to use for WhatsApp configuration (optional)
-     * @param string|null $shortName Body param: Profile short name/abbreviation (optional)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution
+     * @param string|null $shortName Body param: Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,
+     * and spaces, and include at least one letter. Example: "SALES", "Mkt 2", "Support1".
      * @param string|null $whatsappPhoneNumber Body param: Direct phone number for WhatsApp sending (optional)
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function update(
-        string $profileID_,
+        string $profileID,
         ?bool $allowContactSharing = null,
         ?bool $allowNumberChangeDuringOnboarding = null,
         ?bool $allowTemplateSharing = null,
+        \SentDm\Profiles\ProfileUpdateParams\BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
+        BrandData|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -157,14 +241,15 @@ final class ProfilesService implements ProfilesContract
         ?bool $inheritTcrCampaign = null,
         ?bool $inheritTemplates = null,
         ?string $name = null,
-        ?string $profileID = null,
+        \SentDm\Profiles\ProfileUpdateParams\PaymentDetails|array|null $paymentDetails = null,
+        ?bool $sandbox = null,
         ?string $sendingPhoneNumber = null,
         ?string $sendingPhoneNumberProfileID = null,
         ?string $sendingWhatsappNumberProfileID = null,
         ?string $shortName = null,
-        ?bool $testMode = null,
         ?string $whatsappPhoneNumber = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfProfileDetail {
         $params = Util::removeNulls(
@@ -172,7 +257,9 @@ final class ProfilesService implements ProfilesContract
                 'allowContactSharing' => $allowContactSharing,
                 'allowNumberChangeDuringOnboarding' => $allowNumberChangeDuringOnboarding,
                 'allowTemplateSharing' => $allowTemplateSharing,
+                'billingContact' => $billingContact,
                 'billingModel' => $billingModel,
+                'brand' => $brand,
                 'description' => $description,
                 'icon' => $icon,
                 'inheritContacts' => $inheritContacts,
@@ -180,19 +267,20 @@ final class ProfilesService implements ProfilesContract
                 'inheritTcrCampaign' => $inheritTcrCampaign,
                 'inheritTemplates' => $inheritTemplates,
                 'name' => $name,
-                'profileID' => $profileID,
+                'paymentDetails' => $paymentDetails,
+                'sandbox' => $sandbox,
                 'sendingPhoneNumber' => $sendingPhoneNumber,
                 'sendingPhoneNumberProfileID' => $sendingPhoneNumberProfileID,
                 'sendingWhatsappNumberProfileID' => $sendingWhatsappNumberProfileID,
                 'shortName' => $shortName,
-                'testMode' => $testMode,
                 'whatsappPhoneNumber' => $whatsappPhoneNumber,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->update($profileID_, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->update($profileID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -200,17 +288,21 @@ final class ProfilesService implements ProfilesContract
     /**
      * @api
      *
-     * Retrieves all sender profiles within an organization. Profiles represent different brands, departments, or use cases within an organization, each with their own messaging configuration.
+     * Retrieves all sender profiles within an organization, including brand information for each profile. Profiles represent different brands, departments, or use cases within an organization, each with their own messaging configuration.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function list(
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
     ): ProfileListResponse {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->list(requestOptions: $requestOptions);
+        $response = $this->raw->list(params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -220,25 +312,23 @@ final class ProfilesService implements ProfilesContract
      *
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
      *
-     * @param string $profileID Profile ID from route parameter
-     * @param bool $testMode Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution
+     * @param string $profileID Path param
+     * @param Body|BodyShape $body Body param: Request to delete a profile
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function delete(
-        string $profileID_,
-        ?string $profileID = null,
-        ?bool $testMode = null,
+        string $profileID,
+        Body|array $body,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
-        $params = Util::removeNulls(
-            ['profileID' => $profileID, 'testMode' => $testMode]
-        );
+        $params = Util::removeNulls(['body' => $body, 'xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->delete($profileID_, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->delete($profileID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -264,9 +354,10 @@ final class ProfilesService implements ProfilesContract
      *
      * @param string $profileID Path param: Profile ID from route
      * @param string $webHookURL Body param: Webhook URL to call when profile completion finishes (success or failure)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -274,15 +365,17 @@ final class ProfilesService implements ProfilesContract
     public function complete(
         string $profileID,
         string $webHookURL,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
         $params = Util::removeNulls(
             [
                 'webHookURL' => $webHookURL,
-                'testMode' => $testMode,
+                'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 

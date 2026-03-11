@@ -10,7 +10,9 @@ use SentDm\Profiles\APIResponseOfProfileDetail;
 use SentDm\Profiles\ProfileCompleteParams;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileDeleteParams;
+use SentDm\Profiles\ProfileListParams;
 use SentDm\Profiles\ProfileListResponse;
+use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
 use SentDm\RequestOptions;
 
@@ -37,6 +39,7 @@ interface ProfilesRawContract
     /**
      * @api
      *
+     * @param array<string,mixed>|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseOfProfileDetail>
@@ -45,13 +48,14 @@ interface ProfilesRawContract
      */
     public function retrieve(
         string $profileID,
-        RequestOptions|array|null $requestOptions = null
+        array|ProfileRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
      * @api
      *
-     * @param string $profileID_ Path param
+     * @param string $profileID Path param
      * @param array<string,mixed>|ProfileUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -60,7 +64,7 @@ interface ProfilesRawContract
      * @throws APIException
      */
     public function update(
-        string $profileID_,
+        string $profileID,
         array|ProfileUpdateParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
@@ -68,6 +72,7 @@ interface ProfilesRawContract
     /**
      * @api
      *
+     * @param array<string,mixed>|ProfileListParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<ProfileListResponse>
@@ -75,12 +80,14 @@ interface ProfilesRawContract
      * @throws APIException
      */
     public function list(
-        RequestOptions|array|null $requestOptions = null
+        array|ProfileListParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
      * @api
      *
+     * @param string $profileID Path param
      * @param array<string,mixed>|ProfileDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -89,7 +96,7 @@ interface ProfilesRawContract
      * @throws APIException
      */
     public function delete(
-        string $profileID_,
+        string $profileID,
         array|ProfileDeleteParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;

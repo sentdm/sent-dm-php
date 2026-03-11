@@ -19,10 +19,11 @@ use SentDm\Messages\MessageSendParams\Template;
  *
  * @phpstan-type MessageSendParamsShape = array{
  *   channel?: list<string>|null,
+ *   sandbox?: bool|null,
  *   template?: null|Template|TemplateShape,
- *   testMode?: bool|null,
  *   to?: list<string>|null,
  *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class MessageSendParams implements BaseModel
@@ -43,17 +44,17 @@ final class MessageSendParams implements BaseModel
     public ?array $channel;
 
     /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    #[Optional]
+    public ?bool $sandbox;
+
+    /**
      * Template reference (by id or name, with optional parameters).
      */
     #[Optional]
     public ?Template $template;
-
-    /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
-     */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
 
     /**
      * List of recipient phone numbers in E.164 format (multi-recipient fan-out).
@@ -65,6 +66,9 @@ final class MessageSendParams implements BaseModel
 
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     public function __construct()
     {
@@ -82,18 +86,20 @@ final class MessageSendParams implements BaseModel
      */
     public static function with(
         ?array $channel = null,
+        ?bool $sandbox = null,
         Template|array|null $template = null,
-        ?bool $testMode = null,
         ?array $to = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         null !== $channel && $self['channel'] = $channel;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $template && $self['template'] = $template;
-        null !== $testMode && $self['testMode'] = $testMode;
         null !== $to && $self['to'] = $to;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -115,6 +121,18 @@ final class MessageSendParams implements BaseModel
     }
 
     /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    public function withSandbox(bool $sandbox): self
+    {
+        $self = clone $this;
+        $self['sandbox'] = $sandbox;
+
+        return $self;
+    }
+
+    /**
      * Template reference (by id or name, with optional parameters).
      *
      * @param Template|TemplateShape $template
@@ -123,18 +141,6 @@ final class MessageSendParams implements BaseModel
     {
         $self = clone $this;
         $self['template'] = $template;
-
-        return $self;
-    }
-
-    /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
-     */
-    public function withTestMode(bool $testMode): self
-    {
-        $self = clone $this;
-        $self['testMode'] = $testMode;
 
         return $self;
     }
@@ -156,6 +162,14 @@ final class MessageSendParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

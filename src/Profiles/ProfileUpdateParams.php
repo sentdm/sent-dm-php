@@ -4,21 +4,38 @@ declare(strict_types=1);
 
 namespace SentDm\Profiles;
 
+use SentDm\Brands\BrandData;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\ProfileUpdateParams\BillingContact;
+use SentDm\Profiles\ProfileUpdateParams\PaymentDetails;
 
 /**
  * Updates a profile's configuration and settings. Requires admin role in the organization. Only provided fields will be updated (partial update).
  *
+ * ## Brand Management
+ *
+ * Include the optional `brand` field to create or update the brand associated with this profile. The brand holds KYC and TCR compliance data (legal business info, contact details, messaging vertical). Once a brand has been submitted to TCR it cannot be modified. Setting `inherit_tcr_brand: true` and providing `brand` in the same request is not allowed.
+ *
+ * ## Payment Details
+ *
+ * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
+ *
  * @see SentDm\Services\ProfilesService::update()
+ *
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact
+ * @phpstan-import-type BrandDataShape from \SentDm\Brands\BrandData
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails
  *
  * @phpstan-type ProfileUpdateParamsShape = array{
  *   allowContactSharing?: bool|null,
  *   allowNumberChangeDuringOnboarding?: bool|null,
  *   allowTemplateSharing?: bool|null,
+ *   billingContact?: null|BillingContact|BillingContactShape,
  *   billingModel?: string|null,
+ *   brand?: null|BrandData|BrandDataShape,
  *   description?: string|null,
  *   icon?: string|null,
  *   inheritContacts?: bool|null,
@@ -26,14 +43,15 @@ use SentDm\Core\Contracts\BaseModel;
  *   inheritTcrCampaign?: bool|null,
  *   inheritTemplates?: bool|null,
  *   name?: string|null,
- *   profileID?: string|null,
+ *   paymentDetails?: null|PaymentDetails|PaymentDetailsShape,
+ *   sandbox?: bool|null,
  *   sendingPhoneNumber?: string|null,
  *   sendingPhoneNumberProfileID?: string|null,
  *   sendingWhatsappNumberProfileID?: string|null,
  *   shortName?: string|null,
- *   testMode?: bool|null,
  *   whatsappPhoneNumber?: string|null,
  *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class ProfileUpdateParams implements BaseModel
@@ -61,10 +79,29 @@ final class ProfileUpdateParams implements BaseModel
     public ?bool $allowTemplateSharing;
 
     /**
+     * Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
+     * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
+     */
+    #[Optional('billing_contact', nullable: true)]
+    public ?BillingContact $billingContact;
+
+    /**
      * Billing model: profile, organization, or profile_and_organization (optional).
+     * - "organization": the organization's billing details are used; no profile-level billing info needed.
+     * - "profile": the profile is billed independently; billing_contact is required.
+     * - "profile_and_organization": the profile is billed first with the organization as fallback; billing_contact is required.
      */
     #[Optional('billing_model', nullable: true)]
     public ?string $billingModel;
+
+    /**
+     * Brand and KYC information for this profile (optional).
+     * When provided, creates or updates the brand associated with this profile.
+     * Cannot be set when inherit_tcr_brand is true.
+     * Once a brand has been submitted to TCR it cannot be modified.
+     */
+    #[Optional(nullable: true)]
+    public ?BrandData $brand;
 
     /**
      * Profile description (optional).
@@ -109,10 +146,19 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $name;
 
     /**
-     * Profile ID from route parameter.
+     * Payment card details for this profile (optional).
+     * Accepted when billing_model is "profile" or "profile_and_organization".
+     * Not persisted on our servers — forwarded to the payment processor.
      */
-    #[Optional('profile_id')]
-    public ?string $profileID;
+    #[Optional('payment_details', nullable: true)]
+    public ?PaymentDetails $paymentDetails;
+
+    /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    #[Optional]
+    public ?bool $sandbox;
 
     /**
      * Direct phone number for SMS sending (optional).
@@ -133,17 +179,11 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $sendingWhatsappNumberProfileID;
 
     /**
-     * Profile short name/abbreviation (optional).
+     * Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,
+     * and spaces, and include at least one letter. Example: "SALES", "Mkt 2", "Support1".
      */
     #[Optional('short_name', nullable: true)]
     public ?string $shortName;
-
-    /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
-     */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
 
     /**
      * Direct phone number for WhatsApp sending (optional).
@@ -154,6 +194,9 @@ final class ProfileUpdateParams implements BaseModel
     #[Optional]
     public ?string $idempotencyKey;
 
+    #[Optional]
+    public ?string $xProfileID;
+
     public function __construct()
     {
         $this->initialize();
@@ -163,12 +206,18 @@ final class ProfileUpdateParams implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param BillingContact|BillingContactShape|null $billingContact
+     * @param BrandData|BrandDataShape|null $brand
+     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */
     public static function with(
         ?bool $allowContactSharing = null,
         ?bool $allowNumberChangeDuringOnboarding = null,
         ?bool $allowTemplateSharing = null,
+        BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
+        BrandData|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -176,21 +225,24 @@ final class ProfileUpdateParams implements BaseModel
         ?bool $inheritTcrCampaign = null,
         ?bool $inheritTemplates = null,
         ?string $name = null,
-        ?string $profileID = null,
+        PaymentDetails|array|null $paymentDetails = null,
+        ?bool $sandbox = null,
         ?string $sendingPhoneNumber = null,
         ?string $sendingPhoneNumberProfileID = null,
         ?string $sendingWhatsappNumberProfileID = null,
         ?string $shortName = null,
-        ?bool $testMode = null,
         ?string $whatsappPhoneNumber = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         null !== $allowContactSharing && $self['allowContactSharing'] = $allowContactSharing;
         null !== $allowNumberChangeDuringOnboarding && $self['allowNumberChangeDuringOnboarding'] = $allowNumberChangeDuringOnboarding;
         null !== $allowTemplateSharing && $self['allowTemplateSharing'] = $allowTemplateSharing;
+        null !== $billingContact && $self['billingContact'] = $billingContact;
         null !== $billingModel && $self['billingModel'] = $billingModel;
+        null !== $brand && $self['brand'] = $brand;
         null !== $description && $self['description'] = $description;
         null !== $icon && $self['icon'] = $icon;
         null !== $inheritContacts && $self['inheritContacts'] = $inheritContacts;
@@ -198,14 +250,15 @@ final class ProfileUpdateParams implements BaseModel
         null !== $inheritTcrCampaign && $self['inheritTcrCampaign'] = $inheritTcrCampaign;
         null !== $inheritTemplates && $self['inheritTemplates'] = $inheritTemplates;
         null !== $name && $self['name'] = $name;
-        null !== $profileID && $self['profileID'] = $profileID;
+        null !== $paymentDetails && $self['paymentDetails'] = $paymentDetails;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $sendingPhoneNumber && $self['sendingPhoneNumber'] = $sendingPhoneNumber;
         null !== $sendingPhoneNumberProfileID && $self['sendingPhoneNumberProfileID'] = $sendingPhoneNumberProfileID;
         null !== $sendingWhatsappNumberProfileID && $self['sendingWhatsappNumberProfileID'] = $sendingWhatsappNumberProfileID;
         null !== $shortName && $self['shortName'] = $shortName;
-        null !== $testMode && $self['testMode'] = $testMode;
         null !== $whatsappPhoneNumber && $self['whatsappPhoneNumber'] = $whatsappPhoneNumber;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -245,12 +298,46 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
+     * Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
+     * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
+     *
+     * @param BillingContact|BillingContactShape|null $billingContact
+     */
+    public function withBillingContact(
+        BillingContact|array|null $billingContact
+    ): self {
+        $self = clone $this;
+        $self['billingContact'] = $billingContact;
+
+        return $self;
+    }
+
+    /**
      * Billing model: profile, organization, or profile_and_organization (optional).
+     * - "organization": the organization's billing details are used; no profile-level billing info needed.
+     * - "profile": the profile is billed independently; billing_contact is required.
+     * - "profile_and_organization": the profile is billed first with the organization as fallback; billing_contact is required.
      */
     public function withBillingModel(?string $billingModel): self
     {
         $self = clone $this;
         $self['billingModel'] = $billingModel;
+
+        return $self;
+    }
+
+    /**
+     * Brand and KYC information for this profile (optional).
+     * When provided, creates or updates the brand associated with this profile.
+     * Cannot be set when inherit_tcr_brand is true.
+     * Once a brand has been submitted to TCR it cannot be modified.
+     *
+     * @param BrandData|BrandDataShape|null $brand
+     */
+    public function withBrand(BrandData|array|null $brand): self
+    {
+        $self = clone $this;
+        $self['brand'] = $brand;
 
         return $self;
     }
@@ -333,12 +420,29 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Profile ID from route parameter.
+     * Payment card details for this profile (optional).
+     * Accepted when billing_model is "profile" or "profile_and_organization".
+     * Not persisted on our servers — forwarded to the payment processor.
+     *
+     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */
-    public function withProfileID(string $profileID): self
+    public function withPaymentDetails(
+        PaymentDetails|array|null $paymentDetails
+    ): self {
+        $self = clone $this;
+        $self['paymentDetails'] = $paymentDetails;
+
+        return $self;
+    }
+
+    /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['profileID'] = $profileID;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }
@@ -379,24 +483,13 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Profile short name/abbreviation (optional).
+     * Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,
+     * and spaces, and include at least one letter. Example: "SALES", "Mkt 2", "Support1".
      */
     public function withShortName(?string $shortName): self
     {
         $self = clone $this;
         $self['shortName'] = $shortName;
-
-        return $self;
-    }
-
-    /**
-     * Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution.
-     */
-    public function withTestMode(bool $testMode): self
-    {
-        $self = clone $this;
-        $self['testMode'] = $testMode;
 
         return $self;
     }
@@ -416,6 +509,14 @@ final class ProfileUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

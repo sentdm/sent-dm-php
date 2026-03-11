@@ -21,26 +21,30 @@ interface MessagesContract
      * @api
      *
      * @param string $id Message ID from route parameter
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieveActivities(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): MessageGetActivitiesResponse;
 
     /**
      * @api
      *
      * @param string $id Message ID
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieveStatus(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): MessageGetStatusResponse;
 
     /**
@@ -50,21 +54,23 @@ interface MessagesContract
      * Each channel produces a separate message per recipient.
      * "sent" = auto-detect, "rcs" = reserved (skipped).
      * Defaults to ["sent"] (auto-detect) if omitted.
-     * @param Template|TemplateShape $template Body param: Template reference (by id or name, with optional parameters)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param Template|TemplateShape $template Body param: Template reference (by id or name, with optional parameters)
      * @param list<string> $to Body param: List of recipient phone numbers in E.164 format (multi-recipient fan-out)
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function send(
         ?array $channel = null,
+        ?bool $sandbox = null,
         Template|array|null $template = null,
-        ?bool $testMode = null,
         ?array $to = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): MessageSendResponse;
 }

@@ -15,7 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\TemplatesService::delete()
  *
  * @phpstan-type TemplateDeleteParamsShape = array{
- *   deleteFromMeta?: bool|null, testMode?: bool|null
+ *   deleteFromMeta?: bool|null, sandbox?: bool|null, xProfileID?: string|null
  * }
  */
 final class TemplateDeleteParams implements BaseModel
@@ -31,11 +31,14 @@ final class TemplateDeleteParams implements BaseModel
     public ?bool $deleteFromMeta;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
+    #[Optional]
+    public ?bool $sandbox;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     public function __construct()
     {
@@ -49,12 +52,14 @@ final class TemplateDeleteParams implements BaseModel
      */
     public static function with(
         ?bool $deleteFromMeta = null,
-        ?bool $testMode = null
+        ?bool $sandbox = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         null !== $deleteFromMeta && $self['deleteFromMeta'] = $deleteFromMeta;
-        null !== $testMode && $self['testMode'] = $testMode;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -71,13 +76,21 @@ final class TemplateDeleteParams implements BaseModel
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    public function withTestMode(bool $testMode): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
+        $self['sandbox'] = $sandbox;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

@@ -16,9 +16,9 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-type UserUpdateRoleParamsShape = array{
  *   role?: string|null,
- *   testMode?: bool|null,
- *   userID?: string|null,
+ *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class UserUpdateRoleParams implements BaseModel
@@ -34,20 +34,17 @@ final class UserUpdateRoleParams implements BaseModel
     public ?string $role;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
-
-    /**
-     * User ID from route parameter.
-     */
-    #[Optional('user_id')]
-    public ?string $userID;
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     public function __construct()
     {
@@ -61,16 +58,16 @@ final class UserUpdateRoleParams implements BaseModel
      */
     public static function with(
         ?string $role = null,
-        ?bool $testMode = null,
-        ?string $userID = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         null !== $role && $self['role'] = $role;
-        null !== $testMode && $self['testMode'] = $testMode;
-        null !== $userID && $self['userID'] = $userID;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -87,24 +84,13 @@ final class UserUpdateRoleParams implements BaseModel
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    public function withTestMode(bool $testMode): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
-
-        return $self;
-    }
-
-    /**
-     * User ID from route parameter.
-     */
-    public function withUserID(string $userID): self
-    {
-        $self = clone $this;
-        $self['userID'] = $userID;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }
@@ -113,6 +99,14 @@ final class UserUpdateRoleParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
