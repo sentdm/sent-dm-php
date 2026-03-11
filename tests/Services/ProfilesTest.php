@@ -112,13 +112,13 @@ final class ProfilesTest extends TestCase
     }
 
     #[Test]
-    public function testComplete(): void
+    public function testCompleteSetup(): void
     {
         if (UnsupportedMockTests::$skip) {
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->profiles->complete(
+        $result = $this->client->profiles->completeSetup(
             '660e8400-e29b-41d4-a716-446655440000',
             webHookURL: 'https://your-app.com/webhook/profile-complete',
         );
@@ -128,13 +128,13 @@ final class ProfilesTest extends TestCase
     }
 
     #[Test]
-    public function testCompleteWithOptionalParams(): void
+    public function testCompleteSetupWithOptionalParams(): void
     {
         if (UnsupportedMockTests::$skip) {
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->profiles->complete(
+        $result = $this->client->profiles->completeSetup(
             '660e8400-e29b-41d4-a716-446655440000',
             webHookURL: 'https://your-app.com/webhook/profile-complete',
             sandbox: false,

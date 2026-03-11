@@ -8,11 +8,10 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use SentDm\Core\BaseClient;
 use SentDm\Core\Util;
-use SentDm\Services\BrandsService;
 use SentDm\Services\ContactsService;
-use SentDm\Services\LookupService;
 use SentDm\Services\MeService;
 use SentDm\Services\MessagesService;
+use SentDm\Services\NumbersService;
 use SentDm\Services\ProfilesService;
 use SentDm\Services\TemplatesService;
 use SentDm\Services\UsersService;
@@ -49,22 +48,17 @@ class Client extends BaseClient
     /**
      * @api
      */
+    public NumbersService $numbers;
+
+    /**
+     * @api
+     */
     public MessagesService $messages;
 
     /**
      * @api
      */
-    public LookupService $lookup;
-
-    /**
-     * @api
-     */
     public ContactsService $contacts;
-
-    /**
-     * @api
-     */
-    public BrandsService $brands;
 
     /**
      * @api
@@ -113,10 +107,9 @@ class Client extends BaseClient
         $this->users = new UsersService($this);
         $this->templates = new TemplatesService($this);
         $this->profiles = new ProfilesService($this);
+        $this->numbers = new NumbersService($this);
         $this->messages = new MessagesService($this);
-        $this->lookup = new LookupService($this);
         $this->contacts = new ContactsService($this);
-        $this->brands = new BrandsService($this);
         $this->me = new MeService($this);
     }
 

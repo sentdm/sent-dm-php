@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Contacts\APIResponseContact;
+use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactDeleteParams\Body;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Core\Exceptions\APIException;
@@ -34,7 +34,7 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseContact;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -49,7 +49,7 @@ interface ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseContact;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -73,7 +73,7 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseContact;
+    ): APIResponseOfContact;
 
     /**
      * @api

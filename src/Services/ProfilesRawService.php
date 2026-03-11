@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace SentDm\Services;
 
-use SentDm\Brands\BrandData;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\Profiles\APIResponseOfProfileDetail;
-use SentDm\Profiles\ProfileCompleteParams;
+use SentDm\Profiles\BillingContactInfo;
+use SentDm\Profiles\BrandsBrandData;
+use SentDm\Profiles\PaymentDetails;
+use SentDm\Profiles\ProfileCompleteSetupParams;
 use SentDm\Profiles\ProfileCreateParams;
-use SentDm\Profiles\ProfileCreateParams\BillingContact;
-use SentDm\Profiles\ProfileCreateParams\PaymentDetails;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 use SentDm\Profiles\ProfileDeleteParams;
 use SentDm\Profiles\ProfileDeleteParams\Body;
@@ -27,13 +27,11 @@ use SentDm\ServiceContracts\ProfilesRawContract;
 /**
  * Manage organization profiles.
  *
- * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileCreateParams\BillingContact
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileCreateParams\PaymentDetails
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
- * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact as BillingContactShape1
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails as PaymentDetailsShape1
  * @phpstan-import-type BodyShape from \SentDm\Profiles\ProfileDeleteParams\Body
- * @phpstan-import-type BrandDataShape from \SentDm\Brands\BrandData
+ * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
+ * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ProfilesRawService implements ProfilesRawContract
@@ -70,9 +68,9 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param array{
      *   allowContactSharing?: bool,
      *   allowTemplateSharing?: bool,
-     *   billingContact?: BillingContact|BillingContactShape|null,
+     *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
      *   billingModel?: string|null,
-     *   brand?: BrandData|BrandDataShape|null,
+     *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
      *   description?: string|null,
      *   icon?: string|null,
      *   inheritContacts?: bool|null,
@@ -175,9 +173,9 @@ final class ProfilesRawService implements ProfilesRawContract
      *   allowContactSharing?: bool|null,
      *   allowNumberChangeDuringOnboarding?: bool|null,
      *   allowTemplateSharing?: bool|null,
-     *   billingContact?: ProfileUpdateParams\BillingContact|BillingContactShape1|null,
+     *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
      *   billingModel?: string|null,
-     *   brand?: BrandData|BrandDataShape|null,
+     *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
      *   description?: string|null,
      *   icon?: string|null,
      *   inheritContacts?: bool|null,
@@ -185,7 +183,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *   inheritTcrCampaign?: bool|null,
      *   inheritTemplates?: bool|null,
      *   name?: string|null,
-     *   paymentDetails?: ProfileUpdateParams\PaymentDetails|PaymentDetailsShape1|null,
+     *   paymentDetails?: PaymentDetails|PaymentDetailsShape|null,
      *   sandbox?: bool,
      *   sendingPhoneNumber?: string|null,
      *   sendingPhoneNumberProfileID?: string|null,
@@ -329,19 +327,19 @@ final class ProfilesRawService implements ProfilesRawContract
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
-     * }|ProfileCompleteParams $params
+     * }|ProfileCompleteSetupParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
      *
      * @throws APIException
      */
-    public function complete(
+    public function completeSetup(
         string $profileID,
-        array|ProfileCompleteParams $params,
+        array|ProfileCompleteSetupParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
-        [$parsed, $options] = ProfileCompleteParams::parseRequest(
+        [$parsed, $options] = ProfileCompleteSetupParams::parseRequest(
             $params,
             $requestOptions,
         );

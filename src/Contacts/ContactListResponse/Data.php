@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Contacts\ContactListResponse;
 
-use SentDm\Contacts\Contact;
+use SentDm\Contacts\ContactResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -13,11 +13,11 @@ use SentDm\Webhooks\PaginationMeta;
 /**
  * The response data (null if error).
  *
- * @phpstan-import-type ContactShape from \SentDm\Contacts\Contact
+ * @phpstan-import-type ContactResponseShape from \SentDm\Contacts\ContactResponse
  * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  *
  * @phpstan-type DataShape = array{
- *   contacts?: list<Contact|ContactShape>|null,
+ *   contacts?: list<ContactResponse|ContactResponseShape>|null,
  *   pagination?: null|PaginationMeta|PaginationMetaShape,
  * }
  */
@@ -29,9 +29,9 @@ final class Data implements BaseModel
     /**
      * List of contacts.
      *
-     * @var list<Contact>|null $contacts
+     * @var list<ContactResponse>|null $contacts
      */
-    #[Optional(list: Contact::class)]
+    #[Optional(list: ContactResponse::class)]
     public ?array $contacts;
 
     /**
@@ -50,7 +50,7 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<Contact|ContactShape>|null $contacts
+     * @param list<ContactResponse|ContactResponseShape>|null $contacts
      * @param PaginationMeta|PaginationMetaShape|null $pagination
      */
     public static function with(
@@ -68,7 +68,7 @@ final class Data implements BaseModel
     /**
      * List of contacts.
      *
-     * @param list<Contact|ContactShape> $contacts
+     * @param list<ContactResponse|ContactResponseShape> $contacts
      */
     public function withContacts(array $contacts): self
     {

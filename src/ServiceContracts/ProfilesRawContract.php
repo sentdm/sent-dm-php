@@ -7,7 +7,7 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Profiles\APIResponseOfProfileDetail;
-use SentDm\Profiles\ProfileCompleteParams;
+use SentDm\Profiles\ProfileCompleteSetupParams;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileDeleteParams;
 use SentDm\Profiles\ProfileListParams;
@@ -105,16 +105,16 @@ interface ProfilesRawContract
      * @api
      *
      * @param string $profileID Path param: Profile ID from route
-     * @param array<string,mixed>|ProfileCompleteParams $params
+     * @param array<string,mixed>|ProfileCompleteSetupParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
      *
      * @throws APIException
      */
-    public function complete(
+    public function completeSetup(
         string $profileID,
-        array|ProfileCompleteParams $params,
+        array|ProfileCompleteSetupParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 }
