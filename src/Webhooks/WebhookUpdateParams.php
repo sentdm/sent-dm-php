@@ -19,9 +19,10 @@ use SentDm\Core\Contracts\BaseModel;
  *   endpointURL?: string|null,
  *   eventTypes?: list<string>|null,
  *   retryCount?: int|null,
- *   testMode?: bool|null,
+ *   sandbox?: bool|null,
  *   timeoutSeconds?: int|null,
  *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class WebhookUpdateParams implements BaseModel
@@ -44,17 +45,20 @@ final class WebhookUpdateParams implements BaseModel
     public ?int $retryCount;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional('timeout_seconds')]
     public ?int $timeoutSeconds;
 
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     public function __construct()
     {
@@ -73,9 +77,10 @@ final class WebhookUpdateParams implements BaseModel
         ?string $endpointURL = null,
         ?array $eventTypes = null,
         ?int $retryCount = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
@@ -83,9 +88,10 @@ final class WebhookUpdateParams implements BaseModel
         null !== $endpointURL && $self['endpointURL'] = $endpointURL;
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
         null !== $retryCount && $self['retryCount'] = $retryCount;
-        null !== $testMode && $self['testMode'] = $testMode;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $timeoutSeconds && $self['timeoutSeconds'] = $timeoutSeconds;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -126,13 +132,13 @@ final class WebhookUpdateParams implements BaseModel
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    public function withTestMode(bool $testMode): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }
@@ -149,6 +155,14 @@ final class WebhookUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

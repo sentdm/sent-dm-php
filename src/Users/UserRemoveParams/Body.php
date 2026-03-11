@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Brands\Campaigns\CampaignDeleteParams;
+namespace SentDm\Users\UserRemoveParams;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Request to delete a campaign from a brand.
+ * Request to remove a user from an organization.
  *
- * @phpstan-type BodyShape = array{testMode?: bool|null}
+ * @phpstan-type BodyShape = array{sandbox?: bool|null}
  */
 final class Body implements BaseModel
 {
@@ -19,11 +19,11 @@ final class Body implements BaseModel
     use SdkModel;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
+    #[Optional]
+    public ?bool $sandbox;
 
     public function __construct()
     {
@@ -35,23 +35,23 @@ final class Body implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(?bool $testMode = null): self
+    public static function with(?bool $sandbox = null): self
     {
         $self = new self;
 
-        null !== $testMode && $self['testMode'] = $testMode;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
 
         return $self;
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    public function withTestMode(bool $testMode): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }

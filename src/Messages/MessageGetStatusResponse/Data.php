@@ -18,6 +18,7 @@ use SentDm\Messages\MessageGetStatusResponse\Data\MessageBody;
  *
  * @phpstan-type DataShape = array{
  *   id?: string|null,
+ *   activeContactPrice?: float|null,
  *   channel?: string|null,
  *   contactID?: string|null,
  *   createdAt?: \DateTimeInterface|null,
@@ -41,6 +42,9 @@ final class Data implements BaseModel
 
     #[Optional]
     public ?string $id;
+
+    #[Optional('active_contact_price', nullable: true)]
+    public ?float $activeContactPrice;
 
     #[Optional]
     public ?string $channel;
@@ -104,6 +108,7 @@ final class Data implements BaseModel
      */
     public static function with(
         ?string $id = null,
+        ?float $activeContactPrice = null,
         ?string $channel = null,
         ?string $contactID = null,
         ?\DateTimeInterface $createdAt = null,
@@ -122,6 +127,7 @@ final class Data implements BaseModel
         $self = new self;
 
         null !== $id && $self['id'] = $id;
+        null !== $activeContactPrice && $self['activeContactPrice'] = $activeContactPrice;
         null !== $channel && $self['channel'] = $channel;
         null !== $contactID && $self['contactID'] = $contactID;
         null !== $createdAt && $self['createdAt'] = $createdAt;
@@ -144,6 +150,14 @@ final class Data implements BaseModel
     {
         $self = clone $this;
         $self['id'] = $id;
+
+        return $self;
+    }
+
+    public function withActiveContactPrice(?float $activeContactPrice): self
+    {
+        $self = clone $this;
+        $self['activeContactPrice'] = $activeContactPrice;
 
         return $self;
     }

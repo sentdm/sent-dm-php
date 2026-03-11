@@ -20,17 +20,19 @@ interface ContactsContract
      * @api
      *
      * @param string $phoneNumber Body param: Phone number of the contact to create
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function create(
         ?string $phoneNumber = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseContact;
 
@@ -38,13 +40,15 @@ interface ContactsContract
      * @api
      *
      * @param string $id Contact ID from route parameter
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): APIResponseContact;
 
     /**
@@ -53,9 +57,10 @@ interface ContactsContract
      * @param string $id Path param: Contact ID from route parameter
      * @param string|null $defaultChannel Body param: Default messaging channel: "sms" or "whatsapp"
      * @param bool|null $optOut Body param: Whether the contact has opted out of messaging
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -64,18 +69,21 @@ interface ContactsContract
         string $id,
         ?string $defaultChannel = null,
         ?bool $optOut = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseContact;
 
     /**
      * @api
      *
-     * @param int $page Page number (1-indexed)
-     * @param string|null $channel Optional channel filter (sms, whatsapp)
-     * @param string|null $phone Optional phone number filter (alternative to list view)
-     * @param string|null $search Optional search term for filtering contacts
+     * @param int $page Query param: Page number (1-indexed)
+     * @param int $pageSize Query param: Number of items per page
+     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
+     * @param string|null $phone Query param: Optional phone number filter (alternative to list view)
+     * @param string|null $search Query param: Optional search term for filtering contacts
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -86,14 +94,16 @@ interface ContactsContract
         ?string $channel = null,
         ?string $phone = null,
         ?string $search = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): ContactListResponse;
 
     /**
      * @api
      *
-     * @param string $id Contact ID from route parameter
-     * @param Body|BodyShape $body Request to delete/dissociate a contact
+     * @param string $id Path param: Contact ID from route parameter
+     * @param Body|BodyShape $body Body param: Request to delete/dissociate a contact
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -101,6 +111,7 @@ interface ContactsContract
     public function delete(
         string $id,
         Body|array $body,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed;
 }

@@ -12,11 +12,14 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksRawContract;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
+use SentDm\Webhooks\WebhookDeleteParams;
 use SentDm\Webhooks\WebhookListEventsParams;
 use SentDm\Webhooks\WebhookListEventsResponse;
+use SentDm\Webhooks\WebhookListEventTypesParams;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
 use SentDm\Webhooks\WebhookRotateSecretParams\Body;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
@@ -49,9 +52,10 @@ final class WebhooksRawService implements WebhooksRawContract
      *   endpointURL?: string,
      *   eventTypes?: list<string>,
      *   retryCount?: int,
-     *   testMode?: bool,
+     *   sandbox?: bool,
      *   timeoutSeconds?: int,
      *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|WebhookCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -67,7 +71,9 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
@@ -91,6 +97,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * Retrieves a single webhook by ID for the authenticated customer.
      *
+     * @param array{xProfileID?: string}|WebhookRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseWebhook>
@@ -99,13 +106,23 @@ final class WebhooksRawService implements WebhooksRawContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|WebhookRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = WebhookRetrieveParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v3/webhooks/%1$s', $id],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: APIResponseWebhook::class,
         );
     }
@@ -121,9 +138,10 @@ final class WebhooksRawService implements WebhooksRawContract
      *   endpointURL?: string,
      *   eventTypes?: list<string>,
      *   retryCount?: int,
-     *   testMode?: bool,
+     *   sandbox?: bool,
      *   timeoutSeconds?: int,
      *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|WebhookUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -140,7 +158,9 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
@@ -165,7 +185,11 @@ final class WebhooksRawService implements WebhooksRawContract
      * Retrieves a paginated list of webhooks for the authenticated customer.
      *
      * @param array{
-     *   page: int, pageSize: int, isActive?: bool|null, search?: string|null
+     *   page: int,
+     *   pageSize: int,
+     *   isActive?: bool|null,
+     *   search?: string|null,
+     *   xProfileID?: string,
      * }|WebhookListParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -181,12 +205,23 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
+        $query_params = array_flip(['page', 'pageSize', 'isActive', 'search']);
+
+        /** @var array<string,string> */
+        $header_params = array_diff_key($parsed, $query_params);
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: 'v3/webhooks',
-            query: $parsed,
+            query: Util::array_transform_keys(
+                array_intersect_key($parsed, $query_params),
+                ['pageSize' => 'page_size', 'isActive' => 'is_active'],
+            ),
+            headers: Util::array_transform_keys(
+                $header_params,
+                ['xProfileID' => 'x-profile-id']
+            ),
             options: $options,
             convert: WebhookListResponse::class,
         );
@@ -197,6 +232,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * Deletes a webhook for the authenticated customer.
      *
+     * @param array{xProfileID?: string}|WebhookDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -205,13 +241,23 @@ final class WebhooksRawService implements WebhooksRawContract
      */
     public function delete(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|WebhookDeleteParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = WebhookDeleteParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
             path: ['v3/webhooks/%1$s', $id],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: null,
         );
     }
@@ -221,6 +267,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * Retrieves all available webhook event types that can be subscribed to.
      *
+     * @param array{xProfileID?: string}|WebhookListEventTypesParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<WebhookListEventTypesResponse>
@@ -228,13 +275,23 @@ final class WebhooksRawService implements WebhooksRawContract
      * @throws APIException
      */
     public function listEventTypes(
-        RequestOptions|array|null $requestOptions = null
+        array|WebhookListEventTypesParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = WebhookListEventTypesParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: 'v3/webhooks/event-types',
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: WebhookListEventTypesResponse::class,
         );
     }
@@ -244,8 +301,9 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * Retrieves a paginated list of delivery events for the specified webhook.
      *
+     * @param string $id Path param
      * @param array{
-     *   page: int, pageSize: int, search?: string|null
+     *   page: int, pageSize: int, search?: string|null, xProfileID?: string
      * }|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -262,12 +320,23 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
+        $query_params = array_flip(['page', 'pageSize', 'search']);
+
+        /** @var array<string,string> */
+        $header_params = array_diff_key($parsed, $query_params);
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v3/webhooks/%1$s/events', $id],
-            query: $parsed,
+            query: Util::array_transform_keys(
+                array_intersect_key($parsed, $query_params),
+                ['pageSize' => 'page_size']
+            ),
+            headers: Util::array_transform_keys(
+                $header_params,
+                ['xProfileID' => 'x-profile-id']
+            ),
             options: $options,
             convert: WebhookListEventsResponse::class,
         );
@@ -280,7 +349,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   body: Body|BodyShape, idempotencyKey?: string
+     *   body: Body|BodyShape, idempotencyKey?: string, xProfileID?: string
      * }|WebhookRotateSecretParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -304,7 +373,7 @@ final class WebhooksRawService implements WebhooksRawContract
             path: ['v3/webhooks/%1$s/rotate-secret', $id],
             headers: Util::array_transform_keys(
                 array_diff_key($parsed, array_flip(['body'])),
-                ['idempotencyKey' => 'Idempotency-Key'],
+                ['idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id'],
             ),
             body: (object) $parsed['body'],
             options: $options,
@@ -319,7 +388,10 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   eventType?: string, testMode?: bool, idempotencyKey?: string
+     *   eventType?: string,
+     *   sandbox?: bool,
+     *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|WebhookTestParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -336,7 +408,9 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
@@ -362,7 +436,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   isActive?: bool, testMode?: bool, idempotencyKey?: string
+     *   isActive?: bool, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|WebhookToggleStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -379,7 +453,9 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(

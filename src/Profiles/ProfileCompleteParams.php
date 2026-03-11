@@ -30,7 +30,10 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\ProfilesService::complete()
  *
  * @phpstan-type ProfileCompleteParamsShape = array{
- *   webHookURL: string, testMode?: bool|null, idempotencyKey?: string|null
+ *   webHookURL: string,
+ *   sandbox?: bool|null,
+ *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class ProfileCompleteParams implements BaseModel
@@ -46,14 +49,17 @@ final class ProfileCompleteParams implements BaseModel
     public string $webHookURL;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
      * `new ProfileCompleteParams()` is missing required properties by the API.
@@ -81,15 +87,17 @@ final class ProfileCompleteParams implements BaseModel
      */
     public static function with(
         string $webHookURL,
-        ?bool $testMode = null,
-        ?string $idempotencyKey = null
+        ?bool $sandbox = null,
+        ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         $self['webHookURL'] = $webHookURL;
 
-        null !== $testMode && $self['testMode'] = $testMode;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -106,13 +114,13 @@ final class ProfileCompleteParams implements BaseModel
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    public function withTestMode(bool $testMode): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }
@@ -121,6 +129,14 @@ final class ProfileCompleteParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

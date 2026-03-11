@@ -17,8 +17,9 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type ContactUpdateParamsShape = array{
  *   defaultChannel?: string|null,
  *   optOut?: bool|null,
- *   testMode?: bool|null,
+ *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class ContactUpdateParams implements BaseModel
@@ -40,14 +41,17 @@ final class ContactUpdateParams implements BaseModel
     public ?bool $optOut;
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    #[Optional('test_mode')]
-    public ?bool $testMode;
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional]
     public ?string $idempotencyKey;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     public function __construct()
     {
@@ -62,15 +66,17 @@ final class ContactUpdateParams implements BaseModel
     public static function with(
         ?string $defaultChannel = null,
         ?bool $optOut = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         null !== $defaultChannel && $self['defaultChannel'] = $defaultChannel;
         null !== $optOut && $self['optOut'] = $optOut;
-        null !== $testMode && $self['testMode'] = $testMode;
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -98,13 +104,13 @@ final class ContactUpdateParams implements BaseModel
     }
 
     /**
-     * Test mode flag - when true, the operation is simulated without side effects
+     * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
-    public function withTestMode(bool $testMode): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['testMode'] = $testMode;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }
@@ -113,6 +119,14 @@ final class ContactUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

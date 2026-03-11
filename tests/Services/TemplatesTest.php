@@ -96,8 +96,10 @@ final class TemplatesTest extends TestCase
             page: 0,
             pageSize: 0,
             category: 'category',
+            isWelcomePlayground: true,
             search: 'search',
             status: 'status',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

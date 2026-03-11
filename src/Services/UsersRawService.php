@@ -12,13 +12,17 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersRawContract;
 use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserInviteParams;
+use SentDm\Users\UserListParams;
 use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
+use SentDm\Users\UserRemoveParams\Body;
+use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
 
 /**
  * Invite, update, and manage organization users and roles.
  *
+ * @phpstan-import-type BodyShape from \SentDm\Users\UserRemoveParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class UsersRawService implements UsersRawContract
@@ -34,6 +38,7 @@ final class UsersRawService implements UsersRawContract
      *
      * Retrieves detailed information about a specific user in an organization or profile. Requires developer role or higher.
      *
+     * @param array{xProfileID?: string}|UserRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseOfUser>
@@ -42,13 +47,23 @@ final class UsersRawService implements UsersRawContract
      */
     public function retrieve(
         string $userID,
-        RequestOptions|array|null $requestOptions = null
+        array|UserRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = UserRetrieveParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v3/users/%1$s', $userID],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: APIResponseOfUser::class,
         );
     }
@@ -58,6 +73,7 @@ final class UsersRawService implements UsersRawContract
      *
      * Retrieves all users who have access to the organization or profile identified by the API key, including their roles and status. Shows invited users (pending acceptance) and active users. Requires developer role or higher.
      *
+     * @param array{xProfileID?: string}|UserListParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<UserListResponse>
@@ -65,13 +81,23 @@ final class UsersRawService implements UsersRawContract
      * @throws APIException
      */
     public function list(
-        RequestOptions|array|null $requestOptions = null
+        array|UserListParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = UserListParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: 'v3/users',
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: UserListResponse::class,
         );
     }
@@ -85,8 +111,9 @@ final class UsersRawService implements UsersRawContract
      *   email?: string,
      *   name?: string,
      *   role?: string,
-     *   testMode?: bool,
+     *   sandbox?: bool,
      *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|UserInviteParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -102,7 +129,9 @@ final class UsersRawService implements UsersRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
@@ -126,7 +155,8 @@ final class UsersRawService implements UsersRawContract
      *
      * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
      *
-     * @param array{testMode?: bool, userID?: string}|UserRemoveParams $params
+     * @param string $userID Path param
+     * @param array{body: Body|BodyShape, xProfileID?: string}|UserRemoveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -134,7 +164,7 @@ final class UsersRawService implements UsersRawContract
      * @throws APIException
      */
     public function remove(
-        string $userID_,
+        string $userID,
         array|UserRemoveParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
@@ -146,9 +176,12 @@ final class UsersRawService implements UsersRawContract
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
-            path: ['v3/users/%1$s', $userID_],
-            headers: ['Content-Type' => '*/*'],
-            body: (object) $parsed,
+            path: ['v3/users/%1$s', $userID],
+            headers: Util::array_transform_keys(
+                array_diff_key($parsed, array_flip(['body'])),
+                ['xProfileID' => 'x-profile-id'],
+            ),
+            body: (object) $parsed['body'],
             options: $options,
             convert: null,
         );
@@ -159,9 +192,9 @@ final class UsersRawService implements UsersRawContract
      *
      * Updates a user's role in the organization or profile. Requires admin role. You cannot change your own role or demote the last admin.
      *
-     * @param string $userID_ Path param
+     * @param string $userID Path param
      * @param array{
-     *   role?: string, testMode?: bool, userID?: string, idempotencyKey?: string
+     *   role?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -170,7 +203,7 @@ final class UsersRawService implements UsersRawContract
      * @throws APIException
      */
     public function updateRole(
-        string $userID_,
+        string $userID,
         array|UserUpdateRoleParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
@@ -178,12 +211,14 @@ final class UsersRawService implements UsersRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'patch',
-            path: ['v3/users/%1$s', $userID_],
+            path: ['v3/users/%1$s', $userID],
             headers: Util::array_transform_keys(
                 array_intersect_key($parsed, array_flip(array_keys($header_params))),
                 $header_params,

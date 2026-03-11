@@ -13,7 +13,6 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-type APIMetaShape = array{
  *   requestID?: string|null,
- *   responseTimeMs?: int|null,
  *   timestamp?: \DateTimeInterface|null,
  *   version?: string|null,
  * }
@@ -28,12 +27,6 @@ final class APIMeta implements BaseModel
      */
     #[Optional('request_id')]
     public ?string $requestID;
-
-    /**
-     * Response time in milliseconds (optional).
-     */
-    #[Optional('response_time_ms', nullable: true)]
-    public ?int $responseTimeMs;
 
     /**
      * Server timestamp when the response was generated.
@@ -59,14 +52,12 @@ final class APIMeta implements BaseModel
      */
     public static function with(
         ?string $requestID = null,
-        ?int $responseTimeMs = null,
         ?\DateTimeInterface $timestamp = null,
         ?string $version = null,
     ): self {
         $self = new self;
 
         null !== $requestID && $self['requestID'] = $requestID;
-        null !== $responseTimeMs && $self['responseTimeMs'] = $responseTimeMs;
         null !== $timestamp && $self['timestamp'] = $timestamp;
         null !== $version && $self['version'] = $version;
 
@@ -80,17 +71,6 @@ final class APIMeta implements BaseModel
     {
         $self = clone $this;
         $self['requestID'] = $requestID;
-
-        return $self;
-    }
-
-    /**
-     * Response time in milliseconds (optional).
-     */
-    public function withResponseTimeMs(?int $responseTimeMs): self
-    {
-        $self = clone $this;
-        $self['responseTimeMs'] = $responseTimeMs;
 
         return $self;
     }

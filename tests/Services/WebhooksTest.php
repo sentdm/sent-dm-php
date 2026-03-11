@@ -100,7 +100,8 @@ final class WebhooksTest extends TestCase
             page: 0,
             pageSize: 0,
             isActive: true,
-            search: 'search'
+            search: 'search',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -164,6 +165,7 @@ final class WebhooksTest extends TestCase
             page: 0,
             pageSize: 0,
             search: 'search',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -195,8 +197,9 @@ final class WebhooksTest extends TestCase
 
         $result = $this->client->webhooks->rotateSecret(
             'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            body: ['testMode' => false],
+            body: ['sandbox' => false],
             idempotencyKey: 'req_abc123_retry1',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

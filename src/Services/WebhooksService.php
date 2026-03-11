@@ -47,10 +47,11 @@ final class WebhooksService implements WebhooksContract
      * @param string $endpointURL Body param
      * @param list<string> $eventTypes Body param
      * @param int $retryCount Body param
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -60,9 +61,10 @@ final class WebhooksService implements WebhooksContract
         ?string $endpointURL = null,
         ?array $eventTypes = null,
         ?int $retryCount = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseWebhook {
         $params = Util::removeNulls(
@@ -71,9 +73,10 @@ final class WebhooksService implements WebhooksContract
                 'endpointURL' => $endpointURL,
                 'eventTypes' => $eventTypes,
                 'retryCount' => $retryCount,
-                'testMode' => $testMode,
+                'sandbox' => $sandbox,
                 'timeoutSeconds' => $timeoutSeconds,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -88,16 +91,20 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves a single webhook by ID for the authenticated customer.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): APIResponseWebhook {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieve($id, requestOptions: $requestOptions);
+        $response = $this->raw->retrieve($id, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -112,10 +119,11 @@ final class WebhooksService implements WebhooksContract
      * @param string $endpointURL Body param
      * @param list<string> $eventTypes Body param
      * @param int $retryCount Body param
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -126,9 +134,10 @@ final class WebhooksService implements WebhooksContract
         ?string $endpointURL = null,
         ?array $eventTypes = null,
         ?int $retryCount = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseWebhook {
         $params = Util::removeNulls(
@@ -137,9 +146,10 @@ final class WebhooksService implements WebhooksContract
                 'endpointURL' => $endpointURL,
                 'eventTypes' => $eventTypes,
                 'retryCount' => $retryCount,
-                'testMode' => $testMode,
+                'sandbox' => $sandbox,
                 'timeoutSeconds' => $timeoutSeconds,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -154,6 +164,11 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves a paginated list of webhooks for the authenticated customer.
      *
+     * @param int $page Query param
+     * @param int $pageSize Query param
+     * @param bool|null $isActive Query param
+     * @param string|null $search Query param
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -163,6 +178,7 @@ final class WebhooksService implements WebhooksContract
         int $pageSize,
         ?bool $isActive = null,
         ?string $search = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): WebhookListResponse {
         $params = Util::removeNulls(
@@ -171,6 +187,7 @@ final class WebhooksService implements WebhooksContract
                 'pageSize' => $pageSize,
                 'isActive' => $isActive,
                 'search' => $search,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -185,16 +202,20 @@ final class WebhooksService implements WebhooksContract
      *
      * Deletes a webhook for the authenticated customer.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function delete(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): mixed {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->delete($id, requestOptions: $requestOptions);
+        $response = $this->raw->delete($id, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -204,15 +225,19 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves all available webhook event types that can be subscribed to.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function listEventTypes(
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
     ): WebhookListEventTypesResponse {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->listEventTypes(requestOptions: $requestOptions);
+        $response = $this->raw->listEventTypes(params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -222,6 +247,11 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves a paginated list of delivery events for the specified webhook.
      *
+     * @param string $id Path param
+     * @param int $page Query param
+     * @param int $pageSize Query param
+     * @param string|null $search Query param
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -231,10 +261,16 @@ final class WebhooksService implements WebhooksContract
         int $page,
         int $pageSize,
         ?string $search = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): WebhookListEventsResponse {
         $params = Util::removeNulls(
-            ['page' => $page, 'pageSize' => $pageSize, 'search' => $search]
+            [
+                'page' => $page,
+                'pageSize' => $pageSize,
+                'search' => $search,
+                'xProfileID' => $xProfileID,
+            ],
         );
 
         // @phpstan-ignore-next-line argument.type
@@ -251,6 +287,7 @@ final class WebhooksService implements WebhooksContract
      * @param string $id Path param
      * @param Body|BodyShape $body Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -259,10 +296,15 @@ final class WebhooksService implements WebhooksContract
         string $id,
         Body|array $body,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): WebhookRotateSecretResponse {
         $params = Util::removeNulls(
-            ['body' => $body, 'idempotencyKey' => $idempotencyKey]
+            [
+                'body' => $body,
+                'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
+            ],
         );
 
         // @phpstan-ignore-next-line argument.type
@@ -278,9 +320,10 @@ final class WebhooksService implements WebhooksContract
      *
      * @param string $id Path param
      * @param string $eventType Body param
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -288,15 +331,17 @@ final class WebhooksService implements WebhooksContract
     public function test(
         string $id,
         ?string $eventType = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): WebhookTestResponse {
         $params = Util::removeNulls(
             [
                 'eventType' => $eventType,
-                'testMode' => $testMode,
+                'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -313,9 +358,10 @@ final class WebhooksService implements WebhooksContract
      *
      * @param string $id Path param
      * @param bool $isActive Body param
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -323,15 +369,17 @@ final class WebhooksService implements WebhooksContract
     public function toggleStatus(
         string $id,
         ?bool $isActive = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
                 'isActive' => $isActive,
-                'testMode' => $testMode,
+                'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 

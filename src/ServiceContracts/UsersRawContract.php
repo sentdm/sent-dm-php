@@ -9,8 +9,10 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserInviteParams;
+use SentDm\Users\UserListParams;
 use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
+use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
 
 /**
@@ -21,6 +23,7 @@ interface UsersRawContract
     /**
      * @api
      *
+     * @param array<string,mixed>|UserRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseOfUser>
@@ -29,12 +32,14 @@ interface UsersRawContract
      */
     public function retrieve(
         string $userID,
-        RequestOptions|array|null $requestOptions = null
+        array|UserRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
      * @api
      *
+     * @param array<string,mixed>|UserListParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<UserListResponse>
@@ -42,7 +47,8 @@ interface UsersRawContract
      * @throws APIException
      */
     public function list(
-        RequestOptions|array|null $requestOptions = null
+        array|UserListParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
@@ -63,6 +69,7 @@ interface UsersRawContract
     /**
      * @api
      *
+     * @param string $userID Path param
      * @param array<string,mixed>|UserRemoveParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -71,7 +78,7 @@ interface UsersRawContract
      * @throws APIException
      */
     public function remove(
-        string $userID_,
+        string $userID,
         array|UserRemoveParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
@@ -79,7 +86,7 @@ interface UsersRawContract
     /**
      * @api
      *
-     * @param string $userID_ Path param
+     * @param string $userID Path param
      * @param array<string,mixed>|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -88,7 +95,7 @@ interface UsersRawContract
      * @throws APIException
      */
     public function updateRole(
-        string $userID_,
+        string $userID,
         array|UserUpdateRoleParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;

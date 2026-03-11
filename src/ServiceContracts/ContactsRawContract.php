@@ -9,6 +9,7 @@ use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
@@ -38,6 +39,7 @@ interface ContactsRawContract
      * @api
      *
      * @param string $id Contact ID from route parameter
+     * @param array<string,mixed>|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseContact>
@@ -46,7 +48,8 @@ interface ContactsRawContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|ContactRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
@@ -84,7 +87,7 @@ interface ContactsRawContract
     /**
      * @api
      *
-     * @param string $id Contact ID from route parameter
+     * @param string $id Path param: Contact ID from route parameter
      * @param array<string,mixed>|ContactDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

@@ -8,6 +8,8 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageRetrieveActivitiesParams;
+use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
 use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
@@ -21,6 +23,7 @@ interface MessagesRawContract
      * @api
      *
      * @param string $id Message ID from route parameter
+     * @param array<string,mixed>|MessageRetrieveActivitiesParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<MessageGetActivitiesResponse>
@@ -29,13 +32,15 @@ interface MessagesRawContract
      */
     public function retrieveActivities(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|MessageRetrieveActivitiesParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
      * @api
      *
      * @param string $id Message ID
+     * @param array<string,mixed>|MessageRetrieveStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<MessageGetStatusResponse>
@@ -44,7 +49,8 @@ interface MessagesRawContract
      */
     public function retrieveStatus(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|MessageRetrieveStatusParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**

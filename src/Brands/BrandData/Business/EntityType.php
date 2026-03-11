@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Brands\BrandData;
+namespace SentDm\Brands\BrandData\Business;
 
 /**
  * Business entity type.
