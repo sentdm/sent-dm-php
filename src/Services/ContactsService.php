@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Contacts\APIResponseContact;
+use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactDeleteParams\Body;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Core\Exceptions\APIException;
@@ -54,7 +54,7 @@ final class ContactsService implements ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseContact {
+    ): APIResponseOfContact {
         $params = Util::removeNulls(
             [
                 'phoneNumber' => $phoneNumber,
@@ -85,7 +85,7 @@ final class ContactsService implements ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseContact {
+    ): APIResponseOfContact {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -118,7 +118,7 @@ final class ContactsService implements ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseContact {
+    ): APIResponseOfContact {
         $params = Util::removeNulls(
             [
                 'defaultChannel' => $defaultChannel,

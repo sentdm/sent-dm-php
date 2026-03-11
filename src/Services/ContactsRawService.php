@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Contacts\APIResponseContact;
+use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactDeleteParams\Body;
@@ -46,7 +46,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseContact>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -75,7 +75,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseContact::class,
+            convert: APIResponseOfContact::class,
         );
     }
 
@@ -88,7 +88,7 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{xProfileID?: string}|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseContact>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -111,7 +111,7 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseContact::class,
+            convert: APIResponseOfContact::class,
         );
     }
 
@@ -130,7 +130,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseContact>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -160,7 +160,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseContact::class,
+            convert: APIResponseOfContact::class,
         );
     }
 

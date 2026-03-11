@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace SentDm\Profiles;
 
-use SentDm\Brands\BrandData;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\ProfileUpdateParams\BillingContact;
-use SentDm\Profiles\ProfileUpdateParams\PaymentDetails;
 
 /**
  * Updates a profile's configuration and settings. Requires admin role in the organization. Only provided fields will be updated (partial update).
@@ -25,17 +22,17 @@ use SentDm\Profiles\ProfileUpdateParams\PaymentDetails;
  *
  * @see SentDm\Services\ProfilesService::update()
  *
- * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact
- * @phpstan-import-type BrandDataShape from \SentDm\Brands\BrandData
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails
+ * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
+ * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
  *
  * @phpstan-type ProfileUpdateParamsShape = array{
  *   allowContactSharing?: bool|null,
  *   allowNumberChangeDuringOnboarding?: bool|null,
  *   allowTemplateSharing?: bool|null,
- *   billingContact?: null|BillingContact|BillingContactShape,
+ *   billingContact?: null|BillingContactInfo|BillingContactInfoShape,
  *   billingModel?: string|null,
- *   brand?: null|BrandData|BrandDataShape,
+ *   brand?: null|BrandsBrandData|BrandsBrandDataShape,
  *   description?: string|null,
  *   icon?: string|null,
  *   inheritContacts?: bool|null,
@@ -83,7 +80,7 @@ final class ProfileUpdateParams implements BaseModel
      * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
      */
     #[Optional('billing_contact', nullable: true)]
-    public ?BillingContact $billingContact;
+    public ?BillingContactInfo $billingContact;
 
     /**
      * Billing model: profile, organization, or profile_and_organization (optional).
@@ -101,7 +98,7 @@ final class ProfileUpdateParams implements BaseModel
      * Once a brand has been submitted to TCR it cannot be modified.
      */
     #[Optional(nullable: true)]
-    public ?BrandData $brand;
+    public ?BrandsBrandData $brand;
 
     /**
      * Profile description (optional).
@@ -207,17 +204,17 @@ final class ProfileUpdateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param BillingContact|BillingContactShape|null $billingContact
-     * @param BrandData|BrandDataShape|null $brand
+     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
+     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */
     public static function with(
         ?bool $allowContactSharing = null,
         ?bool $allowNumberChangeDuringOnboarding = null,
         ?bool $allowTemplateSharing = null,
-        BillingContact|array|null $billingContact = null,
+        BillingContactInfo|array|null $billingContact = null,
         ?string $billingModel = null,
-        BrandData|array|null $brand = null,
+        BrandsBrandData|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -301,10 +298,10 @@ final class ProfileUpdateParams implements BaseModel
      * Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
      * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
      *
-     * @param BillingContact|BillingContactShape|null $billingContact
+     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
      */
     public function withBillingContact(
-        BillingContact|array|null $billingContact
+        BillingContactInfo|array|null $billingContact
     ): self {
         $self = clone $this;
         $self['billingContact'] = $billingContact;
@@ -332,9 +329,9 @@ final class ProfileUpdateParams implements BaseModel
      * Cannot be set when inherit_tcr_brand is true.
      * Once a brand has been submitted to TCR it cannot be modified.
      *
-     * @param BrandData|BrandDataShape|null $brand
+     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
      */
-    public function withBrand(BrandData|array|null $brand): self
+    public function withBrand(BrandsBrandData|array|null $brand): self
     {
         $self = clone $this;
         $self['brand'] = $brand;

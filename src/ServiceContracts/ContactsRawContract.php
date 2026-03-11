@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Contacts\APIResponseContact;
+use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactListParams;
@@ -26,7 +26,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseContact>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -42,7 +42,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseContact>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -59,7 +59,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseContact>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */

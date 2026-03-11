@@ -8,23 +8,28 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Templates\TemplateDefinition\AuthenticationConfig;
+use SentDm\Templates\TemplateDefinition\Body;
+use SentDm\Templates\TemplateDefinition\Button;
+use SentDm\Templates\TemplateDefinition\Footer;
+use SentDm\Templates\TemplateDefinition\Header;
 
 /**
  * Complete definition of a message template including header, body, footer, and buttons.
  *
- * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateBodyShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateBody
- * @phpstan-import-type SentDmServicesCommonContractsPocOsAuthenticationConfigShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsAuthenticationConfig
- * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateButtonShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateButton
- * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateFooterShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateFooter
- * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateHeaderShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateHeader
+ * @phpstan-import-type BodyShape from \SentDm\Templates\TemplateDefinition\Body
+ * @phpstan-import-type AuthenticationConfigShape from \SentDm\Templates\TemplateDefinition\AuthenticationConfig
+ * @phpstan-import-type ButtonShape from \SentDm\Templates\TemplateDefinition\Button
+ * @phpstan-import-type FooterShape from \SentDm\Templates\TemplateDefinition\Footer
+ * @phpstan-import-type HeaderShape from \SentDm\Templates\TemplateDefinition\Header
  *
  * @phpstan-type TemplateDefinitionShape = array{
- *   body: SentDmServicesCommonContractsPocOsTemplateBody|SentDmServicesCommonContractsPocOsTemplateBodyShape,
- *   authenticationConfig?: null|SentDmServicesCommonContractsPocOsAuthenticationConfig|SentDmServicesCommonContractsPocOsAuthenticationConfigShape,
- *   buttons?: list<SentDmServicesCommonContractsPocOsTemplateButton|SentDmServicesCommonContractsPocOsTemplateButtonShape>|null,
+ *   body: Body|BodyShape,
+ *   authenticationConfig?: null|AuthenticationConfig|AuthenticationConfigShape,
+ *   buttons?: list<Button|ButtonShape>|null,
  *   definitionVersion?: string|null,
- *   footer?: null|SentDmServicesCommonContractsPocOsTemplateFooter|SentDmServicesCommonContractsPocOsTemplateFooterShape,
- *   header?: null|SentDmServicesCommonContractsPocOsTemplateHeader|SentDmServicesCommonContractsPocOsTemplateHeaderShape,
+ *   footer?: null|Footer|FooterShape,
+ *   header?: null|Header|HeaderShape,
  * }
  */
 final class TemplateDefinition implements BaseModel
@@ -36,23 +41,20 @@ final class TemplateDefinition implements BaseModel
      * Required template body with content for different channels (multi-channel, SMS-specific, or WhatsApp-specific).
      */
     #[Required]
-    public SentDmServicesCommonContractsPocOsTemplateBody $body;
+    public Body $body;
 
     /**
      * Configuration specific to AUTHENTICATION category templates (optional).
      */
     #[Optional(nullable: true)]
-    public ?SentDmServicesCommonContractsPocOsAuthenticationConfig $authenticationConfig;
+    public ?AuthenticationConfig $authenticationConfig;
 
     /**
      * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers).
      *
-     * @var list<SentDmServicesCommonContractsPocOsTemplateButton>|null $buttons
+     * @var list<Button>|null $buttons
      */
-    #[Optional(
-        list: SentDmServicesCommonContractsPocOsTemplateButton::class,
-        nullable: true,
-    )]
+    #[Optional(list: Button::class, nullable: true)]
     public ?array $buttons;
 
     /**
@@ -65,13 +67,13 @@ final class TemplateDefinition implements BaseModel
      * Optional template footer with optional variables.
      */
     #[Optional(nullable: true)]
-    public ?SentDmServicesCommonContractsPocOsTemplateFooter $footer;
+    public ?Footer $footer;
 
     /**
      * Optional template header with optional variables.
      */
     #[Optional(nullable: true)]
-    public ?SentDmServicesCommonContractsPocOsTemplateHeader $header;
+    public ?Header $header;
 
     /**
      * `new TemplateDefinition()` is missing required properties by the API.
@@ -97,19 +99,19 @@ final class TemplateDefinition implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateBody|SentDmServicesCommonContractsPocOsTemplateBodyShape $body
-     * @param SentDmServicesCommonContractsPocOsAuthenticationConfig|SentDmServicesCommonContractsPocOsAuthenticationConfigShape|null $authenticationConfig
-     * @param list<SentDmServicesCommonContractsPocOsTemplateButton|SentDmServicesCommonContractsPocOsTemplateButtonShape>|null $buttons
-     * @param SentDmServicesCommonContractsPocOsTemplateFooter|SentDmServicesCommonContractsPocOsTemplateFooterShape|null $footer
-     * @param SentDmServicesCommonContractsPocOsTemplateHeader|SentDmServicesCommonContractsPocOsTemplateHeaderShape|null $header
+     * @param Body|BodyShape $body
+     * @param AuthenticationConfig|AuthenticationConfigShape|null $authenticationConfig
+     * @param list<Button|ButtonShape>|null $buttons
+     * @param Footer|FooterShape|null $footer
+     * @param Header|HeaderShape|null $header
      */
     public static function with(
-        SentDmServicesCommonContractsPocOsTemplateBody|array $body,
-        SentDmServicesCommonContractsPocOsAuthenticationConfig|array|null $authenticationConfig = null,
+        Body|array $body,
+        AuthenticationConfig|array|null $authenticationConfig = null,
         ?array $buttons = null,
         ?string $definitionVersion = null,
-        SentDmServicesCommonContractsPocOsTemplateFooter|array|null $footer = null,
-        SentDmServicesCommonContractsPocOsTemplateHeader|array|null $header = null,
+        Footer|array|null $footer = null,
+        Header|array|null $header = null,
     ): self {
         $self = new self;
 
@@ -127,11 +129,10 @@ final class TemplateDefinition implements BaseModel
     /**
      * Required template body with content for different channels (multi-channel, SMS-specific, or WhatsApp-specific).
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateBody|SentDmServicesCommonContractsPocOsTemplateBodyShape $body
+     * @param Body|BodyShape $body
      */
-    public function withBody(
-        SentDmServicesCommonContractsPocOsTemplateBody|array $body
-    ): self {
+    public function withBody(Body|array $body): self
+    {
         $self = clone $this;
         $self['body'] = $body;
 
@@ -141,10 +142,10 @@ final class TemplateDefinition implements BaseModel
     /**
      * Configuration specific to AUTHENTICATION category templates (optional).
      *
-     * @param SentDmServicesCommonContractsPocOsAuthenticationConfig|SentDmServicesCommonContractsPocOsAuthenticationConfigShape|null $authenticationConfig
+     * @param AuthenticationConfig|AuthenticationConfigShape|null $authenticationConfig
      */
     public function withAuthenticationConfig(
-        SentDmServicesCommonContractsPocOsAuthenticationConfig|array|null $authenticationConfig,
+        AuthenticationConfig|array|null $authenticationConfig
     ): self {
         $self = clone $this;
         $self['authenticationConfig'] = $authenticationConfig;
@@ -155,7 +156,7 @@ final class TemplateDefinition implements BaseModel
     /**
      * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers).
      *
-     * @param list<SentDmServicesCommonContractsPocOsTemplateButton|SentDmServicesCommonContractsPocOsTemplateButtonShape>|null $buttons
+     * @param list<Button|ButtonShape>|null $buttons
      */
     public function withButtons(?array $buttons): self
     {
@@ -179,11 +180,10 @@ final class TemplateDefinition implements BaseModel
     /**
      * Optional template footer with optional variables.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateFooter|SentDmServicesCommonContractsPocOsTemplateFooterShape|null $footer
+     * @param Footer|FooterShape|null $footer
      */
-    public function withFooter(
-        SentDmServicesCommonContractsPocOsTemplateFooter|array|null $footer
-    ): self {
+    public function withFooter(Footer|array|null $footer): self
+    {
         $self = clone $this;
         $self['footer'] = $footer;
 
@@ -193,11 +193,10 @@ final class TemplateDefinition implements BaseModel
     /**
      * Optional template header with optional variables.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateHeader|SentDmServicesCommonContractsPocOsTemplateHeaderShape|null $header
+     * @param Header|HeaderShape|null $header
      */
-    public function withHeader(
-        SentDmServicesCommonContractsPocOsTemplateHeader|array|null $header
-    ): self {
+    public function withHeader(Header|array|null $header): self
+    {
         $self = clone $this;
         $self['header'] = $header;
 
