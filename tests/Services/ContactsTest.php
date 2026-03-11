@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
-use SentDm\Contacts\APIResponseContact;
+use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
@@ -39,7 +39,7 @@ final class ContactsTest extends TestCase
         $result = $this->client->contacts->create();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseContact::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
@@ -54,7 +54,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseContact::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
@@ -69,7 +69,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseContact::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
