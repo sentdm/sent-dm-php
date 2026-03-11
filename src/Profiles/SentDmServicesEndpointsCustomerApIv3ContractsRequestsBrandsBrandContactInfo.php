@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\BrandsBrandData;
+namespace SentDm\Profiles;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
@@ -10,9 +10,9 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Contact information for the brand.
+ * Contact information for brand KYC.
  *
- * @phpstan-type ContactShape = array{
+ * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape = array{
  *   name: string,
  *   businessName?: string|null,
  *   email?: string|null,
@@ -21,9 +21,11 @@ use SentDm\Core\Contracts\BaseModel;
  *   role?: string|null,
  * }
  */
-final class Contact implements BaseModel
+final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo implements BaseModel
 {
-    /** @use SdkModel<ContactShape> */
+    /**
+     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape>
+     */
     use SdkModel;
 
     /**
@@ -63,17 +65,20 @@ final class Contact implements BaseModel
     public ?string $role;
 
     /**
-     * `new Contact()` is missing required properties by the API.
+     * `new SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * Contact::with(name: ...)
+     * SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo::with(
+     *   name: ...
+     * )
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new Contact)->withName(...)
+     * (new SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo)
+     *   ->withName(...)
      * ```
      */
     public function __construct()
