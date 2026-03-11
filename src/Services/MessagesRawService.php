@@ -10,6 +10,8 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageRetrieveActivitiesParams;
+use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
 use SentDm\Messages\MessageSendParams\Template;
 use SentDm\Messages\MessageSendResponse;
@@ -36,6 +38,7 @@ final class MessagesRawService implements MessagesRawContract
      * Retrieves the activity log for a specific message. Activities track the message lifecycle including acceptance, processing, sending, delivery, and any errors.
      *
      * @param string $id Message ID from route parameter
+     * @param array{xProfileID?: string}|MessageRetrieveActivitiesParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<MessageGetActivitiesResponse>
@@ -44,13 +47,23 @@ final class MessagesRawService implements MessagesRawContract
      */
     public function retrieveActivities(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|MessageRetrieveActivitiesParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = MessageRetrieveActivitiesParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v3/messages/%1$s/activities', $id],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: MessageGetActivitiesResponse::class,
         );
     }
@@ -61,6 +74,7 @@ final class MessagesRawService implements MessagesRawContract
      * Retrieves the current status and details of a message by ID. Includes delivery status, timestamps, and error information if applicable.
      *
      * @param string $id Message ID
+     * @param array{xProfileID?: string}|MessageRetrieveStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<MessageGetStatusResponse>
@@ -69,13 +83,23 @@ final class MessagesRawService implements MessagesRawContract
      */
     public function retrieveStatus(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|MessageRetrieveStatusParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
+        [$parsed, $options] = MessageRetrieveStatusParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'get',
             path: ['v3/messages/%1$s', $id],
-            options: $requestOptions,
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
             convert: MessageGetStatusResponse::class,
         );
     }
@@ -87,10 +111,11 @@ final class MessagesRawService implements MessagesRawContract
      *
      * @param array{
      *   channel?: list<string>|null,
+     *   sandbox?: bool,
      *   template?: Template|TemplateShape,
-     *   testMode?: bool,
      *   to?: list<string>,
      *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|MessageSendParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -106,7 +131,9 @@ final class MessagesRawService implements MessagesRawContract
             $params,
             $requestOptions,
         );
-        $header_params = ['idempotencyKey' => 'Idempotency-Key'];
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(

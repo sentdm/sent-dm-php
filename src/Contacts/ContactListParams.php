@@ -21,6 +21,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   channel?: string|null,
  *   phone?: string|null,
  *   search?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class ContactListParams implements BaseModel
@@ -35,6 +36,9 @@ final class ContactListParams implements BaseModel
     #[Required]
     public int $page;
 
+    /**
+     * Number of items per page.
+     */
     #[Required]
     public int $pageSize;
 
@@ -55,6 +59,9 @@ final class ContactListParams implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?string $search;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
      * `new ContactListParams()` is missing required properties by the API.
@@ -86,6 +93,7 @@ final class ContactListParams implements BaseModel
         ?string $channel = null,
         ?string $phone = null,
         ?string $search = null,
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
@@ -95,6 +103,7 @@ final class ContactListParams implements BaseModel
         null !== $channel && $self['channel'] = $channel;
         null !== $phone && $self['phone'] = $phone;
         null !== $search && $self['search'] = $search;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -110,6 +119,9 @@ final class ContactListParams implements BaseModel
         return $self;
     }
 
+    /**
+     * Number of items per page.
+     */
     public function withPageSize(int $pageSize): self
     {
         $self = clone $this;
@@ -147,6 +159,14 @@ final class ContactListParams implements BaseModel
     {
         $self = clone $this;
         $self['search'] = $search;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

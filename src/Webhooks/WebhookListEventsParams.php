@@ -16,7 +16,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\WebhooksService::listEvents()
  *
  * @phpstan-type WebhookListEventsParamsShape = array{
- *   page: int, pageSize: int, search?: string|null
+ *   page: int, pageSize: int, search?: string|null, xProfileID?: string|null
  * }
  */
 final class WebhookListEventsParams implements BaseModel
@@ -33,6 +33,9 @@ final class WebhookListEventsParams implements BaseModel
 
     #[Optional(nullable: true)]
     public ?string $search;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
      * `new WebhookListEventsParams()` is missing required properties by the API.
@@ -61,7 +64,8 @@ final class WebhookListEventsParams implements BaseModel
     public static function with(
         int $page,
         int $pageSize,
-        ?string $search = null
+        ?string $search = null,
+        ?string $xProfileID = null
     ): self {
         $self = new self;
 
@@ -69,6 +73,7 @@ final class WebhookListEventsParams implements BaseModel
         $self['pageSize'] = $pageSize;
 
         null !== $search && $self['search'] = $search;
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -93,6 +98,14 @@ final class WebhookListEventsParams implements BaseModel
     {
         $self = clone $this;
         $self['search'] = $search;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

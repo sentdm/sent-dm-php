@@ -11,10 +11,12 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersContract;
 use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserListResponse;
+use SentDm\Users\UserRemoveParams\Body;
 
 /**
  * Invite, update, and manage organization users and roles.
  *
+ * @phpstan-import-type BodyShape from \SentDm\Users\UserRemoveParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class UsersService implements UsersContract
@@ -37,16 +39,20 @@ final class UsersService implements UsersContract
      *
      * Retrieves detailed information about a specific user in an organization or profile. Requires developer role or higher.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function retrieve(
         string $userID,
-        RequestOptions|array|null $requestOptions = null
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfUser {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->retrieve($userID, requestOptions: $requestOptions);
+        $response = $this->raw->retrieve($userID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -56,15 +62,19 @@ final class UsersService implements UsersContract
      *
      * Retrieves all users who have access to the organization or profile identified by the API key, including their roles and status. Shows invited users (pending acceptance) and active users. Requires developer role or higher.
      *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function list(
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
     ): UserListResponse {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->list(requestOptions: $requestOptions);
+        $response = $this->raw->list(params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -77,9 +87,10 @@ final class UsersService implements UsersContract
      * @param string $email Body param: User email address (required)
      * @param string $name Body param: User full name (required)
      * @param string $role Body param: User role: admin, billing, or developer (required)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
@@ -88,8 +99,9 @@ final class UsersService implements UsersContract
         ?string $email = null,
         ?string $name = null,
         ?string $role = null,
-        ?bool $testMode = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfUser {
         $params = Util::removeNulls(
@@ -97,8 +109,9 @@ final class UsersService implements UsersContract
                 'email' => $email,
                 'name' => $name,
                 'role' => $role,
-                'testMode' => $testMode,
+                'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
@@ -113,23 +126,23 @@ final class UsersService implements UsersContract
      *
      * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
      *
-     * @param bool $testMode Test mode flag - when true, the operation is simulated without side effects
-     * Useful for testing integrations without actual execution
-     * @param string $userID User ID from route parameter
+     * @param string $userID Path param
+     * @param Body|BodyShape $body Body param: Request to remove a user from an organization
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function remove(
-        string $userID_,
-        ?bool $testMode = null,
-        ?string $userID = null,
+        string $userID,
+        Body|array $body,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
-        $params = Util::removeNulls(['testMode' => $testMode, 'userID' => $userID]);
+        $params = Util::removeNulls(['body' => $body, 'xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->remove($userID_, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->remove($userID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }
@@ -139,35 +152,35 @@ final class UsersService implements UsersContract
      *
      * Updates a user's role in the organization or profile. Requires admin role. You cannot change your own role or demote the last admin.
      *
-     * @param string $userID_ Path param
+     * @param string $userID Path param
      * @param string $role Body param: User role: admin, billing, or developer (required)
-     * @param bool $testMode Body param: Test mode flag - when true, the operation is simulated without side effects
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
-     * @param string $userID Body param: User ID from route parameter
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function updateRole(
-        string $userID_,
+        string $userID,
         ?string $role = null,
-        ?bool $testMode = null,
-        ?string $userID = null,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfUser {
         $params = Util::removeNulls(
             [
                 'role' => $role,
-                'testMode' => $testMode,
-                'userID' => $userID,
+                'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
             ],
         );
 
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->updateRole($userID_, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->updateRole($userID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }

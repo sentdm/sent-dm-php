@@ -12,6 +12,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type PropsShape = array{
  *   alt?: string|null,
  *   mediaType?: string|null,
+ *   regex?: string|null,
  *   sample?: string|null,
  *   shortURL?: string|null,
  *   url?: string|null,
@@ -28,6 +29,9 @@ final class Props implements BaseModel
 
     #[Optional(nullable: true)]
     public ?string $mediaType;
+
+    #[Optional(nullable: true)]
+    public ?string $regex;
 
     #[Optional(nullable: true)]
     public ?string $sample;
@@ -54,6 +58,7 @@ final class Props implements BaseModel
     public static function with(
         ?string $alt = null,
         ?string $mediaType = null,
+        ?string $regex = null,
         ?string $sample = null,
         ?string $shortURL = null,
         ?string $url = null,
@@ -63,6 +68,7 @@ final class Props implements BaseModel
 
         null !== $alt && $self['alt'] = $alt;
         null !== $mediaType && $self['mediaType'] = $mediaType;
+        null !== $regex && $self['regex'] = $regex;
         null !== $sample && $self['sample'] = $sample;
         null !== $shortURL && $self['shortURL'] = $shortURL;
         null !== $url && $self['url'] = $url;
@@ -83,6 +89,14 @@ final class Props implements BaseModel
     {
         $self = clone $this;
         $self['mediaType'] = $mediaType;
+
+        return $self;
+    }
+
+    public function withRegex(?string $regex): self
+    {
+        $self = clone $this;
+        $self['regex'] = $regex;
 
         return $self;
     }

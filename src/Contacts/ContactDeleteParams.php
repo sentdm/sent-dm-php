@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Contacts;
 
 use SentDm\Contacts\ContactDeleteParams\Body;
+use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
@@ -17,7 +18,9 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-import-type BodyShape from \SentDm\Contacts\ContactDeleteParams\Body
  *
- * @phpstan-type ContactDeleteParamsShape = array{body: Body|BodyShape}
+ * @phpstan-type ContactDeleteParamsShape = array{
+ *   body: Body|BodyShape, xProfileID?: string|null
+ * }
  */
 final class ContactDeleteParams implements BaseModel
 {
@@ -30,6 +33,9 @@ final class ContactDeleteParams implements BaseModel
      */
     #[Required]
     public Body $body;
+
+    #[Optional]
+    public ?string $xProfileID;
 
     /**
      * `new ContactDeleteParams()` is missing required properties by the API.
@@ -57,11 +63,15 @@ final class ContactDeleteParams implements BaseModel
      *
      * @param Body|BodyShape $body
      */
-    public static function with(Body|array $body): self
-    {
+    public static function with(
+        Body|array $body,
+        ?string $xProfileID = null
+    ): self {
         $self = new self;
 
         $self['body'] = $body;
+
+        null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
@@ -75,6 +85,14 @@ final class ContactDeleteParams implements BaseModel
     {
         $self = clone $this;
         $self['body'] = $body;
+
+        return $self;
+    }
+
+    public function withXProfileID(string $xProfileID): self
+    {
+        $self = clone $this;
+        $self['xProfileID'] = $xProfileID;
 
         return $self;
     }

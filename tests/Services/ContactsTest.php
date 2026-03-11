@@ -97,7 +97,8 @@ final class ContactsTest extends TestCase
             pageSize: 0,
             channel: 'channel',
             phone: 'phone',
-            search: 'search'
+            search: 'search',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -129,7 +130,8 @@ final class ContactsTest extends TestCase
 
         $result = $this->client->contacts->delete(
             '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-            body: ['testMode' => false]
+            body: ['sandbox' => false],
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

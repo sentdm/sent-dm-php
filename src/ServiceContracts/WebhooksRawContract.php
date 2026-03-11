@@ -9,11 +9,14 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
+use SentDm\Webhooks\WebhookDeleteParams;
 use SentDm\Webhooks\WebhookListEventsParams;
 use SentDm\Webhooks\WebhookListEventsResponse;
+use SentDm\Webhooks\WebhookListEventTypesParams;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestParams;
@@ -44,6 +47,7 @@ interface WebhooksRawContract
     /**
      * @api
      *
+     * @param array<string,mixed>|WebhookRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseWebhook>
@@ -52,7 +56,8 @@ interface WebhooksRawContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|WebhookRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
@@ -90,6 +95,7 @@ interface WebhooksRawContract
     /**
      * @api
      *
+     * @param array<string,mixed>|WebhookDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -98,12 +104,14 @@ interface WebhooksRawContract
      */
     public function delete(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|WebhookDeleteParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
      * @api
      *
+     * @param array<string,mixed>|WebhookListEventTypesParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<WebhookListEventTypesResponse>
@@ -111,12 +119,14 @@ interface WebhooksRawContract
      * @throws APIException
      */
     public function listEventTypes(
-        RequestOptions|array|null $requestOptions = null
+        array|WebhookListEventTypesParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
      * @api
      *
+     * @param string $id Path param
      * @param array<string,mixed>|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *

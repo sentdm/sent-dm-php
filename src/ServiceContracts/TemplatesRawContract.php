@@ -12,6 +12,7 @@ use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDeleteParams;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
 
 /**
@@ -38,6 +39,7 @@ interface TemplatesRawContract
      * @api
      *
      * @param string $id Template ID from route parameter
+     * @param array<string,mixed>|TemplateRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseTemplate>
@@ -46,7 +48,8 @@ interface TemplatesRawContract
      */
     public function retrieve(
         string $id,
-        RequestOptions|array|null $requestOptions = null
+        array|TemplateRetrieveParams $params,
+        RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
     /**
@@ -84,7 +87,7 @@ interface TemplatesRawContract
     /**
      * @api
      *
-     * @param string $id Template ID from route parameter
+     * @param string $id Path param: Template ID from route parameter
      * @param array<string,mixed>|TemplateDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

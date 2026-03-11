@@ -36,9 +36,7 @@ final class UsersTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->users->retrieve(
-            '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'
-        );
+        $result = $this->client->users->retrieve('userId');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfUser::class, $result);
@@ -77,8 +75,23 @@ final class UsersTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
+        $result = $this->client->users->remove('userId', body: []);
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testRemoveWithOptionalParams(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Mock server tests are disabled');
+        }
+
         $result = $this->client->users->remove(
-            '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'
+            'userId',
+            body: ['sandbox' => false],
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -92,9 +105,7 @@ final class UsersTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->users->updateRole(
-            '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'
-        );
+        $result = $this->client->users->updateRole('userId');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfUser::class, $result);
