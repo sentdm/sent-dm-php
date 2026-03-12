@@ -7,19 +7,19 @@ namespace SentDm\Profiles;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\APIError;
 use SentDm\Webhooks\APIMeta;
+use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
  * @phpstan-import-type ProfileDetailShape from \SentDm\Profiles\ProfileDetail
- * @phpstan-import-type APIErrorShape from \SentDm\Webhooks\APIError
+ * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type APIResponseOfProfileDetailShape = array{
  *   data?: null|ProfileDetail|ProfileDetailShape,
- *   error?: null|APIError|APIErrorShape,
+ *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
@@ -39,7 +39,7 @@ final class APIResponseOfProfileDetail implements BaseModel
      * Error information.
      */
     #[Optional(nullable: true)]
-    public ?APIError $error;
+    public ?ErrorDetail $error;
 
     /**
      * Request and response metadata.
@@ -64,12 +64,12 @@ final class APIResponseOfProfileDetail implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param ProfileDetail|ProfileDetailShape|null $data
-     * @param APIError|APIErrorShape|null $error
+     * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
         ProfileDetail|array|null $data = null,
-        APIError|array|null $error = null,
+        ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
     ): self {
@@ -99,9 +99,9 @@ final class APIResponseOfProfileDetail implements BaseModel
     /**
      * Error information.
      *
-     * @param APIError|APIErrorShape|null $error
+     * @param ErrorDetail|ErrorDetailShape|null $error
      */
-    public function withError(APIError|array|null $error): self
+    public function withError(ErrorDetail|array|null $error): self
     {
         $self = clone $this;
         $self['error'] = $error;
