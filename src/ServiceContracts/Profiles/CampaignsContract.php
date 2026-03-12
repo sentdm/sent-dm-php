@@ -22,7 +22,7 @@ interface CampaignsContract
      * @api
      *
      * @param string $profileID Path param: Profile ID from route
-     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data
+     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data for create or update operation
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -45,7 +45,7 @@ interface CampaignsContract
      *
      * @param string $campaignID Path param: Campaign ID from route
      * @param string $profileID Path param: Profile ID from route
-     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data
+     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data for create or update operation
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.

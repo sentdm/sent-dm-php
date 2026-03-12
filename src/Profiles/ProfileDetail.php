@@ -74,7 +74,7 @@ final class ProfileDetail implements BaseModel
     public ?bool $allowTemplateSharing;
 
     /**
-     * Billing contact for this profile. Present when billing_model is "profile" or "profile_and_organization".
+     * Billing contact info returned in profile responses.
      */
     #[Optional('billing_contact', nullable: true)]
     public ?BillingContact $billingContact;
@@ -86,8 +86,7 @@ final class ProfileDetail implements BaseModel
     public ?string $billingModel;
 
     /**
-     * Brand associated with this profile. Null if no brand has been configured yet.
-     * Includes KYC information and TCR registration status.
+     * Brand response with nested contact, business, and compliance sections — mirrors the request structure.
      */
     #[Optional(nullable: true)]
     public ?Brand $brand;
@@ -318,7 +317,7 @@ final class ProfileDetail implements BaseModel
     }
 
     /**
-     * Billing contact for this profile. Present when billing_model is "profile" or "profile_and_organization".
+     * Billing contact info returned in profile responses.
      *
      * @param BillingContact|BillingContactShape|null $billingContact
      */
@@ -343,8 +342,7 @@ final class ProfileDetail implements BaseModel
     }
 
     /**
-     * Brand associated with this profile. Null if no brand has been configured yet.
-     * Includes KYC information and TCR registration status.
+     * Brand response with nested contact, business, and compliance sections — mirrors the request structure.
      *
      * @param Brand|BrandShape|null $brand
      */

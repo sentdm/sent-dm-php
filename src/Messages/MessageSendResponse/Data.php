@@ -10,7 +10,7 @@ use SentDm\Core\Contracts\BaseModel;
 use SentDm\Messages\MessageSendResponse\Data\Recipient;
 
 /**
- * The response data (null if error).
+ * Response for the multi-recipient send message endpoint.
  *
  * @phpstan-import-type RecipientShape from \SentDm\Messages\MessageSendResponse\Data\Recipient
  *

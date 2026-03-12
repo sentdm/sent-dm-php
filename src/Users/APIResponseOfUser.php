@@ -30,19 +30,19 @@ final class APIResponseOfUser implements BaseModel
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * User response for v3 API.
      */
     #[Optional(nullable: true)]
     public ?UserResponse $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -84,7 +84,7 @@ final class APIResponseOfUser implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * User response for v3 API.
      *
      * @param UserResponse|UserResponseShape|null $data
      */
@@ -97,7 +97,7 @@ final class APIResponseOfUser implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -110,7 +110,7 @@ final class APIResponseOfUser implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

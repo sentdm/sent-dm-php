@@ -23,11 +23,7 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampai
      */
     use SdkModel;
 
-    /**
-     * US messaging use case category.
-     *
-     * @var value-of<MessagingUseCaseUs> $messagingUseCaseUs
-     */
+    /** @var value-of<MessagingUseCaseUs> $messagingUseCaseUs */
     #[Required(enum: MessagingUseCaseUs::class)]
     public string $messagingUseCaseUs;
 
@@ -83,8 +79,6 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampai
     }
 
     /**
-     * US messaging use case category.
-     *
      * @param MessagingUseCaseUs|value-of<MessagingUseCaseUs> $messagingUseCaseUs
      */
     public function withMessagingUseCaseUs(

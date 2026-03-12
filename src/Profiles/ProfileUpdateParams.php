@@ -76,8 +76,8 @@ final class ProfileUpdateParams implements BaseModel
     public ?bool $allowTemplateSharing;
 
     /**
-     * Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
-     * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
+     * Billing contact information for a profile.
+     * Required when billing_model is "profile" or "profile_and_organization".
      */
     #[Optional('billing_contact', nullable: true)]
     public ?BillingContactInfo $billingContact;
@@ -92,10 +92,7 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $billingModel;
 
     /**
-     * Brand and KYC information for this profile (optional).
-     * When provided, creates or updates the brand associated with this profile.
-     * Cannot be set when inherit_tcr_brand is true.
-     * Once a brand has been submitted to TCR it cannot be modified.
+     * Brand and KYC data grouped into contact, business, and compliance sections.
      */
     #[Optional(nullable: true)]
     public ?BrandsBrandData $brand;
@@ -143,9 +140,9 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $name;
 
     /**
-     * Payment card details for this profile (optional).
+     * Payment card details for a profile.
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * Not persisted on our servers — forwarded to the payment processor.
+     * These details are not stored on our servers and will be forwarded to the payment processor.
      */
     #[Optional('payment_details', nullable: true)]
     public ?PaymentDetails $paymentDetails;
@@ -295,8 +292,8 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
-     * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
+     * Billing contact information for a profile.
+     * Required when billing_model is "profile" or "profile_and_organization".
      *
      * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
      */
@@ -324,10 +321,7 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Brand and KYC information for this profile (optional).
-     * When provided, creates or updates the brand associated with this profile.
-     * Cannot be set when inherit_tcr_brand is true.
-     * Once a brand has been submitted to TCR it cannot be modified.
+     * Brand and KYC data grouped into contact, business, and compliance sections.
      *
      * @param BrandsBrandData|BrandsBrandDataShape|null $brand
      */
@@ -417,9 +411,9 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Payment card details for this profile (optional).
+     * Payment card details for a profile.
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * Not persisted on our servers — forwarded to the payment processor.
+     * These details are not stored on our servers and will be forwarded to the payment processor.
      *
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */

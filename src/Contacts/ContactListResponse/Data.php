@@ -11,7 +11,7 @@ use SentDm\Core\Contracts\BaseModel;
 use SentDm\Webhooks\PaginationMeta;
 
 /**
- * The response data (null if error).
+ * Paginated list of contacts response.
  *
  * @phpstan-import-type ContactResponseShape from \SentDm\Contacts\ContactResponse
  * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
@@ -35,7 +35,7 @@ final class Data implements BaseModel
     public ?array $contacts;
 
     /**
-     * Pagination metadata.
+     * Pagination metadata for list responses.
      */
     #[Optional]
     public ?PaginationMeta $pagination;
@@ -79,7 +79,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * Pagination metadata.
+     * Pagination metadata for list responses.
      *
      * @param PaginationMeta|PaginationMetaShape $pagination
      */

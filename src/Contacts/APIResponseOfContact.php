@@ -30,19 +30,20 @@ final class APIResponseOfContact implements BaseModel
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * Contact response for v3 API
+     * Uses snake_case for JSON property names.
      */
     #[Optional(nullable: true)]
     public ?ContactResponse $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -84,7 +85,8 @@ final class APIResponseOfContact implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * Contact response for v3 API
+     * Uses snake_case for JSON property names.
      *
      * @param ContactResponse|ContactResponseShape|null $data
      */
@@ -97,7 +99,7 @@ final class APIResponseOfContact implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -110,7 +112,7 @@ final class APIResponseOfContact implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

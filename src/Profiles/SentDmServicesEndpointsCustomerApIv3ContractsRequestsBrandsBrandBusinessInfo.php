@@ -51,11 +51,7 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusi
     #[Optional(nullable: true)]
     public ?string $countryOfRegistration;
 
-    /**
-     * Business entity type.
-     *
-     * @var value-of<EntityType>|null $entityType
-     */
+    /** @var value-of<EntityType>|null $entityType */
     #[Optional(enum: EntityType::class, nullable: true)]
     public ?string $entityType;
 
@@ -178,8 +174,6 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusi
     }
 
     /**
-     * Business entity type.
-     *
      * @param EntityType|value-of<EntityType>|null $entityType
      */
     public function withEntityType(EntityType|string|null $entityType): self

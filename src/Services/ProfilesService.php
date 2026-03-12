@@ -74,15 +74,13 @@ final class ProfilesService implements ProfilesContract
      *
      * @param bool $allowContactSharing Body param: Whether contacts are shared across profiles (default: false)
      * @param bool $allowTemplateSharing Body param: Whether templates are shared across profiles (default: false)
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact Body param: Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization".
-     * Identifies who receives invoices and who is responsible for payment.
+     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact Body param: Billing contact information for a profile.
+     * Required when billing_model is "profile" or "profile_and_organization".
      * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (default: profile).
      * - "organization": the organization's billing details are used; no profile-level billing info needed.
      * - "profile": the profile is billed independently; billing_contact is required.
      * - "profile_and_organization": the profile is billed first with the organization as fallback; billing_contact is required.
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand Body param: Brand and KYC information for this profile (optional).
-     * When provided, creates the brand associated with this profile.
-     * Cannot be set when inherit_tcr_brand is true.
+     * @param BrandsBrandData|BrandsBrandDataShape|null $brand Body param: Brand and KYC data grouped into contact, business, and compliance sections
      * @param string|null $description Body param: Profile description (optional)
      * @param string|null $icon Body param: Profile icon URL (optional)
      * @param bool|null $inheritContacts Body param: Whether this profile inherits contacts from organization (default: true)
@@ -90,17 +88,17 @@ final class ProfilesService implements ProfilesContract
      * @param bool|null $inheritTcrCampaign Body param: Whether this profile inherits TCR campaign from organization (default: true)
      * @param bool|null $inheritTemplates Body param: Whether this profile inherits templates from organization (default: true)
      * @param string $name Body param: Profile name (required)
-     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails Body param: Payment card details for this profile (optional).
+     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails Body param: Payment card details for a profile.
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * Not persisted on our servers — forwarded to the payment processor.
+     * These details are not stored on our servers and will be forwarded to the payment processor.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string|null $shortName Body param: Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,
      * and spaces, and include at least one letter. Example: "SALES", "Mkt 2", "Support1".
-     * @param WhatsappBusinessAccount|WhatsappBusinessAccountShape|null $whatsappBusinessAccount Body param: Direct WhatsApp Business Account credentials for this profile.
-     * When provided, the profile uses its own WhatsApp Business Account instead of inheriting from the organization.
-     * When omitted, the profile inherits the organization's WhatsApp Business Account (requires the organization
-     * to have completed WhatsApp Embedded Signup).
+     * @param WhatsappBusinessAccount|WhatsappBusinessAccountShape|null $whatsappBusinessAccount Body param: Direct WhatsApp Business Account credentials for a profile.
+     * Use this when the profile should have its own WhatsApp Business Account instead of inheriting from the organization.
+     * Credentials must be obtained from Meta Business Manager by creating a System User with
+     * whatsapp_business_messaging and whatsapp_business_management scopes.
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
@@ -197,16 +195,13 @@ final class ProfilesService implements ProfilesContract
      * @param bool|null $allowContactSharing Body param: Whether contacts are shared across profiles (optional)
      * @param bool|null $allowNumberChangeDuringOnboarding Body param: Whether number changes are allowed during onboarding (optional)
      * @param bool|null $allowTemplateSharing Body param: Whether templates are shared across profiles (optional)
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact Body param: Billing contact for this profile. Required when billing_model is "profile" or "profile_and_organization"
-     * and no billing contact has been configured yet. Identifies who receives invoices and who is responsible for payment.
+     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact Body param: Billing contact information for a profile.
+     * Required when billing_model is "profile" or "profile_and_organization".
      * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (optional).
      * - "organization": the organization's billing details are used; no profile-level billing info needed.
      * - "profile": the profile is billed independently; billing_contact is required.
      * - "profile_and_organization": the profile is billed first with the organization as fallback; billing_contact is required.
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand Body param: Brand and KYC information for this profile (optional).
-     * When provided, creates or updates the brand associated with this profile.
-     * Cannot be set when inherit_tcr_brand is true.
-     * Once a brand has been submitted to TCR it cannot be modified.
+     * @param BrandsBrandData|BrandsBrandDataShape|null $brand Body param: Brand and KYC data grouped into contact, business, and compliance sections
      * @param string|null $description Body param: Profile description (optional)
      * @param string|null $icon Body param: Profile icon URL (optional)
      * @param bool|null $inheritContacts Body param: Whether this profile inherits contacts from organization (optional)
@@ -214,9 +209,9 @@ final class ProfilesService implements ProfilesContract
      * @param bool|null $inheritTcrCampaign Body param: Whether this profile inherits TCR campaign from organization (optional)
      * @param bool|null $inheritTemplates Body param: Whether this profile inherits templates from organization (optional)
      * @param string|null $name Body param: Profile name (optional)
-     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails Body param: Payment card details for this profile (optional).
+     * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails Body param: Payment card details for a profile.
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * Not persisted on our servers — forwarded to the payment processor.
+     * These details are not stored on our servers and will be forwarded to the payment processor.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string|null $sendingPhoneNumber Body param: Direct phone number for SMS sending (optional)

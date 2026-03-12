@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * RCS channel (provider: vibes).
+ * RCS channel configuration. When configured, includes the RCS phone number.
  *
  * @phpstan-type RcsShape = array{
  *   configured?: bool|null, phoneNumber?: string|null

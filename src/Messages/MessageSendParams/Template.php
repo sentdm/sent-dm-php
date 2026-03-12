@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Template reference (by id or name, with optional parameters).
+ * SDK-style template reference: resolve by ID or by name, with optional parameters.
  *
  * @phpstan-type TemplateShape = array{
  *   id?: string|null, name?: string|null, parameters?: array<string,string>|null

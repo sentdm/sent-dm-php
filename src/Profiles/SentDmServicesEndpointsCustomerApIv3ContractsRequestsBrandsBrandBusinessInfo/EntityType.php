@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace SentDm\Profiles\SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo;
 
-/**
- * Business entity type.
- */
 enum EntityType: string
 {
     case PRIVATE_PROFIT = 'PRIVATE_PROFIT';
