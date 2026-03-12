@@ -204,7 +204,7 @@ interface ProfilesContract
      *
      * @throws APIException
      */
-    public function completeSetup(
+    public function complete(
         string $profileID,
         string $webHookURL,
         ?bool $sandbox = null,

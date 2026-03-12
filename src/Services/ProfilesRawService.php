@@ -12,7 +12,7 @@ use SentDm\Profiles\APIResponseOfProfileDetail;
 use SentDm\Profiles\BillingContactInfo;
 use SentDm\Profiles\BrandsBrandData;
 use SentDm\Profiles\PaymentDetails;
-use SentDm\Profiles\ProfileCompleteSetupParams;
+use SentDm\Profiles\ProfileCompleteParams;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 use SentDm\Profiles\ProfileDeleteParams;
@@ -327,19 +327,19 @@ final class ProfilesRawService implements ProfilesRawContract
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
-     * }|ProfileCompleteSetupParams $params
+     * }|ProfileCompleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
      *
      * @throws APIException
      */
-    public function completeSetup(
+    public function complete(
         string $profileID,
-        array|ProfileCompleteSetupParams $params,
+        array|ProfileCompleteParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
-        [$parsed, $options] = ProfileCompleteSetupParams::parseRequest(
+        [$parsed, $options] = ProfileCompleteParams::parseRequest(
             $params,
             $requestOptions,
         );

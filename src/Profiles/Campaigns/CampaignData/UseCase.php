@@ -2,25 +2,24 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\Campaigns;
+namespace SentDm\Profiles\Campaigns\CampaignData;
 
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
 
 /**
  * Campaign use case with sample messages.
  *
- * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape = array{
+ * @phpstan-type UseCaseShape = array{
  *   messagingUseCaseUs: MessagingUseCaseUs|value-of<MessagingUseCaseUs>,
  *   sampleMessages: list<string>,
  * }
  */
-final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData implements BaseModel
+final class UseCase implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape>
-     */
+    /** @use SdkModel<UseCaseShape> */
     use SdkModel;
 
     /** @var value-of<MessagingUseCaseUs> $messagingUseCaseUs */
@@ -36,21 +35,17 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampai
     public array $sampleMessages;
 
     /**
-     * `new SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData()` is missing required properties by the API.
+     * `new UseCase()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData::with(
-     *   messagingUseCaseUs: ..., sampleMessages: ...
-     * )
+     * UseCase::with(messagingUseCaseUs: ..., sampleMessages: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData)
-     *   ->withMessagingUseCaseUs(...)
-     *   ->withSampleMessages(...)
+     * (new UseCase)->withMessagingUseCaseUs(...)->withSampleMessages(...)
      * ```
      */
     public function __construct()
