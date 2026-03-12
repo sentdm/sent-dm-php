@@ -12,16 +12,16 @@ use SentDm\Core\Conversion\ListOf;
 /**
  * Error information.
  *
- * @phpstan-type APIErrorShape = array{
+ * @phpstan-type ErrorDetailShape = array{
  *   code?: string|null,
  *   details?: array<string,list<string>>|null,
  *   docURL?: string|null,
  *   message?: string|null,
  * }
  */
-final class APIError implements BaseModel
+final class ErrorDetail implements BaseModel
 {
-    /** @use SdkModel<APIErrorShape> */
+    /** @use SdkModel<ErrorDetailShape> */
     use SdkModel;
 
     /**
