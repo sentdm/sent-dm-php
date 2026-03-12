@@ -2,26 +2,25 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates;
+namespace SentDm\Templates\TemplateDefinition;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Templates\TemplateDefinition\Button\Props;
 
 /**
  * Interactive button in a message template.
  *
- * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateButtonProps
+ * @phpstan-import-type PropsShape from \SentDm\Templates\TemplateDefinition\Button\Props
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonShape = array{
- *   id?: int|null,
- *   props?: null|SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape,
- *   type?: string|null,
+ * @phpstan-type ButtonShape = array{
+ *   id?: int|null, props?: null|Props|PropsShape, type?: string|null
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseModel
+final class Button implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateButtonShape> */
+    /** @use SdkModel<ButtonShape> */
     use SdkModel;
 
     /**
@@ -34,7 +33,7 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
      * Properties specific to the button type.
      */
     #[Optional]
-    public ?SentDmServicesCommonContractsPocOsTemplateButtonProps $props;
+    public ?Props $props;
 
     /**
      * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE).
@@ -52,12 +51,12 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape|null $props
+     * @param Props|PropsShape|null $props
      */
     public static function with(
         ?int $id = null,
-        SentDmServicesCommonContractsPocOsTemplateButtonProps|array|null $props = null,
-        ?string $type = null,
+        Props|array|null $props = null,
+        ?string $type = null
     ): self {
         $self = new self;
 
@@ -82,11 +81,10 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
     /**
      * Properties specific to the button type.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape $props
+     * @param Props|PropsShape $props
      */
-    public function withProps(
-        SentDmServicesCommonContractsPocOsTemplateButtonProps|array $props
-    ): self {
+    public function withProps(Props|array $props): self
+    {
         $self = clone $this;
         $self['props'] = $props;
 

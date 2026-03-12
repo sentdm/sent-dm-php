@@ -27,18 +27,18 @@ use SentDm\Core\Contracts\BaseModel;
  *                 - If non-TCR with destination country (IsMain=true) → SUBMITTED
  *                 - Otherwise → COMPLETED
  *
- * @see SentDm\Services\ProfilesService::completeSetup()
+ * @see SentDm\Services\ProfilesService::complete()
  *
- * @phpstan-type ProfileCompleteSetupParamsShape = array{
+ * @phpstan-type ProfileCompleteParamsShape = array{
  *   webHookURL: string,
  *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
  * }
  */
-final class ProfileCompleteSetupParams implements BaseModel
+final class ProfileCompleteParams implements BaseModel
 {
-    /** @use SdkModel<ProfileCompleteSetupParamsShape> */
+    /** @use SdkModel<ProfileCompleteParamsShape> */
     use SdkModel;
     use SdkParams;
 
@@ -62,17 +62,17 @@ final class ProfileCompleteSetupParams implements BaseModel
     public ?string $xProfileID;
 
     /**
-     * `new ProfileCompleteSetupParams()` is missing required properties by the API.
+     * `new ProfileCompleteParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * ProfileCompleteSetupParams::with(webHookURL: ...)
+     * ProfileCompleteParams::with(webHookURL: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new ProfileCompleteSetupParams)->withWebHookURL(...)
+     * (new ProfileCompleteParams)->withWebHookURL(...)
      * ```
      */
     public function __construct()

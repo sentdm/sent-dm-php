@@ -362,7 +362,7 @@ final class ProfilesService implements ProfilesContract
      *
      * @throws APIException
      */
-    public function completeSetup(
+    public function complete(
         string $profileID,
         string $webHookURL,
         ?bool $sandbox = null,
@@ -380,7 +380,7 @@ final class ProfilesService implements ProfilesContract
         );
 
         // @phpstan-ignore-next-line argument.type
-        $response = $this->raw->completeSetup($profileID, params: $params, requestOptions: $requestOptions);
+        $response = $this->raw->complete($profileID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }

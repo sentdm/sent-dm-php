@@ -2,42 +2,43 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates;
+namespace SentDm\Templates\TemplateDefinition;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Templates\TemplateVariable;
 
 /**
- * Footer section of a message template.
+ * Header section of a message template.
  *
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateFooterShape = array{
+ * @phpstan-type HeaderShape = array{
  *   template?: string|null,
  *   type?: string|null,
  *   variables?: list<TemplateVariable|TemplateVariableShape>|null,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseModel
+final class Header implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateFooterShape> */
+    /** @use SdkModel<HeaderShape> */
     use SdkModel;
 
     /**
-     * The footer template text with optional variable placeholders.
+     * The header template text with optional variable placeholders (e.g., "Welcome to {{0:variable}}").
      */
     #[Optional]
     public ?string $template;
 
     /**
-     * The type of footer (typically "text").
+     * The type of header (e.g., "text", "image", "video", "document").
      */
     #[Optional(nullable: true)]
     public ?string $type;
 
     /**
-     * List of variables used in the footer template.
+     * List of variables used in the header template.
      *
      * @var list<TemplateVariable>|null $variables
      */
@@ -71,7 +72,7 @@ final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseMode
     }
 
     /**
-     * The footer template text with optional variable placeholders.
+     * The header template text with optional variable placeholders (e.g., "Welcome to {{0:variable}}").
      */
     public function withTemplate(string $template): self
     {
@@ -82,7 +83,7 @@ final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseMode
     }
 
     /**
-     * The type of footer (typically "text").
+     * The type of header (e.g., "text", "image", "video", "document").
      */
     public function withType(?string $type): self
     {
@@ -93,7 +94,7 @@ final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseMode
     }
 
     /**
-     * List of variables used in the footer template.
+     * List of variables used in the header template.
      *
      * @param list<TemplateVariable|TemplateVariableShape>|null $variables
      */

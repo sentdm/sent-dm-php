@@ -2,26 +2,27 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates;
+namespace SentDm\Templates\TemplateDefinition;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Templates\TemplateBodyContent;
 
 /**
  * Body section of a message template with channel-specific content.
  *
  * @phpstan-import-type TemplateBodyContentShape from \SentDm\Templates\TemplateBodyContent
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateBodyShape = array{
+ * @phpstan-type BodyShape = array{
  *   multiChannel?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   sms?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   whatsapp?: null|TemplateBodyContent|TemplateBodyContentShape,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateBody implements BaseModel
+final class Body implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateBodyShape> */
+    /** @use SdkModel<BodyShape> */
     use SdkModel;
 
     /**

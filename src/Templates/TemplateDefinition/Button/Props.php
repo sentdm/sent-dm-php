@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates;
+namespace SentDm\Templates\TemplateDefinition\Button;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape = array{
+ * Properties specific to the button type.
+ *
+ * @phpstan-type PropsShape = array{
  *   activeFor?: int|null,
  *   autofillText?: string|null,
  *   countryCode?: string|null,
@@ -24,9 +26,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   urlType?: string|null,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements BaseModel
+final class Props implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateButtonPropsShape> */
+    /** @use SdkModel<PropsShape> */
     use SdkModel;
 
     #[Optional(nullable: true)]
