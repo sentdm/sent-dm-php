@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates\TemplateDefinition;
+namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -11,13 +11,13 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Configuration for AUTHENTICATION category templates.
  *
- * @phpstan-type AuthenticationConfigShape = array{
+ * @phpstan-type SentDmServicesCommonContractsPocOsAuthenticationConfigShape = array{
  *   addSecurityRecommendation?: bool|null, codeExpirationMinutes?: int|null
  * }
  */
-final class AuthenticationConfig implements BaseModel
+final class SentDmServicesCommonContractsPocOsAuthenticationConfig implements BaseModel
 {
-    /** @use SdkModel<AuthenticationConfigShape> */
+    /** @use SdkModel<SentDmServicesCommonContractsPocOsAuthenticationConfigShape> */
     use SdkModel;
 
     /**
