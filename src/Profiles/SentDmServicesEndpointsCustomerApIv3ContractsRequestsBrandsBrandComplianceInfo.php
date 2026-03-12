@@ -32,19 +32,11 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComp
      */
     use SdkModel;
 
-    /**
-     * Brand relationship level with TCR (required for TCR).
-     *
-     * @var value-of<TcrBrandRelationship> $brandRelationship
-     */
+    /** @var value-of<TcrBrandRelationship> $brandRelationship */
     #[Required(enum: TcrBrandRelationship::class)]
     public string $brandRelationship;
 
-    /**
-     * Business vertical/industry category (required for TCR).
-     *
-     * @var value-of<TcrVertical> $vertical
-     */
+    /** @var value-of<TcrVertical> $vertical */
     #[Required(enum: TcrVertical::class)]
     public string $vertical;
 
@@ -144,8 +136,6 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComp
     }
 
     /**
-     * Brand relationship level with TCR (required for TCR).
-     *
      * @param TcrBrandRelationship|value-of<TcrBrandRelationship> $brandRelationship
      */
     public function withBrandRelationship(
@@ -158,8 +148,6 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComp
     }
 
     /**
-     * Business vertical/industry category (required for TCR).
-     *
      * @param TcrVertical|value-of<TcrVertical> $vertical
      */
     public function withVertical(TcrVertical|string $vertical): self

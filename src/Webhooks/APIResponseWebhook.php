@@ -34,13 +34,13 @@ final class APIResponseWebhook implements BaseModel
     public ?WebhookResponse $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -95,7 +95,7 @@ final class APIResponseWebhook implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -108,7 +108,7 @@ final class APIResponseWebhook implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

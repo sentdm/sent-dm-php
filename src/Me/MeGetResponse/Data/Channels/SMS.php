@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * SMS channel (providers: telnyx, sinch).
+ * SMS channel configuration. When configured, includes the sending phone number.
  *
  * @phpstan-type SMSShape = array{
  *   configured?: bool|null, phoneNumber?: string|null

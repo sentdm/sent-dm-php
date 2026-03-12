@@ -40,7 +40,7 @@ final class TemplateUpdateParams implements BaseModel
     public ?string $category;
 
     /**
-     * Template definition including header, body, footer, and buttons.
+     * Complete definition of a message template including header, body, footer, and buttons.
      */
     #[Optional(nullable: true)]
     public ?TemplateDefinition $definition;
@@ -124,7 +124,7 @@ final class TemplateUpdateParams implements BaseModel
     }
 
     /**
-     * Template definition including header, body, footer, and buttons.
+     * Complete definition of a message template including header, body, footer, and buttons.
      *
      * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      */

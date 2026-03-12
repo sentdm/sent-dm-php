@@ -14,8 +14,7 @@ use SentDm\Profiles\ProfileDetail\Brand\IdentityStatus;
 use SentDm\Profiles\ProfileDetail\Brand\Status;
 
 /**
- * Brand associated with this profile. Null if no brand has been configured yet.
- * Includes KYC information and TCR registration status.
+ * Brand response with nested contact, business, and compliance sections — mirrors the request structure.
  *
  * @phpstan-import-type BusinessShape from \SentDm\Profiles\ProfileDetail\Brand\Business
  * @phpstan-import-type ComplianceShape from \SentDm\Profiles\ProfileDetail\Brand\Compliance
@@ -79,11 +78,7 @@ final class Brand implements BaseModel
     #[Optional('csp_id', nullable: true)]
     public ?string $cspID;
 
-    /**
-     * TCR brand identity verification status.
-     *
-     * @var value-of<IdentityStatus>|null $identityStatus
-     */
+    /** @var value-of<IdentityStatus>|null $identityStatus */
     #[Optional('identity_status', enum: IdentityStatus::class, nullable: true)]
     public ?string $identityStatus;
 
@@ -93,11 +88,7 @@ final class Brand implements BaseModel
     #[Optional('is_inherited')]
     public ?bool $isInherited;
 
-    /**
-     * TCR brand status.
-     *
-     * @var value-of<Status>|null $status
-     */
+    /** @var value-of<Status>|null $status */
     #[Optional(enum: Status::class, nullable: true)]
     public ?string $status;
 
@@ -256,8 +247,6 @@ final class Brand implements BaseModel
     }
 
     /**
-     * TCR brand identity verification status.
-     *
      * @param IdentityStatus|value-of<IdentityStatus>|null $identityStatus
      */
     public function withIdentityStatus(
@@ -281,8 +270,6 @@ final class Brand implements BaseModel
     }
 
     /**
-     * TCR brand status.
-     *
      * @param Status|value-of<Status>|null $status
      */
     public function withStatus(Status|string|null $status): self

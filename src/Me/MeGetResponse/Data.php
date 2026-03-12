@@ -12,7 +12,9 @@ use SentDm\Me\MeGetResponse\Data\Profile;
 use SentDm\Me\ProfileSettings;
 
 /**
- * The response data (null if error).
+ * Account response for GET /v3/me endpoint.
+ * Returns organization (with profiles), user (standalone), or profile (child of an organization)
+ * data depending on the API key type. Always includes messaging channel configuration.
  *
  * @phpstan-import-type ChannelsShape from \SentDm\Me\MeGetResponse\Data\Channels
  * @phpstan-import-type ProfileShape from \SentDm\Me\MeGetResponse\Data\Profile
@@ -46,7 +48,8 @@ final class Data implements BaseModel
     public ?string $id;
 
     /**
-     * Messaging channel configuration.
+     * Messaging channel configuration. All three channels are always present.
+     * Each channel has a "configured" flag; configured channels expose additional details.
      */
     #[Optional]
     public ?Channels $channels;
@@ -96,7 +99,7 @@ final class Data implements BaseModel
     public ?array $profiles;
 
     /**
-     * Profile settings (only for profile type).
+     * Profile configuration settings.
      */
     #[Optional(nullable: true)]
     public ?ProfileSettings $settings;
@@ -179,7 +182,8 @@ final class Data implements BaseModel
     }
 
     /**
-     * Messaging channel configuration.
+     * Messaging channel configuration. All three channels are always present.
+     * Each channel has a "configured" flag; configured channels expose additional details.
      *
      * @param Channels|ChannelsShape $channels
      */
@@ -271,7 +275,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * Profile settings (only for profile type).
+     * Profile configuration settings.
      *
      * @param ProfileSettings|ProfileSettingsShape|null $settings
      */

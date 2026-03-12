@@ -46,7 +46,7 @@ final class TemplateCreateParams implements BaseModel
     public ?string $creationSource;
 
     /**
-     * Template definition including header, body, footer, and buttons.
+     * Complete definition of a message template including header, body, footer, and buttons.
      */
     #[Optional]
     public ?TemplateDefinition $definition;
@@ -135,7 +135,7 @@ final class TemplateCreateParams implements BaseModel
     }
 
     /**
-     * Template definition including header, body, footer, and buttons.
+     * Complete definition of a message template including header, body, footer, and buttons.
      *
      * @param TemplateDefinition|TemplateDefinitionShape $definition
      */

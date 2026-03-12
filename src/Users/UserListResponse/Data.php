@@ -10,7 +10,7 @@ use SentDm\Core\Contracts\BaseModel;
 use SentDm\Users\UserResponse;
 
 /**
- * The response data (null if error).
+ * List of users response.
  *
  * @phpstan-import-type UserResponseShape from \SentDm\Users\UserResponse
  *

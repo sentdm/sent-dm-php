@@ -10,7 +10,7 @@ use SentDm\Core\Contracts\BaseModel;
 use SentDm\Profiles\ProfileDetail;
 
 /**
- * The response data (null if error).
+ * List of profiles response.
  *
  * @phpstan-import-type ProfileDetailShape from \SentDm\Profiles\ProfileDetail
  *

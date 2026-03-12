@@ -38,13 +38,13 @@ final class CampaignListResponse implements BaseModel
     public ?array $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -99,7 +99,7 @@ final class CampaignListResponse implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -112,7 +112,7 @@ final class CampaignListResponse implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

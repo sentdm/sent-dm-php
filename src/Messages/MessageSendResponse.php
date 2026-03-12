@@ -31,19 +31,19 @@ final class MessageSendResponse implements BaseModel
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * Response for the multi-recipient send message endpoint.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -85,7 +85,7 @@ final class MessageSendResponse implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * Response for the multi-recipient send message endpoint.
      *
      * @param Data|DataShape|null $data
      */
@@ -98,7 +98,7 @@ final class MessageSendResponse implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -111,7 +111,7 @@ final class MessageSendResponse implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

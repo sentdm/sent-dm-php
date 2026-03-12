@@ -33,13 +33,13 @@ final class TemplateDefinition implements BaseModel
     use SdkModel;
 
     /**
-     * Required template body with content for different channels (multi-channel, SMS-specific, or WhatsApp-specific).
+     * Body section of a message template with channel-specific content.
      */
     #[Required]
     public SentDmServicesCommonContractsPocOsTemplateBody $body;
 
     /**
-     * Configuration specific to AUTHENTICATION category templates (optional).
+     * Configuration for AUTHENTICATION category templates.
      */
     #[Optional(nullable: true)]
     public ?SentDmServicesCommonContractsPocOsAuthenticationConfig $authenticationConfig;
@@ -62,13 +62,13 @@ final class TemplateDefinition implements BaseModel
     public ?string $definitionVersion;
 
     /**
-     * Optional template footer with optional variables.
+     * Footer section of a message template.
      */
     #[Optional(nullable: true)]
     public ?SentDmServicesCommonContractsPocOsTemplateFooter $footer;
 
     /**
-     * Optional template header with optional variables.
+     * Header section of a message template.
      */
     #[Optional(nullable: true)]
     public ?SentDmServicesCommonContractsPocOsTemplateHeader $header;
@@ -125,7 +125,7 @@ final class TemplateDefinition implements BaseModel
     }
 
     /**
-     * Required template body with content for different channels (multi-channel, SMS-specific, or WhatsApp-specific).
+     * Body section of a message template with channel-specific content.
      *
      * @param SentDmServicesCommonContractsPocOsTemplateBody|SentDmServicesCommonContractsPocOsTemplateBodyShape $body
      */
@@ -139,7 +139,7 @@ final class TemplateDefinition implements BaseModel
     }
 
     /**
-     * Configuration specific to AUTHENTICATION category templates (optional).
+     * Configuration for AUTHENTICATION category templates.
      *
      * @param SentDmServicesCommonContractsPocOsAuthenticationConfig|SentDmServicesCommonContractsPocOsAuthenticationConfigShape|null $authenticationConfig
      */
@@ -177,7 +177,7 @@ final class TemplateDefinition implements BaseModel
     }
 
     /**
-     * Optional template footer with optional variables.
+     * Footer section of a message template.
      *
      * @param SentDmServicesCommonContractsPocOsTemplateFooter|SentDmServicesCommonContractsPocOsTemplateFooterShape|null $footer
      */
@@ -191,7 +191,7 @@ final class TemplateDefinition implements BaseModel
     }
 
     /**
-     * Optional template header with optional variables.
+     * Header section of a message template.
      *
      * @param SentDmServicesCommonContractsPocOsTemplateHeader|SentDmServicesCommonContractsPocOsTemplateHeaderShape|null $header
      */

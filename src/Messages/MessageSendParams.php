@@ -51,7 +51,7 @@ final class MessageSendParams implements BaseModel
     public ?bool $sandbox;
 
     /**
-     * Template reference (by id or name, with optional parameters).
+     * SDK-style template reference: resolve by ID or by name, with optional parameters.
      */
     #[Optional]
     public ?Template $template;
@@ -133,7 +133,7 @@ final class MessageSendParams implements BaseModel
     }
 
     /**
-     * Template reference (by id or name, with optional parameters).
+     * SDK-style template reference: resolve by ID or by name, with optional parameters.
      *
      * @param Template|TemplateShape $template
      */

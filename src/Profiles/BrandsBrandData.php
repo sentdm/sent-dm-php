@@ -28,19 +28,19 @@ final class BrandsBrandData implements BaseModel
     use SdkModel;
 
     /**
-     * Compliance and TCR-related information.
+     * Compliance and TCR information for brand registration.
      */
     #[Required]
     public SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo $compliance;
 
     /**
-     * Contact information for the brand.
+     * Contact information for brand KYC.
      */
     #[Required]
     public SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo $contact;
 
     /**
-     * Business details and address information.
+     * Business details and address for brand KYC.
      */
     #[Optional(nullable: true)]
     public ?SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo $business;
@@ -89,7 +89,7 @@ final class BrandsBrandData implements BaseModel
     }
 
     /**
-     * Compliance and TCR-related information.
+     * Compliance and TCR information for brand registration.
      *
      * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape $compliance
      */
@@ -103,7 +103,7 @@ final class BrandsBrandData implements BaseModel
     }
 
     /**
-     * Contact information for the brand.
+     * Contact information for brand KYC.
      *
      * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfoShape $contact
      */
@@ -117,7 +117,7 @@ final class BrandsBrandData implements BaseModel
     }
 
     /**
-     * Business details and address information.
+     * Business details and address for brand KYC.
      *
      * @param SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo|SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfoShape|null $business
      */

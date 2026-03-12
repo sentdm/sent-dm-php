@@ -9,7 +9,8 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * WhatsApp Business channel (provider: meta).
+ * WhatsApp Business channel configuration. When configured, includes the WhatsApp phone number
+ * and business name.
  *
  * @phpstan-type WhatsappShape = array{
  *   businessName?: string|null, configured?: bool|null, phoneNumber?: string|null
