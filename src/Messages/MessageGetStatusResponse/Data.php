@@ -11,7 +11,7 @@ use SentDm\Messages\MessageGetStatusResponse\Data\Event;
 use SentDm\Messages\MessageGetStatusResponse\Data\MessageBody;
 
 /**
- * The response data (null if error).
+ * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
  *
  * @phpstan-import-type EventShape from \SentDm\Messages\MessageGetStatusResponse\Data\Event
  * @phpstan-import-type MessageBodyShape from \SentDm\Messages\MessageGetStatusResponse\Data\MessageBody

@@ -10,7 +10,7 @@ use SentDm\Core\Contracts\BaseModel;
 use SentDm\Messages\MessageGetActivitiesResponse\Data\Activity;
 
 /**
- * The response data (null if error).
+ * Response for GET /messages/{id}/activities.
  *
  * @phpstan-import-type ActivityShape from \SentDm\Messages\MessageGetActivitiesResponse\Data\Activity
  *

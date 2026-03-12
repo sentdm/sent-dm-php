@@ -10,10 +10,10 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Direct WhatsApp Business Account credentials for this profile.
- * When provided, the profile uses its own WhatsApp Business Account instead of inheriting from the organization.
- * When omitted, the profile inherits the organization's WhatsApp Business Account (requires the organization
- * to have completed WhatsApp Embedded Signup).
+ * Direct WhatsApp Business Account credentials for a profile.
+ * Use this when the profile should have its own WhatsApp Business Account instead of inheriting from the organization.
+ * Credentials must be obtained from Meta Business Manager by creating a System User with
+ * whatsapp_business_messaging and whatsapp_business_management scopes.
  *
  * @phpstan-type WhatsappBusinessAccountShape = array{
  *   accessToken: string, wabaID: string, phoneNumberID?: string|null

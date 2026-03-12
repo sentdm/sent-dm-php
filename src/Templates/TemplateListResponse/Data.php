@@ -11,7 +11,7 @@ use SentDm\Templates\Template;
 use SentDm\Webhooks\PaginationMeta;
 
 /**
- * The response data (null if error).
+ * Paginated list of templates.
  *
  * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  * @phpstan-import-type TemplateShape from \SentDm\Templates\Template
@@ -27,7 +27,7 @@ final class Data implements BaseModel
     use SdkModel;
 
     /**
-     * Pagination metadata.
+     * Pagination metadata for list responses.
      */
     #[Optional]
     public ?PaginationMeta $pagination;
@@ -66,7 +66,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * Pagination metadata.
+     * Pagination metadata for list responses.
      *
      * @param PaginationMeta|PaginationMetaShape $pagination
      */

@@ -35,7 +35,7 @@ final class CampaignUpdateParams implements BaseModel
     public string $profileID;
 
     /**
-     * Campaign data.
+     * Campaign data for create or update operation.
      */
     #[Required]
     public CampaignData $campaign;
@@ -107,7 +107,7 @@ final class CampaignUpdateParams implements BaseModel
     }
 
     /**
-     * Campaign data.
+     * Campaign data for create or update operation.
      *
      * @param CampaignData|CampaignDataShape $campaign
      */

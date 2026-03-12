@@ -31,19 +31,19 @@ final class MessageGetStatusResponse implements BaseModel
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -85,7 +85,7 @@ final class MessageGetStatusResponse implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
      *
      * @param Data|DataShape|null $data
      */
@@ -98,7 +98,7 @@ final class MessageGetStatusResponse implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -111,7 +111,7 @@ final class MessageGetStatusResponse implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

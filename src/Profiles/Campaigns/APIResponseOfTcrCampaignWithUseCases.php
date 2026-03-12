@@ -36,13 +36,13 @@ final class APIResponseOfTcrCampaignWithUseCases implements BaseModel
     public ?TcrCampaignWithUseCases $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -97,7 +97,7 @@ final class APIResponseOfTcrCampaignWithUseCases implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -110,7 +110,7 @@ final class APIResponseOfTcrCampaignWithUseCases implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

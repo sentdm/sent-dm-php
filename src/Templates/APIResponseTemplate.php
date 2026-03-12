@@ -30,19 +30,19 @@ final class APIResponseTemplate implements BaseModel
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * Template response for v3 API.
      */
     #[Optional(nullable: true)]
     public ?Template $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -84,7 +84,7 @@ final class APIResponseTemplate implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * Template response for v3 API.
      *
      * @param Template|TemplateShape|null $data
      */
@@ -97,7 +97,7 @@ final class APIResponseTemplate implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -110,7 +110,7 @@ final class APIResponseTemplate implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */

@@ -31,7 +31,7 @@ final class CampaignCreateParams implements BaseModel
     use SdkParams;
 
     /**
-     * Campaign data.
+     * Campaign data for create or update operation.
      */
     #[Required]
     public CampaignData $campaign;
@@ -93,7 +93,7 @@ final class CampaignCreateParams implements BaseModel
     }
 
     /**
-     * Campaign data.
+     * Campaign data for create or update operation.
      *
      * @param CampaignData|CampaignDataShape $campaign
      */

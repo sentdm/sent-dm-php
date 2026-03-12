@@ -41,7 +41,7 @@ final class TemplatesService implements TemplatesContract
      *
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided)
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
-     * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Template definition including header, body, footer, and buttons
+     * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US) (optional, auto-detected if not provided)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -113,7 +113,7 @@ final class TemplatesService implements TemplatesContract
      *
      * @param string $id Path param: Template ID from route parameter
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
-     * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Template definition including header, body, footer, and buttons
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US)
      * @param string|null $name Body param: Template display name
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects

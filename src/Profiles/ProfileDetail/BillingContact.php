@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Billing contact for this profile. Present when billing_model is "profile" or "profile_and_organization".
+ * Billing contact info returned in profile responses.
  *
  * @phpstan-type BillingContactShape = array{
  *   address?: string|null,

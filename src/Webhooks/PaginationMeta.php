@@ -29,7 +29,7 @@ final class PaginationMeta implements BaseModel
     use SdkModel;
 
     /**
-     * Cursor-based pagination (optional).
+     * Cursor-based pagination pointers.
      */
     #[Optional(nullable: true)]
     public ?Cursors $cursors;
@@ -97,7 +97,7 @@ final class PaginationMeta implements BaseModel
     }
 
     /**
-     * Cursor-based pagination (optional).
+     * Cursor-based pagination pointers.
      *
      * @param Cursors|CursorsShape|null $cursors
      */

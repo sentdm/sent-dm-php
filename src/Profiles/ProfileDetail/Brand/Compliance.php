@@ -32,11 +32,7 @@ final class Compliance implements BaseModel
     /** @use SdkModel<ComplianceShape> */
     use SdkModel;
 
-    /**
-     * Brand relationship level with TCR.
-     *
-     * @var value-of<TcrBrandRelationship>|null $brandRelationship
-     */
+    /** @var value-of<TcrBrandRelationship>|null $brandRelationship */
     #[Optional(
         'brand_relationship',
         enum: TcrBrandRelationship::class,
@@ -82,11 +78,7 @@ final class Compliance implements BaseModel
     #[Optional('primary_use_case', nullable: true)]
     public ?string $primaryUseCase;
 
-    /**
-     * Business vertical/industry category.
-     *
-     * @var value-of<TcrVertical>|null $vertical
-     */
+    /** @var value-of<TcrVertical>|null $vertical */
     #[Optional(enum: TcrVertical::class, nullable: true)]
     public ?string $vertical;
 
@@ -129,8 +121,6 @@ final class Compliance implements BaseModel
     }
 
     /**
-     * Brand relationship level with TCR.
-     *
      * @param TcrBrandRelationship|value-of<TcrBrandRelationship>|null $brandRelationship
      */
     public function withBrandRelationship(
@@ -212,8 +202,6 @@ final class Compliance implements BaseModel
     }
 
     /**
-     * Business vertical/industry category.
-     *
      * @param TcrVertical|value-of<TcrVertical>|null $vertical
      */
     public function withVertical(TcrVertical|string|null $vertical): self

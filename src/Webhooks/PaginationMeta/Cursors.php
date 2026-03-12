@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Cursor-based pagination (optional).
+ * Cursor-based pagination pointers.
  *
  * @phpstan-type CursorsShape = array{after?: string|null, before?: string|null}
  */

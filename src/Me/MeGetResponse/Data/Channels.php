@@ -12,7 +12,8 @@ use SentDm\Me\MeGetResponse\Data\Channels\SMS;
 use SentDm\Me\MeGetResponse\Data\Channels\Whatsapp;
 
 /**
- * Messaging channel configuration.
+ * Messaging channel configuration. All three channels are always present.
+ * Each channel has a "configured" flag; configured channels expose additional details.
  *
  * @phpstan-import-type RcsShape from \SentDm\Me\MeGetResponse\Data\Channels\Rcs
  * @phpstan-import-type SMSShape from \SentDm\Me\MeGetResponse\Data\Channels\SMS
@@ -30,19 +31,20 @@ final class Channels implements BaseModel
     use SdkModel;
 
     /**
-     * RCS channel (provider: vibes).
+     * RCS channel configuration. When configured, includes the RCS phone number.
      */
     #[Optional]
     public ?Rcs $rcs;
 
     /**
-     * SMS channel (providers: telnyx, sinch).
+     * SMS channel configuration. When configured, includes the sending phone number.
      */
     #[Optional]
     public ?SMS $sms;
 
     /**
-     * WhatsApp Business channel (provider: meta).
+     * WhatsApp Business channel configuration. When configured, includes the WhatsApp phone number
+     * and business name.
      */
     #[Optional]
     public ?Whatsapp $whatsapp;
@@ -76,7 +78,7 @@ final class Channels implements BaseModel
     }
 
     /**
-     * RCS channel (provider: vibes).
+     * RCS channel configuration. When configured, includes the RCS phone number.
      *
      * @param Rcs|RcsShape $rcs
      */
@@ -89,7 +91,7 @@ final class Channels implements BaseModel
     }
 
     /**
-     * SMS channel (providers: telnyx, sinch).
+     * SMS channel configuration. When configured, includes the sending phone number.
      *
      * @param SMS|SMSShape $sms
      */
@@ -102,7 +104,8 @@ final class Channels implements BaseModel
     }
 
     /**
-     * WhatsApp Business channel (provider: meta).
+     * WhatsApp Business channel configuration. When configured, includes the WhatsApp phone number
+     * and business name.
      *
      * @param Whatsapp|WhatsappShape $whatsapp
      */

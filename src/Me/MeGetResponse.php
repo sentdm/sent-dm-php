@@ -31,19 +31,21 @@ final class MeGetResponse implements BaseModel
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * Account response for GET /v3/me endpoint.
+     * Returns organization (with profiles), user (standalone), or profile (child of an organization)
+     * data depending on the API key type. Always includes messaging channel configuration.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
 
     /**
-     * Error details (null if successful).
+     * Error information.
      */
     #[Optional(nullable: true)]
     public ?APIError $error;
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      */
     #[Optional]
     public ?APIMeta $meta;
@@ -85,7 +87,9 @@ final class MeGetResponse implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * Account response for GET /v3/me endpoint.
+     * Returns organization (with profiles), user (standalone), or profile (child of an organization)
+     * data depending on the API key type. Always includes messaging channel configuration.
      *
      * @param Data|DataShape|null $data
      */
@@ -98,7 +102,7 @@ final class MeGetResponse implements BaseModel
     }
 
     /**
-     * Error details (null if successful).
+     * Error information.
      *
      * @param APIError|APIErrorShape|null $error
      */
@@ -111,7 +115,7 @@ final class MeGetResponse implements BaseModel
     }
 
     /**
-     * Metadata about the request and response.
+     * Request and response metadata.
      *
      * @param APIMeta|APIMetaShape $meta
      */
