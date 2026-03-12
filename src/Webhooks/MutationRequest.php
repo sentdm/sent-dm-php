@@ -9,11 +9,11 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type MutationRequestBaseShape = array{sandbox?: bool|null}
+ * @phpstan-type MutationRequestShape = array{sandbox?: bool|null}
  */
-final class MutationRequestBase implements BaseModel
+final class MutationRequest implements BaseModel
 {
-    /** @use SdkModel<MutationRequestBaseShape> */
+    /** @use SdkModel<MutationRequestShape> */
     use SdkModel;
 
     /**

@@ -2,19 +2,22 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles;
+namespace SentDm\Profiles\BrandsBrandData;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\DestinationCountry;
+use SentDm\Profiles\TcrBrandRelationship;
+use SentDm\Profiles\TcrVertical;
 
 /**
  * Compliance and TCR information for brand registration.
  *
  * @phpstan-import-type DestinationCountryShape from \SentDm\Profiles\DestinationCountry
  *
- * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape = array{
+ * @phpstan-type ComplianceShape = array{
  *   brandRelationship: TcrBrandRelationship|value-of<TcrBrandRelationship>,
  *   vertical: TcrVertical|value-of<TcrVertical>,
  *   destinationCountries?: list<DestinationCountry|DestinationCountryShape>|null,
@@ -25,11 +28,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   primaryUseCase?: string|null,
  * }
  */
-final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo implements BaseModel
+final class Compliance implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape>
-     */
+    /** @use SdkModel<ComplianceShape> */
     use SdkModel;
 
     /** @var value-of<TcrBrandRelationship> $brandRelationship */
@@ -79,21 +80,17 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComp
     public ?string $primaryUseCase;
 
     /**
-     * `new SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo()` is missing required properties by the API.
+     * `new Compliance()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo::with(
-     *   brandRelationship: ..., vertical: ...
-     * )
+     * Compliance::with(brandRelationship: ..., vertical: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo)
-     *   ->withBrandRelationship(...)
-     *   ->withVertical(...)
+     * (new Compliance)->withBrandRelationship(...)->withVertical(...)
      * ```
      */
     public function __construct()

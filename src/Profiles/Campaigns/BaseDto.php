@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm;
+namespace SentDm\Profiles\Campaigns;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
