@@ -12,13 +12,22 @@ use SentDm\Core\Contracts\BaseModel;
  * Per-recipient result in the send message response.
  *
  * @phpstan-type RecipientShape = array{
- *   channel?: string|null, messageID?: string|null, to?: string|null
+ *   body?: string|null,
+ *   channel?: string|null,
+ *   messageID?: string|null,
+ *   to?: string|null,
  * }
  */
 final class Recipient implements BaseModel
 {
     /** @use SdkModel<RecipientShape> */
     use SdkModel;
+
+    /**
+     * Resolved template body text for this recipient's channel, or null for auto-detect.
+     */
+    #[Optional(nullable: true)]
+    public ?string $body;
 
     /**
      * Channel this message will be sent on (e.g. "sms", "whatsapp"), or null for auto-detect.
@@ -49,15 +58,28 @@ final class Recipient implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        ?string $body = null,
         ?string $channel = null,
         ?string $messageID = null,
-        ?string $to = null
+        ?string $to = null,
     ): self {
         $self = new self;
 
+        null !== $body && $self['body'] = $body;
         null !== $channel && $self['channel'] = $channel;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $to && $self['to'] = $to;
+
+        return $self;
+    }
+
+    /**
+     * Resolved template body text for this recipient's channel, or null for auto-detect.
+     */
+    public function withBody(?string $body): self
+    {
+        $self = clone $this;
+        $self['body'] = $body;
 
         return $self;
     }
