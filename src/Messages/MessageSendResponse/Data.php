@@ -15,7 +15,6 @@ use SentDm\Messages\MessageSendResponse\Data\Recipient;
  * @phpstan-import-type RecipientShape from \SentDm\Messages\MessageSendResponse\Data\Recipient
  *
  * @phpstan-type DataShape = array{
- *   body?: string|null,
  *   recipients?: list<Recipient|RecipientShape>|null,
  *   status?: string|null,
  *   templateID?: string|null,
@@ -26,12 +25,6 @@ final class Data implements BaseModel
 {
     /** @use SdkModel<DataShape> */
     use SdkModel;
-
-    /**
-     * Resolved template body text.
-     */
-    #[Optional(nullable: true)]
-    public ?string $body;
 
     /**
      * Per-recipient message results.
@@ -72,7 +65,6 @@ final class Data implements BaseModel
      * @param list<Recipient|RecipientShape>|null $recipients
      */
     public static function with(
-        ?string $body = null,
         ?array $recipients = null,
         ?string $status = null,
         ?string $templateID = null,
@@ -80,22 +72,10 @@ final class Data implements BaseModel
     ): self {
         $self = new self;
 
-        null !== $body && $self['body'] = $body;
         null !== $recipients && $self['recipients'] = $recipients;
         null !== $status && $self['status'] = $status;
         null !== $templateID && $self['templateID'] = $templateID;
         null !== $templateName && $self['templateName'] = $templateName;
-
-        return $self;
-    }
-
-    /**
-     * Resolved template body text.
-     */
-    public function withBody(?string $body): self
-    {
-        $self = clone $this;
-        $self['body'] = $body;
 
         return $self;
     }
