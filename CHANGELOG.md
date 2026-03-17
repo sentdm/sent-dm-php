@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.1 (2026-03-17)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/sentdm/sent-dm-php/compare/v0.12.0...v0.12.1)
+
+### Chores
+
+* **internal:** tweak CI branches ([3b2b59b](https://github.com/sentdm/sent-dm-php/commit/3b2b59b809cd2e56f97960a32463ff60bb126666))
+
 ## 0.12.0 (2026-03-16)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/sentdm/sent-dm-php/compare/v0.11.0...v0.12.0)
