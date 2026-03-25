@@ -13,7 +13,7 @@ The REST API documentation can be found on [docs.sent.dm](https://docs.sent.dm).
 <!-- x-release-please-start-version -->
 
 ```
-composer require "sentdm/sent-dm-php 0.12.1"
+composer require "sentdm/sent-dm-php 0.13.0"
 ```
 
 <!-- x-release-please-end -->
