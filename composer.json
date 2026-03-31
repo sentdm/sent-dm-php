@@ -26,7 +26,7 @@
     "preferred-install": "dist",
     "sort-packages": true
   },
-  "description": "Sent Dm PHP SDK",
+  "description": "Sent PHP SDK",
   "name": "sentdm/sent-dm-php",
   "require": {
     "php": "^8.1",
