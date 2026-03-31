@@ -1,6 +1,6 @@
-# Sent Dm PHP API library
+# Sent PHP API library
 
-The Sent Dm PHP library provides convenient access to the Sent Dm REST API from any PHP 8.1.0+ application.
+The Sent PHP library provides convenient access to the Sent REST API from any PHP 8.1.0+ application.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
@@ -13,7 +13,7 @@ The REST API documentation can be found on [docs.sent.dm](https://docs.sent.dm).
 <!-- x-release-please-start-version -->
 
 ```
-composer require "sentdm/sent-dm-php 0.13.0"
+composer require "sentdm/sent-dm-php 0.14.0"
 ```
 
 <!-- x-release-please-end -->

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.0 (2026-03-31)
+
+Full Changelog: [v0.13.0...v0.14.0](https://github.com/sentdm/sent-dm-php/compare/v0.13.0...v0.14.0)
+
+### Features
+
+* **api:** manual updates ([db2cfed](https://github.com/sentdm/sent-dm-php/commit/db2cfed2d9237b20b5b4c346f017654ee1353080))
+
 ## 0.13.0 (2026-03-25)
 
 Full Changelog: [v0.12.1...v0.13.0](https://github.com/sentdm/sent-dm-php/compare/v0.12.1...v0.13.0)

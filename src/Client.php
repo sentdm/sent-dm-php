@@ -75,7 +75,7 @@ class Client extends BaseClient
     ) {
         $this->apiKey = (string) ($apiKey ?? Util::getenv('SENT_DM_API_KEY'));
 
-        $baseUrl ??= Util::getenv('SENT_DM_BASE_URL') ?: 'https://api.sent.dm';
+        $baseUrl ??= Util::getenv('SENT_BASE_URL') ?: 'https://api.sent.dm';
 
         $options = RequestOptions::parse(
             RequestOptions::with(
@@ -91,7 +91,7 @@ class Client extends BaseClient
             headers: [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
-                'User-Agent' => sprintf('sent-dm/PHP %s', VERSION),
+                'User-Agent' => sprintf('Sent/PHP %s', VERSION),
                 'X-Stainless-Lang' => 'php',
                 'X-Stainless-Package-Version' => '0.0.1',
                 'X-Stainless-Arch' => Util::machtype(),
