@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -14,9 +15,9 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateButtonProps
  *
  * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonShape = array{
+ *   props: SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape,
+ *   type: string,
  *   id?: int|null,
- *   props?: null|SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape,
- *   type?: string|null,
  * }
  */
 final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseModel
@@ -25,23 +26,39 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
     use SdkModel;
 
     /**
+     * Properties specific to the button type.
+     */
+    #[Required]
+    public SentDmServicesCommonContractsPocOsTemplateButtonProps $props;
+
+    /**
+     * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE).
+     */
+    #[Required]
+    public string $type;
+
+    /**
      * The unique identifier of the button (1-based index).
      */
     #[Optional]
     public ?int $id;
 
     /**
-     * Properties specific to the button type.
+     * `new SentDmServicesCommonContractsPocOsTemplateButton()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * SentDmServicesCommonContractsPocOsTemplateButton::with(props: ..., type: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new SentDmServicesCommonContractsPocOsTemplateButton)
+     *   ->withProps(...)
+     *   ->withType(...)
+     * ```
      */
-    #[Optional]
-    public ?SentDmServicesCommonContractsPocOsTemplateButtonProps $props;
-
-    /**
-     * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE).
-     */
-    #[Optional]
-    public ?string $type;
-
     public function __construct()
     {
         $this->initialize();
@@ -52,29 +69,19 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape|null $props
+     * @param SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape $props
      */
     public static function with(
+        SentDmServicesCommonContractsPocOsTemplateButtonProps|array $props,
+        string $type,
         ?int $id = null,
-        SentDmServicesCommonContractsPocOsTemplateButtonProps|array|null $props = null,
-        ?string $type = null,
     ): self {
         $self = new self;
 
+        $self['props'] = $props;
+        $self['type'] = $type;
+
         null !== $id && $self['id'] = $id;
-        null !== $props && $self['props'] = $props;
-        null !== $type && $self['type'] = $type;
-
-        return $self;
-    }
-
-    /**
-     * The unique identifier of the button (1-based index).
-     */
-    public function withID(int $id): self
-    {
-        $self = clone $this;
-        $self['id'] = $id;
 
         return $self;
     }
@@ -100,6 +107,17 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
     {
         $self = clone $this;
         $self['type'] = $type;
+
+        return $self;
+    }
+
+    /**
+     * The unique identifier of the button (1-based index).
+     */
+    public function withID(int $id): self
+    {
+        $self = clone $this;
+        $self['id'] = $id;
 
         return $self;
     }

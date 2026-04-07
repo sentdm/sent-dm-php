@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -14,7 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
  * @phpstan-type SentDmServicesCommonContractsPocOsTemplateFooterShape = array{
- *   template?: string|null,
+ *   template: string,
  *   type?: string|null,
  *   variables?: list<TemplateVariable|TemplateVariableShape>|null,
  * }
@@ -27,8 +28,8 @@ final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseMode
     /**
      * The footer template text with optional variable placeholders.
      */
-    #[Optional]
-    public ?string $template;
+    #[Required]
+    public string $template;
 
     /**
      * The type of footer (typically "text").
@@ -44,6 +45,20 @@ final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseMode
     #[Optional(list: TemplateVariable::class, nullable: true)]
     public ?array $variables;
 
+    /**
+     * `new SentDmServicesCommonContractsPocOsTemplateFooter()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * SentDmServicesCommonContractsPocOsTemplateFooter::with(template: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new SentDmServicesCommonContractsPocOsTemplateFooter)->withTemplate(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -57,13 +72,14 @@ final class SentDmServicesCommonContractsPocOsTemplateFooter implements BaseMode
      * @param list<TemplateVariable|TemplateVariableShape>|null $variables
      */
     public static function with(
-        ?string $template = null,
+        string $template,
         ?string $type = null,
         ?array $variables = null
     ): self {
         $self = new self;
 
-        null !== $template && $self['template'] = $template;
+        $self['template'] = $template;
+
         null !== $type && $self['type'] = $type;
         null !== $variables && $self['variables'] = $variables;
 

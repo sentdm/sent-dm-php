@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -12,7 +13,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
  * @phpstan-type TemplateBodyContentShape = array{
- *   template?: string|null,
+ *   template: string,
  *   type?: string|null,
  *   variables?: list<TemplateVariable|TemplateVariableShape>|null,
  * }
@@ -22,8 +23,8 @@ final class TemplateBodyContent implements BaseModel
     /** @use SdkModel<TemplateBodyContentShape> */
     use SdkModel;
 
-    #[Optional]
-    public ?string $template;
+    #[Required]
+    public string $template;
 
     #[Optional(nullable: true)]
     public ?string $type;
@@ -32,6 +33,20 @@ final class TemplateBodyContent implements BaseModel
     #[Optional(list: TemplateVariable::class, nullable: true)]
     public ?array $variables;
 
+    /**
+     * `new TemplateBodyContent()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * TemplateBodyContent::with(template: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new TemplateBodyContent)->withTemplate(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -45,13 +60,14 @@ final class TemplateBodyContent implements BaseModel
      * @param list<TemplateVariable|TemplateVariableShape>|null $variables
      */
     public static function with(
-        ?string $template = null,
+        string $template,
         ?string $type = null,
         ?array $variables = null
     ): self {
         $self = new self;
 
-        null !== $template && $self['template'] = $template;
+        $self['template'] = $template;
+
         null !== $type && $self['type'] = $type;
         null !== $variables && $self['variables'] = $variables;
 

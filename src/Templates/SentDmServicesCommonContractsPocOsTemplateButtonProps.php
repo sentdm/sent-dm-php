@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
  * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape = array{
- *   activeFor?: int|null,
+ *   activeFor: int,
+ *   countryCode: string,
+ *   offerCode: string,
+ *   phoneNumber: string,
+ *   quickReplyType: string,
+ *   text: string,
+ *   url: string,
+ *   urlType: string,
  *   autofillText?: string|null,
- *   countryCode?: string|null,
- *   offerCode?: string|null,
  *   otpType?: string|null,
  *   packageName?: string|null,
- *   phoneNumber?: string|null,
- *   quickReplyType?: string|null,
  *   signatureHash?: string|null,
- *   text?: string|null,
- *   url?: string|null,
- *   urlType?: string|null,
  * }
  */
 final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements BaseModel
@@ -29,17 +30,32 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
     /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateButtonPropsShape> */
     use SdkModel;
 
-    #[Optional(nullable: true)]
-    public ?int $activeFor;
+    #[Required]
+    public int $activeFor;
+
+    #[Required]
+    public string $countryCode;
+
+    #[Required]
+    public string $offerCode;
+
+    #[Required]
+    public string $phoneNumber;
+
+    #[Required]
+    public string $quickReplyType;
+
+    #[Required]
+    public string $text;
+
+    #[Required]
+    public string $url;
+
+    #[Required]
+    public string $urlType;
 
     #[Optional(nullable: true)]
     public ?string $autofillText;
-
-    #[Optional(nullable: true)]
-    public ?string $countryCode;
-
-    #[Optional(nullable: true)]
-    public ?string $offerCode;
 
     #[Optional(nullable: true)]
     public ?string $otpType;
@@ -48,23 +64,39 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
     public ?string $packageName;
 
     #[Optional(nullable: true)]
-    public ?string $phoneNumber;
-
-    #[Optional(nullable: true)]
-    public ?string $quickReplyType;
-
-    #[Optional(nullable: true)]
     public ?string $signatureHash;
 
-    #[Optional(nullable: true)]
-    public ?string $text;
-
-    #[Optional(nullable: true)]
-    public ?string $url;
-
-    #[Optional(nullable: true)]
-    public ?string $urlType;
-
+    /**
+     * `new SentDmServicesCommonContractsPocOsTemplateButtonProps()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * SentDmServicesCommonContractsPocOsTemplateButtonProps::with(
+     *   activeFor: ...,
+     *   countryCode: ...,
+     *   offerCode: ...,
+     *   phoneNumber: ...,
+     *   quickReplyType: ...,
+     *   text: ...,
+     *   url: ...,
+     *   urlType: ...,
+     * )
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new SentDmServicesCommonContractsPocOsTemplateButtonProps)
+     *   ->withActiveFor(...)
+     *   ->withCountryCode(...)
+     *   ->withOfferCode(...)
+     *   ->withPhoneNumber(...)
+     *   ->withQuickReplyType(...)
+     *   ->withText(...)
+     *   ->withURL(...)
+     *   ->withURLType(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -76,41 +108,98 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        ?int $activeFor = null,
+        int $activeFor,
+        string $countryCode,
+        string $offerCode,
+        string $phoneNumber,
+        string $quickReplyType,
+        string $text,
+        string $url,
+        string $urlType,
         ?string $autofillText = null,
-        ?string $countryCode = null,
-        ?string $offerCode = null,
         ?string $otpType = null,
         ?string $packageName = null,
-        ?string $phoneNumber = null,
-        ?string $quickReplyType = null,
         ?string $signatureHash = null,
-        ?string $text = null,
-        ?string $url = null,
-        ?string $urlType = null,
     ): self {
         $self = new self;
 
-        null !== $activeFor && $self['activeFor'] = $activeFor;
+        $self['activeFor'] = $activeFor;
+        $self['countryCode'] = $countryCode;
+        $self['offerCode'] = $offerCode;
+        $self['phoneNumber'] = $phoneNumber;
+        $self['quickReplyType'] = $quickReplyType;
+        $self['text'] = $text;
+        $self['url'] = $url;
+        $self['urlType'] = $urlType;
+
         null !== $autofillText && $self['autofillText'] = $autofillText;
-        null !== $countryCode && $self['countryCode'] = $countryCode;
-        null !== $offerCode && $self['offerCode'] = $offerCode;
         null !== $otpType && $self['otpType'] = $otpType;
         null !== $packageName && $self['packageName'] = $packageName;
-        null !== $phoneNumber && $self['phoneNumber'] = $phoneNumber;
-        null !== $quickReplyType && $self['quickReplyType'] = $quickReplyType;
         null !== $signatureHash && $self['signatureHash'] = $signatureHash;
-        null !== $text && $self['text'] = $text;
-        null !== $url && $self['url'] = $url;
-        null !== $urlType && $self['urlType'] = $urlType;
 
         return $self;
     }
 
-    public function withActiveFor(?int $activeFor): self
+    public function withActiveFor(int $activeFor): self
     {
         $self = clone $this;
         $self['activeFor'] = $activeFor;
+
+        return $self;
+    }
+
+    public function withCountryCode(string $countryCode): self
+    {
+        $self = clone $this;
+        $self['countryCode'] = $countryCode;
+
+        return $self;
+    }
+
+    public function withOfferCode(string $offerCode): self
+    {
+        $self = clone $this;
+        $self['offerCode'] = $offerCode;
+
+        return $self;
+    }
+
+    public function withPhoneNumber(string $phoneNumber): self
+    {
+        $self = clone $this;
+        $self['phoneNumber'] = $phoneNumber;
+
+        return $self;
+    }
+
+    public function withQuickReplyType(string $quickReplyType): self
+    {
+        $self = clone $this;
+        $self['quickReplyType'] = $quickReplyType;
+
+        return $self;
+    }
+
+    public function withText(string $text): self
+    {
+        $self = clone $this;
+        $self['text'] = $text;
+
+        return $self;
+    }
+
+    public function withURL(string $url): self
+    {
+        $self = clone $this;
+        $self['url'] = $url;
+
+        return $self;
+    }
+
+    public function withURLType(string $urlType): self
+    {
+        $self = clone $this;
+        $self['urlType'] = $urlType;
 
         return $self;
     }
@@ -119,22 +208,6 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
     {
         $self = clone $this;
         $self['autofillText'] = $autofillText;
-
-        return $self;
-    }
-
-    public function withCountryCode(?string $countryCode): self
-    {
-        $self = clone $this;
-        $self['countryCode'] = $countryCode;
-
-        return $self;
-    }
-
-    public function withOfferCode(?string $offerCode): self
-    {
-        $self = clone $this;
-        $self['offerCode'] = $offerCode;
 
         return $self;
     }
@@ -155,50 +228,10 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
         return $self;
     }
 
-    public function withPhoneNumber(?string $phoneNumber): self
-    {
-        $self = clone $this;
-        $self['phoneNumber'] = $phoneNumber;
-
-        return $self;
-    }
-
-    public function withQuickReplyType(?string $quickReplyType): self
-    {
-        $self = clone $this;
-        $self['quickReplyType'] = $quickReplyType;
-
-        return $self;
-    }
-
     public function withSignatureHash(?string $signatureHash): self
     {
         $self = clone $this;
         $self['signatureHash'] = $signatureHash;
-
-        return $self;
-    }
-
-    public function withText(?string $text): self
-    {
-        $self = clone $this;
-        $self['text'] = $text;
-
-        return $self;
-    }
-
-    public function withURL(?string $url): self
-    {
-        $self = clone $this;
-        $self['url'] = $url;
-
-        return $self;
-    }
-
-    public function withURLType(?string $urlType): self
-    {
-        $self = clone $this;
-        $self['urlType'] = $urlType;
 
         return $self;
     }
