@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace SentDm\Templates\TemplateVariable;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
  * @phpstan-type PropsShape = array{
+ *   mediaType: string,
+ *   sample: string,
+ *   url: string,
+ *   variableType: string,
  *   alt?: string|null,
- *   mediaType?: string|null,
  *   regex?: string|null,
- *   sample?: string|null,
  *   shortURL?: string|null,
- *   url?: string|null,
- *   variableType?: string|null,
  * }
  */
 final class Props implements BaseModel
@@ -24,27 +25,45 @@ final class Props implements BaseModel
     /** @use SdkModel<PropsShape> */
     use SdkModel;
 
+    #[Required]
+    public string $mediaType;
+
+    #[Required]
+    public string $sample;
+
+    #[Required]
+    public string $url;
+
+    #[Required]
+    public string $variableType;
+
     #[Optional(nullable: true)]
     public ?string $alt;
 
     #[Optional(nullable: true)]
-    public ?string $mediaType;
-
-    #[Optional(nullable: true)]
     public ?string $regex;
-
-    #[Optional(nullable: true)]
-    public ?string $sample;
 
     #[Optional('shortUrl', nullable: true)]
     public ?string $shortURL;
 
-    #[Optional(nullable: true)]
-    public ?string $url;
-
-    #[Optional(nullable: true)]
-    public ?string $variableType;
-
+    /**
+     * `new Props()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * Props::with(mediaType: ..., sample: ..., url: ..., variableType: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new Props)
+     *   ->withMediaType(...)
+     *   ->withSample(...)
+     *   ->withURL(...)
+     *   ->withVariableType(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -56,23 +75,56 @@ final class Props implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        string $mediaType,
+        string $sample,
+        string $url,
+        string $variableType,
         ?string $alt = null,
-        ?string $mediaType = null,
         ?string $regex = null,
-        ?string $sample = null,
         ?string $shortURL = null,
-        ?string $url = null,
-        ?string $variableType = null,
     ): self {
         $self = new self;
 
+        $self['mediaType'] = $mediaType;
+        $self['sample'] = $sample;
+        $self['url'] = $url;
+        $self['variableType'] = $variableType;
+
         null !== $alt && $self['alt'] = $alt;
-        null !== $mediaType && $self['mediaType'] = $mediaType;
         null !== $regex && $self['regex'] = $regex;
-        null !== $sample && $self['sample'] = $sample;
         null !== $shortURL && $self['shortURL'] = $shortURL;
-        null !== $url && $self['url'] = $url;
-        null !== $variableType && $self['variableType'] = $variableType;
+
+        return $self;
+    }
+
+    public function withMediaType(string $mediaType): self
+    {
+        $self = clone $this;
+        $self['mediaType'] = $mediaType;
+
+        return $self;
+    }
+
+    public function withSample(string $sample): self
+    {
+        $self = clone $this;
+        $self['sample'] = $sample;
+
+        return $self;
+    }
+
+    public function withURL(string $url): self
+    {
+        $self = clone $this;
+        $self['url'] = $url;
+
+        return $self;
+    }
+
+    public function withVariableType(string $variableType): self
+    {
+        $self = clone $this;
+        $self['variableType'] = $variableType;
 
         return $self;
     }
@@ -85,14 +137,6 @@ final class Props implements BaseModel
         return $self;
     }
 
-    public function withMediaType(?string $mediaType): self
-    {
-        $self = clone $this;
-        $self['mediaType'] = $mediaType;
-
-        return $self;
-    }
-
     public function withRegex(?string $regex): self
     {
         $self = clone $this;
@@ -101,34 +145,10 @@ final class Props implements BaseModel
         return $self;
     }
 
-    public function withSample(?string $sample): self
-    {
-        $self = clone $this;
-        $self['sample'] = $sample;
-
-        return $self;
-    }
-
     public function withShortURL(?string $shortURL): self
     {
         $self = clone $this;
         $self['shortURL'] = $shortURL;
-
-        return $self;
-    }
-
-    public function withURL(?string $url): self
-    {
-        $self = clone $this;
-        $self['url'] = $url;
-
-        return $self;
-    }
-
-    public function withVariableType(?string $variableType): self
-    {
-        $self = clone $this;
-        $self['variableType'] = $variableType;
 
         return $self;
     }
