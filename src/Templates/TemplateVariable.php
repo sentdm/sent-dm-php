@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Templates\TemplateVariable\Props;
@@ -13,10 +14,7 @@ use SentDm\Templates\TemplateVariable\Props;
  * @phpstan-import-type PropsShape from \SentDm\Templates\TemplateVariable\Props
  *
  * @phpstan-type TemplateVariableShape = array{
- *   id?: int|null,
- *   name?: string|null,
- *   props?: null|Props|PropsShape,
- *   type?: string|null,
+ *   name: string, props: Props|PropsShape, type: string, id?: int|null
  * }
  */
 final class TemplateVariable implements BaseModel
@@ -24,18 +22,32 @@ final class TemplateVariable implements BaseModel
     /** @use SdkModel<TemplateVariableShape> */
     use SdkModel;
 
+    #[Required]
+    public string $name;
+
+    #[Required]
+    public Props $props;
+
+    #[Required]
+    public string $type;
+
     #[Optional]
     public ?int $id;
 
-    #[Optional]
-    public ?string $name;
-
-    #[Optional]
-    public ?Props $props;
-
-    #[Optional]
-    public ?string $type;
-
+    /**
+     * `new TemplateVariable()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * TemplateVariable::with(name: ..., props: ..., type: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new TemplateVariable)->withName(...)->withProps(...)->withType(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -46,28 +58,21 @@ final class TemplateVariable implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Props|PropsShape|null $props
+     * @param Props|PropsShape $props
      */
     public static function with(
-        ?int $id = null,
-        ?string $name = null,
-        Props|array|null $props = null,
-        ?string $type = null,
+        string $name,
+        Props|array $props,
+        string $type,
+        ?int $id = null
     ): self {
         $self = new self;
 
+        $self['name'] = $name;
+        $self['props'] = $props;
+        $self['type'] = $type;
+
         null !== $id && $self['id'] = $id;
-        null !== $name && $self['name'] = $name;
-        null !== $props && $self['props'] = $props;
-        null !== $type && $self['type'] = $type;
-
-        return $self;
-    }
-
-    public function withID(int $id): self
-    {
-        $self = clone $this;
-        $self['id'] = $id;
 
         return $self;
     }
@@ -95,6 +100,14 @@ final class TemplateVariable implements BaseModel
     {
         $self = clone $this;
         $self['type'] = $type;
+
+        return $self;
+    }
+
+    public function withID(int $id): self
+    {
+        $self = clone $this;
+        $self['id'] = $id;
 
         return $self;
     }
