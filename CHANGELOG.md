@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.1 (2026-04-14)
+
+Full Changelog: [v0.15.0...v0.15.1](https://github.com/sentdm/sent-dm-php/compare/v0.15.0...v0.15.1)
+
+### Bug Fixes
+
+* **client:** properly generate file params ([710aab9](https://github.com/sentdm/sent-dm-php/commit/710aab9f400a6782b26f3558e1daee112e1177b0))
+
 ## 0.15.0 (2026-04-07)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/sentdm/sent-dm-php/compare/v0.14.0...v0.15.0)
