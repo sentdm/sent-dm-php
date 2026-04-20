@@ -12,8 +12,10 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type EventTypeShape = array{
  *   description?: string|null,
  *   displayName?: string|null,
+ *   eventType?: string|null,
  *   isActive?: bool|null,
  *   name?: string|null,
+ *   subTypes?: list<mixed>|null,
  * }
  */
 final class EventType implements BaseModel
@@ -27,11 +29,18 @@ final class EventType implements BaseModel
     #[Optional('display_name')]
     public ?string $displayName;
 
+    #[Optional('event_type', nullable: true)]
+    public ?string $eventType;
+
     #[Optional('is_active')]
     public ?bool $isActive;
 
     #[Optional]
     public ?string $name;
+
+    /** @var list<mixed>|null $subTypes */
+    #[Optional('sub_types', list: 'mixed', nullable: true)]
+    public ?array $subTypes;
 
     public function __construct()
     {
@@ -42,19 +51,25 @@ final class EventType implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param list<mixed>|null $subTypes
      */
     public static function with(
         ?string $description = null,
         ?string $displayName = null,
+        ?string $eventType = null,
         ?bool $isActive = null,
         ?string $name = null,
+        ?array $subTypes = null,
     ): self {
         $self = new self;
 
         null !== $description && $self['description'] = $description;
         null !== $displayName && $self['displayName'] = $displayName;
+        null !== $eventType && $self['eventType'] = $eventType;
         null !== $isActive && $self['isActive'] = $isActive;
         null !== $name && $self['name'] = $name;
+        null !== $subTypes && $self['subTypes'] = $subTypes;
 
         return $self;
     }
@@ -75,6 +90,14 @@ final class EventType implements BaseModel
         return $self;
     }
 
+    public function withEventType(?string $eventType): self
+    {
+        $self = clone $this;
+        $self['eventType'] = $eventType;
+
+        return $self;
+    }
+
     public function withIsActive(bool $isActive): self
     {
         $self = clone $this;
@@ -87,6 +110,17 @@ final class EventType implements BaseModel
     {
         $self = clone $this;
         $self['name'] = $name;
+
+        return $self;
+    }
+
+    /**
+     * @param list<mixed>|null $subTypes
+     */
+    public function withSubTypes(?array $subTypes): self
+    {
+        $self = clone $this;
+        $self['subTypes'] = $subTypes;
 
         return $self;
     }
