@@ -14,6 +14,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type ActivityShape = array{
  *   activeContactPrice?: string|null,
  *   description?: string|null,
+ *   from?: string|null,
  *   price?: string|null,
  *   status?: string|null,
  *   timestamp?: \DateTimeInterface|null,
@@ -35,6 +36,12 @@ final class Activity implements BaseModel
      */
     #[Optional]
     public ?string $description;
+
+    /**
+     * Sender phone number for this activity (the customer's sending number for outbound, the external sender for inbound). Null when not reported by the provider.
+     */
+    #[Optional(nullable: true)]
+    public ?string $from;
 
     /**
      * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to 4 decimal places.
@@ -67,6 +74,7 @@ final class Activity implements BaseModel
     public static function with(
         ?string $activeContactPrice = null,
         ?string $description = null,
+        ?string $from = null,
         ?string $price = null,
         ?string $status = null,
         ?\DateTimeInterface $timestamp = null,
@@ -75,6 +83,7 @@ final class Activity implements BaseModel
 
         null !== $activeContactPrice && $self['activeContactPrice'] = $activeContactPrice;
         null !== $description && $self['description'] = $description;
+        null !== $from && $self['from'] = $from;
         null !== $price && $self['price'] = $price;
         null !== $status && $self['status'] = $status;
         null !== $timestamp && $self['timestamp'] = $timestamp;
@@ -100,6 +109,17 @@ final class Activity implements BaseModel
     {
         $self = clone $this;
         $self['description'] = $description;
+
+        return $self;
+    }
+
+    /**
+     * Sender phone number for this activity (the customer's sending number for outbound, the external sender for inbound). Null when not reported by the provider.
+     */
+    public function withFrom(?string $from): self
+    {
+        $self = clone $this;
+        $self['from'] = $from;
 
         return $self;
     }
