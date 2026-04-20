@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.15.2 (2026-04-20)
+
+Full Changelog: [v0.15.1...v0.15.2](https://github.com/sentdm/sent-dm-php/compare/v0.15.1...v0.15.2)
+
+### Bug Fixes
+
+* **client:** resolve serialization issue with unions and enums ([7531884](https://github.com/sentdm/sent-dm-php/commit/75318844ced05775a1e0fd5f5864d0086f2ec480))
+* populate enum-typed properties with enum instances ([033c91f](https://github.com/sentdm/sent-dm-php/commit/033c91f84a5673662f4bf0baad027e8fd86d32f6))
+
 ## 0.15.1 (2026-04-14)
 
 Full Changelog: [v0.15.0...v0.15.1](https://github.com/sentdm/sent-dm-php/compare/v0.15.0...v0.15.1)
