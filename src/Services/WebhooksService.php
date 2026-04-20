@@ -45,6 +45,7 @@ final class WebhooksService implements WebhooksContract
      *
      * @param string $displayName Body param
      * @param string $endpointURL Body param
+     * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -59,6 +60,7 @@ final class WebhooksService implements WebhooksContract
     public function create(
         ?string $displayName = null,
         ?string $endpointURL = null,
+        ?array $eventFilters = null,
         ?array $eventTypes = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
@@ -71,6 +73,7 @@ final class WebhooksService implements WebhooksContract
             [
                 'displayName' => $displayName,
                 'endpointURL' => $endpointURL,
+                'eventFilters' => $eventFilters,
                 'eventTypes' => $eventTypes,
                 'retryCount' => $retryCount,
                 'sandbox' => $sandbox,
@@ -117,6 +120,7 @@ final class WebhooksService implements WebhooksContract
      * @param string $id Path param
      * @param string $displayName Body param
      * @param string $endpointURL Body param
+     * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -132,6 +136,7 @@ final class WebhooksService implements WebhooksContract
         string $id,
         ?string $displayName = null,
         ?string $endpointURL = null,
+        ?array $eventFilters = null,
         ?array $eventTypes = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
@@ -144,6 +149,7 @@ final class WebhooksService implements WebhooksContract
             [
                 'displayName' => $displayName,
                 'endpointURL' => $endpointURL,
+                'eventFilters' => $eventFilters,
                 'eventTypes' => $eventTypes,
                 'retryCount' => $retryCount,
                 'sandbox' => $sandbox,

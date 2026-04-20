@@ -50,6 +50,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * @param array{
      *   displayName?: string,
      *   endpointURL?: string,
+     *   eventFilters?: array<string,list<string>>|null,
      *   eventTypes?: list<string>,
      *   retryCount?: int,
      *   sandbox?: bool,
@@ -136,6 +137,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * @param array{
      *   displayName?: string,
      *   endpointURL?: string,
+     *   eventFilters?: array<string,list<string>>|null,
      *   eventTypes?: list<string>,
      *   retryCount?: int,
      *   sandbox?: bool,

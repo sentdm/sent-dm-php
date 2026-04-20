@@ -8,6 +8,7 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Core\Conversion\ListOf;
 
 /**
  * Updates an existing webhook for the authenticated customer.
@@ -17,6 +18,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type WebhookUpdateParamsShape = array{
  *   displayName?: string|null,
  *   endpointURL?: string|null,
+ *   eventFilters?: array<string,list<string>>|null,
  *   eventTypes?: list<string>|null,
  *   retryCount?: int|null,
  *   sandbox?: bool|null,
@@ -36,6 +38,10 @@ final class WebhookUpdateParams implements BaseModel
 
     #[Optional('endpoint_url')]
     public ?string $endpointURL;
+
+    /** @var array<string,list<string>>|null $eventFilters */
+    #[Optional('event_filters', map: new ListOf('string'), nullable: true)]
+    public ?array $eventFilters;
 
     /** @var list<string>|null $eventTypes */
     #[Optional('event_types', list: 'string')]
@@ -70,11 +76,13 @@ final class WebhookUpdateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
+     * @param array<string,list<string>>|null $eventFilters
      * @param list<string>|null $eventTypes
      */
     public static function with(
         ?string $displayName = null,
         ?string $endpointURL = null,
+        ?array $eventFilters = null,
         ?array $eventTypes = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
@@ -86,6 +94,7 @@ final class WebhookUpdateParams implements BaseModel
 
         null !== $displayName && $self['displayName'] = $displayName;
         null !== $endpointURL && $self['endpointURL'] = $endpointURL;
+        null !== $eventFilters && $self['eventFilters'] = $eventFilters;
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
         null !== $retryCount && $self['retryCount'] = $retryCount;
         null !== $sandbox && $self['sandbox'] = $sandbox;
@@ -108,6 +117,17 @@ final class WebhookUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['endpointURL'] = $endpointURL;
+
+        return $self;
+    }
+
+    /**
+     * @param array<string,list<string>>|null $eventFilters
+     */
+    public function withEventFilters(?array $eventFilters): self
+    {
+        $self = clone $this;
+        $self['eventFilters'] = $eventFilters;
 
         return $self;
     }

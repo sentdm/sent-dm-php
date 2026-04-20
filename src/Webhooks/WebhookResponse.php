@@ -7,6 +7,7 @@ namespace SentDm\Webhooks;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Core\Conversion\ListOf;
 
 /**
  * @phpstan-type WebhookResponseShape = array{
@@ -15,6 +16,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   createdAt?: \DateTimeInterface|null,
  *   displayName?: string|null,
  *   endpointURL?: string|null,
+ *   eventFilters?: array<string,list<string>>|null,
  *   eventTypes?: list<string>|null,
  *   isActive?: bool|null,
  *   lastDeliveryAttemptAt?: \DateTimeInterface|null,
@@ -44,6 +46,10 @@ final class WebhookResponse implements BaseModel
 
     #[Optional('endpoint_url')]
     public ?string $endpointURL;
+
+    /** @var array<string,list<string>>|null $eventFilters */
+    #[Optional('event_filters', map: new ListOf('string'), nullable: true)]
+    public ?array $eventFilters;
 
     /** @var list<string>|null $eventTypes */
     #[Optional('event_types', list: 'string')]
@@ -80,6 +86,7 @@ final class WebhookResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
+     * @param array<string,list<string>>|null $eventFilters
      * @param list<string>|null $eventTypes
      */
     public static function with(
@@ -88,6 +95,7 @@ final class WebhookResponse implements BaseModel
         ?\DateTimeInterface $createdAt = null,
         ?string $displayName = null,
         ?string $endpointURL = null,
+        ?array $eventFilters = null,
         ?array $eventTypes = null,
         ?bool $isActive = null,
         ?\DateTimeInterface $lastDeliveryAttemptAt = null,
@@ -104,6 +112,7 @@ final class WebhookResponse implements BaseModel
         null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $displayName && $self['displayName'] = $displayName;
         null !== $endpointURL && $self['endpointURL'] = $endpointURL;
+        null !== $eventFilters && $self['eventFilters'] = $eventFilters;
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
         null !== $isActive && $self['isActive'] = $isActive;
         null !== $lastDeliveryAttemptAt && $self['lastDeliveryAttemptAt'] = $lastDeliveryAttemptAt;
@@ -152,6 +161,17 @@ final class WebhookResponse implements BaseModel
     {
         $self = clone $this;
         $self['endpointURL'] = $endpointURL;
+
+        return $self;
+    }
+
+    /**
+     * @param array<string,list<string>>|null $eventFilters
+     */
+    public function withEventFilters(?array $eventFilters): self
+    {
+        $self = clone $this;
+        $self['eventFilters'] = $eventFilters;
 
         return $self;
     }
