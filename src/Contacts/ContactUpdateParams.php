@@ -15,6 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\ContactsService::update()
  *
  * @phpstan-type ContactUpdateParamsShape = array{
+ *   channelConsent?: array<string,string>|null,
  *   defaultChannel?: string|null,
  *   optOut?: bool|null,
  *   sandbox?: bool|null,
@@ -27,6 +28,18 @@ final class ContactUpdateParams implements BaseModel
     /** @use SdkModel<ContactUpdateParamsShape> */
     use SdkModel;
     use SdkParams;
+
+    /**
+     * Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".
+     * All entries must have the same status — mixed values (e.g., sms: opted_out + whatsapp: opted_in)
+     * are rejected with 400. The provided status is applied to ALL channels regardless of which keys
+     * are specified, because consent is global across channels.
+     * When provided, takes precedence over the opt_out field.
+     *
+     * @var array<string,string>|null $channelConsent
+     */
+    #[Optional('channel_consent', map: 'string', nullable: true)]
+    public ?array $channelConsent;
 
     /**
      * Default messaging channel: "sms" or "whatsapp".
@@ -62,8 +75,11 @@ final class ContactUpdateParams implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param array<string,string>|null $channelConsent
      */
     public static function with(
+        ?array $channelConsent = null,
         ?string $defaultChannel = null,
         ?bool $optOut = null,
         ?bool $sandbox = null,
@@ -72,11 +88,29 @@ final class ContactUpdateParams implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $channelConsent && $self['channelConsent'] = $channelConsent;
         null !== $defaultChannel && $self['defaultChannel'] = $defaultChannel;
         null !== $optOut && $self['optOut'] = $optOut;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    /**
+     * Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".
+     * All entries must have the same status — mixed values (e.g., sms: opted_out + whatsapp: opted_in)
+     * are rejected with 400. The provided status is applied to ALL channels regardless of which keys
+     * are specified, because consent is global across channels.
+     * When provided, takes precedence over the opt_out field.
+     *
+     * @param array<string,string>|null $channelConsent
+     */
+    public function withChannelConsent(?array $channelConsent): self
+    {
+        $self = clone $this;
+        $self['channelConsent'] = $channelConsent;
 
         return $self;
     }
