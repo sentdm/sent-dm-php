@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0 (2026-04-21)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/sentdm/sent-dm-php/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* **api:** api update ([60f33cb](https://github.com/sentdm/sent-dm-php/commit/60f33cb182159f04db0e5f57522e9bf2f2e95c98))
+
 ## 0.16.0 (2026-04-20)
 
 Full Changelog: [v0.15.2...v0.16.0](https://github.com/sentdm/sent-dm-php/compare/v0.15.2...v0.16.0)
