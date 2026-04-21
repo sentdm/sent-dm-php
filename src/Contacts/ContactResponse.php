@@ -15,6 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type ContactResponseShape = array{
  *   id?: string|null,
  *   availableChannels?: string|null,
+ *   channelConsent?: array<string,string>|null,
  *   countryCode?: string|null,
  *   createdAt?: \DateTimeInterface|null,
  *   defaultChannel?: string|null,
@@ -45,6 +46,16 @@ final class ContactResponse implements BaseModel
      */
     #[Optional('available_channels')]
     public ?string $availableChannels;
+
+    /**
+     * Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".
+     * All channels will have the same status because consent is global across channels.
+     * A STOP on any channel opts out of all channels; a START opts in to all.
+     *
+     * @var array<string,string>|null $channelConsent
+     */
+    #[Optional('channel_consent', map: 'string', nullable: true)]
+    public ?array $channelConsent;
 
     /**
      * Country calling code (e.g., 1 for US/Canada).
@@ -127,10 +138,13 @@ final class ContactResponse implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param array<string,string>|null $channelConsent
      */
     public static function with(
         ?string $id = null,
         ?string $availableChannels = null,
+        ?array $channelConsent = null,
         ?string $countryCode = null,
         ?\DateTimeInterface $createdAt = null,
         ?string $defaultChannel = null,
@@ -148,6 +162,7 @@ final class ContactResponse implements BaseModel
 
         null !== $id && $self['id'] = $id;
         null !== $availableChannels && $self['availableChannels'] = $availableChannels;
+        null !== $channelConsent && $self['channelConsent'] = $channelConsent;
         null !== $countryCode && $self['countryCode'] = $countryCode;
         null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $defaultChannel && $self['defaultChannel'] = $defaultChannel;
@@ -182,6 +197,21 @@ final class ContactResponse implements BaseModel
     {
         $self = clone $this;
         $self['availableChannels'] = $availableChannels;
+
+        return $self;
+    }
+
+    /**
+     * Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".
+     * All channels will have the same status because consent is global across channels.
+     * A STOP on any channel opts out of all channels; a START opts in to all.
+     *
+     * @param array<string,string>|null $channelConsent
+     */
+    public function withChannelConsent(?array $channelConsent): self
+    {
+        $self = clone $this;
+        $self['channelConsent'] = $channelConsent;
 
         return $self;
     }

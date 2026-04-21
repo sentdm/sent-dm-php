@@ -122,6 +122,7 @@ final class ContactsRawService implements ContactsRawContract
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param array{
+     *   channelConsent?: array<string,string>|null,
      *   defaultChannel?: string|null,
      *   optOut?: bool|null,
      *   sandbox?: bool,

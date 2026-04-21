@@ -100,6 +100,11 @@ final class ContactsService implements ContactsContract
      * Updates a contact's default channel and/or opt-out status. Inherited contacts cannot be updated.
      *
      * @param string $id Path param: Contact ID from route parameter
+     * @param array<string,string>|null $channelConsent Body param: Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".
+     * All entries must have the same status — mixed values (e.g., sms: opted_out + whatsapp: opted_in)
+     * are rejected with 400. The provided status is applied to ALL channels regardless of which keys
+     * are specified, because consent is global across channels.
+     * When provided, takes precedence over the opt_out field.
      * @param string|null $defaultChannel Body param: Default messaging channel: "sms" or "whatsapp"
      * @param bool|null $optOut Body param: Whether the contact has opted out of messaging
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -112,6 +117,7 @@ final class ContactsService implements ContactsContract
      */
     public function update(
         string $id,
+        ?array $channelConsent = null,
         ?string $defaultChannel = null,
         ?bool $optOut = null,
         ?bool $sandbox = null,
@@ -121,6 +127,7 @@ final class ContactsService implements ContactsContract
     ): APIResponseOfContact {
         $params = Util::removeNulls(
             [
+                'channelConsent' => $channelConsent,
                 'defaultChannel' => $defaultChannel,
                 'optOut' => $optOut,
                 'sandbox' => $sandbox,

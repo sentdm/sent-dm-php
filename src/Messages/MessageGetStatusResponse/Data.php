@@ -23,6 +23,7 @@ use SentDm\Messages\MessageGetStatusResponse\Data\MessageBody;
  *   contactID?: string|null,
  *   createdAt?: \DateTimeInterface|null,
  *   customerID?: string|null,
+ *   direction?: string|null,
  *   events?: list<Event|EventShape>|null,
  *   messageBody?: null|MessageBody|MessageBodyShape,
  *   phone?: string|null,
@@ -58,6 +59,9 @@ final class Data implements BaseModel
     #[Optional('customer_id')]
     public ?string $customerID;
 
+    #[Optional]
+    public ?string $direction;
+
     /** @var list<Event>|null $events */
     #[Optional(list: Event::class, nullable: true)]
     public ?array $events;
@@ -84,13 +88,13 @@ final class Data implements BaseModel
     #[Optional]
     public ?string $status;
 
-    #[Optional('template_category')]
+    #[Optional('template_category', nullable: true)]
     public ?string $templateCategory;
 
     #[Optional('template_id', nullable: true)]
     public ?string $templateID;
 
-    #[Optional('template_name')]
+    #[Optional('template_name', nullable: true)]
     public ?string $templateName;
 
     public function __construct()
@@ -113,6 +117,7 @@ final class Data implements BaseModel
         ?string $contactID = null,
         ?\DateTimeInterface $createdAt = null,
         ?string $customerID = null,
+        ?string $direction = null,
         ?array $events = null,
         MessageBody|array|null $messageBody = null,
         ?string $phone = null,
@@ -132,6 +137,7 @@ final class Data implements BaseModel
         null !== $contactID && $self['contactID'] = $contactID;
         null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $customerID && $self['customerID'] = $customerID;
+        null !== $direction && $self['direction'] = $direction;
         null !== $events && $self['events'] = $events;
         null !== $messageBody && $self['messageBody'] = $messageBody;
         null !== $phone && $self['phone'] = $phone;
@@ -190,6 +196,14 @@ final class Data implements BaseModel
     {
         $self = clone $this;
         $self['customerID'] = $customerID;
+
+        return $self;
+    }
+
+    public function withDirection(string $direction): self
+    {
+        $self = clone $this;
+        $self['direction'] = $direction;
 
         return $self;
     }
@@ -259,7 +273,7 @@ final class Data implements BaseModel
         return $self;
     }
 
-    public function withTemplateCategory(string $templateCategory): self
+    public function withTemplateCategory(?string $templateCategory): self
     {
         $self = clone $this;
         $self['templateCategory'] = $templateCategory;
@@ -275,7 +289,7 @@ final class Data implements BaseModel
         return $self;
     }
 
-    public function withTemplateName(string $templateName): self
+    public function withTemplateName(?string $templateName): self
     {
         $self = clone $this;
         $self['templateName'] = $templateName;
