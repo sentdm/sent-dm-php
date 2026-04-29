@@ -180,26 +180,7 @@ final class WebhooksTest extends TestCase
         }
 
         $result = $this->client->webhooks->rotateSecret(
-            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            body: []
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookRotateSecretResponse::class, $result);
-    }
-
-    #[Test]
-    public function testRotateSecretWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->webhooks->rotateSecret(
-            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            body: ['sandbox' => false],
-            idempotencyKey: 'req_abc123_retry1',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

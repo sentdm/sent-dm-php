@@ -113,25 +113,7 @@ final class ContactsTest extends TestCase
         }
 
         $result = $this->client->contacts->delete(
-            '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-            body: []
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertNull($result);
-    }
-
-    #[Test]
-    public function testDeleteWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->contacts->delete(
-            '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-            body: ['sandbox' => false],
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+            '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

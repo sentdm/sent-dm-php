@@ -21,7 +21,6 @@ use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookListResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
-use SentDm\Webhooks\WebhookRotateSecretParams\Body;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestParams;
 use SentDm\Webhooks\WebhookTestResponse;
@@ -31,7 +30,6 @@ use SentDm\Webhooks\WebhookUpdateParams;
 /**
  * Configure webhook endpoints for real-time event delivery.
  *
- * @phpstan-import-type BodyShape from \SentDm\Webhooks\WebhookRotateSecretParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class WebhooksRawService implements WebhooksRawContract
@@ -351,7 +349,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   body: Body|BodyShape, idempotencyKey?: string, xProfileID?: string
+     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|WebhookRotateSecretParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -368,16 +366,22 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'post',
             path: ['v3/webhooks/%1$s/rotate-secret', $id],
             headers: Util::array_transform_keys(
-                array_diff_key($parsed, array_flip(['body'])),
-                ['idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id'],
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
             ),
-            body: (object) $parsed['body'],
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
             options: $options,
             convert: WebhookRotateSecretResponse::class,
         );

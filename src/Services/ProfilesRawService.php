@@ -13,10 +13,10 @@ use SentDm\Profiles\BillingContactInfo;
 use SentDm\Profiles\BrandsBrandData;
 use SentDm\Profiles\PaymentDetails;
 use SentDm\Profiles\ProfileCompleteParams;
+use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 use SentDm\Profiles\ProfileDeleteParams;
-use SentDm\Profiles\ProfileDeleteParams\Body;
 use SentDm\Profiles\ProfileListParams;
 use SentDm\Profiles\ProfileListResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
@@ -28,7 +28,6 @@ use SentDm\ServiceContracts\ProfilesRawContract;
  * Manage organization profiles.
  *
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
- * @phpstan-import-type BodyShape from \SentDm\Profiles\ProfileDeleteParams\Body
  * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
  * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
  * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
@@ -269,9 +268,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
      *
      * @param string $profileID Path param
-     * @param array{
-     *   body: Body|BodyShape, xProfileID?: string
-     * }|ProfileDeleteParams $params
+     * @param array{sandbox?: bool, xProfileID?: string}|ProfileDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -287,16 +284,20 @@ final class ProfilesRawService implements ProfilesRawContract
             $params,
             $requestOptions,
         );
+        $header_params = ['xProfileID' => 'x-profile-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
             path: ['v3/profiles/%1$s', $profileID],
             headers: Util::array_transform_keys(
-                array_diff_key($parsed, array_flip(['body'])),
-                ['xProfileID' => 'x-profile-id'],
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
             ),
-            body: (object) $parsed['body'],
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
             options: $options,
             convert: null,
         );
@@ -330,7 +331,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * }|ProfileCompleteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<mixed>
+     * @return BaseResponse<ProfileCompleteResponse>
      *
      * @throws APIException
      */
@@ -360,7 +361,7 @@ final class ProfilesRawService implements ProfilesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: 'mixed',
+            convert: ProfileCompleteResponse::class,
         );
     }
 }

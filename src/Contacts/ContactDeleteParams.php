@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Contacts;
 
-use SentDm\Contacts\ContactDeleteParams\Body;
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
@@ -16,10 +14,8 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\ContactsService::delete()
  *
- * @phpstan-import-type BodyShape from \SentDm\Contacts\ContactDeleteParams\Body
- *
  * @phpstan-type ContactDeleteParamsShape = array{
- *   body: Body|BodyShape, xProfileID?: string|null
+ *   sandbox?: bool|null, xProfileID?: string|null
  * }
  */
 final class ContactDeleteParams implements BaseModel
@@ -29,28 +25,15 @@ final class ContactDeleteParams implements BaseModel
     use SdkParams;
 
     /**
-     * Request to delete/dissociate a contact.
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
      */
-    #[Required]
-    public Body $body;
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new ContactDeleteParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * ContactDeleteParams::with(body: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new ContactDeleteParams)->withBody(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -60,31 +43,27 @@ final class ContactDeleteParams implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
-     *
-     * @param Body|BodyShape $body
      */
     public static function with(
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $xProfileID = null
     ): self {
         $self = new self;
 
-        $self['body'] = $body;
-
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
 
     /**
-     * Request to delete/dissociate a contact.
-     *
-     * @param Body|BodyShape $body
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
      */
-    public function withBody(Body|array $body): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['body'] = $body;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }

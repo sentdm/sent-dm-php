@@ -5,21 +5,17 @@ declare(strict_types=1);
 namespace SentDm\Users;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Users\UserRemoveParams\Body;
 
 /**
  * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
  *
  * @see SentDm\Services\UsersService::remove()
  *
- * @phpstan-import-type BodyShape from \SentDm\Users\UserRemoveParams\Body
- *
  * @phpstan-type UserRemoveParamsShape = array{
- *   body: Body|BodyShape, xProfileID?: string|null
+ *   sandbox?: bool|null, xProfileID?: string|null
  * }
  */
 final class UserRemoveParams implements BaseModel
@@ -29,28 +25,15 @@ final class UserRemoveParams implements BaseModel
     use SdkParams;
 
     /**
-     * Request to remove a user from an organization.
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
      */
-    #[Required]
-    public Body $body;
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new UserRemoveParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * UserRemoveParams::with(body: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new UserRemoveParams)->withBody(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -60,31 +43,27 @@ final class UserRemoveParams implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
-     *
-     * @param Body|BodyShape $body
      */
     public static function with(
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $xProfileID = null
     ): self {
         $self = new self;
 
-        $self['body'] = $body;
-
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
     }
 
     /**
-     * Request to remove a user from an organization.
-     *
-     * @param Body|BodyShape $body
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
      */
-    public function withBody(Body|array $body): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['body'] = $body;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }

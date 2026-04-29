@@ -5,21 +5,17 @@ declare(strict_types=1);
 namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookRotateSecretParams\Body;
 
 /**
  * Generates a new signing secret for the specified webhook. The old secret is immediately invalidated.
  *
  * @see SentDm\Services\WebhooksService::rotateSecret()
  *
- * @phpstan-import-type BodyShape from \SentDm\Webhooks\WebhookRotateSecretParams\Body
- *
  * @phpstan-type WebhookRotateSecretParamsShape = array{
- *   body: Body|BodyShape, idempotencyKey?: string|null, xProfileID?: string|null
+ *   sandbox?: bool|null, idempotencyKey?: string|null, xProfileID?: string|null
  * }
  */
 final class WebhookRotateSecretParams implements BaseModel
@@ -28,8 +24,12 @@ final class WebhookRotateSecretParams implements BaseModel
     use SdkModel;
     use SdkParams;
 
-    #[Required]
-    public Body $body;
+    /**
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
+     */
+    #[Optional]
+    public ?bool $sandbox;
 
     #[Optional]
     public ?string $idempotencyKey;
@@ -37,20 +37,6 @@ final class WebhookRotateSecretParams implements BaseModel
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new WebhookRotateSecretParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * WebhookRotateSecretParams::with(body: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new WebhookRotateSecretParams)->withBody(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -60,18 +46,15 @@ final class WebhookRotateSecretParams implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
-     *
-     * @param Body|BodyShape $body
      */
     public static function with(
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
-        ?string $xProfileID = null
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
-        $self['body'] = $body;
-
+        null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
@@ -79,12 +62,13 @@ final class WebhookRotateSecretParams implements BaseModel
     }
 
     /**
-     * @param Body|BodyShape $body
+     * Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution.
      */
-    public function withBody(Body|array $body): self
+    public function withSandbox(bool $sandbox): self
     {
         $self = clone $this;
-        $self['body'] = $body;
+        $self['sandbox'] = $sandbox;
 
         return $self;
     }
