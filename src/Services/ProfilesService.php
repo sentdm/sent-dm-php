@@ -11,8 +11,8 @@ use SentDm\Profiles\APIResponseOfProfileDetail;
 use SentDm\Profiles\BillingContactInfo;
 use SentDm\Profiles\BrandsBrandData;
 use SentDm\Profiles\PaymentDetails;
+use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
-use SentDm\Profiles\ProfileDeleteParams\Body;
 use SentDm\Profiles\ProfileListResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesContract;
@@ -22,7 +22,6 @@ use SentDm\Services\Profiles\CampaignsService;
  * Manage organization profiles.
  *
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
- * @phpstan-import-type BodyShape from \SentDm\Profiles\ProfileDeleteParams\Body
  * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
  * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
  * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
@@ -313,7 +312,8 @@ final class ProfilesService implements ProfilesContract
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
      *
      * @param string $profileID Path param
-     * @param Body|BodyShape $body Body param: Request to delete a profile
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -321,11 +321,13 @@ final class ProfilesService implements ProfilesContract
      */
     public function delete(
         string $profileID,
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
-        $params = Util::removeNulls(['body' => $body, 'xProfileID' => $xProfileID]);
+        $params = Util::removeNulls(
+            ['sandbox' => $sandbox, 'xProfileID' => $xProfileID]
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->delete($profileID, params: $params, requestOptions: $requestOptions);
@@ -369,7 +371,7 @@ final class ProfilesService implements ProfilesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): mixed {
+    ): ProfileCompleteResponse {
         $params = Util::removeNulls(
             [
                 'webHookURL' => $webHookURL,

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\Profiles\APIResponseOfProfileDetail;
+use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileListResponse;
 use Tests\UnsupportedMockTests;
 
@@ -88,24 +89,7 @@ final class ProfilesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->profiles->delete('profileId', body: []);
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertNull($result);
-    }
-
-    #[Test]
-    public function testDeleteWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->profiles->delete(
-            'profileId',
-            body: ['sandbox' => false],
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
+        $result = $this->client->profiles->delete('profileId');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertNull($result);
@@ -124,7 +108,7 @@ final class ProfilesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertIsNotResource($result);
+        $this->assertInstanceOf(ProfileCompleteResponse::class, $result);
     }
 
     #[Test]
@@ -143,6 +127,6 @@ final class ProfilesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertIsNotResource($result);
+        $this->assertInstanceOf(ProfileCompleteResponse::class, $result);
     }
 }

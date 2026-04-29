@@ -10,12 +10,10 @@ use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListResponse;
-use SentDm\Webhooks\WebhookRotateSecretParams\Body;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
 
 /**
- * @phpstan-import-type BodyShape from \SentDm\Webhooks\WebhookRotateSecretParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 interface WebhooksContract
@@ -169,7 +167,8 @@ interface WebhooksContract
      * @api
      *
      * @param string $id Path param
-     * @param Body|BodyShape $body Body param
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
@@ -178,7 +177,7 @@ interface WebhooksContract
      */
     public function rotateSecret(
         string $id,
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,

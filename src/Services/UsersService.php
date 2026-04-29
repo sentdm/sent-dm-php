@@ -11,12 +11,10 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersContract;
 use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserListResponse;
-use SentDm\Users\UserRemoveParams\Body;
 
 /**
  * Invite, update, and manage organization users and roles.
  *
- * @phpstan-import-type BodyShape from \SentDm\Users\UserRemoveParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class UsersService implements UsersContract
@@ -127,7 +125,8 @@ final class UsersService implements UsersContract
      * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
      *
      * @param string $userID Path param
-     * @param Body|BodyShape $body Body param: Request to remove a user from an organization
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -135,11 +134,13 @@ final class UsersService implements UsersContract
      */
     public function remove(
         string $userID,
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
-        $params = Util::removeNulls(['body' => $body, 'xProfileID' => $xProfileID]);
+        $params = Util::removeNulls(
+            ['sandbox' => $sandbox, 'xProfileID' => $xProfileID]
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->remove($userID, params: $params, requestOptions: $requestOptions);

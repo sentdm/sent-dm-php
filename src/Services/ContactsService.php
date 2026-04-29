@@ -6,7 +6,6 @@ namespace SentDm\Services;
 
 use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
-use SentDm\Contacts\ContactDeleteParams\Body;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -16,7 +15,6 @@ use SentDm\ServiceContracts\ContactsContract;
 /**
  * Create, update, and manage customer contact lists.
  *
- * @phpstan-import-type BodyShape from \SentDm\Contacts\ContactDeleteParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ContactsService implements ContactsContract
@@ -189,7 +187,8 @@ final class ContactsService implements ContactsContract
      * Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.
      *
      * @param string $id Path param: Contact ID from route parameter
-     * @param Body|BodyShape $body Body param: Request to delete/dissociate a contact
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -197,11 +196,13 @@ final class ContactsService implements ContactsContract
      */
     public function delete(
         string $id,
-        Body|array $body,
+        ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
-        $params = Util::removeNulls(['body' => $body, 'xProfileID' => $xProfileID]);
+        $params = Util::removeNulls(
+            ['sandbox' => $sandbox, 'xProfileID' => $xProfileID]
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->delete($id, params: $params, requestOptions: $requestOptions);
