@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.18.0 (2026-04-29)
+
+Full Changelog: [v0.17.0...v0.18.0](https://github.com/sentdm/sent-dm-php/compare/v0.17.0...v0.18.0)
+
+### Features
+
+* support setting headers via env ([9ea33e1](https://github.com/sentdm/sent-dm-php/commit/9ea33e1b1c715502027712c71d5c8d15c26dd1c8))
+
+
+### Bug Fixes
+
+* revert enum parsing change that lead to unconditional failure ([ae15add](https://github.com/sentdm/sent-dm-php/commit/ae15addc2c6334d584b8acc0e94a138b87ec9648))
+
 ## 0.17.0 (2026-04-21)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/sentdm/sent-dm-php/compare/v0.16.0...v0.17.0)
