@@ -12,7 +12,6 @@ use SentDm\Profiles\Campaigns\APIResponseOfTcrCampaignWithUseCases;
 use SentDm\Profiles\Campaigns\CampaignCreateParams;
 use SentDm\Profiles\Campaigns\CampaignData;
 use SentDm\Profiles\Campaigns\CampaignDeleteParams;
-use SentDm\Profiles\Campaigns\CampaignDeleteParams\Body;
 use SentDm\Profiles\Campaigns\CampaignListParams;
 use SentDm\Profiles\Campaigns\CampaignListResponse;
 use SentDm\Profiles\Campaigns\CampaignUpdateParams;
@@ -22,7 +21,6 @@ use SentDm\ServiceContracts\Profiles\CampaignsRawContract;
 /**
  * Manage organization profiles.
  *
- * @phpstan-import-type BodyShape from \SentDm\Profiles\Campaigns\CampaignDeleteParams\Body
  * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -176,7 +174,7 @@ final class CampaignsRawService implements CampaignsRawContract
      *
      * @param string $campaignID Path param: Campaign ID from route parameter
      * @param array{
-     *   profileID: string, body: Body|BodyShape, xProfileID?: string
+     *   profileID: string, sandbox?: bool, xProfileID?: string
      * }|CampaignDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -195,19 +193,20 @@ final class CampaignsRawService implements CampaignsRawContract
         );
         $profileID = $parsed['profileID'];
         unset($parsed['profileID']);
-
-        /** @var array<string,mixed> */
-        $body = $parsed['body'];
+        $header_params = ['xProfileID' => 'x-profile-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
             path: ['v3/profiles/%1$s/campaigns/%2$s', $profileID, $campaignID],
             headers: Util::array_transform_keys(
-                array_diff_key($parsed, array_flip(['body'])),
-                ['xProfileID' => 'x-profile-id'],
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
             ),
-            body: (object) array_diff_key($body, array_flip(['profileID'])),
+            body: (object) array_diff_key(
+                array_diff_key($parsed, array_flip(array_keys($header_params))),
+                array_flip(['profileID']),
+            ),
             options: $options,
             convert: null,
         );

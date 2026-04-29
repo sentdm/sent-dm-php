@@ -8,7 +8,6 @@ use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
-use SentDm\Contacts\ContactDeleteParams\Body;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Contacts\ContactRetrieveParams;
@@ -22,7 +21,6 @@ use SentDm\ServiceContracts\ContactsRawContract;
 /**
  * Create, update, and manage customer contact lists.
  *
- * @phpstan-import-type BodyShape from \SentDm\Contacts\ContactDeleteParams\Body
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ContactsRawService implements ContactsRawContract
@@ -222,9 +220,7 @@ final class ContactsRawService implements ContactsRawContract
      * Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.
      *
      * @param string $id Path param: Contact ID from route parameter
-     * @param array{
-     *   body: Body|BodyShape, xProfileID?: string
-     * }|ContactDeleteParams $params
+     * @param array{sandbox?: bool, xProfileID?: string}|ContactDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -240,16 +236,20 @@ final class ContactsRawService implements ContactsRawContract
             $params,
             $requestOptions,
         );
+        $header_params = ['xProfileID' => 'x-profile-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
             path: ['v3/contacts/%1$s', $id],
             headers: Util::array_transform_keys(
-                array_diff_key($parsed, array_flip(['body'])),
-                ['xProfileID' => 'x-profile-id'],
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
             ),
-            body: (object) $parsed['body'],
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
             options: $options,
             convert: null,
         );

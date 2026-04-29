@@ -8,6 +8,7 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Profiles\APIResponseOfProfileDetail;
 use SentDm\Profiles\ProfileCompleteParams;
+use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileDeleteParams;
 use SentDm\Profiles\ProfileListParams;
@@ -108,7 +109,7 @@ interface ProfilesRawContract
      * @param array<string,mixed>|ProfileCompleteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<mixed>
+     * @return BaseResponse<ProfileCompleteResponse>
      *
      * @throws APIException
      */
