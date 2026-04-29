@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventTypesResponse\Data;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type EventTypeShape = array{
+ * @phpstan-type WebhookEventTypeShape = array{
  *   description?: string|null,
  *   displayName?: string|null,
  *   eventType?: string|null,
@@ -18,9 +18,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   subTypes?: list<mixed>|null,
  * }
  */
-final class EventType implements BaseModel
+final class WebhookEventType implements BaseModel
 {
-    /** @use SdkModel<EventTypeShape> */
+    /** @use SdkModel<WebhookEventTypeShape> */
     use SdkModel;
 
     #[Optional(nullable: true)]
@@ -39,7 +39,7 @@ final class EventType implements BaseModel
     public ?string $name;
 
     /** @var list<mixed>|null $subTypes */
-    #[Optional('sub_types', list: 'mixed', nullable: true)]
+    #[Optional('sub_types', list: WebhookEventType::class, nullable: true)]
     public ?array $subTypes;
 
     public function __construct()
