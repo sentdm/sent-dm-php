@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.20.1 (2026-04-29)
+
+Full Changelog: [v0.20.0...v0.20.1](https://github.com/sentdm/sent-dm-php/compare/v0.20.0...v0.20.1)
+
 ## 0.20.0 (2026-04-29)
 
 Full Changelog: [v0.19.0...v0.20.0](https://github.com/sentdm/sent-dm-php/compare/v0.19.0...v0.20.0)
