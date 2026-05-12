@@ -7,6 +7,7 @@ namespace SentDm;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use SentDm\Core\BaseClient;
+use SentDm\Core\Implementation\StreamingHttpClient;
 use SentDm\Core\Util;
 use SentDm\Services\ContactsService;
 use SentDm\Services\MeService;
@@ -86,6 +87,11 @@ class Client extends BaseClient
             ),
             $requestOptions,
         );
+
+        if (is_null($options->streamingTransporter)) {
+            assert(!is_null($options->transporter));
+            $options->streamingTransporter = new StreamingHttpClient($options->transporter);
+        }
 
         /** @var array<string, string|null> $headers */
         $headers = [
