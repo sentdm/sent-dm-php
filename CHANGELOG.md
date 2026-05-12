@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2 (2026-05-12)
+
+Full Changelog: [v0.20.1...v0.20.2](https://github.com/sentdm/sent-dm-php/compare/v0.20.1...v0.20.2)
+
+### Bug Fixes
+
+* guzzle requires special handling to enable streaming ([3ba6140](https://github.com/sentdm/sent-dm-php/commit/3ba6140d55fd5db0768fcc09291e476a11f4a5b1))
+
 ## 0.20.1 (2026-04-29)
 
 Full Changelog: [v0.20.0...v0.20.1](https://github.com/sentdm/sent-dm-php/compare/v0.20.0...v0.20.1)
