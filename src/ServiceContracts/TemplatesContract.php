@@ -6,15 +6,12 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Templates\TemplateCreateParams\Definition;
-use SentDm\Templates\TemplateGetResponse;
+use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateNewResponse;
-use SentDm\Templates\TemplateUpdateResponse;
 
 /**
- * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateCreateParams\Definition
- * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateUpdateParams\Definition as DefinitionShape1
+ * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 interface TemplatesContract
@@ -24,7 +21,7 @@ interface TemplatesContract
      *
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided)
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
-     * @param Definition|DefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
+     * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US) (optional, auto-detected if not provided)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -38,14 +35,14 @@ interface TemplatesContract
     public function create(
         ?string $category = null,
         ?string $creationSource = null,
-        Definition|array|null $definition = null,
+        TemplateDefinition|array|null $definition = null,
         ?string $language = null,
         ?bool $sandbox = null,
         ?bool $submitForReview = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateNewResponse;
+    ): APIResponseTemplate;
 
     /**
      * @api
@@ -60,14 +57,14 @@ interface TemplatesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateGetResponse;
+    ): APIResponseTemplate;
 
     /**
      * @api
      *
      * @param string $id Path param: Template ID from route parameter
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
-     * @param \SentDm\Templates\TemplateUpdateParams\Definition|DefinitionShape1|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US)
      * @param string|null $name Body param: Template display name
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -82,7 +79,7 @@ interface TemplatesContract
     public function update(
         string $id,
         ?string $category = null,
-        \SentDm\Templates\TemplateUpdateParams\Definition|array|null $definition = null,
+        TemplateDefinition|array|null $definition = null,
         ?string $language = null,
         ?string $name = null,
         ?bool $sandbox = null,
@@ -90,7 +87,7 @@ interface TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateUpdateResponse;
+    ): APIResponseTemplate;
 
     /**
      * @api

@@ -8,20 +8,18 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Webhooks\WebhookListResponse\Data;
-use SentDm\Webhooks\WebhookListResponse\Error;
-use SentDm\Webhooks\WebhookListResponse\Meta;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
  * @phpstan-import-type DataShape from \SentDm\Webhooks\WebhookListResponse\Data
- * @phpstan-import-type ErrorShape from \SentDm\Webhooks\WebhookListResponse\Error
- * @phpstan-import-type MetaShape from \SentDm\Webhooks\WebhookListResponse\Meta
+ * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
+ * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type WebhookListResponseShape = array{
  *   data?: null|Data|DataShape,
- *   error?: null|Error|ErrorShape,
- *   meta?: null|Meta|MetaShape,
+ *   error?: null|ErrorDetail|ErrorDetailShape,
+ *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
@@ -40,13 +38,13 @@ final class WebhookListResponse implements BaseModel
      * Error information.
      */
     #[Optional(nullable: true)]
-    public ?Error $error;
+    public ?ErrorDetail $error;
 
     /**
      * Request and response metadata.
      */
     #[Optional]
-    public ?Meta $meta;
+    public ?APIMeta $meta;
 
     /**
      * Indicates whether the request was successful.
@@ -65,13 +63,13 @@ final class WebhookListResponse implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param Data|DataShape|null $data
-     * @param Error|ErrorShape|null $error
-     * @param Meta|MetaShape|null $meta
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
         Data|array|null $data = null,
-        Error|array|null $error = null,
-        Meta|array|null $meta = null,
+        ErrorDetail|array|null $error = null,
+        APIMeta|array|null $meta = null,
         ?bool $success = null,
     ): self {
         $self = new self;
@@ -100,9 +98,9 @@ final class WebhookListResponse implements BaseModel
     /**
      * Error information.
      *
-     * @param Error|ErrorShape|null $error
+     * @param ErrorDetail|ErrorDetailShape|null $error
      */
-    public function withError(Error|array|null $error): self
+    public function withError(ErrorDetail|array|null $error): self
     {
         $self = clone $this;
         $self['error'] = $error;
@@ -113,9 +111,9 @@ final class WebhookListResponse implements BaseModel
     /**
      * Request and response metadata.
      *
-     * @param Meta|MetaShape $meta
+     * @param APIMeta|APIMetaShape $meta
      */
-    public function withMeta(Meta|array $meta): self
+    public function withMeta(APIMeta|array $meta): self
     {
         $self = clone $this;
         $self['meta'] = $meta;
