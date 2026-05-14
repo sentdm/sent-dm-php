@@ -8,18 +8,17 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateUpdateParams\Definition;
 
 /**
  * Updates an existing template's name, category, language, definition, or submits it for review.
  *
  * @see SentDm\Services\TemplatesService::update()
  *
- * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateUpdateParams\Definition
+ * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  *
  * @phpstan-type TemplateUpdateParamsShape = array{
  *   category?: string|null,
- *   definition?: null|Definition|DefinitionShape,
+ *   definition?: null|TemplateDefinition|TemplateDefinitionShape,
  *   language?: string|null,
  *   name?: string|null,
  *   sandbox?: bool|null,
@@ -44,7 +43,7 @@ final class TemplateUpdateParams implements BaseModel
      * Complete definition of a message template including header, body, footer, and buttons.
      */
     #[Optional(nullable: true)]
-    public ?Definition $definition;
+    public ?TemplateDefinition $definition;
 
     /**
      * Template language code (e.g., en_US).
@@ -87,11 +86,11 @@ final class TemplateUpdateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Definition|DefinitionShape|null $definition
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      */
     public static function with(
         ?string $category = null,
-        Definition|array|null $definition = null,
+        TemplateDefinition|array|null $definition = null,
         ?string $language = null,
         ?string $name = null,
         ?bool $sandbox = null,
@@ -127,10 +126,11 @@ final class TemplateUpdateParams implements BaseModel
     /**
      * Complete definition of a message template including header, body, footer, and buttons.
      *
-     * @param Definition|DefinitionShape|null $definition
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      */
-    public function withDefinition(Definition|array|null $definition): self
-    {
+    public function withDefinition(
+        TemplateDefinition|array|null $definition
+    ): self {
         $self = clone $this;
         $self['definition'] = $definition;
 

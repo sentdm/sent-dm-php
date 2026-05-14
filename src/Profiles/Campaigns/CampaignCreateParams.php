@@ -9,17 +9,16 @@ use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign;
 
 /**
  * Creates a new campaign scoped under the brand of the specified profile. Each campaign must include at least one use case with sample messages.
  *
  * @see SentDm\Services\Profiles\CampaignsService::create()
  *
- * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign
+ * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
  *
  * @phpstan-type CampaignCreateParamsShape = array{
- *   campaign: Campaign|CampaignShape,
+ *   campaign: CampaignData|CampaignDataShape,
  *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -35,7 +34,7 @@ final class CampaignCreateParams implements BaseModel
      * Campaign data for create or update operation.
      */
     #[Required]
-    public Campaign $campaign;
+    public CampaignData $campaign;
 
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
@@ -74,10 +73,10 @@ final class CampaignCreateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Campaign|CampaignShape $campaign
+     * @param CampaignData|CampaignDataShape $campaign
      */
     public static function with(
-        Campaign|array $campaign,
+        CampaignData|array $campaign,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -96,9 +95,9 @@ final class CampaignCreateParams implements BaseModel
     /**
      * Campaign data for create or update operation.
      *
-     * @param Campaign|CampaignShape $campaign
+     * @param CampaignData|CampaignDataShape $campaign
      */
-    public function withCampaign(Campaign|array $campaign): self
+    public function withCampaign(CampaignData|array $campaign): self
     {
         $self = clone $this;
         $self['campaign'] = $campaign;

@@ -7,18 +7,18 @@ namespace SentDm\Webhooks\WebhookListResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListResponse\Data\Pagination;
-use SentDm\Webhooks\WebhookListResponse\Data\Webhook;
+use SentDm\Webhooks\PaginationMeta;
+use SentDm\Webhooks\WebhookResponse;
 
 /**
  * The response data (null if error).
  *
- * @phpstan-import-type PaginationShape from \SentDm\Webhooks\WebhookListResponse\Data\Pagination
- * @phpstan-import-type WebhookShape from \SentDm\Webhooks\WebhookListResponse\Data\Webhook
+ * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
+ * @phpstan-import-type WebhookResponseShape from \SentDm\Webhooks\WebhookResponse
  *
  * @phpstan-type DataShape = array{
- *   pagination?: null|Pagination|PaginationShape,
- *   webhooks?: list<Webhook|WebhookShape>|null,
+ *   pagination?: null|PaginationMeta|PaginationMetaShape,
+ *   webhooks?: list<WebhookResponse|WebhookResponseShape>|null,
  * }
  */
 final class Data implements BaseModel
@@ -30,10 +30,10 @@ final class Data implements BaseModel
      * Pagination metadata for list responses.
      */
     #[Optional]
-    public ?Pagination $pagination;
+    public ?PaginationMeta $pagination;
 
-    /** @var list<Webhook>|null $webhooks */
-    #[Optional(list: Webhook::class)]
+    /** @var list<WebhookResponse>|null $webhooks */
+    #[Optional(list: WebhookResponse::class)]
     public ?array $webhooks;
 
     public function __construct()
@@ -46,11 +46,11 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Pagination|PaginationShape|null $pagination
-     * @param list<Webhook|WebhookShape>|null $webhooks
+     * @param PaginationMeta|PaginationMetaShape|null $pagination
+     * @param list<WebhookResponse|WebhookResponseShape>|null $webhooks
      */
     public static function with(
-        Pagination|array|null $pagination = null,
+        PaginationMeta|array|null $pagination = null,
         ?array $webhooks = null
     ): self {
         $self = new self;
@@ -64,9 +64,9 @@ final class Data implements BaseModel
     /**
      * Pagination metadata for list responses.
      *
-     * @param Pagination|PaginationShape $pagination
+     * @param PaginationMeta|PaginationMetaShape $pagination
      */
-    public function withPagination(Pagination|array $pagination): self
+    public function withPagination(PaginationMeta|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;
@@ -75,7 +75,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * @param list<Webhook|WebhookShape> $webhooks
+     * @param list<WebhookResponse|WebhookResponseShape> $webhooks
      */
     public function withWebhooks(array $webhooks): self
     {

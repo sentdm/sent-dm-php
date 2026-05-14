@@ -10,15 +10,13 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersRawContract;
-use SentDm\Users\UserGetResponse;
+use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserInviteParams;
-use SentDm\Users\UserInviteResponse;
 use SentDm\Users\UserListParams;
 use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
 use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
-use SentDm\Users\UserUpdateRoleResponse;
 
 /**
  * Invite, update, and manage organization users and roles.
@@ -41,7 +39,7 @@ final class UsersRawService implements UsersRawContract
      * @param array{xProfileID?: string}|UserRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserGetResponse>
+     * @return BaseResponse<APIResponseOfUser>
      *
      * @throws APIException
      */
@@ -64,7 +62,7 @@ final class UsersRawService implements UsersRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: UserGetResponse::class,
+            convert: APIResponseOfUser::class,
         );
     }
 
@@ -117,7 +115,7 @@ final class UsersRawService implements UsersRawContract
      * }|UserInviteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserInviteResponse>
+     * @return BaseResponse<APIResponseOfUser>
      *
      * @throws APIException
      */
@@ -146,7 +144,7 @@ final class UsersRawService implements UsersRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: UserInviteResponse::class,
+            convert: APIResponseOfUser::class,
         );
     }
 
@@ -202,7 +200,7 @@ final class UsersRawService implements UsersRawContract
      * }|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserUpdateRoleResponse>
+     * @return BaseResponse<APIResponseOfUser>
      *
      * @throws APIException
      */
@@ -232,7 +230,7 @@ final class UsersRawService implements UsersRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: UserUpdateRoleResponse::class,
+            convert: APIResponseOfUser::class,
         );
     }
 }

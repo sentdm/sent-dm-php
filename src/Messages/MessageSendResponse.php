@@ -8,20 +8,20 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Messages\MessageSendResponse\Data;
-use SentDm\Messages\MessageSendResponse\Error;
-use SentDm\Messages\MessageSendResponse\Meta;
+use SentDm\Webhooks\APIMeta;
+use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
  * @phpstan-import-type DataShape from \SentDm\Messages\MessageSendResponse\Data
- * @phpstan-import-type ErrorShape from \SentDm\Messages\MessageSendResponse\Error
- * @phpstan-import-type MetaShape from \SentDm\Messages\MessageSendResponse\Meta
+ * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
+ * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type MessageSendResponseShape = array{
  *   data?: null|Data|DataShape,
- *   error?: null|Error|ErrorShape,
- *   meta?: null|Meta|MetaShape,
+ *   error?: null|ErrorDetail|ErrorDetailShape,
+ *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
@@ -40,13 +40,13 @@ final class MessageSendResponse implements BaseModel
      * Error information.
      */
     #[Optional(nullable: true)]
-    public ?Error $error;
+    public ?ErrorDetail $error;
 
     /**
      * Request and response metadata.
      */
     #[Optional]
-    public ?Meta $meta;
+    public ?APIMeta $meta;
 
     /**
      * Indicates whether the request was successful.
@@ -65,13 +65,13 @@ final class MessageSendResponse implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param Data|DataShape|null $data
-     * @param Error|ErrorShape|null $error
-     * @param Meta|MetaShape|null $meta
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
         Data|array|null $data = null,
-        Error|array|null $error = null,
-        Meta|array|null $meta = null,
+        ErrorDetail|array|null $error = null,
+        APIMeta|array|null $meta = null,
         ?bool $success = null,
     ): self {
         $self = new self;
@@ -100,9 +100,9 @@ final class MessageSendResponse implements BaseModel
     /**
      * Error information.
      *
-     * @param Error|ErrorShape|null $error
+     * @param ErrorDetail|ErrorDetailShape|null $error
      */
-    public function withError(Error|array|null $error): self
+    public function withError(ErrorDetail|array|null $error): self
     {
         $self = clone $this;
         $self['error'] = $error;
@@ -113,9 +113,9 @@ final class MessageSendResponse implements BaseModel
     /**
      * Request and response metadata.
      *
-     * @param Meta|MetaShape $meta
+     * @param APIMeta|APIMetaShape $meta
      */
-    public function withMeta(Meta|array $meta): self
+    public function withMeta(APIMeta|array $meta): self
     {
         $self = clone $this;
         $self['meta'] = $meta;

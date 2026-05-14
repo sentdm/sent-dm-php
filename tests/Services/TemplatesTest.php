@@ -7,10 +7,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Templates\TemplateGetResponse;
+use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateNewResponse;
-use SentDm\Templates\TemplateUpdateResponse;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -41,7 +39,7 @@ final class TemplatesTest extends TestCase
         $result = $this->client->templates->create();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseTemplate::class, $result);
     }
 
     #[Test]
@@ -56,7 +54,7 @@ final class TemplatesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateGetResponse::class, $result);
+        $this->assertInstanceOf(APIResponseTemplate::class, $result);
     }
 
     #[Test]
@@ -71,7 +69,7 @@ final class TemplatesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateUpdateResponse::class, $result);
+        $this->assertInstanceOf(APIResponseTemplate::class, $result);
     }
 
     #[Test]

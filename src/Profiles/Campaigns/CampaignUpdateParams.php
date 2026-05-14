@@ -9,18 +9,17 @@ use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign;
 
 /**
  * Updates an existing campaign under the brand of the specified profile. Cannot update campaigns that have already been submitted to TCR.
  *
  * @see SentDm\Services\Profiles\CampaignsService::update()
  *
- * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign
+ * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
  *
  * @phpstan-type CampaignUpdateParamsShape = array{
  *   profileID: string,
- *   campaign: Campaign|CampaignShape,
+ *   campaign: CampaignData|CampaignDataShape,
  *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -39,7 +38,7 @@ final class CampaignUpdateParams implements BaseModel
      * Campaign data for create or update operation.
      */
     #[Required]
-    public Campaign $campaign;
+    public CampaignData $campaign;
 
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
@@ -78,11 +77,11 @@ final class CampaignUpdateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Campaign|CampaignShape $campaign
+     * @param CampaignData|CampaignDataShape $campaign
      */
     public static function with(
         string $profileID,
-        Campaign|array $campaign,
+        CampaignData|array $campaign,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -110,9 +109,9 @@ final class CampaignUpdateParams implements BaseModel
     /**
      * Campaign data for create or update operation.
      *
-     * @param Campaign|CampaignShape $campaign
+     * @param CampaignData|CampaignDataShape $campaign
      */
-    public function withCampaign(Campaign|array $campaign): self
+    public function withCampaign(CampaignData|array $campaign): self
     {
         $self = clone $this;
         $self['campaign'] = $campaign;

@@ -7,17 +7,17 @@ namespace SentDm\Templates\TemplateListResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateListResponse\Data\Pagination;
-use SentDm\Templates\TemplateListResponse\Data\Template;
+use SentDm\Templates\Template;
+use SentDm\Webhooks\PaginationMeta;
 
 /**
  * Paginated list of templates.
  *
- * @phpstan-import-type PaginationShape from \SentDm\Templates\TemplateListResponse\Data\Pagination
- * @phpstan-import-type TemplateShape from \SentDm\Templates\TemplateListResponse\Data\Template
+ * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
+ * @phpstan-import-type TemplateShape from \SentDm\Templates\Template
  *
  * @phpstan-type DataShape = array{
- *   pagination?: null|Pagination|PaginationShape,
+ *   pagination?: null|PaginationMeta|PaginationMetaShape,
  *   templates?: list<Template|TemplateShape>|null,
  * }
  */
@@ -30,7 +30,7 @@ final class Data implements BaseModel
      * Pagination metadata for list responses.
      */
     #[Optional]
-    public ?Pagination $pagination;
+    public ?PaginationMeta $pagination;
 
     /**
      * List of templates.
@@ -50,11 +50,11 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Pagination|PaginationShape|null $pagination
+     * @param PaginationMeta|PaginationMetaShape|null $pagination
      * @param list<Template|TemplateShape>|null $templates
      */
     public static function with(
-        Pagination|array|null $pagination = null,
+        PaginationMeta|array|null $pagination = null,
         ?array $templates = null
     ): self {
         $self = new self;
@@ -68,9 +68,9 @@ final class Data implements BaseModel
     /**
      * Pagination metadata for list responses.
      *
-     * @param Pagination|PaginationShape $pagination
+     * @param PaginationMeta|PaginationMetaShape $pagination
      */
-    public function withPagination(Pagination|array $pagination): self
+    public function withPagination(PaginationMeta|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;

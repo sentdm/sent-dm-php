@@ -7,24 +7,20 @@ namespace SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventTypesResponse\Data\EventType;
+use SentDm\Webhooks\WebhookEventType;
 
 /**
  * The response data (null if error).
  *
- * @phpstan-import-type EventTypeShape from \SentDm\Webhooks\WebhookListEventTypesResponse\Data\EventType
- *
- * @phpstan-type DataShape = array{
- *   eventTypes?: list<EventType|EventTypeShape>|null
- * }
+ * @phpstan-type DataShape = array{eventTypes?: list<mixed>|null}
  */
 final class Data implements BaseModel
 {
     /** @use SdkModel<DataShape> */
     use SdkModel;
 
-    /** @var list<EventType>|null $eventTypes */
-    #[Optional('event_types', list: EventType::class)]
+    /** @var list<mixed>|null $eventTypes */
+    #[Optional('event_types', list: WebhookEventType::class)]
     public ?array $eventTypes;
 
     public function __construct()
@@ -37,7 +33,7 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<EventType|EventTypeShape>|null $eventTypes
+     * @param list<mixed>|null $eventTypes
      */
     public static function with(?array $eventTypes = null): self
     {
@@ -49,7 +45,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * @param list<EventType|EventTypeShape> $eventTypes
+     * @param list<mixed> $eventTypes
      */
     public function withEventTypes(array $eventTypes): self
     {
