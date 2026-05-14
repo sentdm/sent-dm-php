@@ -6,13 +6,12 @@ namespace SentDm\ServiceContracts\Profiles;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Profiles\Campaigns\APIResponseOfTcrCampaignWithUseCases;
 use SentDm\Profiles\Campaigns\CampaignCreateParams;
 use SentDm\Profiles\Campaigns\CampaignDeleteParams;
 use SentDm\Profiles\Campaigns\CampaignListParams;
 use SentDm\Profiles\Campaigns\CampaignListResponse;
-use SentDm\Profiles\Campaigns\CampaignNewResponse;
 use SentDm\Profiles\Campaigns\CampaignUpdateParams;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -27,7 +26,7 @@ interface CampaignsRawContract
      * @param array<string,mixed>|CampaignCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<CampaignNewResponse>
+     * @return BaseResponse<APIResponseOfTcrCampaignWithUseCases>
      *
      * @throws APIException
      */
@@ -44,7 +43,7 @@ interface CampaignsRawContract
      * @param array<string,mixed>|CampaignUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<CampaignUpdateResponse>
+     * @return BaseResponse<APIResponseOfTcrCampaignWithUseCases>
      *
      * @throws APIException
      */

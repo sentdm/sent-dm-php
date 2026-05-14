@@ -8,19 +8,18 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateCreateParams\Definition;
 
 /**
  * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission.
  *
  * @see SentDm\Services\TemplatesService::create()
  *
- * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateCreateParams\Definition
+ * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  *
  * @phpstan-type TemplateCreateParamsShape = array{
  *   category?: string|null,
  *   creationSource?: string|null,
- *   definition?: null|Definition|DefinitionShape,
+ *   definition?: null|TemplateDefinition|TemplateDefinitionShape,
  *   language?: string|null,
  *   sandbox?: bool|null,
  *   submitForReview?: bool|null,
@@ -50,7 +49,7 @@ final class TemplateCreateParams implements BaseModel
      * Complete definition of a message template including header, body, footer, and buttons.
      */
     #[Optional]
-    public ?Definition $definition;
+    public ?TemplateDefinition $definition;
 
     /**
      * Template language code (e.g., en_US) (optional, auto-detected if not provided).
@@ -87,12 +86,12 @@ final class TemplateCreateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Definition|DefinitionShape|null $definition
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      */
     public static function with(
         ?string $category = null,
         ?string $creationSource = null,
-        Definition|array|null $definition = null,
+        TemplateDefinition|array|null $definition = null,
         ?string $language = null,
         ?bool $sandbox = null,
         ?bool $submitForReview = null,
@@ -138,9 +137,9 @@ final class TemplateCreateParams implements BaseModel
     /**
      * Complete definition of a message template including header, body, footer, and buttons.
      *
-     * @param Definition|DefinitionShape $definition
+     * @param TemplateDefinition|TemplateDefinitionShape $definition
      */
-    public function withDefinition(Definition|array $definition): self
+    public function withDefinition(TemplateDefinition|array $definition): self
     {
         $self = clone $this;
         $self['definition'] = $definition;

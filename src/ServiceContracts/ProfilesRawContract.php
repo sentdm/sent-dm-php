@@ -6,17 +6,15 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Profiles\APIResponseOfProfileDetail;
 use SentDm\Profiles\ProfileCompleteParams;
 use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileDeleteParams;
-use SentDm\Profiles\ProfileGetResponse;
 use SentDm\Profiles\ProfileListParams;
 use SentDm\Profiles\ProfileListResponse;
-use SentDm\Profiles\ProfileNewResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
-use SentDm\Profiles\ProfileUpdateResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -30,7 +28,7 @@ interface ProfilesRawContract
      * @param array<string,mixed>|ProfileCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileNewResponse>
+     * @return BaseResponse<APIResponseOfProfileDetail>
      *
      * @throws APIException
      */
@@ -45,7 +43,7 @@ interface ProfilesRawContract
      * @param array<string,mixed>|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileGetResponse>
+     * @return BaseResponse<APIResponseOfProfileDetail>
      *
      * @throws APIException
      */
@@ -62,7 +60,7 @@ interface ProfilesRawContract
      * @param array<string,mixed>|ProfileUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileUpdateResponse>
+     * @return BaseResponse<APIResponseOfProfileDetail>
      *
      * @throws APIException
      */

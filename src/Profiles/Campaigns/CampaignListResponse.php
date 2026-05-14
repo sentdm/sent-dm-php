@@ -7,21 +7,20 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignListResponse\Data;
-use SentDm\Profiles\Campaigns\CampaignListResponse\Error;
-use SentDm\Profiles\Campaigns\CampaignListResponse\Meta;
+use SentDm\Webhooks\APIMeta;
+use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignListResponse\Data
- * @phpstan-import-type ErrorShape from \SentDm\Profiles\Campaigns\CampaignListResponse\Error
- * @phpstan-import-type MetaShape from \SentDm\Profiles\Campaigns\CampaignListResponse\Meta
+ * @phpstan-import-type TcrCampaignWithUseCasesShape from \SentDm\Profiles\Campaigns\TcrCampaignWithUseCases
+ * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
+ * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type CampaignListResponseShape = array{
- *   data?: list<Data|DataShape>|null,
- *   error?: null|Error|ErrorShape,
- *   meta?: null|Meta|MetaShape,
+ *   data?: list<TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape>|null,
+ *   error?: null|ErrorDetail|ErrorDetailShape,
+ *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
@@ -33,22 +32,22 @@ final class CampaignListResponse implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @var list<Data>|null $data
+     * @var list<TcrCampaignWithUseCases>|null $data
      */
-    #[Optional(list: Data::class, nullable: true)]
+    #[Optional(list: TcrCampaignWithUseCases::class, nullable: true)]
     public ?array $data;
 
     /**
      * Error information.
      */
     #[Optional(nullable: true)]
-    public ?Error $error;
+    public ?ErrorDetail $error;
 
     /**
      * Request and response metadata.
      */
     #[Optional]
-    public ?Meta $meta;
+    public ?APIMeta $meta;
 
     /**
      * Indicates whether the request was successful.
@@ -66,14 +65,14 @@ final class CampaignListResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<Data|DataShape>|null $data
-     * @param Error|ErrorShape|null $error
-     * @param Meta|MetaShape|null $meta
+     * @param list<TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape>|null $data
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
         ?array $data = null,
-        Error|array|null $error = null,
-        Meta|array|null $meta = null,
+        ErrorDetail|array|null $error = null,
+        APIMeta|array|null $meta = null,
         ?bool $success = null,
     ): self {
         $self = new self;
@@ -89,7 +88,7 @@ final class CampaignListResponse implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @param list<Data|DataShape>|null $data
+     * @param list<TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape>|null $data
      */
     public function withData(?array $data): self
     {
@@ -102,9 +101,9 @@ final class CampaignListResponse implements BaseModel
     /**
      * Error information.
      *
-     * @param Error|ErrorShape|null $error
+     * @param ErrorDetail|ErrorDetailShape|null $error
      */
-    public function withError(Error|array|null $error): self
+    public function withError(ErrorDetail|array|null $error): self
     {
         $self = clone $this;
         $self['error'] = $error;
@@ -115,9 +114,9 @@ final class CampaignListResponse implements BaseModel
     /**
      * Request and response metadata.
      *
-     * @param Meta|MetaShape $meta
+     * @param APIMeta|APIMetaShape $meta
      */
-    public function withMeta(Meta|array $meta): self
+    public function withMeta(APIMeta|array $meta): self
     {
         $self = clone $this;
         $self['meta'] = $meta;
