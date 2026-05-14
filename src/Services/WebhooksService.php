@@ -9,12 +9,15 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksContract;
-use SentDm\Webhooks\APIResponseWebhook;
+use SentDm\Webhooks\WebhookGetResponse;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookNewResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
+use SentDm\Webhooks\WebhookToggleStatusResponse;
+use SentDm\Webhooks\WebhookUpdateResponse;
 
 /**
  * Configure webhook endpoints for real-time event delivery.
@@ -66,7 +69,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookNewResponse {
         $params = Util::removeNulls(
             [
                 'displayName' => $displayName,
@@ -101,7 +104,7 @@ final class WebhooksService implements WebhooksContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookGetResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -142,7 +145,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookUpdateResponse {
         $params = Util::removeNulls(
             [
                 'displayName' => $displayName,
@@ -378,7 +381,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookToggleStatusResponse {
         $params = Util::removeNulls(
             [
                 'isActive' => $isActive,

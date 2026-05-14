@@ -7,16 +7,14 @@ namespace SentDm\Profiles\ProfileListResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\ProfileDetail;
+use SentDm\Profiles\ProfileListResponse\Data\Profile;
 
 /**
  * List of profiles response.
  *
- * @phpstan-import-type ProfileDetailShape from \SentDm\Profiles\ProfileDetail
+ * @phpstan-import-type ProfileShape from \SentDm\Profiles\ProfileListResponse\Data\Profile
  *
- * @phpstan-type DataShape = array{
- *   profiles?: list<ProfileDetail|ProfileDetailShape>|null
- * }
+ * @phpstan-type DataShape = array{profiles?: list<Profile|ProfileShape>|null}
  */
 final class Data implements BaseModel
 {
@@ -26,9 +24,9 @@ final class Data implements BaseModel
     /**
      * List of profiles in the organization.
      *
-     * @var list<ProfileDetail>|null $profiles
+     * @var list<Profile>|null $profiles
      */
-    #[Optional(list: ProfileDetail::class)]
+    #[Optional(list: Profile::class)]
     public ?array $profiles;
 
     public function __construct()
@@ -41,7 +39,7 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<ProfileDetail|ProfileDetailShape>|null $profiles
+     * @param list<Profile|ProfileShape>|null $profiles
      */
     public static function with(?array $profiles = null): self
     {
@@ -55,7 +53,7 @@ final class Data implements BaseModel
     /**
      * List of profiles in the organization.
      *
-     * @param list<ProfileDetail|ProfileDetailShape> $profiles
+     * @param list<Profile|ProfileShape> $profiles
      */
     public function withProfiles(array $profiles): self
     {

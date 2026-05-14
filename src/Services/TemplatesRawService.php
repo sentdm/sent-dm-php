@@ -10,19 +10,22 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesRawContract;
-use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateCreateParams;
-use SentDm\Templates\TemplateDefinition;
+use SentDm\Templates\TemplateCreateParams\Definition;
 use SentDm\Templates\TemplateDeleteParams;
+use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\TemplateNewResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
+use SentDm\Templates\TemplateUpdateResponse;
 
 /**
  * Manage message templates with variable substitution.
  *
- * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
+ * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateCreateParams\Definition
+ * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateUpdateParams\Definition as DefinitionShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class TemplatesRawService implements TemplatesRawContract
@@ -41,7 +44,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * @param array{
      *   category?: string|null,
      *   creationSource?: string|null,
-     *   definition?: TemplateDefinition|TemplateDefinitionShape,
+     *   definition?: Definition|DefinitionShape,
      *   language?: string|null,
      *   sandbox?: bool,
      *   submitForReview?: bool,
@@ -50,7 +53,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateNewResponse>
      *
      * @throws APIException
      */
@@ -79,7 +82,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseTemplate::class,
+            convert: TemplateNewResponse::class,
         );
     }
 
@@ -92,7 +95,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * @param array{xProfileID?: string}|TemplateRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateGetResponse>
      *
      * @throws APIException
      */
@@ -115,7 +118,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseTemplate::class,
+            convert: TemplateGetResponse::class,
         );
     }
 
@@ -127,7 +130,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * @param string $id Path param: Template ID from route parameter
      * @param array{
      *   category?: string|null,
-     *   definition?: TemplateDefinition|TemplateDefinitionShape|null,
+     *   definition?: TemplateUpdateParams\Definition|DefinitionShape1|null,
      *   language?: string|null,
      *   name?: string|null,
      *   sandbox?: bool,
@@ -137,7 +140,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateUpdateResponse>
      *
      * @throws APIException
      */
@@ -167,7 +170,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseTemplate::class,
+            convert: TemplateUpdateResponse::class,
         );
     }
 

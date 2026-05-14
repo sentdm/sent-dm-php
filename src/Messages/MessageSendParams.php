@@ -35,7 +35,7 @@ final class MessageSendParams implements BaseModel
     /**
      * Channels to broadcast on, e.g. ["whatsapp", "sms"].
      * Each channel produces a separate message per recipient.
-     * "sent" = auto-detect, "rcs" = reserved (skipped).
+     * "sent" = auto-detect.
      * Defaults to ["sent"] (auto-detect) if omitted.
      *
      * @var list<string>|null $channel
@@ -107,7 +107,7 @@ final class MessageSendParams implements BaseModel
     /**
      * Channels to broadcast on, e.g. ["whatsapp", "sms"].
      * Each channel produces a separate message per recipient.
-     * "sent" = auto-detect, "rcs" = reserved (skipped).
+     * "sent" = auto-detect.
      * Defaults to ["sent"] (auto-detect) if omitted.
      *
      * @param list<string>|null $channel

@@ -8,29 +8,34 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\APIResponseOfProfileDetail;
-use SentDm\Profiles\BillingContactInfo;
-use SentDm\Profiles\BrandsBrandData;
-use SentDm\Profiles\PaymentDetails;
 use SentDm\Profiles\ProfileCompleteParams;
 use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
+use SentDm\Profiles\ProfileCreateParams\BillingContact;
+use SentDm\Profiles\ProfileCreateParams\Brand;
+use SentDm\Profiles\ProfileCreateParams\PaymentDetails;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 use SentDm\Profiles\ProfileDeleteParams;
+use SentDm\Profiles\ProfileGetResponse;
 use SentDm\Profiles\ProfileListParams;
 use SentDm\Profiles\ProfileListResponse;
+use SentDm\Profiles\ProfileNewResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
+use SentDm\Profiles\ProfileUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesRawContract;
 
 /**
  * Manage organization profiles.
  *
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileCreateParams\BillingContact
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileCreateParams\Brand
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileCreateParams\PaymentDetails
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
- * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
- * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact as BillingContactShape1
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileUpdateParams\Brand as BrandShape1
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails as PaymentDetailsShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ProfilesRawService implements ProfilesRawContract
@@ -67,9 +72,9 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param array{
      *   allowContactSharing?: bool,
      *   allowTemplateSharing?: bool,
-     *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
+     *   billingContact?: BillingContact|BillingContactShape|null,
      *   billingModel?: string|null,
-     *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
+     *   brand?: Brand|BrandShape|null,
      *   description?: string|null,
      *   icon?: string|null,
      *   inheritContacts?: bool|null,
@@ -86,7 +91,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * }|ProfileCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileNewResponse>
      *
      * @throws APIException
      */
@@ -115,7 +120,7 @@ final class ProfilesRawService implements ProfilesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfProfileDetail::class,
+            convert: ProfileNewResponse::class,
         );
     }
 
@@ -127,7 +132,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param array{xProfileID?: string}|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileGetResponse>
      *
      * @throws APIException
      */
@@ -150,7 +155,7 @@ final class ProfilesRawService implements ProfilesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfProfileDetail::class,
+            convert: ProfileGetResponse::class,
         );
     }
 
@@ -172,9 +177,9 @@ final class ProfilesRawService implements ProfilesRawContract
      *   allowContactSharing?: bool|null,
      *   allowNumberChangeDuringOnboarding?: bool|null,
      *   allowTemplateSharing?: bool|null,
-     *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
+     *   billingContact?: ProfileUpdateParams\BillingContact|BillingContactShape1|null,
      *   billingModel?: string|null,
-     *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
+     *   brand?: ProfileUpdateParams\Brand|BrandShape1|null,
      *   description?: string|null,
      *   icon?: string|null,
      *   inheritContacts?: bool|null,
@@ -182,7 +187,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *   inheritTcrCampaign?: bool|null,
      *   inheritTemplates?: bool|null,
      *   name?: string|null,
-     *   paymentDetails?: PaymentDetails|PaymentDetailsShape|null,
+     *   paymentDetails?: ProfileUpdateParams\PaymentDetails|PaymentDetailsShape1|null,
      *   sandbox?: bool,
      *   sendingPhoneNumber?: string|null,
      *   sendingPhoneNumberProfileID?: string|null,
@@ -194,7 +199,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * }|ProfileUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileUpdateResponse>
      *
      * @throws APIException
      */
@@ -224,7 +229,7 @@ final class ProfilesRawService implements ProfilesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfProfileDetail::class,
+            convert: ProfileUpdateResponse::class,
         );
     }
 
