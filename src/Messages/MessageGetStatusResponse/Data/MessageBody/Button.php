@@ -9,12 +9,23 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type ButtonShape = array{type?: string|null, value?: string|null}
+ * @phpstan-type ButtonShape = array{
+ *   postbackData?: string|null,
+ *   text?: string|null,
+ *   type?: string|null,
+ *   value?: string|null,
+ * }
  */
 final class Button implements BaseModel
 {
     /** @use SdkModel<ButtonShape> */
     use SdkModel;
+
+    #[Optional(nullable: true)]
+    public ?string $postbackData;
+
+    #[Optional(nullable: true)]
+    public ?string $text;
 
     #[Optional]
     public ?string $type;
@@ -32,12 +43,34 @@ final class Button implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(?string $type = null, ?string $value = null): self
-    {
+    public static function with(
+        ?string $postbackData = null,
+        ?string $text = null,
+        ?string $type = null,
+        ?string $value = null,
+    ): self {
         $self = new self;
 
+        null !== $postbackData && $self['postbackData'] = $postbackData;
+        null !== $text && $self['text'] = $text;
         null !== $type && $self['type'] = $type;
         null !== $value && $self['value'] = $value;
+
+        return $self;
+    }
+
+    public function withPostbackData(?string $postbackData): self
+    {
+        $self = clone $this;
+        $self['postbackData'] = $postbackData;
+
+        return $self;
+    }
+
+    public function withText(?string $text): self
+    {
+        $self = clone $this;
+        $self['text'] = $text;
 
         return $self;
     }

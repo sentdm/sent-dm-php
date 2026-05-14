@@ -90,7 +90,7 @@ final class MessagesService implements MessagesContract
      *
      * @param list<string>|null $channel Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"].
      * Each channel produces a separate message per recipient.
-     * "sent" = auto-detect, "rcs" = reserved (skipped).
+     * "sent" = auto-detect.
      * Defaults to ["sent"] (auto-detect) if omitted.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution

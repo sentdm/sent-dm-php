@@ -8,6 +8,9 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\ProfileCreateParams\BillingContact;
+use SentDm\Profiles\ProfileCreateParams\Brand;
+use SentDm\Profiles\ProfileCreateParams\PaymentDetails;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 
 /**
@@ -33,17 +36,17 @@ use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
  *
  * @see SentDm\Services\ProfilesService::create()
  *
- * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
- * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileCreateParams\BillingContact
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileCreateParams\Brand
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileCreateParams\PaymentDetails
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
  *
  * @phpstan-type ProfileCreateParamsShape = array{
  *   allowContactSharing?: bool|null,
  *   allowTemplateSharing?: bool|null,
- *   billingContact?: null|BillingContactInfo|BillingContactInfoShape,
+ *   billingContact?: null|BillingContact|BillingContactShape,
  *   billingModel?: string|null,
- *   brand?: null|BrandsBrandData|BrandsBrandDataShape,
+ *   brand?: null|Brand|BrandShape,
  *   description?: string|null,
  *   icon?: string|null,
  *   inheritContacts?: bool|null,
@@ -82,7 +85,7 @@ final class ProfileCreateParams implements BaseModel
      * Required when billing_model is "profile" or "profile_and_organization".
      */
     #[Optional('billing_contact', nullable: true)]
-    public ?BillingContactInfo $billingContact;
+    public ?BillingContact $billingContact;
 
     /**
      * Billing model: profile, organization, or profile_and_organization (default: profile).
@@ -97,7 +100,7 @@ final class ProfileCreateParams implements BaseModel
      * Brand and KYC data grouped into contact, business, and compliance sections.
      */
     #[Optional(nullable: true)]
-    public ?BrandsBrandData $brand;
+    public ?Brand $brand;
 
     /**
      * Profile description (optional).
@@ -188,17 +191,17 @@ final class ProfileCreateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
+     * @param BillingContact|BillingContactShape|null $billingContact
+     * @param Brand|BrandShape|null $brand
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      * @param WhatsappBusinessAccount|WhatsappBusinessAccountShape|null $whatsappBusinessAccount
      */
     public static function with(
         ?bool $allowContactSharing = null,
         ?bool $allowTemplateSharing = null,
-        BillingContactInfo|array|null $billingContact = null,
+        BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
-        BrandsBrandData|array|null $brand = null,
+        Brand|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -263,10 +266,10 @@ final class ProfileCreateParams implements BaseModel
      * Billing contact information for a profile.
      * Required when billing_model is "profile" or "profile_and_organization".
      *
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
+     * @param BillingContact|BillingContactShape|null $billingContact
      */
     public function withBillingContact(
-        BillingContactInfo|array|null $billingContact
+        BillingContact|array|null $billingContact
     ): self {
         $self = clone $this;
         $self['billingContact'] = $billingContact;
@@ -291,9 +294,9 @@ final class ProfileCreateParams implements BaseModel
     /**
      * Brand and KYC data grouped into contact, business, and compliance sections.
      *
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
+     * @param Brand|BrandShape|null $brand
      */
-    public function withBrand(BrandsBrandData|array|null $brand): self
+    public function withBrand(Brand|array|null $brand): self
     {
         $self = clone $this;
         $self['brand'] = $brand;

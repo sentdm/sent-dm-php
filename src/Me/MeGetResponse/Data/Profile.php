@@ -7,12 +7,12 @@ namespace SentDm\Me\MeGetResponse\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Me\ProfileSettings;
+use SentDm\Me\MeGetResponse\Data\Profile\Settings;
 
 /**
  * Profile (sender profile) response for v3 API.
  *
- * @phpstan-import-type ProfileSettingsShape from \SentDm\Me\ProfileSettings
+ * @phpstan-import-type SettingsShape from \SentDm\Me\MeGetResponse\Data\Profile\Settings
  *
  * @phpstan-type ProfileShape = array{
  *   id?: string|null,
@@ -21,7 +21,7 @@ use SentDm\Me\ProfileSettings;
  *   icon?: string|null,
  *   name?: string|null,
  *   role?: string|null,
- *   settings?: null|ProfileSettings|ProfileSettingsShape,
+ *   settings?: null|\SentDm\Me\MeGetResponse\Data\Profile\Settings|SettingsShape,
  *   shortName?: string|null,
  *   status?: string|null,
  * }
@@ -71,7 +71,7 @@ final class Profile implements BaseModel
      * Profile configuration settings.
      */
     #[Optional]
-    public ?ProfileSettings $settings;
+    public ?Settings $settings;
 
     /**
      * Profile short name (abbreviation).
@@ -95,7 +95,7 @@ final class Profile implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param ProfileSettings|ProfileSettingsShape|null $settings
+     * @param Settings|SettingsShape|null $settings
      */
     public static function with(
         ?string $id = null,
@@ -104,7 +104,7 @@ final class Profile implements BaseModel
         ?string $icon = null,
         ?string $name = null,
         ?string $role = null,
-        ProfileSettings|array|null $settings = null,
+        Settings|array|null $settings = null,
         ?string $shortName = null,
         ?string $status = null,
     ): self {
@@ -192,10 +192,11 @@ final class Profile implements BaseModel
     /**
      * Profile configuration settings.
      *
-     * @param ProfileSettings|ProfileSettingsShape $settings
+     * @param Settings|SettingsShape $settings
      */
-    public function withSettings(ProfileSettings|array $settings): self
-    {
+    public function withSettings(
+        Settings|array $settings
+    ): self {
         $self = clone $this;
         $self['settings'] = $settings;
 

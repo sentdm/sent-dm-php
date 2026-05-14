@@ -9,14 +9,17 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesContract;
-use SentDm\Templates\APIResponseTemplate;
-use SentDm\Templates\TemplateDefinition;
+use SentDm\Templates\TemplateCreateParams\Definition;
+use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\TemplateNewResponse;
+use SentDm\Templates\TemplateUpdateResponse;
 
 /**
  * Manage message templates with variable substitution.
  *
- * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
+ * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateCreateParams\Definition
+ * @phpstan-import-type DefinitionShape from \SentDm\Templates\TemplateUpdateParams\Definition as DefinitionShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class TemplatesService implements TemplatesContract
@@ -41,7 +44,7 @@ final class TemplatesService implements TemplatesContract
      *
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided)
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
-     * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
+     * @param Definition|DefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US) (optional, auto-detected if not provided)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -55,14 +58,14 @@ final class TemplatesService implements TemplatesContract
     public function create(
         ?string $category = null,
         ?string $creationSource = null,
-        TemplateDefinition|array|null $definition = null,
+        Definition|array|null $definition = null,
         ?string $language = null,
         ?bool $sandbox = null,
         ?bool $submitForReview = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseTemplate {
+    ): TemplateNewResponse {
         $params = Util::removeNulls(
             [
                 'category' => $category,
@@ -97,7 +100,7 @@ final class TemplatesService implements TemplatesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseTemplate {
+    ): TemplateGetResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -113,7 +116,7 @@ final class TemplatesService implements TemplatesContract
      *
      * @param string $id Path param: Template ID from route parameter
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
-     * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
+     * @param \SentDm\Templates\TemplateUpdateParams\Definition|DefinitionShape1|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US)
      * @param string|null $name Body param: Template display name
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -128,7 +131,7 @@ final class TemplatesService implements TemplatesContract
     public function update(
         string $id,
         ?string $category = null,
-        TemplateDefinition|array|null $definition = null,
+        \SentDm\Templates\TemplateUpdateParams\Definition|array|null $definition = null,
         ?string $language = null,
         ?string $name = null,
         ?bool $sandbox = null,
@@ -136,7 +139,7 @@ final class TemplatesService implements TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseTemplate {
+    ): TemplateUpdateResponse {
         $params = Util::removeNulls(
             [
                 'category' => $category,

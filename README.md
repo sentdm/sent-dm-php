@@ -45,28 +45,10 @@ var_dump($response->data);
 
 ### Value Objects
 
-It is recommended to use the static `with` constructor `SentDmServicesCommonContractsPocOsTemplateButton::with(props: [
-  'activeFor' => 1,
-  'countryCode' => 'x',
-  'offerCode' => 'x',
-  'phoneNumber' => 'x',
-  'quickReplyType' => 'x',
-  'text' => 'text',
-  'url' => 'x',
-  'urlType' => 'x',
-], ...)`
+It is recommended to use the static `with` constructor `Dog::with(name: "Joey")`
 and named parameters to initialize value objects.
 
-However, builders are also provided `(new SentDmServicesCommonContractsPocOsTemplateButton)->withProps([
-  'activeFor' => 1,
-  'countryCode' => 'x',
-  'offerCode' => 'x',
-  'phoneNumber' => 'x',
-  'quickReplyType' => 'x',
-  'text' => 'text',
-  'url' => 'x',
-  'urlType' => 'x',
-])`.
+However, builders are also provided `(new Dog)->withName("Joey")`.
 
 ### Handling errors
 

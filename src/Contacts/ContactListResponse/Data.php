@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace SentDm\Contacts\ContactListResponse;
 
-use SentDm\Contacts\ContactResponse;
+use SentDm\Contacts\ContactListResponse\Data\Contact;
+use SentDm\Contacts\ContactListResponse\Data\Pagination;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\PaginationMeta;
 
 /**
  * Paginated list of contacts response.
  *
- * @phpstan-import-type ContactResponseShape from \SentDm\Contacts\ContactResponse
- * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
+ * @phpstan-import-type ContactShape from \SentDm\Contacts\ContactListResponse\Data\Contact
+ * @phpstan-import-type PaginationShape from \SentDm\Contacts\ContactListResponse\Data\Pagination
  *
  * @phpstan-type DataShape = array{
- *   contacts?: list<ContactResponse|ContactResponseShape>|null,
- *   pagination?: null|PaginationMeta|PaginationMetaShape,
+ *   contacts?: list<Contact|ContactShape>|null,
+ *   pagination?: null|Pagination|PaginationShape,
  * }
  */
 final class Data implements BaseModel
@@ -29,16 +29,16 @@ final class Data implements BaseModel
     /**
      * List of contacts.
      *
-     * @var list<ContactResponse>|null $contacts
+     * @var list<Contact>|null $contacts
      */
-    #[Optional(list: ContactResponse::class)]
+    #[Optional(list: Contact::class)]
     public ?array $contacts;
 
     /**
      * Pagination metadata for list responses.
      */
     #[Optional]
-    public ?PaginationMeta $pagination;
+    public ?Pagination $pagination;
 
     public function __construct()
     {
@@ -50,12 +50,12 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<ContactResponse|ContactResponseShape>|null $contacts
-     * @param PaginationMeta|PaginationMetaShape|null $pagination
+     * @param list<Contact|ContactShape>|null $contacts
+     * @param Pagination|PaginationShape|null $pagination
      */
     public static function with(
         ?array $contacts = null,
-        PaginationMeta|array|null $pagination = null
+        Pagination|array|null $pagination = null
     ): self {
         $self = new self;
 
@@ -68,7 +68,7 @@ final class Data implements BaseModel
     /**
      * List of contacts.
      *
-     * @param list<ContactResponse|ContactResponseShape> $contacts
+     * @param list<Contact|ContactShape> $contacts
      */
     public function withContacts(array $contacts): self
     {
@@ -81,9 +81,9 @@ final class Data implements BaseModel
     /**
      * Pagination metadata for list responses.
      *
-     * @param PaginationMeta|PaginationMetaShape $pagination
+     * @param Pagination|PaginationShape $pagination
      */
-    public function withPagination(PaginationMeta|array $pagination): self
+    public function withPagination(Pagination|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;
