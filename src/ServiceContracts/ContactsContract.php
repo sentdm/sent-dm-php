@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactNewResponse;
+use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 
@@ -32,7 +34,7 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContact;
+    ): ContactNewResponse;
 
     /**
      * @api
@@ -47,19 +49,15 @@ interface ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContact;
+    ): ContactGetResponse;
 
     /**
      * @api
      *
      * @param string $id Path param: Contact ID from route parameter
-     * @param array<string,string>|null $channelConsent Body param: Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".
-     * All entries must have the same status — mixed values (e.g., sms: opted_out + whatsapp: opted_in)
-     * are rejected with 400. The provided status is applied to ALL channels regardless of which keys
-     * are specified, because consent is global across channels.
-     * When provided, takes precedence over the opt_out field.
      * @param string|null $defaultChannel Body param: Default messaging channel: "sms" or "whatsapp"
-     * @param bool|null $optOut Body param: Whether the contact has opted out of messaging
+     * @param bool|null $optOut Body param: Whether the contact has opted out of messaging. Single source of truth — opt-out is
+     * per-contact, not per-channel.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -70,14 +68,13 @@ interface ContactsContract
      */
     public function update(
         string $id,
-        ?array $channelConsent = null,
         ?string $defaultChannel = null,
         ?bool $optOut = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContact;
+    ): ContactUpdateResponse;
 
     /**
      * @api

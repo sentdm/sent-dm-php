@@ -8,20 +8,20 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Templates\TemplateListResponse\Data;
-use SentDm\Webhooks\APIMeta;
-use SentDm\Webhooks\ErrorDetail;
+use SentDm\Templates\TemplateListResponse\Error;
+use SentDm\Templates\TemplateListResponse\Meta;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
  * @phpstan-import-type DataShape from \SentDm\Templates\TemplateListResponse\Data
- * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
- * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
+ * @phpstan-import-type ErrorShape from \SentDm\Templates\TemplateListResponse\Error
+ * @phpstan-import-type MetaShape from \SentDm\Templates\TemplateListResponse\Meta
  *
  * @phpstan-type TemplateListResponseShape = array{
  *   data?: null|Data|DataShape,
- *   error?: null|ErrorDetail|ErrorDetailShape,
- *   meta?: null|APIMeta|APIMetaShape,
+ *   error?: null|Error|ErrorShape,
+ *   meta?: null|Meta|MetaShape,
  *   success?: bool|null,
  * }
  */
@@ -40,13 +40,13 @@ final class TemplateListResponse implements BaseModel
      * Error information.
      */
     #[Optional(nullable: true)]
-    public ?ErrorDetail $error;
+    public ?Error $error;
 
     /**
      * Request and response metadata.
      */
     #[Optional]
-    public ?APIMeta $meta;
+    public ?Meta $meta;
 
     /**
      * Indicates whether the request was successful.
@@ -65,13 +65,13 @@ final class TemplateListResponse implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param Data|DataShape|null $data
-     * @param ErrorDetail|ErrorDetailShape|null $error
-     * @param APIMeta|APIMetaShape|null $meta
+     * @param Error|ErrorShape|null $error
+     * @param Meta|MetaShape|null $meta
      */
     public static function with(
         Data|array|null $data = null,
-        ErrorDetail|array|null $error = null,
-        APIMeta|array|null $meta = null,
+        Error|array|null $error = null,
+        Meta|array|null $meta = null,
         ?bool $success = null,
     ): self {
         $self = new self;
@@ -100,9 +100,9 @@ final class TemplateListResponse implements BaseModel
     /**
      * Error information.
      *
-     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param Error|ErrorShape|null $error
      */
-    public function withError(ErrorDetail|array|null $error): self
+    public function withError(Error|array|null $error): self
     {
         $self = clone $this;
         $self['error'] = $error;
@@ -113,9 +113,9 @@ final class TemplateListResponse implements BaseModel
     /**
      * Request and response metadata.
      *
-     * @param APIMeta|APIMetaShape $meta
+     * @param Meta|MetaShape $meta
      */
-    public function withMeta(APIMeta|array $meta): self
+    public function withMeta(Meta|array $meta): self
     {
         $self = clone $this;
         $self['meta'] = $meta;

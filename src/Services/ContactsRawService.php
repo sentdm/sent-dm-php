@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
+use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactNewResponse;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
+use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -44,7 +46,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContact>
+     * @return BaseResponse<ContactNewResponse>
      *
      * @throws APIException
      */
@@ -73,7 +75,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfContact::class,
+            convert: ContactNewResponse::class,
         );
     }
 
@@ -86,7 +88,7 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{xProfileID?: string}|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContact>
+     * @return BaseResponse<ContactGetResponse>
      *
      * @throws APIException
      */
@@ -109,7 +111,7 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfContact::class,
+            convert: ContactGetResponse::class,
         );
     }
 
@@ -120,7 +122,6 @@ final class ContactsRawService implements ContactsRawContract
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param array{
-     *   channelConsent?: array<string,string>|null,
      *   defaultChannel?: string|null,
      *   optOut?: bool|null,
      *   sandbox?: bool,
@@ -129,7 +130,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContact>
+     * @return BaseResponse<ContactUpdateResponse>
      *
      * @throws APIException
      */
@@ -159,7 +160,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfContact::class,
+            convert: ContactUpdateResponse::class,
         );
     }
 

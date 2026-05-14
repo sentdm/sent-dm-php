@@ -7,16 +7,14 @@ namespace SentDm\Users\UserListResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Users\UserResponse;
+use SentDm\Users\UserListResponse\Data\User;
 
 /**
  * List of users response.
  *
- * @phpstan-import-type UserResponseShape from \SentDm\Users\UserResponse
+ * @phpstan-import-type UserShape from \SentDm\Users\UserListResponse\Data\User
  *
- * @phpstan-type DataShape = array{
- *   users?: list<UserResponse|UserResponseShape>|null
- * }
+ * @phpstan-type DataShape = array{users?: list<User|UserShape>|null}
  */
 final class Data implements BaseModel
 {
@@ -26,9 +24,9 @@ final class Data implements BaseModel
     /**
      * List of users in the organization.
      *
-     * @var list<UserResponse>|null $users
+     * @var list<User>|null $users
      */
-    #[Optional(list: UserResponse::class)]
+    #[Optional(list: User::class)]
     public ?array $users;
 
     public function __construct()
@@ -41,7 +39,7 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<UserResponse|UserResponseShape>|null $users
+     * @param list<User|UserShape>|null $users
      */
     public static function with(?array $users = null): self
     {
@@ -55,7 +53,7 @@ final class Data implements BaseModel
     /**
      * List of users in the organization.
      *
-     * @param list<UserResponse|UserResponseShape> $users
+     * @param list<User|UserShape> $users
      */
     public function withUsers(array $users): self
     {
