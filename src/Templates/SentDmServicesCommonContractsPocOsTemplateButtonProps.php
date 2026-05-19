@@ -10,6 +10,8 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
+ * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
+ *
  * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape = array{
  *   activeFor: int,
  *   countryCode: string,
@@ -19,6 +21,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   text: string,
  *   url: string,
  *   urlType: string,
+ *   variables: list<TemplateVariable|TemplateVariableShape>,
  *   autofillText?: string|null,
  *   otpType?: string|null,
  *   packageName?: string|null,
@@ -54,6 +57,16 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
     #[Required]
     public string $urlType;
 
+    /**
+     * Variables embedded in a dynamic URL button (only when UrlType = dynamic).
+     * Count is capped by TemplateContentLimits.MaxUrlButtonVariables; the placeholder must
+     * appear at the end of Url (validated in TemplateDefinitionValidator).
+     *
+     * @var list<TemplateVariable> $variables
+     */
+    #[Required(list: TemplateVariable::class)]
+    public array $variables;
+
     #[Optional(nullable: true)]
     public ?string $autofillText;
 
@@ -80,6 +93,7 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
      *   text: ...,
      *   url: ...,
      *   urlType: ...,
+     *   variables: ...,
      * )
      * ```
      *
@@ -95,6 +109,7 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
      *   ->withText(...)
      *   ->withURL(...)
      *   ->withURLType(...)
+     *   ->withVariables(...)
      * ```
      */
     public function __construct()
@@ -106,6 +121,8 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param list<TemplateVariable|TemplateVariableShape> $variables
      */
     public static function with(
         int $activeFor,
@@ -116,6 +133,7 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
         string $text,
         string $url,
         string $urlType,
+        array $variables,
         ?string $autofillText = null,
         ?string $otpType = null,
         ?string $packageName = null,
@@ -131,6 +149,7 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
         $self['text'] = $text;
         $self['url'] = $url;
         $self['urlType'] = $urlType;
+        $self['variables'] = $variables;
 
         null !== $autofillText && $self['autofillText'] = $autofillText;
         null !== $otpType && $self['otpType'] = $otpType;
@@ -200,6 +219,21 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
     {
         $self = clone $this;
         $self['urlType'] = $urlType;
+
+        return $self;
+    }
+
+    /**
+     * Variables embedded in a dynamic URL button (only when UrlType = dynamic).
+     * Count is capped by TemplateContentLimits.MaxUrlButtonVariables; the placeholder must
+     * appear at the end of Url (validated in TemplateDefinitionValidator).
+     *
+     * @param list<TemplateVariable|TemplateVariableShape> $variables
+     */
+    public function withVariables(array $variables): self
+    {
+        $self = clone $this;
+        $self['variables'] = $variables;
 
         return $self;
     }

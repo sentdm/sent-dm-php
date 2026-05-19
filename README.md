@@ -52,8 +52,17 @@ It is recommended to use the static `with` constructor `SentDmServicesCommonCont
   'phoneNumber' => 'x',
   'quickReplyType' => 'x',
   'text' => 'text',
-  'url' => 'x',
+  'url' => 'url',
   'urlType' => 'x',
+  'variables' => [
+    [
+      'name' => 'x',
+      'props' => [
+        'mediaType' => 'x', 'sample' => 'x', 'url' => 'x', 'variableType' => 'x'
+      ],
+      'type' => 'x',
+    ],
+  ],
 ], ...)`
 and named parameters to initialize value objects.
 
@@ -64,8 +73,17 @@ However, builders are also provided `(new SentDmServicesCommonContractsPocOsTemp
   'phoneNumber' => 'x',
   'quickReplyType' => 'x',
   'text' => 'text',
-  'url' => 'x',
+  'url' => 'url',
   'urlType' => 'x',
+  'variables' => [
+    [
+      'name' => 'x',
+      'props' => [
+        'mediaType' => 'x', 'sample' => 'x', 'url' => 'x', 'variableType' => 'x'
+      ],
+      'type' => 'x',
+    ],
+  ],
 ])`.
 
 ### Handling errors

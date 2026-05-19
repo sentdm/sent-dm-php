@@ -50,7 +50,8 @@ final class Activity implements BaseModel
     public ?string $price;
 
     /**
-     * Activity status (e.g., QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, FAILED).
+     * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, READ, FAILED.
+     * Inbound (from contact): RECEIVED (terminal).
      */
     #[Optional]
     public ?string $status;
@@ -136,7 +137,8 @@ final class Activity implements BaseModel
     }
 
     /**
-     * Activity status (e.g., QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, FAILED).
+     * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, READ, FAILED.
+     * Inbound (from contact): RECEIVED (terminal).
      */
     public function withStatus(string $status): self
     {
