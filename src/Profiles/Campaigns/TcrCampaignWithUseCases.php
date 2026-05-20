@@ -82,7 +82,7 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional('customerId')]
     public ?string $customerID;
 
-    #[Optional]
+    #[Optional(nullable: true)]
     public ?bool $dcaElectionsComplete;
 
     #[Optional(nullable: true)]
@@ -315,7 +315,7 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
-    public function withDcaElectionsComplete(bool $dcaElectionsComplete): self
+    public function withDcaElectionsComplete(?bool $dcaElectionsComplete): self
     {
         $self = clone $this;
         $self['dcaElectionsComplete'] = $dcaElectionsComplete;
