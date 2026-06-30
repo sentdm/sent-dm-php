@@ -21,6 +21,7 @@ use SentDm\Messages\MessageSendParams\Template;
  *   channel?: list<string>|null,
  *   sandbox?: bool|null,
  *   template?: null|Template|TemplateShape,
+ *   text?: string|null,
  *   to?: list<string>|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -53,8 +54,14 @@ final class MessageSendParams implements BaseModel
     /**
      * SDK-style template reference: resolve by ID or by name, with optional parameters.
      */
-    #[Optional]
+    #[Optional(nullable: true)]
     public ?Template $template;
+
+    /**
+     * Plain-text (free-form) message body. Provide either Template or this.
+     */
+    #[Optional(nullable: true)]
+    public ?string $text;
 
     /**
      * List of recipient phone numbers in E.164 format (multi-recipient fan-out).
@@ -88,6 +95,7 @@ final class MessageSendParams implements BaseModel
         ?array $channel = null,
         ?bool $sandbox = null,
         Template|array|null $template = null,
+        ?string $text = null,
         ?array $to = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -97,6 +105,7 @@ final class MessageSendParams implements BaseModel
         null !== $channel && $self['channel'] = $channel;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $template && $self['template'] = $template;
+        null !== $text && $self['text'] = $text;
         null !== $to && $self['to'] = $to;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
@@ -135,12 +144,23 @@ final class MessageSendParams implements BaseModel
     /**
      * SDK-style template reference: resolve by ID or by name, with optional parameters.
      *
-     * @param Template|TemplateShape $template
+     * @param Template|TemplateShape|null $template
      */
-    public function withTemplate(Template|array $template): self
+    public function withTemplate(Template|array|null $template): self
     {
         $self = clone $this;
         $self['template'] = $template;
+
+        return $self;
+    }
+
+    /**
+     * Plain-text (free-form) message body. Provide either Template or this.
+     */
+    public function withText(?string $text): self
+    {
+        $self = clone $this;
+        $self['text'] = $text;
 
         return $self;
     }

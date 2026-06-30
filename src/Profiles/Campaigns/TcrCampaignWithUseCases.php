@@ -26,6 +26,7 @@ use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\UseCase;
  *   dcaElectionsComplete?: bool|null,
  *   dcaElectionsCompletedAt?: \DateTimeInterface|null,
  *   description?: string|null,
+ *   hasSubmissionTransaction?: bool|null,
  *   helpKeywords?: string|null,
  *   helpMessage?: string|null,
  *   kycSubmissionFormID?: string|null,
@@ -90,6 +91,14 @@ final class TcrCampaignWithUseCases implements BaseModel
 
     #[Optional]
     public ?string $description;
+
+    /**
+     * True when this campaign already has a billing transaction of reference type
+     *             TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated only by the
+     *             campaigns-list path; defaults false on other responses.
+     */
+    #[Optional]
+    public ?bool $hasSubmissionTransaction;
 
     #[Optional(nullable: true)]
     public ?string $helpKeywords;
@@ -186,6 +195,7 @@ final class TcrCampaignWithUseCases implements BaseModel
         ?bool $dcaElectionsComplete = null,
         ?\DateTimeInterface $dcaElectionsCompletedAt = null,
         ?string $description = null,
+        ?bool $hasSubmissionTransaction = null,
         ?string $helpKeywords = null,
         ?string $helpMessage = null,
         ?string $kycSubmissionFormID = null,
@@ -222,6 +232,7 @@ final class TcrCampaignWithUseCases implements BaseModel
         null !== $dcaElectionsComplete && $self['dcaElectionsComplete'] = $dcaElectionsComplete;
         null !== $dcaElectionsCompletedAt && $self['dcaElectionsCompletedAt'] = $dcaElectionsCompletedAt;
         null !== $description && $self['description'] = $description;
+        null !== $hasSubmissionTransaction && $self['hasSubmissionTransaction'] = $hasSubmissionTransaction;
         null !== $helpKeywords && $self['helpKeywords'] = $helpKeywords;
         null !== $helpMessage && $self['helpMessage'] = $helpMessage;
         null !== $kycSubmissionFormID && $self['kycSubmissionFormID'] = $kycSubmissionFormID;
@@ -336,6 +347,20 @@ final class TcrCampaignWithUseCases implements BaseModel
     {
         $self = clone $this;
         $self['description'] = $description;
+
+        return $self;
+    }
+
+    /**
+     * True when this campaign already has a billing transaction of reference type
+     *             TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated only by the
+     *             campaigns-list path; defaults false on other responses.
+     */
+    public function withHasSubmissionTransaction(
+        bool $hasSubmissionTransaction
+    ): self {
+        $self = clone $this;
+        $self['hasSubmissionTransaction'] = $hasSubmissionTransaction;
 
         return $self;
     }

@@ -112,7 +112,8 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{
      *   channel?: list<string>|null,
      *   sandbox?: bool,
-     *   template?: Template|TemplateShape,
+     *   template?: Template|TemplateShape|null,
+     *   text?: string|null,
      *   to?: list<string>,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
