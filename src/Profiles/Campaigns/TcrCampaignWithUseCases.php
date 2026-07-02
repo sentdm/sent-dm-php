@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Profiles\Campaigns;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\SharingStatus;
@@ -18,6 +19,9 @@ use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\UseCase;
  *   id?: string|null,
  *   createdAt?: \DateTimeInterface|null,
  *   updatedAt?: \DateTimeInterface|null,
+ *   description: string,
+ *   name: string,
+ *   type: string,
  *   billedDate?: \DateTimeInterface|null,
  *   brandID?: string|null,
  *   cost?: float|null,
@@ -25,13 +29,11 @@ use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\UseCase;
  *   customerID?: string|null,
  *   dcaElectionsComplete?: bool|null,
  *   dcaElectionsCompletedAt?: \DateTimeInterface|null,
- *   description?: string|null,
  *   hasSubmissionTransaction?: bool|null,
  *   helpKeywords?: string|null,
  *   helpMessage?: string|null,
  *   kycSubmissionFormID?: string|null,
  *   messageFlow?: string|null,
- *   name?: string|null,
  *   optinKeywords?: string|null,
  *   optinMessage?: string|null,
  *   optoutKeywords?: string|null,
@@ -46,7 +48,6 @@ use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\UseCase;
  *   tcrSyncError?: string|null,
  *   telnyxCampaignID?: string|null,
  *   termsAndConditionsLink?: string|null,
- *   type?: string|null,
  *   upstreamCnpID?: string|null,
  *   useCases?: list<UseCase|UseCaseShape>|null,
  * }
@@ -67,6 +68,15 @@ final class TcrCampaignWithUseCases implements BaseModel
 
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $updatedAt;
+
+    #[Required]
+    public string $description;
+
+    #[Required]
+    public string $name;
+
+    #[Required]
+    public string $type;
 
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $billedDate;
@@ -89,9 +99,6 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $dcaElectionsCompletedAt;
 
-    #[Optional]
-    public ?string $description;
-
     /**
      * True when this campaign already has a billing transaction of reference type
      *             TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated only by the
@@ -111,9 +118,6 @@ final class TcrCampaignWithUseCases implements BaseModel
 
     #[Optional(nullable: true)]
     public ?string $messageFlow;
-
-    #[Optional]
-    public ?string $name;
 
     #[Optional(nullable: true)]
     public ?string $optinKeywords;
@@ -159,9 +163,6 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional(nullable: true)]
     public ?string $termsAndConditionsLink;
 
-    #[Optional]
-    public ?string $type;
-
     #[Optional('upstreamCnpId', nullable: true)]
     public ?string $upstreamCnpID;
 
@@ -169,6 +170,23 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional(list: UseCase::class)]
     public ?array $useCases;
 
+    /**
+     * `new TcrCampaignWithUseCases()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * TcrCampaignWithUseCases::with(description: ..., name: ..., type: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new TcrCampaignWithUseCases)
+     *   ->withDescription(...)
+     *   ->withName(...)
+     *   ->withType(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -184,6 +202,9 @@ final class TcrCampaignWithUseCases implements BaseModel
      * @param list<UseCase|UseCaseShape>|null $useCases
      */
     public static function with(
+        string $description,
+        string $name,
+        string $type,
         ?string $id = null,
         ?\DateTimeInterface $createdAt = null,
         ?\DateTimeInterface $updatedAt = null,
@@ -194,13 +215,11 @@ final class TcrCampaignWithUseCases implements BaseModel
         ?string $customerID = null,
         ?bool $dcaElectionsComplete = null,
         ?\DateTimeInterface $dcaElectionsCompletedAt = null,
-        ?string $description = null,
         ?bool $hasSubmissionTransaction = null,
         ?string $helpKeywords = null,
         ?string $helpMessage = null,
         ?string $kycSubmissionFormID = null,
         ?string $messageFlow = null,
-        ?string $name = null,
         ?string $optinKeywords = null,
         ?string $optinMessage = null,
         ?string $optoutKeywords = null,
@@ -215,11 +234,14 @@ final class TcrCampaignWithUseCases implements BaseModel
         ?string $tcrSyncError = null,
         ?string $telnyxCampaignID = null,
         ?string $termsAndConditionsLink = null,
-        ?string $type = null,
         ?string $upstreamCnpID = null,
         ?array $useCases = null,
     ): self {
         $self = new self;
+
+        $self['description'] = $description;
+        $self['name'] = $name;
+        $self['type'] = $type;
 
         null !== $id && $self['id'] = $id;
         null !== $createdAt && $self['createdAt'] = $createdAt;
@@ -231,13 +253,11 @@ final class TcrCampaignWithUseCases implements BaseModel
         null !== $customerID && $self['customerID'] = $customerID;
         null !== $dcaElectionsComplete && $self['dcaElectionsComplete'] = $dcaElectionsComplete;
         null !== $dcaElectionsCompletedAt && $self['dcaElectionsCompletedAt'] = $dcaElectionsCompletedAt;
-        null !== $description && $self['description'] = $description;
         null !== $hasSubmissionTransaction && $self['hasSubmissionTransaction'] = $hasSubmissionTransaction;
         null !== $helpKeywords && $self['helpKeywords'] = $helpKeywords;
         null !== $helpMessage && $self['helpMessage'] = $helpMessage;
         null !== $kycSubmissionFormID && $self['kycSubmissionFormID'] = $kycSubmissionFormID;
         null !== $messageFlow && $self['messageFlow'] = $messageFlow;
-        null !== $name && $self['name'] = $name;
         null !== $optinKeywords && $self['optinKeywords'] = $optinKeywords;
         null !== $optinMessage && $self['optinMessage'] = $optinMessage;
         null !== $optoutKeywords && $self['optoutKeywords'] = $optoutKeywords;
@@ -252,7 +272,6 @@ final class TcrCampaignWithUseCases implements BaseModel
         null !== $tcrSyncError && $self['tcrSyncError'] = $tcrSyncError;
         null !== $telnyxCampaignID && $self['telnyxCampaignID'] = $telnyxCampaignID;
         null !== $termsAndConditionsLink && $self['termsAndConditionsLink'] = $termsAndConditionsLink;
-        null !== $type && $self['type'] = $type;
         null !== $upstreamCnpID && $self['upstreamCnpID'] = $upstreamCnpID;
         null !== $useCases && $self['useCases'] = $useCases;
 
@@ -282,6 +301,30 @@ final class TcrCampaignWithUseCases implements BaseModel
     {
         $self = clone $this;
         $self['updatedAt'] = $updatedAt;
+
+        return $self;
+    }
+
+    public function withDescription(string $description): self
+    {
+        $self = clone $this;
+        $self['description'] = $description;
+
+        return $self;
+    }
+
+    public function withName(string $name): self
+    {
+        $self = clone $this;
+        $self['name'] = $name;
+
+        return $self;
+    }
+
+    public function withType(string $type): self
+    {
+        $self = clone $this;
+        $self['type'] = $type;
 
         return $self;
     }
@@ -343,14 +386,6 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
-    public function withDescription(string $description): self
-    {
-        $self = clone $this;
-        $self['description'] = $description;
-
-        return $self;
-    }
-
     /**
      * True when this campaign already has a billing transaction of reference type
      *             TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated only by the
@@ -393,14 +428,6 @@ final class TcrCampaignWithUseCases implements BaseModel
     {
         $self = clone $this;
         $self['messageFlow'] = $messageFlow;
-
-        return $self;
-    }
-
-    public function withName(string $name): self
-    {
-        $self = clone $this;
-        $self['name'] = $name;
 
         return $self;
     }
@@ -521,14 +548,6 @@ final class TcrCampaignWithUseCases implements BaseModel
     ): self {
         $self = clone $this;
         $self['termsAndConditionsLink'] = $termsAndConditionsLink;
-
-        return $self;
-    }
-
-    public function withType(string $type): self
-    {
-        $self = clone $this;
-        $self['type'] = $type;
 
         return $self;
     }

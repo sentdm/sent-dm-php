@@ -37,7 +37,7 @@ final class ContactsRawService implements ContactsRawContract
      * Creates a new contact by phone number and associates it with the authenticated customer.
      *
      * @param array{
-     *   phoneNumber?: string,
+     *   phoneNumber: string,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
