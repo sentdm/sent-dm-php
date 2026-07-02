@@ -36,7 +36,25 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->contacts->create();
+        $result = $this->client->contacts->create(phoneNumber: '+1234567890');
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
+    }
+
+    #[Test]
+    public function testCreateWithOptionalParams(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Mock server tests are disabled');
+        }
+
+        $result = $this->client->contacts->create(
+            phoneNumber: '+1234567890',
+            sandbox: false,
+            idempotencyKey: 'req_abc123_retry1',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfContact::class, $result);

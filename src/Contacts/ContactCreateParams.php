@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Contacts;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
@@ -15,7 +16,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\ContactsService::create()
  *
  * @phpstan-type ContactCreateParamsShape = array{
- *   phoneNumber?: string|null,
+ *   phoneNumber: string,
  *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -30,8 +31,8 @@ final class ContactCreateParams implements BaseModel
     /**
      * Phone number of the contact to create.
      */
-    #[Optional('phone_number')]
-    public ?string $phoneNumber;
+    #[Required('phone_number')]
+    public string $phoneNumber;
 
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
@@ -46,6 +47,20 @@ final class ContactCreateParams implements BaseModel
     #[Optional]
     public ?string $xProfileID;
 
+    /**
+     * `new ContactCreateParams()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * ContactCreateParams::with(phoneNumber: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new ContactCreateParams)->withPhoneNumber(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -57,14 +72,15 @@ final class ContactCreateParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        ?string $phoneNumber = null,
+        string $phoneNumber,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
     ): self {
         $self = new self;
 
-        null !== $phoneNumber && $self['phoneNumber'] = $phoneNumber;
+        $self['phoneNumber'] = $phoneNumber;
+
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
