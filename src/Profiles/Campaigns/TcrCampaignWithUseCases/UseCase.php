@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Profiles\Campaigns\TcrCampaignWithUseCases;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
@@ -14,10 +15,10 @@ use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
  *   id?: string|null,
  *   createdAt?: \DateTimeInterface|null,
  *   updatedAt?: \DateTimeInterface|null,
+ *   sampleMessages: list<string>,
  *   campaignID?: string|null,
  *   customerID?: string|null,
  *   messagingUseCaseUs?: null|MessagingUseCaseUs|value-of<MessagingUseCaseUs>,
- *   sampleMessages?: list<string>|null,
  * }
  */
 final class UseCase implements BaseModel
@@ -37,6 +38,10 @@ final class UseCase implements BaseModel
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $updatedAt;
 
+    /** @var list<string> $sampleMessages */
+    #[Required(list: 'string')]
+    public array $sampleMessages;
+
     #[Optional('campaignId')]
     public ?string $campaignID;
 
@@ -47,10 +52,20 @@ final class UseCase implements BaseModel
     #[Optional(enum: MessagingUseCaseUs::class)]
     public ?string $messagingUseCaseUs;
 
-    /** @var list<string>|null $sampleMessages */
-    #[Optional(list: 'string')]
-    public ?array $sampleMessages;
-
+    /**
+     * `new UseCase()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * UseCase::with(sampleMessages: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new UseCase)->withSampleMessages(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -61,19 +76,21 @@ final class UseCase implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
+     * @param list<string> $sampleMessages
      * @param MessagingUseCaseUs|value-of<MessagingUseCaseUs>|null $messagingUseCaseUs
-     * @param list<string>|null $sampleMessages
      */
     public static function with(
+        array $sampleMessages,
         ?string $id = null,
         ?\DateTimeInterface $createdAt = null,
         ?\DateTimeInterface $updatedAt = null,
         ?string $campaignID = null,
         ?string $customerID = null,
         MessagingUseCaseUs|string|null $messagingUseCaseUs = null,
-        ?array $sampleMessages = null,
     ): self {
         $self = new self;
+
+        $self['sampleMessages'] = $sampleMessages;
 
         null !== $id && $self['id'] = $id;
         null !== $createdAt && $self['createdAt'] = $createdAt;
@@ -81,7 +98,6 @@ final class UseCase implements BaseModel
         null !== $campaignID && $self['campaignID'] = $campaignID;
         null !== $customerID && $self['customerID'] = $customerID;
         null !== $messagingUseCaseUs && $self['messagingUseCaseUs'] = $messagingUseCaseUs;
-        null !== $sampleMessages && $self['sampleMessages'] = $sampleMessages;
 
         return $self;
     }
@@ -113,6 +129,17 @@ final class UseCase implements BaseModel
         return $self;
     }
 
+    /**
+     * @param list<string> $sampleMessages
+     */
+    public function withSampleMessages(array $sampleMessages): self
+    {
+        $self = clone $this;
+        $self['sampleMessages'] = $sampleMessages;
+
+        return $self;
+    }
+
     public function withCampaignID(string $campaignID): self
     {
         $self = clone $this;
@@ -137,17 +164,6 @@ final class UseCase implements BaseModel
     ): self {
         $self = clone $this;
         $self['messagingUseCaseUs'] = $messagingUseCaseUs;
-
-        return $self;
-    }
-
-    /**
-     * @param list<string> $sampleMessages
-     */
-    public function withSampleMessages(array $sampleMessages): self
-    {
-        $self = clone $this;
-        $self['sampleMessages'] = $sampleMessages;
 
         return $self;
     }

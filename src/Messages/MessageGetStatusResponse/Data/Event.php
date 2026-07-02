@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Messages\MessageGetStatusResponse\Data;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -12,9 +13,7 @@ use SentDm\Core\Contracts\BaseModel;
  * Represents a status change event in a message's lifecycle (v3).
  *
  * @phpstan-type EventShape = array{
- *   description?: string|null,
- *   status?: string|null,
- *   timestamp?: \DateTimeInterface|null,
+ *   status: string, timestamp: \DateTimeInterface, description?: string|null
  * }
  */
 final class Event implements BaseModel
@@ -22,15 +21,29 @@ final class Event implements BaseModel
     /** @use SdkModel<EventShape> */
     use SdkModel;
 
+    #[Required]
+    public string $status;
+
+    #[Required]
+    public \DateTimeInterface $timestamp;
+
     #[Optional(nullable: true)]
     public ?string $description;
 
-    #[Optional]
-    public ?string $status;
-
-    #[Optional]
-    public ?\DateTimeInterface $timestamp;
-
+    /**
+     * `new Event()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * Event::with(status: ..., timestamp: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new Event)->withStatus(...)->withTimestamp(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -42,23 +55,16 @@ final class Event implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        ?string $description = null,
-        ?string $status = null,
-        ?\DateTimeInterface $timestamp = null,
+        string $status,
+        \DateTimeInterface $timestamp,
+        ?string $description = null
     ): self {
         $self = new self;
 
+        $self['status'] = $status;
+        $self['timestamp'] = $timestamp;
+
         null !== $description && $self['description'] = $description;
-        null !== $status && $self['status'] = $status;
-        null !== $timestamp && $self['timestamp'] = $timestamp;
-
-        return $self;
-    }
-
-    public function withDescription(?string $description): self
-    {
-        $self = clone $this;
-        $self['description'] = $description;
 
         return $self;
     }
@@ -75,6 +81,14 @@ final class Event implements BaseModel
     {
         $self = clone $this;
         $self['timestamp'] = $timestamp;
+
+        return $self;
+    }
+
+    public function withDescription(?string $description): self
+    {
+        $self = clone $this;
+        $self['description'] = $description;
 
         return $self;
     }

@@ -27,7 +27,7 @@ interface ContactsContract
      * @throws APIException
      */
     public function create(
-        ?string $phoneNumber = null,
+        string $phoneNumber,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
