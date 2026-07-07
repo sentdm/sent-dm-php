@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.26.0](https://github.com/sentdm/sent-dm-php/compare/v0.25.0...v0.26.0) (2026-07-07)
+
+
+### Features
+
+* enable release-please releases and back-sync trigger ([8113245](https://github.com/sentdm/sent-dm-php/commit/81132458b85b3929c54fb6dde1f8824a3f72a552))
+* initial stlc build ([f7e4971](https://github.com/sentdm/sent-dm-php/commit/f7e497191a92300db703fa1c99c2c4ff81e71a7e))
+
+
+### Chores
+
+* add promote, back-sync, and trunk-lock workflows ([e22575a](https://github.com/sentdm/sent-dm-php/commit/e22575ac49007f2d8a3ddea2f1a46013f8c80d98))
+* add release back-sync trigger workflow ([7ebd77c](https://github.com/sentdm/sent-dm-php/commit/7ebd77cc5f70a2f6bde8fdd05d68694a0ce48ae9))
+
 ## 0.25.0 (2026-07-02)
 
 Full Changelog: [v0.24.0...v0.25.0](https://github.com/sentdm/sent-dm-php/compare/v0.24.0...v0.25.0)
