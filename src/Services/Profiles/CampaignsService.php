@@ -7,9 +7,10 @@ namespace SentDm\Services\Profiles;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\APIResponseOfTcrCampaignWithUseCases;
 use SentDm\Profiles\Campaigns\CampaignData;
 use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsContract;
 
@@ -56,7 +57,7 @@ final class CampaignsService implements CampaignsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfTcrCampaignWithUseCases {
+    ): CampaignNewResponse {
         $params = Util::removeNulls(
             [
                 'campaign' => $campaign,
@@ -96,7 +97,7 @@ final class CampaignsService implements CampaignsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfTcrCampaignWithUseCases {
+    ): CampaignUpdateResponse {
         $params = Util::removeNulls(
             [
                 'profileID' => $profileID,
