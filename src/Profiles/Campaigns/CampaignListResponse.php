@@ -7,18 +7,19 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\Campaigns\CampaignListResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type TcrCampaignWithUseCasesShape from \SentDm\Profiles\Campaigns\TcrCampaignWithUseCases
+ * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignListResponse\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type CampaignListResponseShape = array{
- *   data?: list<TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape>|null,
+ *   data?: list<Data|DataShape>|null,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -32,9 +33,9 @@ final class CampaignListResponse implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @var list<TcrCampaignWithUseCases>|null $data
+     * @var list<Data>|null $data
      */
-    #[Optional(list: TcrCampaignWithUseCases::class, nullable: true)]
+    #[Optional(list: Data::class, nullable: true)]
     public ?array $data;
 
     /**
@@ -65,7 +66,7 @@ final class CampaignListResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape>|null $data
+     * @param list<Data|DataShape>|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
@@ -88,7 +89,7 @@ final class CampaignListResponse implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @param list<TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape>|null $data
+     * @param list<Data|DataShape>|null $data
      */
     public function withData(?array $data): self
     {
