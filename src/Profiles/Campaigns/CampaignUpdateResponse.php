@@ -31,15 +31,7 @@ final class CampaignUpdateResponse implements BaseModel
     use SdkModel;
 
     /**
-     * Customer-facing campaign representation for the public v3 API.
-     * Deliberately does not inherit TcrCampaign. The service-layer type
-     * TcrCampaignWithUseCasesResponse extends the database entity, so returning it
-     * directly from a public endpoint serialized every column, including supplier-specific and
-     * internal provisioning identifiers. This DTO is an explicit allowlist: a new column on the
-     * entity is invisible to customers until it is added here on purpose.
-     * Intentionally omitted: telnyxCampaignId (supplier-specific), plus cspId,
-     * resellerId, upstreamCnpId, kycSubmissionFormId and sharingStatus
-     * (internal provisioning and CSP-to-DCA plumbing). All six remain available on the admin API.
+     * A 10DLC campaign registered for a brand.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
@@ -93,15 +85,7 @@ final class CampaignUpdateResponse implements BaseModel
     }
 
     /**
-     * Customer-facing campaign representation for the public v3 API.
-     * Deliberately does not inherit TcrCampaign. The service-layer type
-     * TcrCampaignWithUseCasesResponse extends the database entity, so returning it
-     * directly from a public endpoint serialized every column, including supplier-specific and
-     * internal provisioning identifiers. This DTO is an explicit allowlist: a new column on the
-     * entity is invisible to customers until it is added here on purpose.
-     * Intentionally omitted: telnyxCampaignId (supplier-specific), plus cspId,
-     * resellerId, upstreamCnpId, kycSubmissionFormId and sharingStatus
-     * (internal provisioning and CSP-to-DCA plumbing). All six remain available on the admin API.
+     * A 10DLC campaign registered for a brand.
      *
      * @param Data|DataShape|null $data
      */
