@@ -28,6 +28,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   optoutMessage?: string|null,
  *   privacyPolicyLink?: string|null,
  *   termsAndConditionsLink?: string|null,
+ *   volume?: string|null,
  * }
  */
 final class CampaignData implements BaseModel
@@ -118,6 +119,13 @@ final class CampaignData implements BaseModel
     public ?string $termsAndConditionsLink;
 
     /**
+     * Expected messaging volume for this campaign. Numeric string (e.g. "1999", "5000");
+     * values below 2000 bill at the low-volume tier.
+     */
+    #[Optional(nullable: true)]
+    public ?string $volume;
+
+    /**
      * `new CampaignData()` is missing required properties by the API.
      *
      * To enforce required parameters use
@@ -161,6 +169,7 @@ final class CampaignData implements BaseModel
         ?string $optoutMessage = null,
         ?string $privacyPolicyLink = null,
         ?string $termsAndConditionsLink = null,
+        ?string $volume = null,
     ): self {
         $self = new self;
 
@@ -178,6 +187,7 @@ final class CampaignData implements BaseModel
         null !== $optoutMessage && $self['optoutMessage'] = $optoutMessage;
         null !== $privacyPolicyLink && $self['privacyPolicyLink'] = $privacyPolicyLink;
         null !== $termsAndConditionsLink && $self['termsAndConditionsLink'] = $termsAndConditionsLink;
+        null !== $volume && $self['volume'] = $volume;
 
         return $self;
     }
@@ -324,6 +334,18 @@ final class CampaignData implements BaseModel
     ): self {
         $self = clone $this;
         $self['termsAndConditionsLink'] = $termsAndConditionsLink;
+
+        return $self;
+    }
+
+    /**
+     * Expected messaging volume for this campaign. Numeric string (e.g. "1999", "5000");
+     * values below 2000 bill at the low-volume tier.
+     */
+    public function withVolume(?string $volume): self
+    {
+        $self = clone $this;
+        $self['volume'] = $volume;
 
         return $self;
     }

@@ -8,13 +8,14 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\APIResponseOfTcrCampaignWithUseCases;
 use SentDm\Profiles\Campaigns\CampaignCreateParams;
 use SentDm\Profiles\Campaigns\CampaignData;
 use SentDm\Profiles\Campaigns\CampaignDeleteParams;
 use SentDm\Profiles\Campaigns\CampaignListParams;
 use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
 use SentDm\Profiles\Campaigns\CampaignUpdateParams;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsRawContract;
 
@@ -46,7 +47,7 @@ final class CampaignsRawService implements CampaignsRawContract
      * }|CampaignCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfTcrCampaignWithUseCases>
+     * @return BaseResponse<CampaignNewResponse>
      *
      * @throws APIException
      */
@@ -76,7 +77,7 @@ final class CampaignsRawService implements CampaignsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfTcrCampaignWithUseCases::class,
+            convert: CampaignNewResponse::class,
         );
     }
 
@@ -95,7 +96,7 @@ final class CampaignsRawService implements CampaignsRawContract
      * }|CampaignUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfTcrCampaignWithUseCases>
+     * @return BaseResponse<CampaignUpdateResponse>
      *
      * @throws APIException
      */
@@ -127,7 +128,7 @@ final class CampaignsRawService implements CampaignsRawContract
                 array_flip(['profileID']),
             ),
             options: $options,
-            convert: APIResponseOfTcrCampaignWithUseCases::class,
+            convert: CampaignUpdateResponse::class,
         );
     }
 

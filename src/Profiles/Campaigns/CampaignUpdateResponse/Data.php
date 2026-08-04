@@ -2,81 +2,58 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\Campaigns;
+namespace SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\SharingStatus;
-use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\Status;
-use SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\UseCase;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\Status;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\UseCase;
 
 /**
- * @phpstan-import-type UseCaseShape from \SentDm\Profiles\Campaigns\TcrCampaignWithUseCases\UseCase
+ * A 10DLC campaign registered for a brand.
  *
- * @phpstan-type TcrCampaignWithUseCasesShape = array{
+ * @phpstan-import-type UseCaseShape from \SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\UseCase
+ *
+ * @phpstan-type DataShape = array{
  *   id?: string|null,
- *   createdAt?: \DateTimeInterface|null,
- *   updatedAt?: \DateTimeInterface|null,
- *   description: string,
- *   name: string,
- *   type: string,
  *   billedDate?: \DateTimeInterface|null,
  *   brandID?: string|null,
  *   cost?: float|null,
- *   cspID?: string|null,
+ *   createdAt?: \DateTimeInterface|null,
  *   customerID?: string|null,
  *   dcaElectionsComplete?: bool|null,
  *   dcaElectionsCompletedAt?: \DateTimeInterface|null,
+ *   description?: string|null,
  *   hasSubmissionTransaction?: bool|null,
  *   helpKeywords?: string|null,
  *   helpMessage?: string|null,
- *   kycSubmissionFormID?: string|null,
  *   messageFlow?: string|null,
+ *   name?: string|null,
  *   optinKeywords?: string|null,
  *   optinMessage?: string|null,
  *   optoutKeywords?: string|null,
  *   optoutMessage?: string|null,
  *   privacyPolicyLink?: string|null,
- *   resellerID?: string|null,
- *   sharingStatus?: null|SharingStatus|value-of<SharingStatus>,
  *   status?: null|Status|value-of<Status>,
  *   submittedAt?: \DateTimeInterface|null,
  *   submittedToTcr?: bool|null,
  *   tcrCampaignID?: string|null,
  *   tcrSyncError?: string|null,
- *   telnyxCampaignID?: string|null,
  *   termsAndConditionsLink?: string|null,
- *   upstreamCnpID?: string|null,
+ *   type?: string|null,
+ *   updatedAt?: \DateTimeInterface|null,
  *   useCases?: list<UseCase|UseCaseShape>|null,
+ *   volume?: string|null,
  * }
  */
-final class TcrCampaignWithUseCases implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<TcrCampaignWithUseCasesShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
-    /**
-     * Unique identifier.
-     */
     #[Optional]
     public ?string $id;
-
-    #[Optional]
-    public ?\DateTimeInterface $createdAt;
-
-    #[Optional(nullable: true)]
-    public ?\DateTimeInterface $updatedAt;
-
-    #[Required]
-    public string $description;
-
-    #[Required]
-    public string $name;
-
-    #[Required]
-    public string $type;
 
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $billedDate;
@@ -87,22 +64,27 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional(nullable: true)]
     public ?float $cost;
 
-    #[Optional('cspId', nullable: true)]
-    public ?string $cspID;
+    #[Optional]
+    public ?\DateTimeInterface $createdAt;
 
     #[Optional('customerId')]
     public ?string $customerID;
 
+    /**
+     * True once every carrier has completed its DCA election and the campaign is
+     * operationally ready for traffic.
+     */
     #[Optional(nullable: true)]
     public ?bool $dcaElectionsComplete;
 
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $dcaElectionsCompletedAt;
 
+    #[Optional]
+    public ?string $description;
+
     /**
-     * True when this campaign already has a billing transaction of reference type
-     *             TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated only by the
-     *             campaigns-list path; defaults false on other responses.
+     * True when the one-time campaign submission fee has already been charged.
      */
     #[Optional]
     public ?bool $hasSubmissionTransaction;
@@ -113,11 +95,11 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional(nullable: true)]
     public ?string $helpMessage;
 
-    #[Optional('kycSubmissionFormId', nullable: true)]
-    public ?string $kycSubmissionFormID;
-
     #[Optional(nullable: true)]
     public ?string $messageFlow;
+
+    #[Optional]
+    public ?string $name;
 
     #[Optional(nullable: true)]
     public ?string $optinKeywords;
@@ -134,13 +116,6 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional(nullable: true)]
     public ?string $privacyPolicyLink;
 
-    #[Optional('resellerId', nullable: true)]
-    public ?string $resellerID;
-
-    /** @var value-of<SharingStatus>|null $sharingStatus */
-    #[Optional(enum: SharingStatus::class, nullable: true)]
-    public ?string $sharingStatus;
-
     /** @var value-of<Status>|null $status */
     #[Optional(enum: Status::class, nullable: true)]
     public ?string $status;
@@ -151,42 +126,42 @@ final class TcrCampaignWithUseCases implements BaseModel
     #[Optional('submittedToTCR')]
     public ?bool $submittedToTcr;
 
+    /**
+     * The Campaign Registry identifier, once the campaign has been accepted.
+     */
     #[Optional('tcrCampaignId', nullable: true)]
     public ?string $tcrCampaignID;
 
+    /**
+     * Surfaced so customers can see why a submission did not reach the registry.
+     */
     #[Optional(nullable: true)]
     public ?string $tcrSyncError;
-
-    #[Optional('telnyxCampaignId', nullable: true)]
-    public ?string $telnyxCampaignID;
 
     #[Optional(nullable: true)]
     public ?string $termsAndConditionsLink;
 
-    #[Optional('upstreamCnpId', nullable: true)]
-    public ?string $upstreamCnpID;
+    /**
+     * Campaign type (for example KYC or App).
+     */
+    #[Optional]
+    public ?string $type;
+
+    #[Optional(nullable: true)]
+    public ?\DateTimeInterface $updatedAt;
 
     /** @var list<UseCase>|null $useCases */
     #[Optional(list: UseCase::class)]
     public ?array $useCases;
 
     /**
-     * `new TcrCampaignWithUseCases()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * TcrCampaignWithUseCases::with(description: ..., name: ..., type: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new TcrCampaignWithUseCases)
-     *   ->withDescription(...)
-     *   ->withName(...)
-     *   ->withType(...)
-     * ```
+     * Expected messaging volume for this campaign — customer-supplied on create/update, and the
+     *             input to both the TCR usecase classification (LOW_VOLUME vs MIXED/specific) and the campaign fee
+     *             tier. Surfaced so customers can read back the value they set.
      */
+    #[Optional(nullable: true)]
+    public ?string $volume;
+
     public function __construct()
     {
         $this->initialize();
@@ -197,134 +172,79 @@ final class TcrCampaignWithUseCases implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param SharingStatus|value-of<SharingStatus>|null $sharingStatus
      * @param Status|value-of<Status>|null $status
      * @param list<UseCase|UseCaseShape>|null $useCases
      */
     public static function with(
-        string $description,
-        string $name,
-        string $type,
         ?string $id = null,
-        ?\DateTimeInterface $createdAt = null,
-        ?\DateTimeInterface $updatedAt = null,
         ?\DateTimeInterface $billedDate = null,
         ?string $brandID = null,
         ?float $cost = null,
-        ?string $cspID = null,
+        ?\DateTimeInterface $createdAt = null,
         ?string $customerID = null,
         ?bool $dcaElectionsComplete = null,
         ?\DateTimeInterface $dcaElectionsCompletedAt = null,
+        ?string $description = null,
         ?bool $hasSubmissionTransaction = null,
         ?string $helpKeywords = null,
         ?string $helpMessage = null,
-        ?string $kycSubmissionFormID = null,
         ?string $messageFlow = null,
+        ?string $name = null,
         ?string $optinKeywords = null,
         ?string $optinMessage = null,
         ?string $optoutKeywords = null,
         ?string $optoutMessage = null,
         ?string $privacyPolicyLink = null,
-        ?string $resellerID = null,
-        SharingStatus|string|null $sharingStatus = null,
         Status|string|null $status = null,
         ?\DateTimeInterface $submittedAt = null,
         ?bool $submittedToTcr = null,
         ?string $tcrCampaignID = null,
         ?string $tcrSyncError = null,
-        ?string $telnyxCampaignID = null,
         ?string $termsAndConditionsLink = null,
-        ?string $upstreamCnpID = null,
+        ?string $type = null,
+        ?\DateTimeInterface $updatedAt = null,
         ?array $useCases = null,
+        ?string $volume = null,
     ): self {
         $self = new self;
 
-        $self['description'] = $description;
-        $self['name'] = $name;
-        $self['type'] = $type;
-
         null !== $id && $self['id'] = $id;
-        null !== $createdAt && $self['createdAt'] = $createdAt;
-        null !== $updatedAt && $self['updatedAt'] = $updatedAt;
         null !== $billedDate && $self['billedDate'] = $billedDate;
         null !== $brandID && $self['brandID'] = $brandID;
         null !== $cost && $self['cost'] = $cost;
-        null !== $cspID && $self['cspID'] = $cspID;
+        null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $customerID && $self['customerID'] = $customerID;
         null !== $dcaElectionsComplete && $self['dcaElectionsComplete'] = $dcaElectionsComplete;
         null !== $dcaElectionsCompletedAt && $self['dcaElectionsCompletedAt'] = $dcaElectionsCompletedAt;
+        null !== $description && $self['description'] = $description;
         null !== $hasSubmissionTransaction && $self['hasSubmissionTransaction'] = $hasSubmissionTransaction;
         null !== $helpKeywords && $self['helpKeywords'] = $helpKeywords;
         null !== $helpMessage && $self['helpMessage'] = $helpMessage;
-        null !== $kycSubmissionFormID && $self['kycSubmissionFormID'] = $kycSubmissionFormID;
         null !== $messageFlow && $self['messageFlow'] = $messageFlow;
+        null !== $name && $self['name'] = $name;
         null !== $optinKeywords && $self['optinKeywords'] = $optinKeywords;
         null !== $optinMessage && $self['optinMessage'] = $optinMessage;
         null !== $optoutKeywords && $self['optoutKeywords'] = $optoutKeywords;
         null !== $optoutMessage && $self['optoutMessage'] = $optoutMessage;
         null !== $privacyPolicyLink && $self['privacyPolicyLink'] = $privacyPolicyLink;
-        null !== $resellerID && $self['resellerID'] = $resellerID;
-        null !== $sharingStatus && $self['sharingStatus'] = $sharingStatus;
         null !== $status && $self['status'] = $status;
         null !== $submittedAt && $self['submittedAt'] = $submittedAt;
         null !== $submittedToTcr && $self['submittedToTcr'] = $submittedToTcr;
         null !== $tcrCampaignID && $self['tcrCampaignID'] = $tcrCampaignID;
         null !== $tcrSyncError && $self['tcrSyncError'] = $tcrSyncError;
-        null !== $telnyxCampaignID && $self['telnyxCampaignID'] = $telnyxCampaignID;
         null !== $termsAndConditionsLink && $self['termsAndConditionsLink'] = $termsAndConditionsLink;
-        null !== $upstreamCnpID && $self['upstreamCnpID'] = $upstreamCnpID;
+        null !== $type && $self['type'] = $type;
+        null !== $updatedAt && $self['updatedAt'] = $updatedAt;
         null !== $useCases && $self['useCases'] = $useCases;
+        null !== $volume && $self['volume'] = $volume;
 
         return $self;
     }
 
-    /**
-     * Unique identifier.
-     */
     public function withID(string $id): self
     {
         $self = clone $this;
         $self['id'] = $id;
-
-        return $self;
-    }
-
-    public function withCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $self = clone $this;
-        $self['createdAt'] = $createdAt;
-
-        return $self;
-    }
-
-    public function withUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $self = clone $this;
-        $self['updatedAt'] = $updatedAt;
-
-        return $self;
-    }
-
-    public function withDescription(string $description): self
-    {
-        $self = clone $this;
-        $self['description'] = $description;
-
-        return $self;
-    }
-
-    public function withName(string $name): self
-    {
-        $self = clone $this;
-        $self['name'] = $name;
-
-        return $self;
-    }
-
-    public function withType(string $type): self
-    {
-        $self = clone $this;
-        $self['type'] = $type;
 
         return $self;
     }
@@ -353,10 +273,10 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
-    public function withCspID(?string $cspID): self
+    public function withCreatedAt(\DateTimeInterface $createdAt): self
     {
         $self = clone $this;
-        $self['cspID'] = $cspID;
+        $self['createdAt'] = $createdAt;
 
         return $self;
     }
@@ -369,6 +289,10 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
+    /**
+     * True once every carrier has completed its DCA election and the campaign is
+     * operationally ready for traffic.
+     */
     public function withDcaElectionsComplete(?bool $dcaElectionsComplete): self
     {
         $self = clone $this;
@@ -386,10 +310,16 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
+    public function withDescription(string $description): self
+    {
+        $self = clone $this;
+        $self['description'] = $description;
+
+        return $self;
+    }
+
     /**
-     * True when this campaign already has a billing transaction of reference type
-     *             TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated only by the
-     *             campaigns-list path; defaults false on other responses.
+     * True when the one-time campaign submission fee has already been charged.
      */
     public function withHasSubmissionTransaction(
         bool $hasSubmissionTransaction
@@ -416,18 +346,18 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
-    public function withKYCSubmissionFormID(?string $kycSubmissionFormID): self
-    {
-        $self = clone $this;
-        $self['kycSubmissionFormID'] = $kycSubmissionFormID;
-
-        return $self;
-    }
-
     public function withMessageFlow(?string $messageFlow): self
     {
         $self = clone $this;
         $self['messageFlow'] = $messageFlow;
+
+        return $self;
+    }
+
+    public function withName(string $name): self
+    {
+        $self = clone $this;
+        $self['name'] = $name;
 
         return $self;
     }
@@ -472,26 +402,6 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
-    public function withResellerID(?string $resellerID): self
-    {
-        $self = clone $this;
-        $self['resellerID'] = $resellerID;
-
-        return $self;
-    }
-
-    /**
-     * @param SharingStatus|value-of<SharingStatus>|null $sharingStatus
-     */
-    public function withSharingStatus(
-        SharingStatus|string|null $sharingStatus
-    ): self {
-        $self = clone $this;
-        $self['sharingStatus'] = $sharingStatus;
-
-        return $self;
-    }
-
     /**
      * @param Status|value-of<Status>|null $status
      */
@@ -519,6 +429,9 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
+    /**
+     * The Campaign Registry identifier, once the campaign has been accepted.
+     */
     public function withTcrCampaignID(?string $tcrCampaignID): self
     {
         $self = clone $this;
@@ -527,18 +440,13 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
+    /**
+     * Surfaced so customers can see why a submission did not reach the registry.
+     */
     public function withTcrSyncError(?string $tcrSyncError): self
     {
         $self = clone $this;
         $self['tcrSyncError'] = $tcrSyncError;
-
-        return $self;
-    }
-
-    public function withTelnyxCampaignID(?string $telnyxCampaignID): self
-    {
-        $self = clone $this;
-        $self['telnyxCampaignID'] = $telnyxCampaignID;
 
         return $self;
     }
@@ -552,10 +460,21 @@ final class TcrCampaignWithUseCases implements BaseModel
         return $self;
     }
 
-    public function withUpstreamCnpID(?string $upstreamCnpID): self
+    /**
+     * Campaign type (for example KYC or App).
+     */
+    public function withType(string $type): self
     {
         $self = clone $this;
-        $self['upstreamCnpID'] = $upstreamCnpID;
+        $self['type'] = $type;
+
+        return $self;
+    }
+
+    public function withUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $self = clone $this;
+        $self['updatedAt'] = $updatedAt;
 
         return $self;
     }
@@ -567,6 +486,19 @@ final class TcrCampaignWithUseCases implements BaseModel
     {
         $self = clone $this;
         $self['useCases'] = $useCases;
+
+        return $self;
+    }
+
+    /**
+     * Expected messaging volume for this campaign — customer-supplied on create/update, and the
+     *             input to both the TCR usecase classification (LOW_VOLUME vs MIXED/specific) and the campaign fee
+     *             tier. Surfaced so customers can read back the value they set.
+     */
+    public function withVolume(?string $volume): self
+    {
+        $self = clone $this;
+        $self['volume'] = $volume;
 
         return $self;
     }

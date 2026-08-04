@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\Campaigns\TcrCampaignWithUseCases;
+namespace SentDm\Profiles\Campaigns\CampaignNewResponse\Data;
 
 enum Status: string
 {
