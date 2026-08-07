@@ -7,8 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\APIResponseOfTcrCampaignWithUseCases;
 use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
 use Tests\UnsupportedMockTests;
 
@@ -56,10 +57,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(
-            APIResponseOfTcrCampaignWithUseCases::class,
-            $result
-        );
+        $this->assertInstanceOf(CampaignNewResponse::class, $result);
     }
 
     #[Test]
@@ -93,6 +91,7 @@ final class CampaignsTest extends TestCase
                 'optoutMessage' => 'You have been unsubscribed. Reply START to opt back in.',
                 'privacyPolicyLink' => 'https://acmecorp.com/privacy',
                 'termsAndConditionsLink' => 'https://acmecorp.com/terms',
+                'volume' => null,
             ],
             sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
@@ -100,10 +99,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(
-            APIResponseOfTcrCampaignWithUseCases::class,
-            $result
-        );
+        $this->assertInstanceOf(CampaignNewResponse::class, $result);
     }
 
     #[Test]
@@ -133,10 +129,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(
-            APIResponseOfTcrCampaignWithUseCases::class,
-            $result
-        );
+        $this->assertInstanceOf(CampaignUpdateResponse::class, $result);
     }
 
     #[Test]
@@ -171,6 +164,7 @@ final class CampaignsTest extends TestCase
                 'optoutMessage' => null,
                 'privacyPolicyLink' => null,
                 'termsAndConditionsLink' => null,
+                'volume' => null,
             ],
             sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
@@ -178,10 +172,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(
-            APIResponseOfTcrCampaignWithUseCases::class,
-            $result
-        );
+        $this->assertInstanceOf(CampaignUpdateResponse::class, $result);
     }
 
     #[Test]

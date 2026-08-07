@@ -19,7 +19,6 @@ use SentDm\Profiles\TcrVertical;
  * @phpstan-type ComplianceShape = array{
  *   brandRelationship?: null|TcrBrandRelationship|value-of<TcrBrandRelationship>,
  *   destinationCountries?: list<DestinationCountry|DestinationCountryShape>|null,
- *   expectedMessagingVolume?: string|null,
  *   isTcrApplication?: bool|null,
  *   notes?: string|null,
  *   phoneNumberPrefix?: string|null,
@@ -47,12 +46,6 @@ final class Compliance implements BaseModel
      */
     #[Optional('destination_countries', list: DestinationCountry::class)]
     public ?array $destinationCountries;
-
-    /**
-     * Expected daily messaging volume.
-     */
-    #[Optional('expected_messaging_volume', nullable: true)]
-    public ?string $expectedMessagingVolume;
 
     /**
      * Whether this is a TCR (Campaign Registry) application.
@@ -99,7 +92,6 @@ final class Compliance implements BaseModel
     public static function with(
         TcrBrandRelationship|string|null $brandRelationship = null,
         ?array $destinationCountries = null,
-        ?string $expectedMessagingVolume = null,
         ?bool $isTcrApplication = null,
         ?string $notes = null,
         ?string $phoneNumberPrefix = null,
@@ -110,7 +102,6 @@ final class Compliance implements BaseModel
 
         null !== $brandRelationship && $self['brandRelationship'] = $brandRelationship;
         null !== $destinationCountries && $self['destinationCountries'] = $destinationCountries;
-        null !== $expectedMessagingVolume && $self['expectedMessagingVolume'] = $expectedMessagingVolume;
         null !== $isTcrApplication && $self['isTcrApplication'] = $isTcrApplication;
         null !== $notes && $self['notes'] = $notes;
         null !== $phoneNumberPrefix && $self['phoneNumberPrefix'] = $phoneNumberPrefix;
@@ -141,18 +132,6 @@ final class Compliance implements BaseModel
     {
         $self = clone $this;
         $self['destinationCountries'] = $destinationCountries;
-
-        return $self;
-    }
-
-    /**
-     * Expected daily messaging volume.
-     */
-    public function withExpectedMessagingVolume(
-        ?string $expectedMessagingVolume
-    ): self {
-        $self = clone $this;
-        $self['expectedMessagingVolume'] = $expectedMessagingVolume;
 
         return $self;
     }

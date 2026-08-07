@@ -7,33 +7,34 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type TcrCampaignWithUseCasesShape from \SentDm\Profiles\Campaigns\TcrCampaignWithUseCases
+ * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type APIResponseOfTcrCampaignWithUseCasesShape = array{
- *   data?: null|TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape,
+ * @phpstan-type CampaignUpdateResponseShape = array{
+ *   data?: null|Data|DataShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class APIResponseOfTcrCampaignWithUseCases implements BaseModel
+final class CampaignUpdateResponse implements BaseModel
 {
-    /** @use SdkModel<APIResponseOfTcrCampaignWithUseCasesShape> */
+    /** @use SdkModel<CampaignUpdateResponseShape> */
     use SdkModel;
 
     /**
-     * The response data (null if error).
+     * A 10DLC campaign registered for a brand.
      */
     #[Optional(nullable: true)]
-    public ?TcrCampaignWithUseCases $data;
+    public ?Data $data;
 
     /**
      * Error information.
@@ -63,12 +64,12 @@ final class APIResponseOfTcrCampaignWithUseCases implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape|null $data
+     * @param Data|DataShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        TcrCampaignWithUseCases|array|null $data = null,
+        Data|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -84,11 +85,11 @@ final class APIResponseOfTcrCampaignWithUseCases implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * A 10DLC campaign registered for a brand.
      *
-     * @param TcrCampaignWithUseCases|TcrCampaignWithUseCasesShape|null $data
+     * @param Data|DataShape|null $data
      */
-    public function withData(TcrCampaignWithUseCases|array|null $data): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;
