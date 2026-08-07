@@ -161,7 +161,7 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $sendingPhoneNumber;
 
     /**
-     * Reference to another profile to use for SMS/Telnyx configuration (optional).
+     * Reference to another profile to use for SMS configuration (optional).
      */
     #[Optional('sending_phone_number_profile_id', nullable: true)]
     public ?string $sendingPhoneNumberProfileID;
@@ -450,7 +450,7 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Reference to another profile to use for SMS/Telnyx configuration (optional).
+     * Reference to another profile to use for SMS configuration (optional).
      */
     public function withSendingPhoneNumberProfileID(
         ?string $sendingPhoneNumberProfileID

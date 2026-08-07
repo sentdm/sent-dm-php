@@ -86,7 +86,7 @@ final class MessagesService implements MessagesContract
     /**
      * @api
      *
-     * Sends a message to one or more recipients using a template. Supports multi-channel broadcast — when multiple channels are specified (e.g. ["sms", "whatsapp"]), a separate message is created for each (recipient, channel) pair. Returns immediately with per-recipient message IDs for async tracking via webhooks or the GET /messages/{id} endpoint.
+     * Sends a message to one or more recipients using a template. Supports multi-channel broadcast — when multiple channels are specified (e.g. ["sms", "whatsapp"]), a separate message is created for each (recipient, channel) pair. Returns immediately with per-recipient message IDs for async tracking via webhooks or the GET /messages/{id} endpoint. Account-level preconditions such as insufficient balance do not reject the request: the send is accepted with 202 and the affected messages are reported as BLOCKED on GET /messages/{id} and the message status webhook.
      *
      * @param list<string>|null $channel Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"].
      * Each channel produces a separate message per recipient.

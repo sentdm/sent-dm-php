@@ -122,7 +122,7 @@ interface ProfilesContract
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string|null $sendingPhoneNumber Body param: Direct phone number for SMS sending (optional)
-     * @param string|null $sendingPhoneNumberProfileID Body param: Reference to another profile to use for SMS/Telnyx configuration (optional)
+     * @param string|null $sendingPhoneNumberProfileID Body param: Reference to another profile to use for SMS configuration (optional)
      * @param string|null $sendingWhatsappNumberProfileID Body param: Reference to another profile to use for WhatsApp configuration (optional)
      * @param string|null $shortName Body param: Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,
      * and spaces, and include at least one letter. Example: "SALES", "Mkt 2", "Support1".

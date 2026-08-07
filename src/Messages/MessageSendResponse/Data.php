@@ -35,7 +35,7 @@ final class Data implements BaseModel
     public ?array $recipients;
 
     /**
-     * Overall request status: "QUEUED" when the batch has been accepted and published to Kafka.
+     * Overall request status: "QUEUED" when the batch has been accepted for delivery.
      */
     #[Optional]
     public ?string $status;
@@ -94,7 +94,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * Overall request status: "QUEUED" when the batch has been accepted and published to Kafka.
+     * Overall request status: "QUEUED" when the batch has been accepted for delivery.
      */
     public function withStatus(string $status): self
     {

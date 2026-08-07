@@ -7,36 +7,34 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignListResponse\Data;
+use SentDm\Profiles\Campaigns\CampaignNewResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignListResponse\Data
+ * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignNewResponse\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type CampaignListResponseShape = array{
- *   data?: list<Data|DataShape>|null,
+ * @phpstan-type CampaignNewResponseShape = array{
+ *   data?: null|Data|DataShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class CampaignListResponse implements BaseModel
+final class CampaignNewResponse implements BaseModel
 {
-    /** @use SdkModel<CampaignListResponseShape> */
+    /** @use SdkModel<CampaignNewResponseShape> */
     use SdkModel;
 
     /**
-     * The response data (null if error).
-     *
-     * @var list<Data>|null $data
+     * A 10DLC campaign registered for a brand.
      */
-    #[Optional(list: Data::class, nullable: true)]
-    public ?array $data;
+    #[Optional(nullable: true)]
+    public ?Data $data;
 
     /**
      * Error information.
@@ -66,12 +64,12 @@ final class CampaignListResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<Data|DataShape>|null $data
+     * @param Data|DataShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        ?array $data = null,
+        Data|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -87,11 +85,11 @@ final class CampaignListResponse implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * A 10DLC campaign registered for a brand.
      *
-     * @param list<Data|DataShape>|null $data
+     * @param Data|DataShape|null $data
      */
-    public function withData(?array $data): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

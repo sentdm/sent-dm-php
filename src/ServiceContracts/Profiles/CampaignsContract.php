@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace SentDm\ServiceContracts\Profiles;
 
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Profiles\Campaigns\APIResponseOfTcrCampaignWithUseCases;
 use SentDm\Profiles\Campaigns\CampaignData;
 use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -36,7 +37,7 @@ interface CampaignsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfTcrCampaignWithUseCases;
+    ): CampaignNewResponse;
 
     /**
      * @api
@@ -60,7 +61,7 @@ interface CampaignsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfTcrCampaignWithUseCases;
+    ): CampaignUpdateResponse;
 
     /**
      * @api
