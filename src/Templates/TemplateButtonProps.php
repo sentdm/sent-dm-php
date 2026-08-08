@@ -12,7 +12,7 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape = array{
+ * @phpstan-type TemplateButtonPropsShape = array{
  *   activeFor: int,
  *   countryCode: string,
  *   offerCode: string,
@@ -28,9 +28,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   signatureHash?: string|null,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements BaseModel
+final class TemplateButtonProps implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateButtonPropsShape> */
+    /** @use SdkModel<TemplateButtonPropsShape> */
     use SdkModel;
 
     #[Required]
@@ -80,11 +80,11 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
     public ?string $signatureHash;
 
     /**
-     * `new SentDmServicesCommonContractsPocOsTemplateButtonProps()` is missing required properties by the API.
+     * `new TemplateButtonProps()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesCommonContractsPocOsTemplateButtonProps::with(
+     * TemplateButtonProps::with(
      *   activeFor: ...,
      *   countryCode: ...,
      *   offerCode: ...,
@@ -100,7 +100,7 @@ final class SentDmServicesCommonContractsPocOsTemplateButtonProps implements Bas
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesCommonContractsPocOsTemplateButtonProps)
+     * (new TemplateButtonProps)
      *   ->withActiveFor(...)
      *   ->withCountryCode(...)
      *   ->withOfferCode(...)

@@ -14,7 +14,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-import-type DestinationCountryShape from \SentDm\Profiles\DestinationCountry
  *
- * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape = array{
+ * @phpstan-type BrandComplianceInfoShape = array{
  *   brandRelationship: TcrBrandRelationship|value-of<TcrBrandRelationship>,
  *   vertical: TcrVertical|value-of<TcrVertical>,
  *   destinationCountries?: list<DestinationCountry|DestinationCountryShape>|null,
@@ -24,11 +24,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   primaryUseCase?: string|null,
  * }
  */
-final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo implements BaseModel
+final class BrandComplianceInfo implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfoShape>
-     */
+    /** @use SdkModel<BrandComplianceInfoShape> */
     use SdkModel;
 
     /** @var value-of<TcrBrandRelationship> $brandRelationship */
@@ -72,21 +70,17 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComp
     public ?string $primaryUseCase;
 
     /**
-     * `new SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo()` is missing required properties by the API.
+     * `new BrandComplianceInfo()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo::with(
-     *   brandRelationship: ..., vertical: ...
-     * )
+     * BrandComplianceInfo::with(brandRelationship: ..., vertical: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo)
-     *   ->withBrandRelationship(...)
-     *   ->withVertical(...)
+     * (new BrandComplianceInfo)->withBrandRelationship(...)->withVertical(...)
      * ```
      */
     public function __construct()
