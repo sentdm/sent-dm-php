@@ -10,35 +10,35 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Header section of a message template.
+ * Footer section of a message template.
  *
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateHeaderShape = array{
+ * @phpstan-type TemplateFooterShape = array{
  *   template: string,
  *   type?: string|null,
  *   variables?: list<TemplateVariable|TemplateVariableShape>|null,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateHeader implements BaseModel
+final class TemplateFooter implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateHeaderShape> */
+    /** @use SdkModel<TemplateFooterShape> */
     use SdkModel;
 
     /**
-     * The header template text with optional variable placeholders (e.g., "Welcome to {{0:variable}}").
+     * The footer template text with optional variable placeholders.
      */
     #[Required]
     public string $template;
 
     /**
-     * The type of header (e.g., "text", "image", "video", "document").
+     * The type of footer (typically "text").
      */
     #[Optional(nullable: true)]
     public ?string $type;
 
     /**
-     * List of variables used in the header template.
+     * List of variables used in the footer template.
      *
      * @var list<TemplateVariable>|null $variables
      */
@@ -46,17 +46,17 @@ final class SentDmServicesCommonContractsPocOsTemplateHeader implements BaseMode
     public ?array $variables;
 
     /**
-     * `new SentDmServicesCommonContractsPocOsTemplateHeader()` is missing required properties by the API.
+     * `new TemplateFooter()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesCommonContractsPocOsTemplateHeader::with(template: ...)
+     * TemplateFooter::with(template: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesCommonContractsPocOsTemplateHeader)->withTemplate(...)
+     * (new TemplateFooter)->withTemplate(...)
      * ```
      */
     public function __construct()
@@ -87,7 +87,7 @@ final class SentDmServicesCommonContractsPocOsTemplateHeader implements BaseMode
     }
 
     /**
-     * The header template text with optional variable placeholders (e.g., "Welcome to {{0:variable}}").
+     * The footer template text with optional variable placeholders.
      */
     public function withTemplate(string $template): self
     {
@@ -98,7 +98,7 @@ final class SentDmServicesCommonContractsPocOsTemplateHeader implements BaseMode
     }
 
     /**
-     * The type of header (e.g., "text", "image", "video", "document").
+     * The type of footer (typically "text").
      */
     public function withType(?string $type): self
     {
@@ -109,7 +109,7 @@ final class SentDmServicesCommonContractsPocOsTemplateHeader implements BaseMode
     }
 
     /**
-     * List of variables used in the header template.
+     * List of variables used in the footer template.
      *
      * @param list<TemplateVariable|TemplateVariableShape>|null $variables
      */

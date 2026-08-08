@@ -11,16 +11,14 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Campaign use case with sample messages.
  *
- * @phpstan-type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape = array{
+ * @phpstan-type CampaignUseCaseDataShape = array{
  *   messagingUseCaseUs: MessagingUseCaseUs|value-of<MessagingUseCaseUs>,
  *   sampleMessages: list<string>,
  * }
  */
-final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData implements BaseModel
+final class CampaignUseCaseData implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataShape>
-     */
+    /** @use SdkModel<CampaignUseCaseDataShape> */
     use SdkModel;
 
     /** @var value-of<MessagingUseCaseUs> $messagingUseCaseUs */
@@ -36,21 +34,17 @@ final class SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampai
     public array $sampleMessages;
 
     /**
-     * `new SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData()` is missing required properties by the API.
+     * `new CampaignUseCaseData()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData::with(
-     *   messagingUseCaseUs: ..., sampleMessages: ...
-     * )
+     * CampaignUseCaseData::with(messagingUseCaseUs: ..., sampleMessages: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData)
-     *   ->withMessagingUseCaseUs(...)
-     *   ->withSampleMessages(...)
+     * (new CampaignUseCaseData)->withMessagingUseCaseUs(...)->withSampleMessages(...)
      * ```
      */
     public function __construct()

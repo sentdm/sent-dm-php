@@ -45,46 +45,10 @@ var_dump($response->data);
 
 ### Value Objects
 
-It is recommended to use the static `with` constructor `SentDmServicesCommonContractsPocOsTemplateButton::with(props: [
-  'activeFor' => 1,
-  'countryCode' => 'x',
-  'offerCode' => 'x',
-  'phoneNumber' => 'x',
-  'quickReplyType' => 'x',
-  'text' => 'text',
-  'url' => 'url',
-  'urlType' => 'x',
-  'variables' => [
-    [
-      'name' => 'x',
-      'props' => [
-        'mediaType' => 'x', 'sample' => 'x', 'url' => 'x', 'variableType' => 'x'
-      ],
-      'type' => 'x',
-    ],
-  ],
-], ...)`
+It is recommended to use the static `with` constructor `TemplateBodyContent::with(template: 'template', ...)`
 and named parameters to initialize value objects.
 
-However, builders are also provided `(new SentDmServicesCommonContractsPocOsTemplateButton)->withProps([
-  'activeFor' => 1,
-  'countryCode' => 'x',
-  'offerCode' => 'x',
-  'phoneNumber' => 'x',
-  'quickReplyType' => 'x',
-  'text' => 'text',
-  'url' => 'url',
-  'urlType' => 'x',
-  'variables' => [
-    [
-      'name' => 'x',
-      'props' => [
-        'mediaType' => 'x', 'sample' => 'x', 'url' => 'x', 'variableType' => 'x'
-      ],
-      'type' => 'x',
-    ],
-  ],
-])`.
+However, builders are also provided `(new TemplateBodyContent)->withTemplate('template')`.
 
 ### Handling errors
 

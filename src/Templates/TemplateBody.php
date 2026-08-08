@@ -13,16 +13,16 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-import-type TemplateBodyContentShape from \SentDm\Templates\TemplateBodyContent
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateBodyShape = array{
+ * @phpstan-type TemplateBodyShape = array{
  *   multiChannel?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   rcs?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   sms?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   whatsapp?: null|TemplateBodyContent|TemplateBodyContentShape,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateBody implements BaseModel
+final class TemplateBody implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateBodyShape> */
+    /** @use SdkModel<TemplateBodyShape> */
     use SdkModel;
 
     /**
