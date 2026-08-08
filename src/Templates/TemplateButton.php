@@ -12,24 +12,24 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Interactive button in a message template.
  *
- * @phpstan-import-type SentDmServicesCommonContractsPocOsTemplateButtonPropsShape from \SentDm\Templates\SentDmServicesCommonContractsPocOsTemplateButtonProps
+ * @phpstan-import-type TemplateButtonPropsShape from \SentDm\Templates\TemplateButtonProps
  *
- * @phpstan-type SentDmServicesCommonContractsPocOsTemplateButtonShape = array{
- *   props: SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape,
+ * @phpstan-type TemplateButtonShape = array{
+ *   props: TemplateButtonProps|TemplateButtonPropsShape,
  *   type: string,
  *   id?: int|null,
  * }
  */
-final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseModel
+final class TemplateButton implements BaseModel
 {
-    /** @use SdkModel<SentDmServicesCommonContractsPocOsTemplateButtonShape> */
+    /** @use SdkModel<TemplateButtonShape> */
     use SdkModel;
 
     /**
      * Properties specific to the button type.
      */
     #[Required]
-    public SentDmServicesCommonContractsPocOsTemplateButtonProps $props;
+    public TemplateButtonProps $props;
 
     /**
      * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE).
@@ -44,19 +44,17 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
     public ?int $id;
 
     /**
-     * `new SentDmServicesCommonContractsPocOsTemplateButton()` is missing required properties by the API.
+     * `new TemplateButton()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SentDmServicesCommonContractsPocOsTemplateButton::with(props: ..., type: ...)
+     * TemplateButton::with(props: ..., type: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SentDmServicesCommonContractsPocOsTemplateButton)
-     *   ->withProps(...)
-     *   ->withType(...)
+     * (new TemplateButton)->withProps(...)->withType(...)
      * ```
      */
     public function __construct()
@@ -69,12 +67,12 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape $props
+     * @param TemplateButtonProps|TemplateButtonPropsShape $props
      */
     public static function with(
-        SentDmServicesCommonContractsPocOsTemplateButtonProps|array $props,
+        TemplateButtonProps|array $props,
         string $type,
-        ?int $id = null,
+        ?int $id = null
     ): self {
         $self = new self;
 
@@ -89,11 +87,10 @@ final class SentDmServicesCommonContractsPocOsTemplateButton implements BaseMode
     /**
      * Properties specific to the button type.
      *
-     * @param SentDmServicesCommonContractsPocOsTemplateButtonProps|SentDmServicesCommonContractsPocOsTemplateButtonPropsShape $props
+     * @param TemplateButtonProps|TemplateButtonPropsShape $props
      */
-    public function withProps(
-        SentDmServicesCommonContractsPocOsTemplateButtonProps|array $props
-    ): self {
+    public function withProps(TemplateButtonProps|array $props): self
+    {
         $self = clone $this;
         $self['props'] = $props;
 
