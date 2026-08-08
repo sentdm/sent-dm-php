@@ -7,10 +7,9 @@ namespace SentDm\Services\Profiles;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
+use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
 use SentDm\Profiles\Campaigns\CampaignData;
-use SentDm\Profiles\Campaigns\CampaignListResponse;
-use SentDm\Profiles\Campaigns\CampaignNewResponse;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsContract;
 
@@ -57,7 +56,7 @@ final class CampaignsService implements CampaignsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): CampaignNewResponse {
+    ): APIResponseOfBrandCampaign {
         $params = Util::removeNulls(
             [
                 'campaign' => $campaign,
@@ -97,7 +96,7 @@ final class CampaignsService implements CampaignsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): CampaignUpdateResponse {
+    ): APIResponseOfBrandCampaign {
         $params = Util::removeNulls(
             [
                 'profileID' => $profileID,
@@ -129,7 +128,7 @@ final class CampaignsService implements CampaignsContract
         string $profileID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): CampaignListResponse {
+    ): APIResponseOfListOfBrandCampaign {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

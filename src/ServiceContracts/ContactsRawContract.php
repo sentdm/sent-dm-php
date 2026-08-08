@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace SentDm\ServiceContracts;
 
 use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactRetrieveMessageSummaryParams;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
 use SentDm\Core\Contracts\BaseResponse;
@@ -98,6 +100,22 @@ interface ContactsRawContract
     public function delete(
         string $id,
         array|ContactDeleteParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse;
+
+    /**
+     * @api
+     *
+     * @param array<string,mixed>|ContactRetrieveMessageSummaryParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<APIResponseOfContactMessageSummary>
+     *
+     * @throws APIException
+     */
+    public function retrieveMessageSummary(
+        string $contactID,
+        array|ContactRetrieveMessageSummaryParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 }
