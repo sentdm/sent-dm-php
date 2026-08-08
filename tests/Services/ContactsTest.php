@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
@@ -136,5 +137,20 @@ final class ContactsTest extends TestCase
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testRetrieveMessageSummary(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Mock server tests are disabled');
+        }
+
+        $result = $this->client->contacts->retrieveMessageSummary(
+            '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(APIResponseOfContactMessageSummary::class, $result);
     }
 }
