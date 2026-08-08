@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo;
+namespace SentDm\Profiles\BrandBusinessInfo;
 
 enum EntityType: string
 {
