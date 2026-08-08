@@ -7,35 +7,34 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignListResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignListResponse\Data
+ * @phpstan-import-type BrandCampaignShape from \SentDm\Profiles\Campaigns\BrandCampaign
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type CampaignListResponseShape = array{
- *   data?: list<Data|DataShape>|null,
+ * @phpstan-type APIResponseOfListOfBrandCampaignShape = array{
+ *   data?: list<BrandCampaign|BrandCampaignShape>|null,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class CampaignListResponse implements BaseModel
+final class APIResponseOfListOfBrandCampaign implements BaseModel
 {
-    /** @use SdkModel<CampaignListResponseShape> */
+    /** @use SdkModel<APIResponseOfListOfBrandCampaignShape> */
     use SdkModel;
 
     /**
      * The response data (null if error).
      *
-     * @var list<Data>|null $data
+     * @var list<BrandCampaign>|null $data
      */
-    #[Optional(list: Data::class, nullable: true)]
+    #[Optional(list: BrandCampaign::class, nullable: true)]
     public ?array $data;
 
     /**
@@ -66,7 +65,7 @@ final class CampaignListResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<Data|DataShape>|null $data
+     * @param list<BrandCampaign|BrandCampaignShape>|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
@@ -89,7 +88,7 @@ final class CampaignListResponse implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @param list<Data|DataShape>|null $data
+     * @param list<BrandCampaign|BrandCampaignShape>|null $data
      */
     public function withData(?array $data): self
     {

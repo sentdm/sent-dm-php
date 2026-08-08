@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\Campaigns\CampaignUpdateResponse;
+namespace SentDm\Profiles\Campaigns;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\Status;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\UseCase;
+use SentDm\Profiles\Campaigns\BrandCampaign\Status;
 
 /**
  * A 10DLC campaign registered for a brand.
  *
- * @phpstan-import-type UseCaseShape from \SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\UseCase
+ * @phpstan-import-type CampaignUseCaseShape from \SentDm\Profiles\Campaigns\CampaignUseCase
  *
- * @phpstan-type DataShape = array{
+ * @phpstan-type BrandCampaignShape = array{
  *   id?: string|null,
  *   billedDate?: \DateTimeInterface|null,
  *   brandID?: string|null,
@@ -43,13 +42,13 @@ use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data\UseCase;
  *   termsAndConditionsLink?: string|null,
  *   type?: string|null,
  *   updatedAt?: \DateTimeInterface|null,
- *   useCases?: list<UseCase|UseCaseShape>|null,
+ *   useCases?: list<CampaignUseCase|CampaignUseCaseShape>|null,
  *   volume?: string|null,
  * }
  */
-final class Data implements BaseModel
+final class BrandCampaign implements BaseModel
 {
-    /** @use SdkModel<DataShape> */
+    /** @use SdkModel<BrandCampaignShape> */
     use SdkModel;
 
     #[Optional]
@@ -150,8 +149,8 @@ final class Data implements BaseModel
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $updatedAt;
 
-    /** @var list<UseCase>|null $useCases */
-    #[Optional(list: UseCase::class)]
+    /** @var list<CampaignUseCase>|null $useCases */
+    #[Optional(list: CampaignUseCase::class)]
     public ?array $useCases;
 
     /**
@@ -173,7 +172,7 @@ final class Data implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param Status|value-of<Status>|null $status
-     * @param list<UseCase|UseCaseShape>|null $useCases
+     * @param list<CampaignUseCase|CampaignUseCaseShape>|null $useCases
      */
     public static function with(
         ?string $id = null,
@@ -480,7 +479,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * @param list<UseCase|UseCaseShape> $useCases
+     * @param list<CampaignUseCase|CampaignUseCaseShape> $useCases
      */
     public function withUseCases(array $useCases): self
     {

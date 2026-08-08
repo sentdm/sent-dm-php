@@ -10,6 +10,7 @@ use SentDm\Core\BaseClient;
 use SentDm\Core\Implementation\StreamingHttpClient;
 use SentDm\Core\Util;
 use SentDm\Services\ContactsService;
+use SentDm\Services\ConversationsService;
 use SentDm\Services\MeService;
 use SentDm\Services\MessagesService;
 use SentDm\Services\NumbersService;
@@ -60,6 +61,11 @@ class Client extends BaseClient
      * @api
      */
     public ContactsService $contacts;
+
+    /**
+     * @api
+     */
+    public ConversationsService $conversations;
 
     /**
      * @api
@@ -129,6 +135,7 @@ class Client extends BaseClient
         $this->numbers = new NumbersService($this);
         $this->messages = new MessagesService($this);
         $this->contacts = new ContactsService($this);
+        $this->conversations = new ConversationsService($this);
         $this->me = new MeService($this);
     }
 

@@ -6,6 +6,7 @@ namespace SentDm\Services;
 
 use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactListResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -200,6 +201,29 @@ final class ContactsService implements ContactsContract
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->delete($id, params: $params, requestOptions: $requestOptions);
+
+        return $response->parse();
+    }
+
+    /**
+     * @api
+     *
+     * Returns aggregate message counts, time bounds, channels used, and per-channel success/fail scores (each as a percentage 0-100 of messages on that channel) for one of your contacts. Successful terminal states: SENT/DELIVERED/READ for outbound, RECEIVED for inbound. Fail: FAILED.
+     *
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
+     * @param RequestOpts|null $requestOptions
+     *
+     * @throws APIException
+     */
+    public function retrieveMessageSummary(
+        string $contactID,
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
+    ): APIResponseOfContactMessageSummary {
+        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+
+        // @phpstan-ignore-next-line argument.type
+        $response = $this->raw->retrieveMessageSummary($contactID, params: $params, requestOptions: $requestOptions);
 
         return $response->parse();
     }

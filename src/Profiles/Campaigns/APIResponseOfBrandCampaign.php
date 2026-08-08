@@ -7,34 +7,33 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignNewResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignNewResponse\Data
+ * @phpstan-import-type BrandCampaignShape from \SentDm\Profiles\Campaigns\BrandCampaign
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type CampaignNewResponseShape = array{
- *   data?: null|Data|DataShape,
+ * @phpstan-type APIResponseOfBrandCampaignShape = array{
+ *   data?: null|BrandCampaign|BrandCampaignShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class CampaignNewResponse implements BaseModel
+final class APIResponseOfBrandCampaign implements BaseModel
 {
-    /** @use SdkModel<CampaignNewResponseShape> */
+    /** @use SdkModel<APIResponseOfBrandCampaignShape> */
     use SdkModel;
 
     /**
      * A 10DLC campaign registered for a brand.
      */
     #[Optional(nullable: true)]
-    public ?Data $data;
+    public ?BrandCampaign $data;
 
     /**
      * Error information.
@@ -64,12 +63,12 @@ final class CampaignNewResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Data|DataShape|null $data
+     * @param BrandCampaign|BrandCampaignShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        Data|array|null $data = null,
+        BrandCampaign|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -87,9 +86,9 @@ final class CampaignNewResponse implements BaseModel
     /**
      * A 10DLC campaign registered for a brand.
      *
-     * @param Data|DataShape|null $data
+     * @param BrandCampaign|BrandCampaignShape|null $data
      */
-    public function withData(Data|array|null $data): self
+    public function withData(BrandCampaign|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

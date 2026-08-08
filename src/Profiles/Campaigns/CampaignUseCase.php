@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\Campaigns\CampaignListResponse\Data;
+namespace SentDm\Profiles\Campaigns;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
 
 /**
  * Customer-facing use-case representation for the public v3 campaign contract.
@@ -18,7 +17,7 @@ use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
  * This mirrors exactly the fields the entity already serialized, so it removes nothing from the
  * current response shape. It only closes the future-leak path.
  *
- * @phpstan-type UseCaseShape = array{
+ * @phpstan-type CampaignUseCaseShape = array{
  *   id?: string|null,
  *   campaignID?: string|null,
  *   createdAt?: \DateTimeInterface|null,
@@ -28,9 +27,9 @@ use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
  *   updatedAt?: \DateTimeInterface|null,
  * }
  */
-final class UseCase implements BaseModel
+final class CampaignUseCase implements BaseModel
 {
-    /** @use SdkModel<UseCaseShape> */
+    /** @use SdkModel<CampaignUseCaseShape> */
     use SdkModel;
 
     #[Optional]

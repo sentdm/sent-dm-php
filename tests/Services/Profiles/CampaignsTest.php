@@ -7,9 +7,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\CampaignListResponse;
-use SentDm\Profiles\Campaigns\CampaignNewResponse;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
+use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
+use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
 use SentDm\Profiles\Campaigns\MessagingUseCaseUs;
 use Tests\UnsupportedMockTests;
 
@@ -57,7 +56,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(CampaignNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfBrandCampaign::class, $result);
     }
 
     #[Test]
@@ -99,7 +98,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(CampaignNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfBrandCampaign::class, $result);
     }
 
     #[Test]
@@ -129,7 +128,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(CampaignUpdateResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfBrandCampaign::class, $result);
     }
 
     #[Test]
@@ -172,7 +171,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(CampaignUpdateResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfBrandCampaign::class, $result);
     }
 
     #[Test]
@@ -187,7 +186,7 @@ final class CampaignsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(CampaignListResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfListOfBrandCampaign::class, $result);
     }
 
     #[Test]

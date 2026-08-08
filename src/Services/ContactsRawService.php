@@ -6,10 +6,12 @@ namespace SentDm\Services;
 
 use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactRetrieveMessageSummaryParams;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
 use SentDm\Core\Contracts\BaseResponse;
@@ -251,6 +253,41 @@ final class ContactsRawService implements ContactsRawContract
             ),
             options: $options,
             convert: null,
+        );
+    }
+
+    /**
+     * @api
+     *
+     * Returns aggregate message counts, time bounds, channels used, and per-channel success/fail scores (each as a percentage 0-100 of messages on that channel) for one of your contacts. Successful terminal states: SENT/DELIVERED/READ for outbound, RECEIVED for inbound. Fail: FAILED.
+     *
+     * @param array{xProfileID?: string}|ContactRetrieveMessageSummaryParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<APIResponseOfContactMessageSummary>
+     *
+     * @throws APIException
+     */
+    public function retrieveMessageSummary(
+        string $contactID,
+        array|ContactRetrieveMessageSummaryParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse {
+        [$parsed, $options] = ContactRetrieveMessageSummaryParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+
+        // @phpstan-ignore-next-line return.type
+        return $this->client->request(
+            method: 'get',
+            path: ['v3/contacts/%1$s/message-summary', $contactID],
+            headers: Util::array_transform_keys(
+                $parsed,
+                ['xProfileID' => 'x-profile-id']
+            ),
+            options: $options,
+            convert: APIResponseOfContactMessageSummary::class,
         );
     }
 }

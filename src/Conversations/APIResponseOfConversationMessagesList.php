@@ -2,39 +2,38 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Profiles\Campaigns;
+namespace SentDm\Conversations;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Profiles\Campaigns\CampaignUpdateResponse\Data
+ * @phpstan-import-type ConversationMessagesListShape from \SentDm\Conversations\ConversationMessagesList
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type CampaignUpdateResponseShape = array{
- *   data?: null|Data|DataShape,
+ * @phpstan-type APIResponseOfConversationMessagesListShape = array{
+ *   data?: null|ConversationMessagesList|ConversationMessagesListShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class CampaignUpdateResponse implements BaseModel
+final class APIResponseOfConversationMessagesList implements BaseModel
 {
-    /** @use SdkModel<CampaignUpdateResponseShape> */
+    /** @use SdkModel<APIResponseOfConversationMessagesListShape> */
     use SdkModel;
 
     /**
-     * A 10DLC campaign registered for a brand.
+     * A paginated list of messages — used by both conversation read endpoints.
      */
     #[Optional(nullable: true)]
-    public ?Data $data;
+    public ?ConversationMessagesList $data;
 
     /**
      * Error information.
@@ -64,12 +63,12 @@ final class CampaignUpdateResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Data|DataShape|null $data
+     * @param ConversationMessagesList|ConversationMessagesListShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        Data|array|null $data = null,
+        ConversationMessagesList|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -85,11 +84,11 @@ final class CampaignUpdateResponse implements BaseModel
     }
 
     /**
-     * A 10DLC campaign registered for a brand.
+     * A paginated list of messages — used by both conversation read endpoints.
      *
-     * @param Data|DataShape|null $data
+     * @param ConversationMessagesList|ConversationMessagesListShape|null $data
      */
-    public function withData(Data|array|null $data): self
+    public function withData(ConversationMessagesList|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;
