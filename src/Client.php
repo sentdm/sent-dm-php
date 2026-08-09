@@ -10,6 +10,7 @@ use SentDm\Core\BaseClient;
 use SentDm\Core\Implementation\StreamingHttpClient;
 use SentDm\Core\Util;
 use SentDm\Services\ContactsService;
+use SentDm\Services\ConversationsService;
 use SentDm\Services\MeService;
 use SentDm\Services\MessagesService;
 use SentDm\Services\NumbersService;
@@ -64,6 +65,11 @@ class Client extends BaseClient
     /**
      * @api
      */
+    public ConversationsService $conversations;
+
+    /**
+     * @api
+     */
     public MeService $me;
 
     /**
@@ -99,7 +105,7 @@ class Client extends BaseClient
             'Accept' => 'application/json',
             'User-Agent' => sprintf('Sent/PHP %s', VERSION),
             'X-Stainless-Lang' => 'php',
-            'X-Stainless-Package-Version' => '0.26.0',
+            'X-Stainless-Package-Version' => '0.27.0',
             'X-Stainless-Arch' => Util::machtype(),
             'X-Stainless-OS' => Util::ostype(),
             'X-Stainless-Runtime' => php_sapi_name(),
@@ -129,6 +135,7 @@ class Client extends BaseClient
         $this->numbers = new NumbersService($this);
         $this->messages = new MessagesService($this);
         $this->contacts = new ContactsService($this);
+        $this->conversations = new ConversationsService($this);
         $this->me = new MeService($this);
     }
 
