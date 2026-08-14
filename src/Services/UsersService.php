@@ -37,6 +37,7 @@ final class UsersService implements UsersContract
      *
      * Retrieves detailed information about a specific user in an organization or profile. Requires developer role or higher.
      *
+     * @param string $userID User ID from route parameter
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -124,7 +125,7 @@ final class UsersService implements UsersContract
      *
      * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
      *
-     * @param string $userID Path param
+     * @param string $userID Path param: User ID from route parameter
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -153,7 +154,7 @@ final class UsersService implements UsersContract
      *
      * Updates a user's role in the organization or profile. Requires admin role. You cannot change your own role or demote the last admin.
      *
-     * @param string $userID Path param
+     * @param string $userID Path param: User ID from route parameter
      * @param string $role Body param: User role: admin, billing, or developer (required)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution

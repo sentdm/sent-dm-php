@@ -124,6 +124,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *
      * Retrieves detailed information about a specific sender profile within an organization, including brand and KYC information if a brand has been configured.
      *
+     * @param string $profileID Profile ID from route parameter
      * @param array{xProfileID?: string}|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -167,7 +168,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *
      * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param array{
      *   allowContactSharing?: bool|null,
      *   allowNumberChangeDuringOnboarding?: bool|null,
@@ -267,7 +268,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param array{sandbox?: bool, xProfileID?: string}|ProfileDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

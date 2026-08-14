@@ -40,6 +40,7 @@ interface ProfilesRawContract
     /**
      * @api
      *
+     * @param string $profileID Profile ID from route parameter
      * @param array<string,mixed>|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -56,7 +57,7 @@ interface ProfilesRawContract
     /**
      * @api
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param array<string,mixed>|ProfileUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -88,7 +89,7 @@ interface ProfilesRawContract
     /**
      * @api
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param array<string,mixed>|ProfileDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

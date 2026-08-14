@@ -17,6 +17,7 @@ interface UsersContract
     /**
      * @api
      *
+     * @param string $userID User ID from route parameter
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -68,7 +69,7 @@ interface UsersContract
     /**
      * @api
      *
-     * @param string $userID Path param
+     * @param string $userID Path param: User ID from route parameter
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -86,7 +87,7 @@ interface UsersContract
     /**
      * @api
      *
-     * @param string $userID Path param
+     * @param string $userID Path param: User ID from route parameter
      * @param string $role Body param: User role: admin, billing, or developer (required)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
