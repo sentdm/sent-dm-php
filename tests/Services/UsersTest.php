@@ -36,7 +36,9 @@ final class UsersTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->users->retrieve('userId');
+        $result = $this->client->users->retrieve(
+            '880e8400-e29b-41d4-a716-446655440003'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfUser::class, $result);
@@ -75,7 +77,9 @@ final class UsersTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->users->remove('userId');
+        $result = $this->client->users->remove(
+            'aa0e8400-e29b-41d4-a716-446655440005'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertNull($result);
@@ -88,7 +92,9 @@ final class UsersTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->users->updateRole('userId');
+        $result = $this->client->users->updateRole(
+            'aa0e8400-e29b-41d4-a716-446655440005'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfUser::class, $result);
