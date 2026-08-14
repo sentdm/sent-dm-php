@@ -50,7 +50,9 @@ final class ProfilesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->profiles->retrieve('profileId');
+        $result = $this->client->profiles->retrieve(
+            '770e8400-e29b-41d4-a716-446655440002'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfProfileDetail::class, $result);
@@ -63,7 +65,9 @@ final class ProfilesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->profiles->update('profileId');
+        $result = $this->client->profiles->update(
+            '770e8400-e29b-41d4-a716-446655440002'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfProfileDetail::class, $result);
@@ -89,7 +93,9 @@ final class ProfilesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->profiles->delete('profileId');
+        $result = $this->client->profiles->delete(
+            '770e8400-e29b-41d4-a716-446655440002'
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertNull($result);

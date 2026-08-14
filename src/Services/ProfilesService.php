@@ -159,6 +159,7 @@ final class ProfilesService implements ProfilesContract
      *
      * Retrieves detailed information about a specific sender profile within an organization, including brand and KYC information if a brand has been configured.
      *
+     * @param string $profileID Profile ID from route parameter
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -190,7 +191,7 @@ final class ProfilesService implements ProfilesContract
      *
      * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param bool|null $allowContactSharing Body param: Whether contacts are shared across profiles (optional)
      * @param bool|null $allowNumberChangeDuringOnboarding Body param: Whether number changes are allowed during onboarding (optional)
      * @param bool|null $allowTemplateSharing Body param: Whether templates are shared across profiles (optional)
@@ -311,7 +312,7 @@ final class ProfilesService implements ProfilesContract
      *
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
