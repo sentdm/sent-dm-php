@@ -23,6 +23,7 @@ interface UsersRawContract
     /**
      * @api
      *
+     * @param string $userID User ID from route parameter
      * @param array<string,mixed>|UserRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -69,7 +70,7 @@ interface UsersRawContract
     /**
      * @api
      *
-     * @param string $userID Path param
+     * @param string $userID Path param: User ID from route parameter
      * @param array<string,mixed>|UserRemoveParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -86,7 +87,7 @@ interface UsersRawContract
     /**
      * @api
      *
-     * @param string $userID Path param
+     * @param string $userID Path param: User ID from route parameter
      * @param array<string,mixed>|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *

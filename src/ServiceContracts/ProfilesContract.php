@@ -84,6 +84,7 @@ interface ProfilesContract
     /**
      * @api
      *
+     * @param string $profileID Profile ID from route parameter
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
@@ -98,7 +99,7 @@ interface ProfilesContract
     /**
      * @api
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param bool|null $allowContactSharing Body param: Whether contacts are shared across profiles (optional)
      * @param bool|null $allowNumberChangeDuringOnboarding Body param: Whether number changes are allowed during onboarding (optional)
      * @param bool|null $allowTemplateSharing Body param: Whether templates are shared across profiles (optional)
@@ -176,7 +177,7 @@ interface ProfilesContract
     /**
      * @api
      *
-     * @param string $profileID Path param
+     * @param string $profileID Path param: Profile ID from route parameter
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
