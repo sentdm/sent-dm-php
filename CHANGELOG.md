@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.28.0](https://github.com/sentdm/sent-dm-php/compare/v0.27.0...v0.28.0) (2026-08-17)
+
+
+### Highlights
+
+Webhook payloads are now typed. The events Sent POSTs to your endpoint — `MessageEvent`, `InboundMessageEvent` and `TemplateEvent`, each with its own payload type — are generated types you can deserialize into, instead of a shape you had to hand-write from the docs.
+
+The webhook delivery log is typed too. `event_data` on `GET /v3/webhooks/{id}/events` returns the exact envelope that was delivered, and now describes itself as one of those three rather than an opaque object.
+
+Also in this release:
+
+- `csp_id` on the brand object is deprecated and will be removed in a later release. It identifies the Campaign Service Provider that registered the brand, which is Sent, so the value is the same for every account. There is no replacement. Your own TCR identifiers, `tcr_brand_id` and `universal_ein`, are unaffected.
+- Corrected descriptions for blocked sends, which now name the cases that gate a send before any delivery attempt: insufficient balance, a template not approved for sending, and free-form content with no open conversation.
+- `campaign.volume` documents what an omitted value does. Leave it out and the campaign registers as standard, the higher-fee tier, with no error.
+
+### Features
+
+* **api:** sync OpenAPI spec from production ([a5bbe0b](https://github.com/sentdm/sent-dm-php/commit/a5bbe0b823db9194243c8f624ae0824feb59efb6))
+* **api:** sync OpenAPI spec from production ([ab7b7ba](https://github.com/sentdm/sent-dm-php/commit/ab7b7baf3955595a243d5cb3959881ccae975372))
+* **api:** sync OpenAPI spec from production ([86aa717](https://github.com/sentdm/sent-dm-php/commit/86aa717a917f0c4b2b8a30a21549a646d1ef8cb5))
+* **sdk:** expose the delivered webhook payloads as models ([6345cab](https://github.com/sentdm/sent-dm-php/commit/6345cabc48e25ad27db8354eff01bbe8a13be63c))
+
+
+### Chores
+
+* add eager seal-dispatch workflow ([05db1cf](https://github.com/sentdm/sent-dm-php/commit/05db1cf3915b58a8b5fc5f8d93ecb90431167a3c))
+
 ## [0.27.0](https://github.com/sentdm/sent-dm-php/compare/v0.26.0...v0.27.0) (2026-08-08)
 
 
