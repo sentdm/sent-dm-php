@@ -7,15 +7,21 @@ namespace SentDm\Webhooks\WebhookListEventsResponse\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\InboundMessageEvent;
+use SentDm\Webhooks\MessageEvent;
+use SentDm\Webhooks\TemplateEvent;
 
 /**
+ * @phpstan-import-type EventDataVariants from \SentDm\Webhooks\WebhookListEventsResponse\Data\Event\EventData
+ * @phpstan-import-type EventDataShape from \SentDm\Webhooks\WebhookListEventsResponse\Data\Event\EventData
+ *
  * @phpstan-type EventShape = array{
  *   id?: string|null,
  *   createdAt?: \DateTimeInterface|null,
  *   deliveryAttempts?: int|null,
  *   deliveryStatus?: string|null,
  *   errorMessage?: string|null,
- *   eventData?: mixed,
+ *   eventData?: EventDataShape|null,
  *   eventType?: string|null,
  *   httpStatusCode?: int|null,
  *   processingCompletedAt?: \DateTimeInterface|null,
@@ -43,8 +49,15 @@ final class Event implements BaseModel
     #[Optional('error_message', nullable: true)]
     public ?string $errorMessage;
 
+    /**
+     * The exact event body that was delivered, or attempted, for this record. One of the three
+     * webhook envelopes: a message status change, an inbound message, or a template status change.
+     * Read field and event to tell which, the same way your endpoint does.
+     *
+     * @var EventDataVariants|null $eventData
+     */
     #[Optional('event_data')]
-    public mixed $eventData;
+    public MessageEvent|InboundMessageEvent|TemplateEvent|null $eventData;
 
     #[Optional('event_type')]
     public ?string $eventType;
@@ -70,6 +83,8 @@ final class Event implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param EventDataShape|null $eventData
      */
     public static function with(
         ?string $id = null,
@@ -77,7 +92,7 @@ final class Event implements BaseModel
         ?int $deliveryAttempts = null,
         ?string $deliveryStatus = null,
         ?string $errorMessage = null,
-        mixed $eventData = null,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|null $eventData = null,
         ?string $eventType = null,
         ?int $httpStatusCode = null,
         ?\DateTimeInterface $processingCompletedAt = null,
@@ -141,8 +156,16 @@ final class Event implements BaseModel
         return $self;
     }
 
-    public function withEventData(mixed $eventData): self
-    {
+    /**
+     * The exact event body that was delivered, or attempted, for this record. One of the three
+     * webhook envelopes: a message status change, an inbound message, or a template status change.
+     * Read field and event to tell which, the same way your endpoint does.
+     *
+     * @param EventDataShape $eventData
+     */
+    public function withEventData(
+        MessageEvent|array|InboundMessageEvent|TemplateEvent $eventData
+    ): self {
         $self = clone $this;
         $self['eventData'] = $eventData;
 
