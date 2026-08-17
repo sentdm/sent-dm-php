@@ -117,8 +117,8 @@ final class CampaignData implements BaseModel
     public ?string $termsAndConditionsLink;
 
     /**
-     * Expected messaging volume for this campaign. Numeric string (e.g. "1999", "5000");
-     * values below 2000 bill at the low-volume tier.
+     * Expected messaging volume for this campaign. Numeric string (e.g. "1999", "5000").
+     * Values below 2000 bill at the low-volume tier.
      */
     #[Optional(nullable: true)]
     public ?string $volume;
@@ -337,8 +337,8 @@ final class CampaignData implements BaseModel
     }
 
     /**
-     * Expected messaging volume for this campaign. Numeric string (e.g. "1999", "5000");
-     * values below 2000 bill at the low-volume tier.
+     * Expected messaging volume for this campaign. Numeric string (e.g. "1999", "5000").
+     * Values below 2000 bill at the low-volume tier.
      */
     public function withVolume(?string $volume): self
     {
