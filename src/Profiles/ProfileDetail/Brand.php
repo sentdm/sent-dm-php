@@ -73,7 +73,11 @@ final class Brand implements BaseModel
     public ?\DateTimeInterface $createdAt;
 
     /**
-     * CSP (Campaign Service Provider) ID.
+     * @deprecated
+     *
+     * Deprecated and scheduled for removal. Identifies the Campaign Service Provider that
+     * registered the brand, which is Sent, so the value is the same for every brand and every
+     * account. Nothing on your side can act on it and there is no replacement. Stop reading it.
      */
     #[Optional('csp_id', nullable: true)]
     public ?string $cspID;
@@ -236,7 +240,9 @@ final class Brand implements BaseModel
     }
 
     /**
-     * CSP (Campaign Service Provider) ID.
+     * Deprecated and scheduled for removal. Identifies the Campaign Service Provider that
+     * registered the brand, which is Sent, so the value is the same for every brand and every
+     * account. Nothing on your side can act on it and there is no replacement. Stop reading it.
      */
     public function withCspID(?string $cspID): self
     {
