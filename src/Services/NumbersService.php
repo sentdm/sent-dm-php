@@ -12,7 +12,9 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\NumbersContract;
 
 /**
- * Manage and lookup phone numbers.
+ * What a phone number actually is, before you send to it.
+ *
+ * A lookup returns the number's country, line type and carrier, which is what decides whether it is reachable on a channel and what it costs. Worth doing on import rather than on send: a landline in a contact list is a message that can never be delivered.
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */

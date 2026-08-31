@@ -10,25 +10,32 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksRawContract;
-use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
 use SentDm\Webhooks\WebhookDeleteParams;
+use SentDm\Webhooks\WebhookGetResponse;
 use SentDm\Webhooks\WebhookListEventsParams;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesParams;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookNewResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestParams;
 use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\Webhooks\WebhookToggleStatusParams;
+use SentDm\Webhooks\WebhookToggleStatusResponse;
 use SentDm\Webhooks\WebhookUpdateParams;
+use SentDm\Webhooks\WebhookUpdateResponse;
 
 /**
- * Configure webhook endpoints for real-time event delivery.
+ * Delivery reports and inbound messages, pushed to you.
+ *
+ * Subscribe an endpoint to the event types you care about — `GET /v3/webhooks/event-types` lists them — and we POST each one as it happens, retrying on failure. Polling `GET /v3/messages/{id}` works and does not scale.
+ *
+ * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -58,7 +65,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookNewResponse>
      *
      * @throws APIException
      */
@@ -87,7 +94,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseWebhook::class,
+            convert: WebhookNewResponse::class,
         );
     }
 
@@ -99,7 +106,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * @param array{xProfileID?: string}|WebhookRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookGetResponse>
      *
      * @throws APIException
      */
@@ -122,7 +129,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseWebhook::class,
+            convert: WebhookGetResponse::class,
         );
     }
 
@@ -145,7 +152,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookUpdateResponse>
      *
      * @throws APIException
      */
@@ -175,7 +182,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseWebhook::class,
+            convert: WebhookUpdateResponse::class,
         );
     }
 
@@ -446,7 +453,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookToggleStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookToggleStatusResponse>
      *
      * @throws APIException
      */
@@ -476,7 +483,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseWebhook::class,
+            convert: WebhookToggleStatusResponse::class,
         );
     }
 }

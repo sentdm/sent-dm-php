@@ -7,12 +7,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Webhooks\APIResponseWebhook;
+use SentDm\Webhooks\WebhookGetResponse;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookNewResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
+use SentDm\Webhooks\WebhookToggleStatusResponse;
+use SentDm\Webhooks\WebhookUpdateResponse;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -43,7 +46,7 @@ final class WebhooksTest extends TestCase
         $result = $this->client->webhooks->create();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseWebhook::class, $result);
+        $this->assertInstanceOf(WebhookNewResponse::class, $result);
     }
 
     #[Test]
@@ -58,7 +61,7 @@ final class WebhooksTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseWebhook::class, $result);
+        $this->assertInstanceOf(WebhookGetResponse::class, $result);
     }
 
     #[Test]
@@ -73,7 +76,7 @@ final class WebhooksTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseWebhook::class, $result);
+        $this->assertInstanceOf(WebhookUpdateResponse::class, $result);
     }
 
     #[Test]
@@ -214,6 +217,6 @@ final class WebhooksTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseWebhook::class, $result);
+        $this->assertInstanceOf(WebhookToggleStatusResponse::class, $result);
     }
 }

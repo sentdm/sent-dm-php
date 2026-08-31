@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Contacts\APIResponseOfContact;
-use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
+use SentDm\Contacts\ContactGetMessageSummaryResponse;
+use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactNewResponse;
 use SentDm\Contacts\ContactRetrieveMessageSummaryParams;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
+use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -21,7 +23,11 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ContactsRawContract;
 
 /**
- * Create, update, and manage customer contact lists.
+ * The people you message, and their channel identities.
+ *
+ * A contact holds one identity per channel — a phone number, a WhatsApp number — so routing can choose between them for the same person. Opt-out is recorded against the contact and honoured on every send, whichever channel it came through.
+ *
+ * `GET /v3/contacts/{id}/message-summary` is the per-contact view of what you have sent and what happened to it.
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -46,7 +52,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContact>
+     * @return BaseResponse<ContactNewResponse>
      *
      * @throws APIException
      */
@@ -75,7 +81,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfContact::class,
+            convert: ContactNewResponse::class,
         );
     }
 
@@ -88,7 +94,7 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{xProfileID?: string}|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContact>
+     * @return BaseResponse<ContactGetResponse>
      *
      * @throws APIException
      */
@@ -111,14 +117,14 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfContact::class,
+            convert: ContactGetResponse::class,
         );
     }
 
     /**
      * @api
      *
-     * Updates a contact's default channel and/or opt-out status. Inherited contacts cannot be updated.
+     * Updates a contact's default channel and/or opt-out status.
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param array{
@@ -130,7 +136,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContact>
+     * @return BaseResponse<ContactUpdateResponse>
      *
      * @throws APIException
      */
@@ -160,7 +166,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfContact::class,
+            convert: ContactUpdateResponse::class,
         );
     }
 
@@ -216,9 +222,15 @@ final class ContactsRawService implements ContactsRawContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
      *
-     * Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.
+     * **Deprecated.** Use `PATCH /v3/contacts/{id}` with `{"opt_out": true}` instead, and expect this to be removed in a future release. It still behaves exactly as before, so nothing needs to change today.
+     *
+     * Opting a contact out stops every send to them, which is what deleting one was mostly used for — and it keeps the record of who they were and that they asked. A delete discards the consent history along with the contact, which is the part you need if anyone ever asks why you stopped, or why you started again.
+     *
+     * Dissociates a contact from the authenticated customer.
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param array{sandbox?: bool, xProfileID?: string}|ContactDeleteParams $params
@@ -264,7 +276,7 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{xProfileID?: string}|ContactRetrieveMessageSummaryParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfContactMessageSummary>
+     * @return BaseResponse<ContactGetMessageSummaryResponse>
      *
      * @throws APIException
      */
@@ -287,7 +299,7 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfContactMessageSummary::class,
+            convert: ContactGetMessageSummaryResponse::class,
         );
     }
 }

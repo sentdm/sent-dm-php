@@ -6,15 +6,17 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Profiles\APIResponseOfProfileDetail;
 use SentDm\Profiles\ProfileCompleteParams;
 use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileDeleteParams;
+use SentDm\Profiles\ProfileGetResponse;
 use SentDm\Profiles\ProfileListParams;
 use SentDm\Profiles\ProfileListResponse;
+use SentDm\Profiles\ProfileNewResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
+use SentDm\Profiles\ProfileUpdateResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -23,12 +25,14 @@ use SentDm\RequestOptions;
 interface ProfilesRawContract
 {
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param array<string,mixed>|ProfileCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileNewResponse>
      *
      * @throws APIException
      */
@@ -38,13 +42,15 @@ interface ProfilesRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $profileID Profile ID from route parameter
      * @param array<string,mixed>|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileGetResponse>
      *
      * @throws APIException
      */
@@ -55,13 +61,15 @@ interface ProfilesRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $profileID Path param: Profile ID from route parameter
      * @param array<string,mixed>|ProfileUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileUpdateResponse>
      *
      * @throws APIException
      */
@@ -72,6 +80,8 @@ interface ProfilesRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param array<string,mixed>|ProfileListParams $params
@@ -87,6 +97,8 @@ interface ProfilesRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $profileID Path param: Profile ID from route parameter
@@ -104,6 +116,8 @@ interface ProfilesRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $profileID Path param: Profile ID from route

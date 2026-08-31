@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Per-recipient result in the send message response.
+ * What one recipient of a send got, as the API reports it.
  *
  * @phpstan-type RecipientShape = array{
  *   body?: string|null,
@@ -24,19 +24,19 @@ final class Recipient implements BaseModel
     use SdkModel;
 
     /**
-     * Resolved template body text for this recipient's channel, or null for auto-detect.
+     * Resolved template body for this recipient's channel, or null when the channel is auto-detected.
      */
     #[Optional(nullable: true)]
     public ?string $body;
 
     /**
-     * Channel this message will be sent on (e.g. "sms", "whatsapp"), or null for auto-detect.
+     * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
      */
     #[Optional(nullable: true)]
     public ?string $channel;
 
     /**
-     * Unique message identifier for tracking this recipient's message.
+     * Identifier for tracking this recipient's message.
      */
     #[Optional('message_id')]
     public ?string $messageID;
@@ -74,7 +74,7 @@ final class Recipient implements BaseModel
     }
 
     /**
-     * Resolved template body text for this recipient's channel, or null for auto-detect.
+     * Resolved template body for this recipient's channel, or null when the channel is auto-detected.
      */
     public function withBody(?string $body): self
     {
@@ -85,7 +85,7 @@ final class Recipient implements BaseModel
     }
 
     /**
-     * Channel this message will be sent on (e.g. "sms", "whatsapp"), or null for auto-detect.
+     * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
      */
     public function withChannel(?string $channel): self
     {
@@ -96,7 +96,7 @@ final class Recipient implements BaseModel
     }
 
     /**
-     * Unique message identifier for tracking this recipient's message.
+     * Identifier for tracking this recipient's message.
      */
     public function withMessageID(string $messageID): self
     {

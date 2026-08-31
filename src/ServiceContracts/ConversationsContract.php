@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Conversations\APIResponseOfConversationMessagesList;
+use SentDm\Conversations\ConversationListMessagesResponse;
+use SentDm\Conversations\ConversationListResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 
@@ -28,7 +29,7 @@ interface ConversationsContract
         int $pageSize,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfConversationMessagesList;
+    ): ConversationListResponse;
 
     /**
      * @api
@@ -47,5 +48,5 @@ interface ConversationsContract
         int $pageSize,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfConversationMessagesList;
+    ): ConversationListMessagesResponse;
 }

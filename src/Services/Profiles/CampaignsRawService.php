@@ -8,20 +8,26 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
-use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
 use SentDm\Profiles\Campaigns\CampaignCreateParams;
-use SentDm\Profiles\Campaigns\CampaignData;
+use SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign;
 use SentDm\Profiles\Campaigns\CampaignDeleteParams;
 use SentDm\Profiles\Campaigns\CampaignListParams;
+use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
 use SentDm\Profiles\Campaigns\CampaignUpdateParams;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsRawContract;
 
 /**
- * Manage organization profiles.
+ * **Deprecated — use Sender Profiles.**.
  *
- * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
+ * The original profile resource, kept because it has live callers. It still works, and its replacement is `/v3/sender-profiles`, which takes the identity and the campaign in one call instead of across three.
+ *
+ * New integrations should not start here.
+ *
+ * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign
+ * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign as CampaignShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class CampaignsRawService implements CampaignsRawContract
@@ -33,20 +39,24 @@ final class CampaignsRawService implements CampaignsRawContract
     public function __construct(private Client $client) {}
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Creates a new campaign scoped under the brand of the specified profile. Each campaign must include at least one use case with sample messages.
      *
      * @param string $profileID Path param: Profile ID from route
      * @param array{
-     *   campaign: CampaignData|CampaignDataShape,
+     *   campaign: Campaign|CampaignShape,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
      * }|CampaignCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfBrandCampaign>
+     * @return BaseResponse<CampaignNewResponse>
      *
      * @throws APIException
      */
@@ -76,26 +86,30 @@ final class CampaignsRawService implements CampaignsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfBrandCampaign::class,
+            convert: CampaignNewResponse::class,
         );
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Updates an existing campaign under the brand of the specified profile. Cannot update campaigns that have already been submitted to TCR.
      *
      * @param string $campaignID Path param: Campaign ID from route
      * @param array{
      *   profileID: string,
-     *   campaign: CampaignData|CampaignDataShape,
+     *   campaign: CampaignUpdateParams\Campaign|CampaignShape1,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
      * }|CampaignUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfBrandCampaign>
+     * @return BaseResponse<CampaignUpdateResponse>
      *
      * @throws APIException
      */
@@ -127,12 +141,16 @@ final class CampaignsRawService implements CampaignsRawContract
                 array_flip(['profileID']),
             ),
             options: $options,
-            convert: APIResponseOfBrandCampaign::class,
+            convert: CampaignUpdateResponse::class,
         );
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Retrieves all campaigns linked to the profile's brand, including use cases and sample messages. Returns inherited campaigns if inherit_tcr_campaign=true.
      *
@@ -140,7 +158,7 @@ final class CampaignsRawService implements CampaignsRawContract
      * @param array{xProfileID?: string}|CampaignListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfListOfBrandCampaign>
+     * @return BaseResponse<CampaignListResponse>
      *
      * @throws APIException
      */
@@ -163,12 +181,16 @@ final class CampaignsRawService implements CampaignsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfListOfBrandCampaign::class,
+            convert: CampaignListResponse::class,
         );
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Deletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.
      *
