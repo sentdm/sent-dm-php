@@ -10,8 +10,11 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
+ * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
  *
+ * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Anything it still held is released first: phone numbers return to our inventory and can go to whoever asks next, its own WhatsApp account is deregistered, and its routing rules stop being used. Requires admin role in the organization.
+ *
+ * @deprecated
  * @see SentDm\Services\ProfilesService::delete()
  *
  * @phpstan-type ProfileDeleteParamsShape = array{

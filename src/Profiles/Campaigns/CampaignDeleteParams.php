@@ -11,8 +11,11 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
+ * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
+ *
  * Deletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.
  *
+ * @deprecated
  * @see SentDm\Services\Profiles\CampaignsService::delete()
  *
  * @phpstan-type CampaignDeleteParamsShape = array{

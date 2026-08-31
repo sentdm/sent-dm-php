@@ -50,7 +50,10 @@ final class TemplateListParams implements BaseModel
     public ?string $category;
 
     /**
-     * Optional filter by welcome playground flag.
+     * Accepted and ignored. It used to filter on the welcome-playground marker inside a template's LOB
+     * details; that filter is gone and nothing reads this value, so sending it neither narrows nor
+     * widens the result. Retained only so a client still passing is_welcome_playground keeps
+     * binding instead of the request shape changing under it.
      */
     #[Optional(nullable: true)]
     public ?bool $isWelcomePlayground;
@@ -151,7 +154,10 @@ final class TemplateListParams implements BaseModel
     }
 
     /**
-     * Optional filter by welcome playground flag.
+     * Accepted and ignored. It used to filter on the welcome-playground marker inside a template's LOB
+     * details; that filter is gone and nothing reads this value, so sending it neither narrows nor
+     * widens the result. Retained only so a client still passing is_welcome_playground keeps
+     * binding instead of the request shape changing under it.
      */
     public function withIsWelcomePlayground(?bool $isWelcomePlayground): self
     {

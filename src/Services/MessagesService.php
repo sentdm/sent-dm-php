@@ -15,7 +15,11 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MessagesContract;
 
 /**
- * Send and track SMS and WhatsApp messages.
+ * Send a message and follow what happened to it.
+ *
+ * One endpoint sends on any channel: pass `channel: "sent"` and we pick between SMS, WhatsApp and RCS per recipient using your routing rules, or name a channel to pin it. A send is accepted asynchronously — `POST /v3/messages` returns an id, and delivery is reported through `GET /v3/messages/{id}`, its activities, or a webhook.
+ *
+ * **A message needs a sender.** What you can send, where, and at what cost is decided by the markets under **Channels** — so a recipient in a country you hold no sender for is refused here rather than queued.
  *
  * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions

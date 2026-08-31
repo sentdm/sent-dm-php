@@ -10,8 +10,13 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.
+ * **Deprecated.** Use `PATCH /v3/contacts/{id}` with `{"opt_out": true}` instead, and expect this to be removed in a future release. It still behaves exactly as before, so nothing needs to change today.
  *
+ * Opting a contact out stops every send to them, which is what deleting one was mostly used for — and it keeps the record of who they were and that they asked. A delete discards the consent history along with the contact, which is the part you need if anyone ever asks why you stopped, or why you started again.
+ *
+ * Dissociates a contact from the authenticated customer.
+ *
+ * @deprecated
  * @see SentDm\Services\ContactsService::delete()
  *
  * @phpstan-type ContactDeleteParamsShape = array{
