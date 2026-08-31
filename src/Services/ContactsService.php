@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Contacts\APIResponseOfContact;
-use SentDm\Contacts\APIResponseOfContactMessageSummary;
+use SentDm\Contacts\ContactGetMessageSummaryResponse;
+use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactNewResponse;
+use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ContactsContract;
 
 /**
- * Create, update, and manage customer contact lists.
+ * The people you message, and their channel identities.
+ *
+ * A contact holds one identity per channel — a phone number, a WhatsApp number — so routing can choose between them for the same person. Opt-out is recorded against the contact and honoured on every send, whichever channel it came through.
+ *
+ * `GET /v3/contacts/{id}/message-summary` is the per-contact view of what you have sent and what happened to it.
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -53,7 +59,7 @@ final class ContactsService implements ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContact {
+    ): ContactNewResponse {
         $params = Util::removeNulls(
             [
                 'phoneNumber' => $phoneNumber,
@@ -84,7 +90,7 @@ final class ContactsService implements ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContact {
+    ): ContactGetResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -96,7 +102,7 @@ final class ContactsService implements ContactsContract
     /**
      * @api
      *
-     * Updates a contact's default channel and/or opt-out status. Inherited contacts cannot be updated.
+     * Updates a contact's default channel and/or opt-out status.
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param string|null $defaultChannel Body param: Default messaging channel: "sms" or "whatsapp"
@@ -118,7 +124,7 @@ final class ContactsService implements ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContact {
+    ): ContactUpdateResponse {
         $params = Util::removeNulls(
             [
                 'defaultChannel' => $defaultChannel,
@@ -177,9 +183,15 @@ final class ContactsService implements ContactsContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
      *
-     * Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.
+     * **Deprecated.** Use `PATCH /v3/contacts/{id}` with `{"opt_out": true}` instead, and expect this to be removed in a future release. It still behaves exactly as before, so nothing needs to change today.
+     *
+     * Opting a contact out stops every send to them, which is what deleting one was mostly used for — and it keeps the record of who they were and that they asked. A delete discards the consent history along with the contact, which is the part you need if anyone ever asks why you stopped, or why you started again.
+     *
+     * Dissociates a contact from the authenticated customer.
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -219,7 +231,7 @@ final class ContactsService implements ContactsContract
         string $contactID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfContactMessageSummary {
+    ): ContactGetMessageSummaryResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

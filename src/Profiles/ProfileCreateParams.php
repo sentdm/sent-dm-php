@@ -8,20 +8,21 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\ProfileCreateParams\BillingContact;
+use SentDm\Profiles\ProfileCreateParams\Brand;
+use SentDm\Profiles\ProfileCreateParams\PaymentDetails;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 
 /**
+ * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
+ *
  * Creates a new sender profile within an organization. Profiles represent different brands, departments, or use cases, each with their own messaging configuration and settings. Requires admin role in the organization.
  *
  * ## WhatsApp Business Account
  *
- * Every profile must be linked to a WhatsApp Business Account. There are two ways to do this:
+ * Every profile owns its own WhatsApp Business Account — accounts are never shared between profiles or inherited from the organization. Provide a `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and `access_token`. Obtain these from Meta Business Manager by creating a System User with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
  *
- * **1. Inherit from organization (default)** — Omit the `whatsapp_business_account` field. The profile will share the organization's WhatsApp Business Account, which must have been set up via WhatsApp Embedded Signup. This is the recommended path for most use cases.
- *
- * **2. Direct credentials** — Provide a `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and `access_token`. Use this when the profile needs its own independent WhatsApp Business Account. Obtain these from Meta Business Manager by creating a System User with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
- *
- * If the `whatsapp_business_account` field is omitted and the organization has no WhatsApp Business Account configured, the request will be rejected with HTTP 422.
+ * Omit the field and the profile is created without WhatsApp, staying incomplete until it has an account of its own.
  *
  * ## Brand
  *
@@ -31,19 +32,20 @@ use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
  *
  * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
  *
+ * @deprecated
  * @see SentDm\Services\ProfilesService::create()
  *
- * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
- * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileCreateParams\BillingContact
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileCreateParams\Brand
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileCreateParams\PaymentDetails
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
  *
  * @phpstan-type ProfileCreateParamsShape = array{
  *   allowContactSharing?: bool|null,
  *   allowTemplateSharing?: bool|null,
- *   billingContact?: null|BillingContactInfo|BillingContactInfoShape,
+ *   billingContact?: null|BillingContact|BillingContactShape,
  *   billingModel?: string|null,
- *   brand?: null|BrandsBrandData|BrandsBrandDataShape,
+ *   brand?: null|Brand|BrandShape,
  *   description?: string|null,
  *   icon?: string|null,
  *   inheritContacts?: bool|null,
@@ -66,15 +68,29 @@ final class ProfileCreateParams implements BaseModel
     use SdkParams;
 
     /**
-     * Whether contacts are shared across profiles (default: false).
+     * @deprecated
+     *
+     * Deprecated. Accepted and ignored. Contact and template sharing between sender profiles is gone
+     * — a profile sees only what it owns, and the organization still sees all of its profiles' contacts and
+     * templates through read-time widening. The four columns behind these flags were dropped by
+     * M260720120000.
+     *
+     * Bound rather than dropped so the properties survive on the wire and in a generated client: an
+     * SDK that assigns them keeps compiling, which is the compatibility this exists for. Deliberately not
+     * refused either — a 400 would break an integration that is otherwise working, and the capability
+     * they ask for is gone either way. Same rule as SendingPhoneNumberProfileId.
+     *
+     * The read is what makes this survivable: every profile reports all four as false, so a
+     * caller that checks its own write can see it did not take. Requests carrying one are logged, so we can
+     * tell when nobody sends them any more and the fields can go for real.
      */
-    #[Optional('allow_contact_sharing')]
+    #[Optional('allow_contact_sharing', nullable: true)]
     public ?bool $allowContactSharing;
 
     /**
-     * Whether templates are shared across profiles (default: false).
+     * @deprecated
      */
-    #[Optional('allow_template_sharing')]
+    #[Optional('allow_template_sharing', nullable: true)]
     public ?bool $allowTemplateSharing;
 
     /**
@@ -82,7 +98,7 @@ final class ProfileCreateParams implements BaseModel
      * Required when billing_model is "profile" or "profile_and_organization".
      */
     #[Optional('billing_contact', nullable: true)]
-    public ?BillingContactInfo $billingContact;
+    public ?BillingContact $billingContact;
 
     /**
      * Billing model: profile, organization, or profile_and_organization (default: profile).
@@ -97,7 +113,7 @@ final class ProfileCreateParams implements BaseModel
      * Brand and KYC data grouped into contact, business, and compliance sections.
      */
     #[Optional(nullable: true)]
-    public ?BrandsBrandData $brand;
+    public ?Brand $brand;
 
     /**
      * Profile description (optional).
@@ -112,25 +128,25 @@ final class ProfileCreateParams implements BaseModel
     public ?string $icon;
 
     /**
-     * Whether this profile inherits contacts from organization (default: true).
+     * @deprecated
      */
     #[Optional('inherit_contacts', nullable: true)]
     public ?bool $inheritContacts;
 
     /**
-     * Whether this profile inherits TCR brand from organization (default: true).
+     * Whether this profile inherits TCR brand from organization (default: false).
      */
     #[Optional('inherit_tcr_brand', nullable: true)]
     public ?bool $inheritTcrBrand;
 
     /**
-     * Whether this profile inherits TCR campaign from organization (default: true).
+     * Whether this profile inherits TCR campaign from organization (default: false).
      */
     #[Optional('inherit_tcr_campaign', nullable: true)]
     public ?bool $inheritTcrCampaign;
 
     /**
-     * Whether this profile inherits templates from organization (default: true).
+     * @deprecated
      */
     #[Optional('inherit_templates', nullable: true)]
     public ?bool $inheritTemplates;
@@ -142,9 +158,9 @@ final class ProfileCreateParams implements BaseModel
     public ?string $name;
 
     /**
-     * Payment card details for a profile.
+     * Payment card details for this profile (optional).
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * These details are not stored on our servers and will be forwarded to the payment processor.
+     * Not persisted on our servers — forwarded to the payment processor.
      */
     #[Optional('payment_details', nullable: true)]
     public ?PaymentDetails $paymentDetails;
@@ -188,17 +204,17 @@ final class ProfileCreateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
+     * @param BillingContact|BillingContactShape|null $billingContact
+     * @param Brand|BrandShape|null $brand
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      * @param WhatsappBusinessAccount|WhatsappBusinessAccountShape|null $whatsappBusinessAccount
      */
     public static function with(
         ?bool $allowContactSharing = null,
         ?bool $allowTemplateSharing = null,
-        BillingContactInfo|array|null $billingContact = null,
+        BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
-        BrandsBrandData|array|null $brand = null,
+        Brand|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -238,9 +254,21 @@ final class ProfileCreateParams implements BaseModel
     }
 
     /**
-     * Whether contacts are shared across profiles (default: false).
+     * Deprecated. Accepted and ignored. Contact and template sharing between sender profiles is gone
+     * — a profile sees only what it owns, and the organization still sees all of its profiles' contacts and
+     * templates through read-time widening. The four columns behind these flags were dropped by
+     * M260720120000.
+     *
+     * Bound rather than dropped so the properties survive on the wire and in a generated client: an
+     * SDK that assigns them keeps compiling, which is the compatibility this exists for. Deliberately not
+     * refused either — a 400 would break an integration that is otherwise working, and the capability
+     * they ask for is gone either way. Same rule as SendingPhoneNumberProfileId.
+     *
+     * The read is what makes this survivable: every profile reports all four as false, so a
+     * caller that checks its own write can see it did not take. Requests carrying one are logged, so we can
+     * tell when nobody sends them any more and the fields can go for real.
      */
-    public function withAllowContactSharing(bool $allowContactSharing): self
+    public function withAllowContactSharing(?bool $allowContactSharing): self
     {
         $self = clone $this;
         $self['allowContactSharing'] = $allowContactSharing;
@@ -248,10 +276,7 @@ final class ProfileCreateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Whether templates are shared across profiles (default: false).
-     */
-    public function withAllowTemplateSharing(bool $allowTemplateSharing): self
+    public function withAllowTemplateSharing(?bool $allowTemplateSharing): self
     {
         $self = clone $this;
         $self['allowTemplateSharing'] = $allowTemplateSharing;
@@ -263,10 +288,10 @@ final class ProfileCreateParams implements BaseModel
      * Billing contact information for a profile.
      * Required when billing_model is "profile" or "profile_and_organization".
      *
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
+     * @param BillingContact|BillingContactShape|null $billingContact
      */
     public function withBillingContact(
-        BillingContactInfo|array|null $billingContact
+        BillingContact|array|null $billingContact
     ): self {
         $self = clone $this;
         $self['billingContact'] = $billingContact;
@@ -291,9 +316,9 @@ final class ProfileCreateParams implements BaseModel
     /**
      * Brand and KYC data grouped into contact, business, and compliance sections.
      *
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
+     * @param Brand|BrandShape|null $brand
      */
-    public function withBrand(BrandsBrandData|array|null $brand): self
+    public function withBrand(Brand|array|null $brand): self
     {
         $self = clone $this;
         $self['brand'] = $brand;
@@ -323,9 +348,6 @@ final class ProfileCreateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Whether this profile inherits contacts from organization (default: true).
-     */
     public function withInheritContacts(?bool $inheritContacts): self
     {
         $self = clone $this;
@@ -335,7 +357,7 @@ final class ProfileCreateParams implements BaseModel
     }
 
     /**
-     * Whether this profile inherits TCR brand from organization (default: true).
+     * Whether this profile inherits TCR brand from organization (default: false).
      */
     public function withInheritTcrBrand(?bool $inheritTcrBrand): self
     {
@@ -346,7 +368,7 @@ final class ProfileCreateParams implements BaseModel
     }
 
     /**
-     * Whether this profile inherits TCR campaign from organization (default: true).
+     * Whether this profile inherits TCR campaign from organization (default: false).
      */
     public function withInheritTcrCampaign(?bool $inheritTcrCampaign): self
     {
@@ -356,9 +378,6 @@ final class ProfileCreateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Whether this profile inherits templates from organization (default: true).
-     */
     public function withInheritTemplates(?bool $inheritTemplates): self
     {
         $self = clone $this;
@@ -379,9 +398,9 @@ final class ProfileCreateParams implements BaseModel
     }
 
     /**
-     * Payment card details for a profile.
+     * Payment card details for this profile (optional).
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * These details are not stored on our servers and will be forwarded to the payment processor.
+     * Not persisted on our servers — forwarded to the payment processor.
      *
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */

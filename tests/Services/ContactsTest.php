@@ -6,9 +6,11 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
-use SentDm\Contacts\APIResponseOfContact;
-use SentDm\Contacts\APIResponseOfContactMessageSummary;
+use SentDm\Contacts\ContactGetMessageSummaryResponse;
+use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactNewResponse;
+use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
 
@@ -40,7 +42,7 @@ final class ContactsTest extends TestCase
         $result = $this->client->contacts->create(phoneNumber: '+1234567890');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfContact::class, $result);
+        $this->assertInstanceOf(ContactNewResponse::class, $result);
     }
 
     #[Test]
@@ -58,7 +60,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfContact::class, $result);
+        $this->assertInstanceOf(ContactNewResponse::class, $result);
     }
 
     #[Test]
@@ -73,7 +75,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfContact::class, $result);
+        $this->assertInstanceOf(ContactGetResponse::class, $result);
     }
 
     #[Test]
@@ -88,7 +90,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfContact::class, $result);
+        $this->assertInstanceOf(ContactUpdateResponse::class, $result);
     }
 
     #[Test]
@@ -151,6 +153,6 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfContactMessageSummary::class, $result);
+        $this->assertInstanceOf(ContactGetMessageSummaryResponse::class, $result);
     }
 }

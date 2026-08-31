@@ -9,15 +9,22 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksContract;
-use SentDm\Webhooks\APIResponseWebhook;
+use SentDm\Webhooks\WebhookGetResponse;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookNewResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
+use SentDm\Webhooks\WebhookToggleStatusResponse;
+use SentDm\Webhooks\WebhookUpdateResponse;
 
 /**
- * Configure webhook endpoints for real-time event delivery.
+ * Delivery reports and inbound messages, pushed to you.
+ *
+ * Subscribe an endpoint to the event types you care about — `GET /v3/webhooks/event-types` lists them — and we POST each one as it happens, retrying on failure. Polling `GET /v3/messages/{id}` works and does not scale.
+ *
+ * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -66,7 +73,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookNewResponse {
         $params = Util::removeNulls(
             [
                 'displayName' => $displayName,
@@ -101,7 +108,7 @@ final class WebhooksService implements WebhooksContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookGetResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -142,7 +149,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookUpdateResponse {
         $params = Util::removeNulls(
             [
                 'displayName' => $displayName,
@@ -378,7 +385,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseWebhook {
+    ): WebhookToggleStatusResponse {
         $params = Util::removeNulls(
             [
                 'isActive' => $isActive,

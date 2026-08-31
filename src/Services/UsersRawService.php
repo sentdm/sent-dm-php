@@ -10,16 +10,20 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersRawContract;
-use SentDm\Users\APIResponseOfUser;
+use SentDm\Users\UserGetResponse;
 use SentDm\Users\UserInviteParams;
+use SentDm\Users\UserInviteResponse;
 use SentDm\Users\UserListParams;
 use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
 use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
+use SentDm\Users\UserUpdateRoleResponse;
 
 /**
- * Invite, update, and manage organization users and roles.
+ * The people who can sign in to your organization, and what each may do.
+ *
+ * Users are dashboard access and nothing else — they do not send, and removing one does not affect traffic. An API key is not a user: it belongs to the organization or to a sender profile, so revoking a person's access leaves your integration running.
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -40,7 +44,7 @@ final class UsersRawService implements UsersRawContract
      * @param array{xProfileID?: string}|UserRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfUser>
+     * @return BaseResponse<UserGetResponse>
      *
      * @throws APIException
      */
@@ -63,7 +67,7 @@ final class UsersRawService implements UsersRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfUser::class,
+            convert: UserGetResponse::class,
         );
     }
 
@@ -116,7 +120,7 @@ final class UsersRawService implements UsersRawContract
      * }|UserInviteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfUser>
+     * @return BaseResponse<UserInviteResponse>
      *
      * @throws APIException
      */
@@ -145,7 +149,7 @@ final class UsersRawService implements UsersRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfUser::class,
+            convert: UserInviteResponse::class,
         );
     }
 
@@ -201,7 +205,7 @@ final class UsersRawService implements UsersRawContract
      * }|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfUser>
+     * @return BaseResponse<UserUpdateRoleResponse>
      *
      * @throws APIException
      */
@@ -231,7 +235,7 @@ final class UsersRawService implements UsersRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfUser::class,
+            convert: UserUpdateRoleResponse::class,
         );
     }
 }

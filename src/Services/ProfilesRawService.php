@@ -8,29 +8,38 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\APIResponseOfProfileDetail;
-use SentDm\Profiles\BillingContactInfo;
-use SentDm\Profiles\BrandsBrandData;
-use SentDm\Profiles\PaymentDetails;
 use SentDm\Profiles\ProfileCompleteParams;
 use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
+use SentDm\Profiles\ProfileCreateParams\BillingContact;
+use SentDm\Profiles\ProfileCreateParams\Brand;
+use SentDm\Profiles\ProfileCreateParams\PaymentDetails;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 use SentDm\Profiles\ProfileDeleteParams;
+use SentDm\Profiles\ProfileGetResponse;
 use SentDm\Profiles\ProfileListParams;
 use SentDm\Profiles\ProfileListResponse;
+use SentDm\Profiles\ProfileNewResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
+use SentDm\Profiles\ProfileUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesRawContract;
 
 /**
- * Manage organization profiles.
+ * **Deprecated — use Sender Profiles.**.
  *
+ * The original profile resource, kept because it has live callers. It still works, and its replacement is `/v3/sender-profiles`, which takes the identity and the campaign in one call instead of across three.
+ *
+ * New integrations should not start here.
+ *
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileCreateParams\BillingContact
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileCreateParams\Brand
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileCreateParams\PaymentDetails
  * @phpstan-import-type WhatsappBusinessAccountShape from \SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount
- * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
- * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact as BillingContactShape1
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileUpdateParams\Brand as BrandShape1
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails as PaymentDetailsShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ProfilesRawService implements ProfilesRawContract
@@ -42,19 +51,19 @@ final class ProfilesRawService implements ProfilesRawContract
     public function __construct(private Client $client) {}
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Creates a new sender profile within an organization. Profiles represent different brands, departments, or use cases, each with their own messaging configuration and settings. Requires admin role in the organization.
      *
      * ## WhatsApp Business Account
      *
-     * Every profile must be linked to a WhatsApp Business Account. There are two ways to do this:
+     * Every profile owns its own WhatsApp Business Account — accounts are never shared between profiles or inherited from the organization. Provide a `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and `access_token`. Obtain these from Meta Business Manager by creating a System User with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
      *
-     * **1. Inherit from organization (default)** — Omit the `whatsapp_business_account` field. The profile will share the organization's WhatsApp Business Account, which must have been set up via WhatsApp Embedded Signup. This is the recommended path for most use cases.
-     *
-     * **2. Direct credentials** — Provide a `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and `access_token`. Use this when the profile needs its own independent WhatsApp Business Account. Obtain these from Meta Business Manager by creating a System User with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
-     *
-     * If the `whatsapp_business_account` field is omitted and the organization has no WhatsApp Business Account configured, the request will be rejected with HTTP 422.
+     * Omit the field and the profile is created without WhatsApp, staying incomplete until it has an account of its own.
      *
      * ## Brand
      *
@@ -65,11 +74,11 @@ final class ProfilesRawService implements ProfilesRawContract
      * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
      *
      * @param array{
-     *   allowContactSharing?: bool,
-     *   allowTemplateSharing?: bool,
-     *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
+     *   allowContactSharing?: bool|null,
+     *   allowTemplateSharing?: bool|null,
+     *   billingContact?: BillingContact|BillingContactShape|null,
      *   billingModel?: string|null,
-     *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
+     *   brand?: Brand|BrandShape|null,
      *   description?: string|null,
      *   icon?: string|null,
      *   inheritContacts?: bool|null,
@@ -86,7 +95,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * }|ProfileCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileNewResponse>
      *
      * @throws APIException
      */
@@ -115,12 +124,16 @@ final class ProfilesRawService implements ProfilesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfProfileDetail::class,
+            convert: ProfileNewResponse::class,
         );
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Retrieves detailed information about a specific sender profile within an organization, including brand and KYC information if a brand has been configured.
      *
@@ -128,7 +141,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param array{xProfileID?: string}|ProfileRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileGetResponse>
      *
      * @throws APIException
      */
@@ -151,12 +164,16 @@ final class ProfilesRawService implements ProfilesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfProfileDetail::class,
+            convert: ProfileGetResponse::class,
         );
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Updates a profile's configuration and settings. Requires admin role in the organization. Only provided fields will be updated (partial update).
      *
@@ -168,14 +185,22 @@ final class ProfilesRawService implements ProfilesRawContract
      *
      * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
      *
+     * ## Deprecated fields
+     *
+     * `sending_phone_number_profile_id` and `sending_whatsapp_number_profile_id` are **accepted and ignored**. Sender borrowing is gone: a profile cannot send from another profile's number, because two profiles behind one sender makes an inbound reply and a delivery receipt ambiguous about whose they are.
+     *
+     * Sending either **changes nothing and still returns `200`** — they are kept on the contract so an existing integration keeps working. Reads carry both keys too and always answer `null`, which is how you can confirm the value did not take.
+     *
+     * Give the profile a sender of its own instead — `POST /v3/channels/sms` or `POST /v3/channels/whatsapp`, sent with the `x-profile-id` header naming it.
+     *
      * @param string $profileID Path param: Profile ID from route parameter
      * @param array{
      *   allowContactSharing?: bool|null,
      *   allowNumberChangeDuringOnboarding?: bool|null,
      *   allowTemplateSharing?: bool|null,
-     *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
+     *   billingContact?: ProfileUpdateParams\BillingContact|BillingContactShape1|null,
      *   billingModel?: string|null,
-     *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
+     *   brand?: ProfileUpdateParams\Brand|BrandShape1|null,
      *   description?: string|null,
      *   icon?: string|null,
      *   inheritContacts?: bool|null,
@@ -183,7 +208,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *   inheritTcrCampaign?: bool|null,
      *   inheritTemplates?: bool|null,
      *   name?: string|null,
-     *   paymentDetails?: PaymentDetails|PaymentDetailsShape|null,
+     *   paymentDetails?: ProfileUpdateParams\PaymentDetails|PaymentDetailsShape1|null,
      *   sandbox?: bool,
      *   sendingPhoneNumber?: string|null,
      *   sendingPhoneNumberProfileID?: string|null,
@@ -195,7 +220,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * }|ProfileUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfProfileDetail>
+     * @return BaseResponse<ProfileUpdateResponse>
      *
      * @throws APIException
      */
@@ -225,12 +250,16 @@ final class ProfilesRawService implements ProfilesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseOfProfileDetail::class,
+            convert: ProfileUpdateResponse::class,
         );
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Retrieves all sender profiles within an organization, including brand information for each profile. Profiles represent different brands, departments, or use cases within an organization, each with their own messaging configuration.
      *
@@ -264,9 +293,13 @@ final class ProfilesRawService implements ProfilesRawContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
      *
-     * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
+     *
+     * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Anything it still held is released first: phone numbers return to our inventory and can go to whoever asks next, its own WhatsApp account is deregistered, and its routing rules stop being used. Requires admin role in the organization.
      *
      * @param string $profileID Path param: Profile ID from route parameter
      * @param array{sandbox?: bool, xProfileID?: string}|ProfileDeleteParams $params
@@ -305,23 +338,31 @@ final class ProfilesRawService implements ProfilesRawContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
      *
-     * Final step in the profile compliance workflow. Validates all prerequisites (KYC, brand, campaigns, required documents), connects the profile to the SMS and WhatsApp channels, and sets its status based on configuration. Prerequisites are always validated first: if any fail the call returns 400. If they pass and the profile is already completed, the call returns 200 and does nothing. Otherwise it returns 202 and calls the provided webhook URL when background processing finishes.
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
-     * Prerequisites:
+     * Final step in the profile compliance workflow. Validates all prerequisites (KYC, brand, campaigns, required documents), connects the profile to the SMS and WhatsApp channels, and marks it onboarded. Prerequisites are always validated first: if any fail the call returns 400 naming every unmet one, and nothing is started. If they pass and the profile is already onboarded, the call returns 200 and does nothing. Otherwise it returns 202 and calls the provided webhook URL when background processing finishes.
+     *
+     * Callable with the organization's API key or the profile's own key. The key's user must be an admin or owner of the profile, or of the organization it belongs to.
+     *
+     * Prerequisites (all but the last are checked before the already-onboarded short-circuit,
+     * matching the previous contract; the last is checked after it, so a profile that is already
+     * onboarded is never rejected by it):
      * - Profile must have a name, short name, and description (short name max 50 characters, description max 5000)
      * - webHookUrl must be supplied on the request
      * - A KYC form submission is required
      * - A brand is required, either on the profile or inherited from the parent organization
      * - TCR applications must have at least one campaign, own or inherited
      * - Destination countries marked as main must have their required compliance documents uploaded
+     * - TCR applications must state whether they inherit the organization's TCR brand and campaign
      *
-     * Resulting status:
-     * - If either the SMS or WhatsApp channel is unconfigured, the profile is SUBMITTED
-     * - For a TCR application that inherits both its brand and its campaigns, the profile is COMPLETED
-     * - For a TCR application that owns either its brand or its campaigns, the profile is COMPLETED once both have been submitted to TCR, and SUBMITTED until then
-     * - For a non-TCR application, the profile is SUBMITTED when a main destination country is set, and COMPLETED otherwise
+     * Outcome:
+     * - Once the prerequisites pass and background processing succeeds, the profile's conversionFlowStatus becomes ONBOARDED and its public status reads `approved`
+     * - A profile with no WhatsApp channel, or one still awaiting TCR registration or country documents, is onboarded like any other. Those are answered by the brand and campaign records, not by a status on the profile
+     * - If background processing fails, the profile keeps the status it already had and the webhook reports the reason
      *
      * @param string $profileID Path param: Profile ID from route
      * @param array{

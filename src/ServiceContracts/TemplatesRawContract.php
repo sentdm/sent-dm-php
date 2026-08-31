@@ -7,13 +7,15 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDeleteParams;
+use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\TemplateNewResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
+use SentDm\Templates\TemplateUpdateResponse;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -26,7 +28,7 @@ interface TemplatesRawContract
      * @param array<string,mixed>|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateNewResponse>
      *
      * @throws APIException
      */
@@ -42,7 +44,7 @@ interface TemplatesRawContract
      * @param array<string,mixed>|TemplateRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateGetResponse>
      *
      * @throws APIException
      */
@@ -59,7 +61,7 @@ interface TemplatesRawContract
      * @param array<string,mixed>|TemplateUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateUpdateResponse>
      *
      * @throws APIException
      */

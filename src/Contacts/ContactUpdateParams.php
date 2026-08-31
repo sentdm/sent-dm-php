@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Updates a contact's default channel and/or opt-out status. Inherited contacts cannot be updated.
+ * Updates a contact's default channel and/or opt-out status.
  *
  * @see SentDm\Services\ContactsService::update()
  *

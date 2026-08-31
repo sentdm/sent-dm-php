@@ -7,22 +7,25 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
 use SentDm\Webhooks\WebhookDeleteParams;
+use SentDm\Webhooks\WebhookGetResponse;
 use SentDm\Webhooks\WebhookListEventsParams;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesParams;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookNewResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestParams;
 use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\Webhooks\WebhookToggleStatusParams;
+use SentDm\Webhooks\WebhookToggleStatusResponse;
 use SentDm\Webhooks\WebhookUpdateParams;
+use SentDm\Webhooks\WebhookUpdateResponse;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -35,7 +38,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookNewResponse>
      *
      * @throws APIException
      */
@@ -50,7 +53,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookGetResponse>
      *
      * @throws APIException
      */
@@ -67,7 +70,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookUpdateResponse>
      *
      * @throws APIException
      */
@@ -181,7 +184,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookToggleStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseWebhook>
+     * @return BaseResponse<WebhookToggleStatusResponse>
      *
      * @throws APIException
      */

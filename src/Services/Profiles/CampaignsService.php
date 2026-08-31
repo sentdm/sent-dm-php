@@ -7,16 +7,22 @@ namespace SentDm\Services\Profiles;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
-use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
-use SentDm\Profiles\Campaigns\CampaignData;
+use SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign;
+use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsContract;
 
 /**
- * Manage organization profiles.
+ * **Deprecated — use Sender Profiles.**.
  *
- * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
+ * The original profile resource, kept because it has live callers. It still works, and its replacement is `/v3/sender-profiles`, which takes the identity and the campaign in one call instead of across three.
+ *
+ * New integrations should not start here.
+ *
+ * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign
+ * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign as CampaignShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class CampaignsService implements CampaignsContract
@@ -35,12 +41,16 @@ final class CampaignsService implements CampaignsContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Creates a new campaign scoped under the brand of the specified profile. Each campaign must include at least one use case with sample messages.
      *
      * @param string $profileID Path param: Profile ID from route
-     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data for create or update operation
+     * @param Campaign|CampaignShape $campaign Body param: Campaign data for create or update operation
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -51,12 +61,12 @@ final class CampaignsService implements CampaignsContract
      */
     public function create(
         string $profileID,
-        CampaignData|array $campaign,
+        Campaign|array $campaign,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfBrandCampaign {
+    ): CampaignNewResponse {
         $params = Util::removeNulls(
             [
                 'campaign' => $campaign,
@@ -73,13 +83,17 @@ final class CampaignsService implements CampaignsContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Updates an existing campaign under the brand of the specified profile. Cannot update campaigns that have already been submitted to TCR.
      *
      * @param string $campaignID Path param: Campaign ID from route
      * @param string $profileID Path param: Profile ID from route
-     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data for create or update operation
+     * @param \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign|CampaignShape1 $campaign Body param: Campaign data for create or update operation
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -91,12 +105,12 @@ final class CampaignsService implements CampaignsContract
     public function update(
         string $campaignID,
         string $profileID,
-        CampaignData|array $campaign,
+        \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign|array $campaign,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfBrandCampaign {
+    ): CampaignUpdateResponse {
         $params = Util::removeNulls(
             [
                 'profileID' => $profileID,
@@ -114,7 +128,11 @@ final class CampaignsService implements CampaignsContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Retrieves all campaigns linked to the profile's brand, including use cases and sample messages. Returns inherited campaigns if inherit_tcr_campaign=true.
      *
@@ -128,7 +146,7 @@ final class CampaignsService implements CampaignsContract
         string $profileID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfListOfBrandCampaign {
+    ): CampaignListResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -138,7 +156,11 @@ final class CampaignsService implements CampaignsContract
     }
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
      * Deletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.
      *

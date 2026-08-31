@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Conversations\APIResponseOfConversationMessagesList;
 use SentDm\Conversations\ConversationListMessagesParams;
+use SentDm\Conversations\ConversationListMessagesResponse;
 use SentDm\Conversations\ConversationListParams;
+use SentDm\Conversations\ConversationListResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -15,6 +16,12 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ConversationsRawContract;
 
 /**
+ * Inbound and outbound messages, grouped by the person they are with.
+ *
+ * A conversation is the thread for one contact across every channel — a reply by SMS and one by WhatsApp belong to the same conversation, because they are the same person talking to you.
+ *
+ * Read-only. Sending is **Messages**; a reply arrives here and through your webhooks.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class ConversationsRawService implements ConversationsRawContract
@@ -35,7 +42,7 @@ final class ConversationsRawService implements ConversationsRawContract
      * }|ConversationListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfConversationMessagesList>
+     * @return BaseResponse<ConversationListResponse>
      *
      * @throws APIException
      */
@@ -65,7 +72,7 @@ final class ConversationsRawService implements ConversationsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfConversationMessagesList::class,
+            convert: ConversationListResponse::class,
         );
     }
 
@@ -80,7 +87,7 @@ final class ConversationsRawService implements ConversationsRawContract
      * }|ConversationListMessagesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfConversationMessagesList>
+     * @return BaseResponse<ConversationListMessagesResponse>
      *
      * @throws APIException
      */
@@ -111,7 +118,7 @@ final class ConversationsRawService implements ConversationsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfConversationMessagesList::class,
+            convert: ConversationListMessagesResponse::class,
         );
     }
 }

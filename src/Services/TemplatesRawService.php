@@ -10,17 +10,21 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesRawContract;
-use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateDeleteParams;
+use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\TemplateNewResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
+use SentDm\Templates\TemplateUpdateResponse;
 
 /**
- * Manage message templates with variable substitution.
+ * Reusable message bodies with named variables.
+ *
+ * A template is substituted at send time from the values you pass, so the copy lives here rather than in your application. WhatsApp templates additionally need Meta's approval before they can be sent, and a template's channel status reports where that stands — an approved SMS template and an unapproved WhatsApp one are the same template in two states.
  *
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -50,7 +54,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateNewResponse>
      *
      * @throws APIException
      */
@@ -79,7 +83,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseTemplate::class,
+            convert: TemplateNewResponse::class,
         );
     }
 
@@ -92,7 +96,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * @param array{xProfileID?: string}|TemplateRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateGetResponse>
      *
      * @throws APIException
      */
@@ -115,7 +119,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseTemplate::class,
+            convert: TemplateGetResponse::class,
         );
     }
 
@@ -137,7 +141,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseTemplate>
+     * @return BaseResponse<TemplateUpdateResponse>
      *
      * @throws APIException
      */
@@ -167,7 +171,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: APIResponseTemplate::class,
+            convert: TemplateUpdateResponse::class,
         );
     }
 

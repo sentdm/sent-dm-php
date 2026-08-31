@@ -10,7 +10,15 @@ use SentDm\Core\Contracts\BaseModel;
 use SentDm\Messages\MessageSendResponse\Data\Recipient;
 
 /**
- * Response for the multi-recipient send message endpoint.
+ * The result of a multi-recipient send.
+ *
+ * Declared here rather than in the service layer. POST /v3/messages used to publish
+ * MessageSendResult — a type in Common.Services.Messaging.Contracts — so the public contract was
+ * whatever the send service happened to return, and changing that service for an internal reason changed the
+ * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
+ * endpoint makes.
+ *
+ * The wire is unchanged by the move: same names, same values.
  *
  * @phpstan-import-type RecipientShape from \SentDm\Messages\MessageSendResponse\Data\Recipient
  *
@@ -26,29 +34,19 @@ final class Data implements BaseModel
     /** @use SdkModel<DataShape> */
     use SdkModel;
 
-    /**
-     * Per-recipient message results.
-     *
-     * @var list<Recipient>|null $recipients
-     */
+    /** @var list<Recipient>|null $recipients */
     #[Optional(list: Recipient::class)]
     public ?array $recipients;
 
     /**
-     * Overall request status: "QUEUED" when the batch has been accepted for delivery.
+     * Overall status — QUEUED once the batch is accepted for delivery.
      */
     #[Optional]
     public ?string $status;
 
-    /**
-     * Template ID that was used.
-     */
     #[Optional('template_id')]
     public ?string $templateID;
 
-    /**
-     * Template display name.
-     */
     #[Optional('template_name')]
     public ?string $templateName;
 
@@ -81,8 +79,6 @@ final class Data implements BaseModel
     }
 
     /**
-     * Per-recipient message results.
-     *
      * @param list<Recipient|RecipientShape> $recipients
      */
     public function withRecipients(array $recipients): self
@@ -94,7 +90,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * Overall request status: "QUEUED" when the batch has been accepted for delivery.
+     * Overall status — QUEUED once the batch is accepted for delivery.
      */
     public function withStatus(string $status): self
     {
@@ -104,9 +100,6 @@ final class Data implements BaseModel
         return $self;
     }
 
-    /**
-     * Template ID that was used.
-     */
     public function withTemplateID(string $templateID): self
     {
         $self = clone $this;
@@ -115,9 +108,6 @@ final class Data implements BaseModel
         return $self;
     }
 
-    /**
-     * Template display name.
-     */
     public function withTemplateName(string $templateName): self
     {
         $self = clone $this;
