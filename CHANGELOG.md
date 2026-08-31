@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.29.0](https://github.com/sentdm/sent-dm-php/compare/v0.28.0...v0.29.0) (2026-08-31)
+
+
+### Features
+
+* **api:** sync OpenAPI spec from production ([8d446f8](https://github.com/sentdm/sent-dm-php/commit/8d446f80af19b342a0e50ca5a0646186a5d300b6))
+* **api:** sync OpenAPI spec from production ([1e7fe7f](https://github.com/sentdm/sent-dm-php/commit/1e7fe7f80487582c2552403a44137c7459daf323))
+
+
+### Bug Fixes
+
+* sync the package version in src/Client.php to 0.28.0 ([d6d6dbd](https://github.com/sentdm/sent-dm-php/commit/d6d6dbdc1007f870e5e1ca414ceaec2bca42d8d0))
+
 ## [0.28.0](https://github.com/sentdm/sent-dm-php/compare/v0.27.0...v0.28.0) (2026-08-17)
 
 
