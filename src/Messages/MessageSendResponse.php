@@ -8,20 +8,20 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Messages\MessageSendResponse\Data;
-use SentDm\Webhooks\APIMeta;
-use SentDm\Webhooks\ErrorDetail;
+use SentDm\Messages\MessageSendResponse\Error;
+use SentDm\Messages\MessageSendResponse\Meta;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
  * @phpstan-import-type DataShape from \SentDm\Messages\MessageSendResponse\Data
- * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
- * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
+ * @phpstan-import-type ErrorShape from \SentDm\Messages\MessageSendResponse\Error
+ * @phpstan-import-type MetaShape from \SentDm\Messages\MessageSendResponse\Meta
  *
  * @phpstan-type MessageSendResponseShape = array{
  *   data?: null|Data|DataShape,
- *   error?: null|ErrorDetail|ErrorDetailShape,
- *   meta?: null|APIMeta|APIMetaShape,
+ *   error?: null|Error|ErrorShape,
+ *   meta?: null|Meta|MetaShape,
  *   success?: bool|null,
  * }
  */
@@ -31,7 +31,15 @@ final class MessageSendResponse implements BaseModel
     use SdkModel;
 
     /**
-     * Response for the multi-recipient send message endpoint.
+     * The result of a multi-recipient send.
+     *
+     * Declared here rather than in the service layer. POST /v3/messages used to publish
+     * MessageSendResult — a type in Common.Services.Messaging.Contracts — so the public contract was
+     * whatever the send service happened to return, and changing that service for an internal reason changed the
+     * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
+     * endpoint makes.
+     *
+     * The wire is unchanged by the move: same names, same values.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
@@ -40,13 +48,13 @@ final class MessageSendResponse implements BaseModel
      * Error information.
      */
     #[Optional(nullable: true)]
-    public ?ErrorDetail $error;
+    public ?Error $error;
 
     /**
      * Request and response metadata.
      */
     #[Optional]
-    public ?APIMeta $meta;
+    public ?Meta $meta;
 
     /**
      * Indicates whether the request was successful.
@@ -65,13 +73,13 @@ final class MessageSendResponse implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param Data|DataShape|null $data
-     * @param ErrorDetail|ErrorDetailShape|null $error
-     * @param APIMeta|APIMetaShape|null $meta
+     * @param Error|ErrorShape|null $error
+     * @param Meta|MetaShape|null $meta
      */
     public static function with(
         Data|array|null $data = null,
-        ErrorDetail|array|null $error = null,
-        APIMeta|array|null $meta = null,
+        Error|array|null $error = null,
+        Meta|array|null $meta = null,
         ?bool $success = null,
     ): self {
         $self = new self;
@@ -85,7 +93,15 @@ final class MessageSendResponse implements BaseModel
     }
 
     /**
-     * Response for the multi-recipient send message endpoint.
+     * The result of a multi-recipient send.
+     *
+     * Declared here rather than in the service layer. POST /v3/messages used to publish
+     * MessageSendResult — a type in Common.Services.Messaging.Contracts — so the public contract was
+     * whatever the send service happened to return, and changing that service for an internal reason changed the
+     * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
+     * endpoint makes.
+     *
+     * The wire is unchanged by the move: same names, same values.
      *
      * @param Data|DataShape|null $data
      */
@@ -100,9 +116,9 @@ final class MessageSendResponse implements BaseModel
     /**
      * Error information.
      *
-     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param Error|ErrorShape|null $error
      */
-    public function withError(ErrorDetail|array|null $error): self
+    public function withError(Error|array|null $error): self
     {
         $self = clone $this;
         $self['error'] = $error;
@@ -113,9 +129,9 @@ final class MessageSendResponse implements BaseModel
     /**
      * Request and response metadata.
      *
-     * @param APIMeta|APIMetaShape $meta
+     * @param Meta|MetaShape $meta
      */
-    public function withMeta(APIMeta|array $meta): self
+    public function withMeta(Meta|array $meta): self
     {
         $self = clone $this;
         $self['meta'] = $meta;

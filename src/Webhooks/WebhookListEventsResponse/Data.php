@@ -7,18 +7,18 @@ namespace SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\PaginationMeta;
 use SentDm\Webhooks\WebhookListEventsResponse\Data\Event;
+use SentDm\Webhooks\WebhookListEventsResponse\Data\Pagination;
 
 /**
- * The response data (null if error).
+ * A paginated list of webhook delivery records.
  *
  * @phpstan-import-type EventShape from \SentDm\Webhooks\WebhookListEventsResponse\Data\Event
- * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
+ * @phpstan-import-type PaginationShape from \SentDm\Webhooks\WebhookListEventsResponse\Data\Pagination
  *
  * @phpstan-type DataShape = array{
  *   events?: list<Event|EventShape>|null,
- *   pagination?: null|PaginationMeta|PaginationMetaShape,
+ *   pagination?: null|Pagination|PaginationShape,
  * }
  */
 final class Data implements BaseModel
@@ -26,7 +26,11 @@ final class Data implements BaseModel
     /** @use SdkModel<DataShape> */
     use SdkModel;
 
-    /** @var list<Event>|null $events */
+    /**
+     * The events on this page.
+     *
+     * @var list<Event>|null $events
+     */
     #[Optional(list: Event::class)]
     public ?array $events;
 
@@ -34,7 +38,7 @@ final class Data implements BaseModel
      * Pagination metadata for list responses.
      */
     #[Optional]
-    public ?PaginationMeta $pagination;
+    public ?Pagination $pagination;
 
     public function __construct()
     {
@@ -47,11 +51,11 @@ final class Data implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param list<Event|EventShape>|null $events
-     * @param PaginationMeta|PaginationMetaShape|null $pagination
+     * @param Pagination|PaginationShape|null $pagination
      */
     public static function with(
         ?array $events = null,
-        PaginationMeta|array|null $pagination = null
+        Pagination|array|null $pagination = null
     ): self {
         $self = new self;
 
@@ -62,6 +66,8 @@ final class Data implements BaseModel
     }
 
     /**
+     * The events on this page.
+     *
      * @param list<Event|EventShape> $events
      */
     public function withEvents(array $events): self
@@ -75,9 +81,9 @@ final class Data implements BaseModel
     /**
      * Pagination metadata for list responses.
      *
-     * @param PaginationMeta|PaginationMetaShape $pagination
+     * @param Pagination|PaginationShape $pagination
      */
-    public function withPagination(PaginationMeta|array $pagination): self
+    public function withPagination(Pagination|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;

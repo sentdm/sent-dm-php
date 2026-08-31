@@ -9,12 +9,16 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesContract;
-use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateDefinition;
+use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\TemplateNewResponse;
+use SentDm\Templates\TemplateUpdateResponse;
 
 /**
- * Manage message templates with variable substitution.
+ * Reusable message bodies with named variables.
+ *
+ * A template is substituted at send time from the values you pass, so the copy lives here rather than in your application. WhatsApp templates additionally need Meta's approval before they can be sent, and a template's channel status reports where that stands — an approved SMS template and an unapproved WhatsApp one are the same template in two states.
  *
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -62,7 +66,7 @@ final class TemplatesService implements TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseTemplate {
+    ): TemplateNewResponse {
         $params = Util::removeNulls(
             [
                 'category' => $category,
@@ -97,7 +101,7 @@ final class TemplatesService implements TemplatesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseTemplate {
+    ): TemplateGetResponse {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -136,7 +140,7 @@ final class TemplatesService implements TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseTemplate {
+    ): TemplateUpdateResponse {
         $params = Util::removeNulls(
             [
                 'category' => $category,
@@ -164,7 +168,10 @@ final class TemplatesService implements TemplatesContract
      * @param int $page Query param: Page number (1-indexed)
      * @param int $pageSize Query param: Number of items per page
      * @param string|null $category Query param: Optional category filter: MARKETING, UTILITY, AUTHENTICATION
-     * @param bool|null $isWelcomePlayground Query param: Optional filter by welcome playground flag
+     * @param bool|null $isWelcomePlayground Query param: Accepted and ignored. It used to filter on the welcome-playground marker inside a template's LOB
+     * details; that filter is gone and nothing reads this value, so sending it neither narrows nor
+     * widens the result. Retained only so a client still passing is_welcome_playground keeps
+     * binding instead of the request shape changing under it.
      * @param string|null $search Query param: Optional search term for filtering templates
      * @param string|null $status Query param: Optional status filter: APPROVED, PENDING, REJECTED
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.

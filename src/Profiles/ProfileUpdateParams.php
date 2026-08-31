@@ -8,8 +8,13 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Profiles\ProfileUpdateParams\BillingContact;
+use SentDm\Profiles\ProfileUpdateParams\Brand;
+use SentDm\Profiles\ProfileUpdateParams\PaymentDetails;
 
 /**
+ * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
+ *
  * Updates a profile's configuration and settings. Requires admin role in the organization. Only provided fields will be updated (partial update).
  *
  * ## Brand Management
@@ -20,19 +25,28 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * When `billing_model` is `"profile"` or `"profile_and_organization"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `"organization"` is not allowed.
  *
+ * ## Deprecated fields
+ *
+ * `sending_phone_number_profile_id` and `sending_whatsapp_number_profile_id` are **accepted and ignored**. Sender borrowing is gone: a profile cannot send from another profile's number, because two profiles behind one sender makes an inbound reply and a delivery receipt ambiguous about whose they are.
+ *
+ * Sending either **changes nothing and still returns `200`** — they are kept on the contract so an existing integration keeps working. Reads carry both keys too and always answer `null`, which is how you can confirm the value did not take.
+ *
+ * Give the profile a sender of its own instead — `POST /v3/channels/sms` or `POST /v3/channels/whatsapp`, sent with the `x-profile-id` header naming it.
+ *
+ * @deprecated
  * @see SentDm\Services\ProfilesService::update()
  *
- * @phpstan-import-type BillingContactInfoShape from \SentDm\Profiles\BillingContactInfo
- * @phpstan-import-type BrandsBrandDataShape from \SentDm\Profiles\BrandsBrandData
- * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\PaymentDetails
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileUpdateParams\BillingContact
+ * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileUpdateParams\Brand
+ * @phpstan-import-type PaymentDetailsShape from \SentDm\Profiles\ProfileUpdateParams\PaymentDetails
  *
  * @phpstan-type ProfileUpdateParamsShape = array{
  *   allowContactSharing?: bool|null,
  *   allowNumberChangeDuringOnboarding?: bool|null,
  *   allowTemplateSharing?: bool|null,
- *   billingContact?: null|BillingContactInfo|BillingContactInfoShape,
+ *   billingContact?: null|BillingContact|BillingContactShape,
  *   billingModel?: string|null,
- *   brand?: null|BrandsBrandData|BrandsBrandDataShape,
+ *   brand?: null|Brand|BrandShape,
  *   description?: string|null,
  *   icon?: string|null,
  *   inheritContacts?: bool|null,
@@ -58,7 +72,17 @@ final class ProfileUpdateParams implements BaseModel
     use SdkParams;
 
     /**
-     * Whether contacts are shared across profiles (optional).
+     * @deprecated
+     *
+     * Deprecated. Accepted and ignored. Contact and template sharing between sender profiles is gone
+     * — a profile sees only what it owns, and the organization still sees all of its profiles' contacts and
+     * templates through read-time widening. The four columns behind these flags were dropped by
+     * M260720120000.
+     *
+     * Retired the same way as SendingPhoneNumberProfileId, and for the same reason: the
+     * properties stay bound so an SDK that assigns them keeps compiling, and a 400 would break a
+     * working integration over a capability that is gone regardless. Every profile reports all four as
+     * false, so a caller that checks its own write can see it did not take.
      */
     #[Optional('allow_contact_sharing', nullable: true)]
     public ?bool $allowContactSharing;
@@ -70,7 +94,7 @@ final class ProfileUpdateParams implements BaseModel
     public ?bool $allowNumberChangeDuringOnboarding;
 
     /**
-     * Whether templates are shared across profiles (optional).
+     * @deprecated
      */
     #[Optional('allow_template_sharing', nullable: true)]
     public ?bool $allowTemplateSharing;
@@ -80,7 +104,7 @@ final class ProfileUpdateParams implements BaseModel
      * Required when billing_model is "profile" or "profile_and_organization".
      */
     #[Optional('billing_contact', nullable: true)]
-    public ?BillingContactInfo $billingContact;
+    public ?BillingContact $billingContact;
 
     /**
      * Billing model: profile, organization, or profile_and_organization (optional).
@@ -95,7 +119,7 @@ final class ProfileUpdateParams implements BaseModel
      * Brand and KYC data grouped into contact, business, and compliance sections.
      */
     #[Optional(nullable: true)]
-    public ?BrandsBrandData $brand;
+    public ?Brand $brand;
 
     /**
      * Profile description (optional).
@@ -110,7 +134,7 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $icon;
 
     /**
-     * Whether this profile inherits contacts from organization (optional).
+     * @deprecated
      */
     #[Optional('inherit_contacts', nullable: true)]
     public ?bool $inheritContacts;
@@ -128,7 +152,7 @@ final class ProfileUpdateParams implements BaseModel
     public ?bool $inheritTcrCampaign;
 
     /**
-     * Whether this profile inherits templates from organization (optional).
+     * @deprecated
      */
     #[Optional('inherit_templates', nullable: true)]
     public ?bool $inheritTemplates;
@@ -140,9 +164,9 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $name;
 
     /**
-     * Payment card details for a profile.
+     * Payment card details for this profile (optional).
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * These details are not stored on our servers and will be forwarded to the payment processor.
+     * Not persisted on our servers — forwarded to the payment processor.
      */
     #[Optional('payment_details', nullable: true)]
     public ?PaymentDetails $paymentDetails;
@@ -161,13 +185,30 @@ final class ProfileUpdateParams implements BaseModel
     public ?string $sendingPhoneNumber;
 
     /**
-     * Reference to another profile to use for SMS configuration (optional).
+     * @deprecated
+     *
+     * Deprecated. Accepted and ignored. Sender borrowing is gone: a profile cannot send from another
+     * profile's SMS number. Supplying this changes nothing and the request still succeeds.
+     *
+     * Bound rather than dropped so the property survives on the wire and in a generated client — an SDK
+     * that assigns it keeps compiling, which is the compatibility this exists for. It is deliberately not
+     * refused: a 400 here would break an integration that is otherwise working, and the capability it
+     * asks for is gone either way.
+     *
+     * The trade-off, stated plainly. A caller asking for borrowing is told it succeeded when
+     * nothing happened. What makes that survivable is the read: sending_phone_number_profile_id comes
+     * back null on every profile, so a caller that checks its own write can see it did not take. Every
+     * request that carries one is logged, so we can tell when nobody is sending it any more and the field can
+     * go for real.
+     *
+     * Give the profile a sender of its own instead: POST /v3/channels/sms with the
+     * x-profile-id header naming it.
      */
     #[Optional('sending_phone_number_profile_id', nullable: true)]
     public ?string $sendingPhoneNumberProfileID;
 
     /**
-     * Reference to another profile to use for WhatsApp configuration (optional).
+     * @deprecated
      */
     #[Optional('sending_whatsapp_number_profile_id', nullable: true)]
     public ?string $sendingWhatsappNumberProfileID;
@@ -201,17 +242,17 @@ final class ProfileUpdateParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
+     * @param BillingContact|BillingContactShape|null $billingContact
+     * @param Brand|BrandShape|null $brand
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */
     public static function with(
         ?bool $allowContactSharing = null,
         ?bool $allowNumberChangeDuringOnboarding = null,
         ?bool $allowTemplateSharing = null,
-        BillingContactInfo|array|null $billingContact = null,
+        BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
-        BrandsBrandData|array|null $brand = null,
+        Brand|array|null $brand = null,
         ?string $description = null,
         ?string $icon = null,
         ?bool $inheritContacts = null,
@@ -258,7 +299,15 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Whether contacts are shared across profiles (optional).
+     * Deprecated. Accepted and ignored. Contact and template sharing between sender profiles is gone
+     * — a profile sees only what it owns, and the organization still sees all of its profiles' contacts and
+     * templates through read-time widening. The four columns behind these flags were dropped by
+     * M260720120000.
+     *
+     * Retired the same way as SendingPhoneNumberProfileId, and for the same reason: the
+     * properties stay bound so an SDK that assigns them keeps compiling, and a 400 would break a
+     * working integration over a capability that is gone regardless. Every profile reports all four as
+     * false, so a caller that checks its own write can see it did not take.
      */
     public function withAllowContactSharing(?bool $allowContactSharing): self
     {
@@ -280,9 +329,6 @@ final class ProfileUpdateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Whether templates are shared across profiles (optional).
-     */
     public function withAllowTemplateSharing(?bool $allowTemplateSharing): self
     {
         $self = clone $this;
@@ -295,10 +341,10 @@ final class ProfileUpdateParams implements BaseModel
      * Billing contact information for a profile.
      * Required when billing_model is "profile" or "profile_and_organization".
      *
-     * @param BillingContactInfo|BillingContactInfoShape|null $billingContact
+     * @param BillingContact|BillingContactShape|null $billingContact
      */
     public function withBillingContact(
-        BillingContactInfo|array|null $billingContact
+        BillingContact|array|null $billingContact
     ): self {
         $self = clone $this;
         $self['billingContact'] = $billingContact;
@@ -323,9 +369,9 @@ final class ProfileUpdateParams implements BaseModel
     /**
      * Brand and KYC data grouped into contact, business, and compliance sections.
      *
-     * @param BrandsBrandData|BrandsBrandDataShape|null $brand
+     * @param Brand|BrandShape|null $brand
      */
-    public function withBrand(BrandsBrandData|array|null $brand): self
+    public function withBrand(Brand|array|null $brand): self
     {
         $self = clone $this;
         $self['brand'] = $brand;
@@ -355,9 +401,6 @@ final class ProfileUpdateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Whether this profile inherits contacts from organization (optional).
-     */
     public function withInheritContacts(?bool $inheritContacts): self
     {
         $self = clone $this;
@@ -388,9 +431,6 @@ final class ProfileUpdateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Whether this profile inherits templates from organization (optional).
-     */
     public function withInheritTemplates(?bool $inheritTemplates): self
     {
         $self = clone $this;
@@ -411,9 +451,9 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Payment card details for a profile.
+     * Payment card details for this profile (optional).
      * Accepted when billing_model is "profile" or "profile_and_organization".
-     * These details are not stored on our servers and will be forwarded to the payment processor.
+     * Not persisted on our servers — forwarded to the payment processor.
      *
      * @param PaymentDetails|PaymentDetailsShape|null $paymentDetails
      */
@@ -450,7 +490,22 @@ final class ProfileUpdateParams implements BaseModel
     }
 
     /**
-     * Reference to another profile to use for SMS configuration (optional).
+     * Deprecated. Accepted and ignored. Sender borrowing is gone: a profile cannot send from another
+     * profile's SMS number. Supplying this changes nothing and the request still succeeds.
+     *
+     * Bound rather than dropped so the property survives on the wire and in a generated client — an SDK
+     * that assigns it keeps compiling, which is the compatibility this exists for. It is deliberately not
+     * refused: a 400 here would break an integration that is otherwise working, and the capability it
+     * asks for is gone either way.
+     *
+     * The trade-off, stated plainly. A caller asking for borrowing is told it succeeded when
+     * nothing happened. What makes that survivable is the read: sending_phone_number_profile_id comes
+     * back null on every profile, so a caller that checks its own write can see it did not take. Every
+     * request that carries one is logged, so we can tell when nobody is sending it any more and the field can
+     * go for real.
+     *
+     * Give the profile a sender of its own instead: POST /v3/channels/sms with the
+     * x-profile-id header naming it.
      */
     public function withSendingPhoneNumberProfileID(
         ?string $sendingPhoneNumberProfileID
@@ -461,9 +516,6 @@ final class ProfileUpdateParams implements BaseModel
         return $self;
     }
 
-    /**
-     * Reference to another profile to use for WhatsApp configuration (optional).
-     */
     public function withSendingWhatsappNumberProfileID(
         ?string $sendingWhatsappNumberProfileID
     ): self {

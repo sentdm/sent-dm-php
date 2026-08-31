@@ -6,12 +6,13 @@ namespace SentDm\ServiceContracts\Profiles;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
-use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
 use SentDm\Profiles\Campaigns\CampaignCreateParams;
 use SentDm\Profiles\Campaigns\CampaignDeleteParams;
 use SentDm\Profiles\Campaigns\CampaignListParams;
+use SentDm\Profiles\Campaigns\CampaignListResponse;
+use SentDm\Profiles\Campaigns\CampaignNewResponse;
 use SentDm\Profiles\Campaigns\CampaignUpdateParams;
+use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -20,13 +21,15 @@ use SentDm\RequestOptions;
 interface CampaignsRawContract
 {
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $profileID Path param: Profile ID from route
      * @param array<string,mixed>|CampaignCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfBrandCampaign>
+     * @return BaseResponse<CampaignNewResponse>
      *
      * @throws APIException
      */
@@ -37,13 +40,15 @@ interface CampaignsRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $campaignID Path param: Campaign ID from route
      * @param array<string,mixed>|CampaignUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfBrandCampaign>
+     * @return BaseResponse<CampaignUpdateResponse>
      *
      * @throws APIException
      */
@@ -54,13 +59,15 @@ interface CampaignsRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $profileID Profile ID from route
      * @param array<string,mixed>|CampaignListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfListOfBrandCampaign>
+     * @return BaseResponse<CampaignListResponse>
      *
      * @throws APIException
      */
@@ -71,6 +78,8 @@ interface CampaignsRawContract
     ): BaseResponse;
 
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string $campaignID Path param: Campaign ID from route parameter
