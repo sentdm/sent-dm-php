@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.30.0](https://github.com/sentdm/sent-dm-php/compare/v0.29.0...v0.30.0) (2026-09-06)
+
+
+### Features
+
+* **api:** sync OpenAPI spec from production ([cfa43e9](https://github.com/sentdm/sent-dm-php/commit/cfa43e91f287317040a9d4598f3b1012da2e8921))
+* **api:** sync OpenAPI spec from production ([59b1fe7](https://github.com/sentdm/sent-dm-php/commit/59b1fe7ea7ba343c42c3dabe898dec5de933ec4f))
+
 ## [0.29.0](https://github.com/sentdm/sent-dm-php/compare/v0.28.0...v0.29.0) (2026-08-31)
 
 
