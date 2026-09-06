@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -12,12 +13,12 @@ use SentDm\Core\Contracts\BaseModel;
  * Body of a message.received event. Delivered when a contact messages one of your numbers.
  *
  * @phpstan-type InboundMessageEventPayloadShape = array{
+ *   inboundNumber: string,
+ *   receivedAt: string,
  *   accountID?: string|null,
  *   channel?: string|null,
- *   inboundNumber?: string|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
- *   receivedAt?: string|null,
  *   text?: string|null,
  *   updatedAt?: string|null,
  * }
@@ -26,6 +27,18 @@ final class InboundMessageEventPayload implements BaseModel
 {
     /** @use SdkModel<InboundMessageEventPayloadShape> */
     use SdkModel;
+
+    /**
+     * The contact's number in E.164 format, meaning the number the message came from.
+     */
+    #[Required('inbound_number')]
+    public string $inboundNumber;
+
+    /**
+     * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
+     */
+    #[Required('received_at')]
+    public string $receivedAt;
 
     /**
      * The account the message belongs to.
@@ -40,12 +53,6 @@ final class InboundMessageEventPayload implements BaseModel
     public ?string $channel;
 
     /**
-     * The contact's number in E.164 format, meaning the number the message came from.
-     */
-    #[Optional('inbound_number')]
-    public ?string $inboundNumber;
-
-    /**
      * The inbound message.
      */
     #[Optional('message_id')]
@@ -56,12 +63,6 @@ final class InboundMessageEventPayload implements BaseModel
      */
     #[Optional('outbound_number')]
     public ?string $outboundNumber;
-
-    /**
-     * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
-     */
-    #[Optional('received_at')]
-    public ?string $receivedAt;
 
     /**
      * The message body. Sent as null when the inbound message carried no text, for
@@ -78,6 +79,20 @@ final class InboundMessageEventPayload implements BaseModel
     #[Optional('updated_at')]
     public ?string $updatedAt;
 
+    /**
+     * `new InboundMessageEventPayload()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * InboundMessageEventPayload::with(inboundNumber: ..., receivedAt: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new InboundMessageEventPayload)->withInboundNumber(...)->withReceivedAt(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -89,25 +104,48 @@ final class InboundMessageEventPayload implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        string $inboundNumber,
+        string $receivedAt,
         ?string $accountID = null,
         ?string $channel = null,
-        ?string $inboundNumber = null,
         ?string $messageID = null,
         ?string $outboundNumber = null,
-        ?string $receivedAt = null,
         ?string $text = null,
         ?string $updatedAt = null,
     ): self {
         $self = new self;
 
+        $self['inboundNumber'] = $inboundNumber;
+        $self['receivedAt'] = $receivedAt;
+
         null !== $accountID && $self['accountID'] = $accountID;
         null !== $channel && $self['channel'] = $channel;
-        null !== $inboundNumber && $self['inboundNumber'] = $inboundNumber;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
-        null !== $receivedAt && $self['receivedAt'] = $receivedAt;
         null !== $text && $self['text'] = $text;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
+
+        return $self;
+    }
+
+    /**
+     * The contact's number in E.164 format, meaning the number the message came from.
+     */
+    public function withInboundNumber(string $inboundNumber): self
+    {
+        $self = clone $this;
+        $self['inboundNumber'] = $inboundNumber;
+
+        return $self;
+    }
+
+    /**
+     * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
+     */
+    public function withReceivedAt(string $receivedAt): self
+    {
+        $self = clone $this;
+        $self['receivedAt'] = $receivedAt;
 
         return $self;
     }
@@ -135,17 +173,6 @@ final class InboundMessageEventPayload implements BaseModel
     }
 
     /**
-     * The contact's number in E.164 format, meaning the number the message came from.
-     */
-    public function withInboundNumber(string $inboundNumber): self
-    {
-        $self = clone $this;
-        $self['inboundNumber'] = $inboundNumber;
-
-        return $self;
-    }
-
-    /**
      * The inbound message.
      */
     public function withMessageID(string $messageID): self
@@ -163,17 +190,6 @@ final class InboundMessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['outboundNumber'] = $outboundNumber;
-
-        return $self;
-    }
-
-    /**
-     * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
-     */
-    public function withReceivedAt(string $receivedAt): self
-    {
-        $self = clone $this;
-        $self['receivedAt'] = $receivedAt;
 
         return $self;
     }

@@ -30,6 +30,8 @@ use SentDm\Me\MeGetResponse\Data\Settings;
  *   name?: string|null,
  *   organizationID?: string|null,
  *   profiles?: list<Profile|ProfileShape>|null,
+ *   sendingPhoneNumber?: string|null,
+ *   sendingPhoneNumberProfileID?: string|null,
  *   settings?: null|Settings|SettingsShape,
  *   shortName?: string|null,
  *   status?: string|null,
@@ -99,6 +101,30 @@ final class Data implements BaseModel
     public ?array $profiles;
 
     /**
+     * The SMS sender this account sends from in the United States, in E.164 form. Null when the account has
+     * no US SMS sender.
+     *
+     * The same value as channels.sms.phone_number, published under both names on purpose:
+     * sending_phone_number is what this value is already called on GET /v3/profiles, so the
+     * same key answers the same question whichever of the two endpoints you ask. Neither name is preferred
+     * over the other and neither is deprecated.
+     *
+     * The same value, not the same presence: this key is always written, including as null,
+     * whereas channels.sms.phone_number is left out entirely when there is no sender.
+     */
+    #[Optional('sending_phone_number', nullable: true)]
+    public ?string $sendingPhoneNumber;
+
+    /**
+     * The account that holds sending_phone_number in number inventory: normally this account
+     * itself, and a different account when the number is held elsewhere. Null when there is no US
+     * sender, or when the sender is not a number drawn from inventory — an alphanumeric sender ID or a
+     * short code.
+     */
+    #[Optional('sending_phone_number_profile_id', nullable: true)]
+    public ?string $sendingPhoneNumberProfileID;
+
+    /**
      * Profile configuration settings.
      */
     #[Optional(nullable: true)]
@@ -146,6 +172,8 @@ final class Data implements BaseModel
         ?string $name = null,
         ?string $organizationID = null,
         ?array $profiles = null,
+        ?string $sendingPhoneNumber = null,
+        ?string $sendingPhoneNumberProfileID = null,
         Settings|array|null $settings = null,
         ?string $shortName = null,
         ?string $status = null,
@@ -162,6 +190,8 @@ final class Data implements BaseModel
         null !== $name && $self['name'] = $name;
         null !== $organizationID && $self['organizationID'] = $organizationID;
         null !== $profiles && $self['profiles'] = $profiles;
+        null !== $sendingPhoneNumber && $self['sendingPhoneNumber'] = $sendingPhoneNumber;
+        null !== $sendingPhoneNumberProfileID && $self['sendingPhoneNumberProfileID'] = $sendingPhoneNumberProfileID;
         null !== $settings && $self['settings'] = $settings;
         null !== $shortName && $self['shortName'] = $shortName;
         null !== $status && $self['status'] = $status;
@@ -270,6 +300,41 @@ final class Data implements BaseModel
     {
         $self = clone $this;
         $self['profiles'] = $profiles;
+
+        return $self;
+    }
+
+    /**
+     * The SMS sender this account sends from in the United States, in E.164 form. Null when the account has
+     * no US SMS sender.
+     *
+     * The same value as channels.sms.phone_number, published under both names on purpose:
+     * sending_phone_number is what this value is already called on GET /v3/profiles, so the
+     * same key answers the same question whichever of the two endpoints you ask. Neither name is preferred
+     * over the other and neither is deprecated.
+     *
+     * The same value, not the same presence: this key is always written, including as null,
+     * whereas channels.sms.phone_number is left out entirely when there is no sender.
+     */
+    public function withSendingPhoneNumber(?string $sendingPhoneNumber): self
+    {
+        $self = clone $this;
+        $self['sendingPhoneNumber'] = $sendingPhoneNumber;
+
+        return $self;
+    }
+
+    /**
+     * The account that holds sending_phone_number in number inventory: normally this account
+     * itself, and a different account when the number is held elsewhere. Null when there is no US
+     * sender, or when the sender is not a number drawn from inventory — an alphanumeric sender ID or a
+     * short code.
+     */
+    public function withSendingPhoneNumberProfileID(
+        ?string $sendingPhoneNumberProfileID
+    ): self {
+        $self = clone $this;
+        $self['sendingPhoneNumberProfileID'] = $sendingPhoneNumberProfileID;
 
         return $self;
     }

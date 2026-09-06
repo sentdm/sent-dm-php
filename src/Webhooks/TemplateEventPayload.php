@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -13,21 +14,34 @@ use SentDm\Core\Contracts\BaseModel;
  * react without polling.
  *
  * @phpstan-type TemplateEventPayloadShape = array{
+ *   status: string,
+ *   whatsappTemplateID: string,
  *   accountID?: string|null,
  *   category?: string|null,
  *   channel?: string|null,
  *   language?: string|null,
  *   reason?: string|null,
- *   status?: string|null,
  *   templateID?: string|null,
  *   templateName?: string|null,
- *   whatsappTemplateID?: string|null,
  * }
  */
 final class TemplateEventPayload implements BaseModel
 {
     /** @use SdkModel<TemplateEventPayloadShape> */
     use SdkModel;
+
+    /**
+     * The review status the template just reached, for example APPROVED or
+     * REJECTED.
+     */
+    #[Required]
+    public string $status;
+
+    /**
+     * The template's identifier with Meta, assigned when the template is submitted for review.
+     */
+    #[Required('whatsapp_template_id')]
+    public string $whatsappTemplateID;
 
     /**
      * The account the template belongs to.
@@ -62,13 +76,6 @@ final class TemplateEventPayload implements BaseModel
     public ?string $reason;
 
     /**
-     * The review status the template just reached, for example APPROVED or
-     * REJECTED.
-     */
-    #[Optional]
-    public ?string $status;
-
-    /**
      * The template in Sent.
      */
     #[Optional('template_id')]
@@ -81,11 +88,19 @@ final class TemplateEventPayload implements BaseModel
     public ?string $templateName;
 
     /**
-     * The template's identifier with Meta, assigned when the template is submitted for review.
+     * `new TemplateEventPayload()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * TemplateEventPayload::with(status: ..., whatsappTemplateID: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new TemplateEventPayload)->withStatus(...)->withWhatsappTemplateID(...)
+     * ```
      */
-    #[Optional('whatsapp_template_id')]
-    public ?string $whatsappTemplateID;
-
     public function __construct()
     {
         $this->initialize();
@@ -97,27 +112,51 @@ final class TemplateEventPayload implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        string $status,
+        string $whatsappTemplateID,
         ?string $accountID = null,
         ?string $category = null,
         ?string $channel = null,
         ?string $language = null,
         ?string $reason = null,
-        ?string $status = null,
         ?string $templateID = null,
         ?string $templateName = null,
-        ?string $whatsappTemplateID = null,
     ): self {
         $self = new self;
+
+        $self['status'] = $status;
+        $self['whatsappTemplateID'] = $whatsappTemplateID;
 
         null !== $accountID && $self['accountID'] = $accountID;
         null !== $category && $self['category'] = $category;
         null !== $channel && $self['channel'] = $channel;
         null !== $language && $self['language'] = $language;
         null !== $reason && $self['reason'] = $reason;
-        null !== $status && $self['status'] = $status;
         null !== $templateID && $self['templateID'] = $templateID;
         null !== $templateName && $self['templateName'] = $templateName;
-        null !== $whatsappTemplateID && $self['whatsappTemplateID'] = $whatsappTemplateID;
+
+        return $self;
+    }
+
+    /**
+     * The review status the template just reached, for example APPROVED or
+     * REJECTED.
+     */
+    public function withStatus(string $status): self
+    {
+        $self = clone $this;
+        $self['status'] = $status;
+
+        return $self;
+    }
+
+    /**
+     * The template's identifier with Meta, assigned when the template is submitted for review.
+     */
+    public function withWhatsappTemplateID(string $whatsappTemplateID): self
+    {
+        $self = clone $this;
+        $self['whatsappTemplateID'] = $whatsappTemplateID;
 
         return $self;
     }
@@ -180,18 +219,6 @@ final class TemplateEventPayload implements BaseModel
     }
 
     /**
-     * The review status the template just reached, for example APPROVED or
-     * REJECTED.
-     */
-    public function withStatus(string $status): self
-    {
-        $self = clone $this;
-        $self['status'] = $status;
-
-        return $self;
-    }
-
-    /**
      * The template in Sent.
      */
     public function withTemplateID(string $templateID): self
@@ -209,17 +236,6 @@ final class TemplateEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['templateName'] = $templateName;
-
-        return $self;
-    }
-
-    /**
-     * The template's identifier with Meta, assigned when the template is submitted for review.
-     */
-    public function withWhatsappTemplateID(string $whatsappTemplateID): self
-    {
-        $self = clone $this;
-        $self['whatsappTemplateID'] = $whatsappTemplateID;
 
         return $self;
     }

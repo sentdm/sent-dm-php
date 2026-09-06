@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
@@ -13,11 +14,11 @@ use SentDm\Core\Contracts\BaseModel;
  * message produces several of these as it moves toward a terminal status.
  *
  * @phpstan-type MessageEventPayloadShape = array{
+ *   messageStatus: string,
  *   accountID?: string|null,
  *   agentID?: string|null,
  *   channel?: string|null,
  *   messageID?: string|null,
- *   messageStatus?: string|null,
  *   outboundNumber?: string|null,
  *   templateID?: string|null,
  *   templateName?: string|null,
@@ -28,6 +29,14 @@ final class MessageEventPayload implements BaseModel
 {
     /** @use SdkModel<MessageEventPayloadShape> */
     use SdkModel;
+
+    /**
+     * The status the message just reached, for example SENT, DELIVERED, or
+     * FAILED. Sent means dispatched and delivered means confirmed, so treat them as
+     * distinct outcomes.
+     */
+    #[Required('message_status')]
+    public string $messageStatus;
 
     /**
      * The account the message belongs to.
@@ -56,14 +65,6 @@ final class MessageEventPayload implements BaseModel
     public ?string $messageID;
 
     /**
-     * The status the message just reached, for example SENT, DELIVERED, or
-     * FAILED. Sent means dispatched and delivered means confirmed, so treat them as
-     * distinct outcomes.
-     */
-    #[Optional('message_status')]
-    public ?string $messageStatus;
-
-    /**
      * The recipient's number in E.164 format.
      */
     #[Optional('outbound_number')]
@@ -89,6 +90,20 @@ final class MessageEventPayload implements BaseModel
     #[Optional('updated_at')]
     public ?string $updatedAt;
 
+    /**
+     * `new MessageEventPayload()` is missing required properties by the API.
+     *
+     * To enforce required parameters use
+     * ```
+     * MessageEventPayload::with(messageStatus: ...)
+     * ```
+     *
+     * Otherwise ensure the following setters are called
+     *
+     * ```
+     * (new MessageEventPayload)->withMessageStatus(...)
+     * ```
+     */
     public function __construct()
     {
         $this->initialize();
@@ -100,11 +115,11 @@ final class MessageEventPayload implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        string $messageStatus,
         ?string $accountID = null,
         ?string $agentID = null,
         ?string $channel = null,
         ?string $messageID = null,
-        ?string $messageStatus = null,
         ?string $outboundNumber = null,
         ?string $templateID = null,
         ?string $templateName = null,
@@ -112,15 +127,29 @@ final class MessageEventPayload implements BaseModel
     ): self {
         $self = new self;
 
+        $self['messageStatus'] = $messageStatus;
+
         null !== $accountID && $self['accountID'] = $accountID;
         null !== $agentID && $self['agentID'] = $agentID;
         null !== $channel && $self['channel'] = $channel;
         null !== $messageID && $self['messageID'] = $messageID;
-        null !== $messageStatus && $self['messageStatus'] = $messageStatus;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
         null !== $templateID && $self['templateID'] = $templateID;
         null !== $templateName && $self['templateName'] = $templateName;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
+
+        return $self;
+    }
+
+    /**
+     * The status the message just reached, for example SENT, DELIVERED, or
+     * FAILED. Sent means dispatched and delivered means confirmed, so treat them as
+     * distinct outcomes.
+     */
+    public function withMessageStatus(string $messageStatus): self
+    {
+        $self = clone $this;
+        $self['messageStatus'] = $messageStatus;
 
         return $self;
     }
@@ -167,19 +196,6 @@ final class MessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['messageID'] = $messageID;
-
-        return $self;
-    }
-
-    /**
-     * The status the message just reached, for example SENT, DELIVERED, or
-     * FAILED. Sent means dispatched and delivered means confirmed, so treat them as
-     * distinct outcomes.
-     */
-    public function withMessageStatus(string $messageStatus): self
-    {
-        $self = clone $this;
-        $self['messageStatus'] = $messageStatus;
 
         return $self;
     }
