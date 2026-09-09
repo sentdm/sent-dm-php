@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Contacts\ContactGetMessageSummaryResponse;
-use SentDm\Contacts\ContactGetResponse;
+use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactListResponse;
-use SentDm\Contacts\ContactNewResponse;
-use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 
@@ -35,7 +33,7 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactNewResponse;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -50,7 +48,7 @@ interface ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactGetResponse;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -75,7 +73,7 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactUpdateResponse;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -132,5 +130,5 @@ interface ContactsContract
         string $contactID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactGetMessageSummaryResponse;
+    ): APIResponseOfContactMessageSummary;
 }

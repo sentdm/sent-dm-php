@@ -6,8 +6,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
-use SentDm\Conversations\ConversationListMessagesResponse;
-use SentDm\Conversations\ConversationListResponse;
+use SentDm\Conversations\APIResponseOfConversationMessagesList;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
 
@@ -39,7 +38,10 @@ final class ConversationsTest extends TestCase
         $result = $this->client->conversations->list(page: 0, pageSize: 0);
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ConversationListResponse::class, $result);
+        $this->assertInstanceOf(
+            APIResponseOfConversationMessagesList::class,
+            $result
+        );
     }
 
     #[Test]
@@ -56,7 +58,10 @@ final class ConversationsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ConversationListResponse::class, $result);
+        $this->assertInstanceOf(
+            APIResponseOfConversationMessagesList::class,
+            $result
+        );
     }
 
     #[Test]
@@ -73,7 +78,10 @@ final class ConversationsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ConversationListMessagesResponse::class, $result);
+        $this->assertInstanceOf(
+            APIResponseOfConversationMessagesList::class,
+            $result
+        );
     }
 
     #[Test]
@@ -91,6 +99,9 @@ final class ConversationsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ConversationListMessagesResponse::class, $result);
+        $this->assertInstanceOf(
+            APIResponseOfConversationMessagesList::class,
+            $result
+        );
     }
 }

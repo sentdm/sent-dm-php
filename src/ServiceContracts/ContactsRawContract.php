@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
+use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
-use SentDm\Contacts\ContactGetMessageSummaryResponse;
-use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
-use SentDm\Contacts\ContactNewResponse;
 use SentDm\Contacts\ContactRetrieveMessageSummaryParams;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
-use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
@@ -30,7 +28,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactNewResponse>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -46,7 +44,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactGetResponse>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -63,7 +61,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactUpdateResponse>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -113,7 +111,7 @@ interface ContactsRawContract
      * @param array<string,mixed>|ContactRetrieveMessageSummaryParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactGetMessageSummaryResponse>
+     * @return BaseResponse<APIResponseOfContactMessageSummary>
      *
      * @throws APIException
      */
