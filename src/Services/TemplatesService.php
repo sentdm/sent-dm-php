@@ -9,11 +9,9 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesContract;
+use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateDefinition;
-use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateNewResponse;
-use SentDm\Templates\TemplateUpdateResponse;
 
 /**
  * Reusable message bodies with named variables.
@@ -66,7 +64,7 @@ final class TemplatesService implements TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateNewResponse {
+    ): APIResponseTemplate {
         $params = Util::removeNulls(
             [
                 'category' => $category,
@@ -101,7 +99,7 @@ final class TemplatesService implements TemplatesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateGetResponse {
+    ): APIResponseTemplate {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -140,7 +138,7 @@ final class TemplatesService implements TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateUpdateResponse {
+    ): APIResponseTemplate {
         $params = Util::removeNulls(
             [
                 'category' => $category,

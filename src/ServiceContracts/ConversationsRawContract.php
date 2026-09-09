@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
+use SentDm\Conversations\APIResponseOfConversationMessagesList;
 use SentDm\Conversations\ConversationListMessagesParams;
-use SentDm\Conversations\ConversationListMessagesResponse;
 use SentDm\Conversations\ConversationListParams;
-use SentDm\Conversations\ConversationListResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
@@ -23,7 +22,7 @@ interface ConversationsRawContract
      * @param array<string,mixed>|ConversationListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ConversationListResponse>
+     * @return BaseResponse<APIResponseOfConversationMessagesList>
      *
      * @throws APIException
      */
@@ -39,7 +38,7 @@ interface ConversationsRawContract
      * @param array<string,mixed>|ConversationListMessagesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ConversationListMessagesResponse>
+     * @return BaseResponse<APIResponseOfConversationMessagesList>
      *
      * @throws APIException
      */

@@ -7,15 +7,13 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Users\UserGetResponse;
+use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserInviteParams;
-use SentDm\Users\UserInviteResponse;
 use SentDm\Users\UserListParams;
 use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
 use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
-use SentDm\Users\UserUpdateRoleResponse;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -29,7 +27,7 @@ interface UsersRawContract
      * @param array<string,mixed>|UserRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserGetResponse>
+     * @return BaseResponse<APIResponseOfUser>
      *
      * @throws APIException
      */
@@ -60,7 +58,7 @@ interface UsersRawContract
      * @param array<string,mixed>|UserInviteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserInviteResponse>
+     * @return BaseResponse<APIResponseOfUser>
      *
      * @throws APIException
      */
@@ -93,7 +91,7 @@ interface UsersRawContract
      * @param array<string,mixed>|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserUpdateRoleResponse>
+     * @return BaseResponse<APIResponseOfUser>
      *
      * @throws APIException
      */
