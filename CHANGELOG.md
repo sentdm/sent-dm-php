@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.0](https://github.com/sentdm/sent-dm-php/compare/v0.30.0...v0.31.0) (2026-09-09)
+
+
+### Features
+
+* **api:** repoint dangling model refs at current v3 schema names ([093f8e2](https://github.com/sentdm/sent-dm-php/commit/093f8e2e02072c22dafefc04a0c59f4d82154f5e))
+
 ## [0.30.0](https://github.com/sentdm/sent-dm-php/compare/v0.29.0...v0.30.0) (2026-09-06)
 
 
