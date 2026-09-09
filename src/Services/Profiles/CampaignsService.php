@@ -7,10 +7,9 @@ namespace SentDm\Services\Profiles;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign;
-use SentDm\Profiles\Campaigns\CampaignListResponse;
-use SentDm\Profiles\Campaigns\CampaignNewResponse;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
+use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
+use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
+use SentDm\Profiles\Campaigns\CampaignData;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsContract;
 
@@ -21,8 +20,7 @@ use SentDm\ServiceContracts\Profiles\CampaignsContract;
  *
  * New integrations should not start here.
  *
- * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign
- * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign as CampaignShape1
+ * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class CampaignsService implements CampaignsContract
@@ -50,7 +48,7 @@ final class CampaignsService implements CampaignsContract
      * Creates a new campaign scoped under the brand of the specified profile. Each campaign must include at least one use case with sample messages.
      *
      * @param string $profileID Path param: Profile ID from route
-     * @param Campaign|CampaignShape $campaign Body param: Campaign data for create or update operation
+     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data for create or update operation
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -61,12 +59,12 @@ final class CampaignsService implements CampaignsContract
      */
     public function create(
         string $profileID,
-        Campaign|array $campaign,
+        CampaignData|array $campaign,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): CampaignNewResponse {
+    ): APIResponseOfBrandCampaign {
         $params = Util::removeNulls(
             [
                 'campaign' => $campaign,
@@ -93,7 +91,7 @@ final class CampaignsService implements CampaignsContract
      *
      * @param string $campaignID Path param: Campaign ID from route
      * @param string $profileID Path param: Profile ID from route
-     * @param \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign|CampaignShape1 $campaign Body param: Campaign data for create or update operation
+     * @param CampaignData|CampaignDataShape $campaign Body param: Campaign data for create or update operation
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -105,12 +103,12 @@ final class CampaignsService implements CampaignsContract
     public function update(
         string $campaignID,
         string $profileID,
-        \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign|array $campaign,
+        CampaignData|array $campaign,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): CampaignUpdateResponse {
+    ): APIResponseOfBrandCampaign {
         $params = Util::removeNulls(
             [
                 'profileID' => $profileID,
@@ -146,7 +144,7 @@ final class CampaignsService implements CampaignsContract
         string $profileID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): CampaignListResponse {
+    ): APIResponseOfListOfBrandCampaign {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

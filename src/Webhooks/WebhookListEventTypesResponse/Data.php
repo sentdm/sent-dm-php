@@ -7,18 +7,17 @@ namespace SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventTypesResponse\Data\EventType;
-use SentDm\Webhooks\WebhookListEventTypesResponse\Data\Pagination;
+use SentDm\Webhooks\PaginationMeta;
+use SentDm\Webhooks\WebhookEventType;
 
 /**
  * The webhook event types a customer can subscribe to.
  *
- * @phpstan-import-type EventTypeShape from \SentDm\Webhooks\WebhookListEventTypesResponse\Data\EventType
- * @phpstan-import-type PaginationShape from \SentDm\Webhooks\WebhookListEventTypesResponse\Data\Pagination
+ * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  *
  * @phpstan-type DataShape = array{
- *   eventTypes?: list<EventType|EventTypeShape>|null,
- *   pagination?: null|Pagination|PaginationShape,
+ *   eventTypes?: list<mixed>|null,
+ *   pagination?: null|PaginationMeta|PaginationMetaShape,
  * }
  */
 final class Data implements BaseModel
@@ -29,16 +28,16 @@ final class Data implements BaseModel
     /**
      * The event_types on this page.
      *
-     * @var list<EventType>|null $eventTypes
+     * @var list<mixed>|null $eventTypes
      */
-    #[Optional('event_types', list: EventType::class)]
+    #[Optional('event_types', list: WebhookEventType::class)]
     public ?array $eventTypes;
 
     /**
      * Pagination metadata for list responses.
      */
     #[Optional]
-    public ?Pagination $pagination;
+    public ?PaginationMeta $pagination;
 
     public function __construct()
     {
@@ -50,12 +49,12 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<EventType|EventTypeShape>|null $eventTypes
-     * @param Pagination|PaginationShape|null $pagination
+     * @param list<mixed>|null $eventTypes
+     * @param PaginationMeta|PaginationMetaShape|null $pagination
      */
     public static function with(
         ?array $eventTypes = null,
-        Pagination|array|null $pagination = null
+        PaginationMeta|array|null $pagination = null
     ): self {
         $self = new self;
 
@@ -68,7 +67,7 @@ final class Data implements BaseModel
     /**
      * The event_types on this page.
      *
-     * @param list<EventType|EventTypeShape> $eventTypes
+     * @param list<mixed> $eventTypes
      */
     public function withEventTypes(array $eventTypes): self
     {
@@ -81,9 +80,9 @@ final class Data implements BaseModel
     /**
      * Pagination metadata for list responses.
      *
-     * @param Pagination|PaginationShape $pagination
+     * @param PaginationMeta|PaginationMetaShape $pagination
      */
-    public function withPagination(Pagination|array $pagination): self
+    public function withPagination(PaginationMeta|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;

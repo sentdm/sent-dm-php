@@ -6,15 +6,12 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Webhooks\WebhookGetResponse;
+use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListResponse;
-use SentDm\Webhooks\WebhookNewResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
-use SentDm\Webhooks\WebhookToggleStatusResponse;
-use SentDm\Webhooks\WebhookUpdateResponse;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -49,7 +46,7 @@ interface WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookNewResponse;
+    ): APIResponseWebhook;
 
     /**
      * @api
@@ -63,7 +60,7 @@ interface WebhooksContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookGetResponse;
+    ): APIResponseWebhook;
 
     /**
      * @api
@@ -95,7 +92,7 @@ interface WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookUpdateResponse;
+    ): APIResponseWebhook;
 
     /**
      * @api
@@ -228,5 +225,5 @@ interface WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookToggleStatusResponse;
+    ): APIResponseWebhook;
 }
