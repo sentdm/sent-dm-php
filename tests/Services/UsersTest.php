@@ -7,10 +7,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Users\UserGetResponse;
-use SentDm\Users\UserInviteResponse;
+use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserListResponse;
-use SentDm\Users\UserUpdateRoleResponse;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -43,7 +41,7 @@ final class UsersTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(UserGetResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfUser::class, $result);
     }
 
     #[Test]
@@ -69,7 +67,7 @@ final class UsersTest extends TestCase
         $result = $this->client->users->invite();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(UserInviteResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfUser::class, $result);
     }
 
     #[Test]
@@ -99,6 +97,6 @@ final class UsersTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(UserUpdateRoleResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfUser::class, $result);
     }
 }

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Conversations\ConversationListMessagesResponse;
-use SentDm\Conversations\ConversationListResponse;
+use SentDm\Conversations\APIResponseOfConversationMessagesList;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
@@ -53,7 +52,7 @@ final class ConversationsService implements ConversationsContract
         int $pageSize,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ConversationListResponse {
+    ): APIResponseOfConversationMessagesList {
         $params = Util::removeNulls(
             ['page' => $page, 'pageSize' => $pageSize, 'xProfileID' => $xProfileID]
         );
@@ -83,7 +82,7 @@ final class ConversationsService implements ConversationsContract
         int $pageSize,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ConversationListMessagesResponse {
+    ): APIResponseOfConversationMessagesList {
         $params = Util::removeNulls(
             ['page' => $page, 'pageSize' => $pageSize, 'xProfileID' => $xProfileID]
         );

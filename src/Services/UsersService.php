@@ -9,10 +9,8 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersContract;
-use SentDm\Users\UserGetResponse;
-use SentDm\Users\UserInviteResponse;
+use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserListResponse;
-use SentDm\Users\UserUpdateRoleResponse;
 
 /**
  * The people who can sign in to your organization, and what each may do.
@@ -51,7 +49,7 @@ final class UsersService implements UsersContract
         string $userID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserGetResponse {
+    ): APIResponseOfUser {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -106,7 +104,7 @@ final class UsersService implements UsersContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserInviteResponse {
+    ): APIResponseOfUser {
         $params = Util::removeNulls(
             [
                 'email' => $email,
@@ -175,7 +173,7 @@ final class UsersService implements UsersContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserUpdateRoleResponse {
+    ): APIResponseOfUser {
         $params = Util::removeNulls(
             [
                 'role' => $role,

@@ -6,11 +6,9 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
+use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateDefinition;
-use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateNewResponse;
-use SentDm\Templates\TemplateUpdateResponse;
 
 /**
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
@@ -44,7 +42,7 @@ interface TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateNewResponse;
+    ): APIResponseTemplate;
 
     /**
      * @api
@@ -59,7 +57,7 @@ interface TemplatesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateGetResponse;
+    ): APIResponseTemplate;
 
     /**
      * @api
@@ -89,7 +87,7 @@ interface TemplatesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateUpdateResponse;
+    ): APIResponseTemplate;
 
     /**
      * @api

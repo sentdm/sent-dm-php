@@ -10,16 +10,14 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesRawContract;
+use SentDm\Templates\APIResponseTemplate;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateDeleteParams;
-use SentDm\Templates\TemplateGetResponse;
 use SentDm\Templates\TemplateListParams;
 use SentDm\Templates\TemplateListResponse;
-use SentDm\Templates\TemplateNewResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
-use SentDm\Templates\TemplateUpdateResponse;
 
 /**
  * Reusable message bodies with named variables.
@@ -54,7 +52,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateNewResponse>
+     * @return BaseResponse<APIResponseTemplate>
      *
      * @throws APIException
      */
@@ -83,7 +81,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: TemplateNewResponse::class,
+            convert: APIResponseTemplate::class,
         );
     }
 
@@ -96,7 +94,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * @param array{xProfileID?: string}|TemplateRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateGetResponse>
+     * @return BaseResponse<APIResponseTemplate>
      *
      * @throws APIException
      */
@@ -119,7 +117,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: TemplateGetResponse::class,
+            convert: APIResponseTemplate::class,
         );
     }
 
@@ -141,7 +139,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateUpdateResponse>
+     * @return BaseResponse<APIResponseTemplate>
      *
      * @throws APIException
      */
@@ -171,7 +169,7 @@ final class TemplatesRawService implements TemplatesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: TemplateUpdateResponse::class,
+            convert: APIResponseTemplate::class,
         );
     }
 

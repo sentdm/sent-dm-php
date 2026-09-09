@@ -9,7 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Me\MeGetResponse\Data\Channels;
 use SentDm\Me\MeGetResponse\Data\Profile;
-use SentDm\Me\MeGetResponse\Data\Settings;
+use SentDm\Me\ProfileSettings;
 
 /**
  * Account response for GET /v3/me endpoint.
@@ -18,7 +18,7 @@ use SentDm\Me\MeGetResponse\Data\Settings;
  *
  * @phpstan-import-type ChannelsShape from \SentDm\Me\MeGetResponse\Data\Channels
  * @phpstan-import-type ProfileShape from \SentDm\Me\MeGetResponse\Data\Profile
- * @phpstan-import-type SettingsShape from \SentDm\Me\MeGetResponse\Data\Settings
+ * @phpstan-import-type ProfileSettingsShape from \SentDm\Me\ProfileSettings
  *
  * @phpstan-type DataShape = array{
  *   id?: string|null,
@@ -32,7 +32,7 @@ use SentDm\Me\MeGetResponse\Data\Settings;
  *   profiles?: list<Profile|ProfileShape>|null,
  *   sendingPhoneNumber?: string|null,
  *   sendingPhoneNumberProfileID?: string|null,
- *   settings?: null|Settings|SettingsShape,
+ *   settings?: null|ProfileSettings|ProfileSettingsShape,
  *   shortName?: string|null,
  *   status?: string|null,
  *   type?: string|null,
@@ -128,7 +128,7 @@ final class Data implements BaseModel
      * Profile configuration settings.
      */
     #[Optional(nullable: true)]
-    public ?Settings $settings;
+    public ?ProfileSettings $settings;
 
     /**
      * Short name / abbreviation (only for profile type).
@@ -160,7 +160,7 @@ final class Data implements BaseModel
      *
      * @param Channels|ChannelsShape|null $channels
      * @param list<Profile|ProfileShape>|null $profiles
-     * @param Settings|SettingsShape|null $settings
+     * @param ProfileSettings|ProfileSettingsShape|null $settings
      */
     public static function with(
         ?string $id = null,
@@ -174,7 +174,7 @@ final class Data implements BaseModel
         ?array $profiles = null,
         ?string $sendingPhoneNumber = null,
         ?string $sendingPhoneNumberProfileID = null,
-        Settings|array|null $settings = null,
+        ProfileSettings|array|null $settings = null,
         ?string $shortName = null,
         ?string $status = null,
         ?string $type = null,
@@ -342,9 +342,9 @@ final class Data implements BaseModel
     /**
      * Profile configuration settings.
      *
-     * @param Settings|SettingsShape|null $settings
+     * @param ProfileSettings|ProfileSettingsShape|null $settings
      */
-    public function withSettings(Settings|array|null $settings): self
+    public function withSettings(ProfileSettings|array|null $settings): self
     {
         $self = clone $this;
         $self['settings'] = $settings;

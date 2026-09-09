@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
+use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
-use SentDm\Contacts\ContactGetMessageSummaryResponse;
-use SentDm\Contacts\ContactGetResponse;
 use SentDm\Contacts\ContactListParams;
 use SentDm\Contacts\ContactListResponse;
-use SentDm\Contacts\ContactNewResponse;
 use SentDm\Contacts\ContactRetrieveMessageSummaryParams;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
-use SentDm\Contacts\ContactUpdateResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -52,7 +50,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactNewResponse>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -81,7 +79,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: ContactNewResponse::class,
+            convert: APIResponseOfContact::class,
         );
     }
 
@@ -94,7 +92,7 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{xProfileID?: string}|ContactRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactGetResponse>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -117,7 +115,7 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: ContactGetResponse::class,
+            convert: APIResponseOfContact::class,
         );
     }
 
@@ -136,7 +134,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactUpdateResponse>
+     * @return BaseResponse<APIResponseOfContact>
      *
      * @throws APIException
      */
@@ -166,7 +164,7 @@ final class ContactsRawService implements ContactsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: ContactUpdateResponse::class,
+            convert: APIResponseOfContact::class,
         );
     }
 
@@ -276,7 +274,7 @@ final class ContactsRawService implements ContactsRawContract
      * @param array{xProfileID?: string}|ContactRetrieveMessageSummaryParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactGetMessageSummaryResponse>
+     * @return BaseResponse<APIResponseOfContactMessageSummary>
      *
      * @throws APIException
      */
@@ -299,7 +297,7 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: ContactGetMessageSummaryResponse::class,
+            convert: APIResponseOfContactMessageSummary::class,
         );
     }
 }

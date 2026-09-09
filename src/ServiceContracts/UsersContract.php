@@ -6,10 +6,8 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Users\UserGetResponse;
-use SentDm\Users\UserInviteResponse;
+use SentDm\Users\APIResponseOfUser;
 use SentDm\Users\UserListResponse;
-use SentDm\Users\UserUpdateRoleResponse;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -29,7 +27,7 @@ interface UsersContract
         string $userID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserGetResponse;
+    ): APIResponseOfUser;
 
     /**
      * @api
@@ -66,7 +64,7 @@ interface UsersContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserInviteResponse;
+    ): APIResponseOfUser;
 
     /**
      * @api
@@ -106,5 +104,5 @@ interface UsersContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserUpdateRoleResponse;
+    ): APIResponseOfUser;
 }
