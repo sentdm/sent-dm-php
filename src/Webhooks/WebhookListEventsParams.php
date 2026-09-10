@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
@@ -16,7 +15,10 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\WebhooksService::listEvents()
  *
  * @phpstan-type WebhookListEventsParamsShape = array{
- *   page: int, pageSize: int, search?: string|null, xProfileID?: string|null
+ *   page?: int|null,
+ *   pageSize?: int|null,
+ *   search?: string|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class WebhookListEventsParams implements BaseModel
@@ -25,11 +27,11 @@ final class WebhookListEventsParams implements BaseModel
     use SdkModel;
     use SdkParams;
 
-    #[Required]
-    public int $page;
+    #[Optional]
+    public ?int $page;
 
-    #[Required]
-    public int $pageSize;
+    #[Optional]
+    public ?int $pageSize;
 
     #[Optional(nullable: true)]
     public ?string $search;
@@ -37,20 +39,6 @@ final class WebhookListEventsParams implements BaseModel
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new WebhookListEventsParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * WebhookListEventsParams::with(page: ..., pageSize: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new WebhookListEventsParams)->withPage(...)->withPageSize(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -62,16 +50,15 @@ final class WebhookListEventsParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
-        ?string $xProfileID = null
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
-        $self['page'] = $page;
-        $self['pageSize'] = $pageSize;
-
+        null !== $page && $self['page'] = $page;
+        null !== $pageSize && $self['pageSize'] = $pageSize;
         null !== $search && $self['search'] = $search;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 

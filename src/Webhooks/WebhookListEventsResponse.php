@@ -7,20 +7,23 @@ namespace SentDm\Webhooks;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventsResponse\Data;
 
 /**
- * Standard API response envelope for all v3 endpoints.
- *
- * @phpstan-import-type DataShape from \SentDm\Webhooks\WebhookListEventsResponse\Data
- * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
- * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
+ * @phpstan-import-type EventDataVariants from \SentDm\Webhooks\WebhookListEventsResponse\EventData
+ * @phpstan-import-type EventDataShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData
  *
  * @phpstan-type WebhookListEventsResponseShape = array{
- *   data?: null|Data|DataShape,
- *   error?: null|ErrorDetail|ErrorDetailShape,
- *   meta?: null|APIMeta|APIMetaShape,
- *   success?: bool|null,
+ *   id?: string|null,
+ *   createdAt?: \DateTimeInterface|null,
+ *   deliveryAttempts?: int|null,
+ *   deliveryStatus?: string|null,
+ *   errorMessage?: string|null,
+ *   eventData?: EventDataShape|null,
+ *   eventType?: string|null,
+ *   httpStatusCode?: int|null,
+ *   processingCompletedAt?: \DateTimeInterface|null,
+ *   processingStartedAt?: \DateTimeInterface|null,
+ *   responseBody?: string|null,
  * }
  */
 final class WebhookListEventsResponse implements BaseModel
@@ -28,29 +31,45 @@ final class WebhookListEventsResponse implements BaseModel
     /** @use SdkModel<WebhookListEventsResponseShape> */
     use SdkModel;
 
-    /**
-     * A paginated list of webhook delivery records.
-     */
-    #[Optional(nullable: true)]
-    public ?Data $data;
-
-    /**
-     * Error information.
-     */
-    #[Optional(nullable: true)]
-    public ?ErrorDetail $error;
-
-    /**
-     * Request and response metadata.
-     */
     #[Optional]
-    public ?APIMeta $meta;
+    public ?string $id;
+
+    #[Optional('created_at')]
+    public ?\DateTimeInterface $createdAt;
+
+    #[Optional('delivery_attempts')]
+    public ?int $deliveryAttempts;
+
+    #[Optional('delivery_status')]
+    public ?string $deliveryStatus;
+
+    #[Optional('error_message', nullable: true)]
+    public ?string $errorMessage;
 
     /**
-     * Indicates whether the request was successful.
+     * The exact event body that was delivered, or attempted, for this record. One of the three
+     * webhook envelopes: a message status change, an inbound message, or a template status change.
+     * Read field and event to tell which, the same way your endpoint does.
+     *
+     * @var EventDataVariants|null $eventData
      */
-    #[Optional]
-    public ?bool $success;
+    #[Optional('event_data')]
+    public MessageEvent|InboundMessageEvent|TemplateEvent|null $eventData;
+
+    #[Optional('event_type')]
+    public ?string $eventType;
+
+    #[Optional('http_status_code', nullable: true)]
+    public ?int $httpStatusCode;
+
+    #[Optional('processing_completed_at', nullable: true)]
+    public ?\DateTimeInterface $processingCompletedAt;
+
+    #[Optional('processing_started_at', nullable: true)]
+    public ?\DateTimeInterface $processingStartedAt;
+
+    #[Optional('response_body', nullable: true)]
+    public ?string $responseBody;
 
     public function __construct()
     {
@@ -62,72 +81,132 @@ final class WebhookListEventsResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Data|DataShape|null $data
-     * @param ErrorDetail|ErrorDetailShape|null $error
-     * @param APIMeta|APIMetaShape|null $meta
+     * @param EventDataShape|null $eventData
      */
     public static function with(
-        Data|array|null $data = null,
-        ErrorDetail|array|null $error = null,
-        APIMeta|array|null $meta = null,
-        ?bool $success = null,
+        ?string $id = null,
+        ?\DateTimeInterface $createdAt = null,
+        ?int $deliveryAttempts = null,
+        ?string $deliveryStatus = null,
+        ?string $errorMessage = null,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|null $eventData = null,
+        ?string $eventType = null,
+        ?int $httpStatusCode = null,
+        ?\DateTimeInterface $processingCompletedAt = null,
+        ?\DateTimeInterface $processingStartedAt = null,
+        ?string $responseBody = null,
     ): self {
         $self = new self;
 
-        null !== $data && $self['data'] = $data;
-        null !== $error && $self['error'] = $error;
-        null !== $meta && $self['meta'] = $meta;
-        null !== $success && $self['success'] = $success;
+        null !== $id && $self['id'] = $id;
+        null !== $createdAt && $self['createdAt'] = $createdAt;
+        null !== $deliveryAttempts && $self['deliveryAttempts'] = $deliveryAttempts;
+        null !== $deliveryStatus && $self['deliveryStatus'] = $deliveryStatus;
+        null !== $errorMessage && $self['errorMessage'] = $errorMessage;
+        null !== $eventData && $self['eventData'] = $eventData;
+        null !== $eventType && $self['eventType'] = $eventType;
+        null !== $httpStatusCode && $self['httpStatusCode'] = $httpStatusCode;
+        null !== $processingCompletedAt && $self['processingCompletedAt'] = $processingCompletedAt;
+        null !== $processingStartedAt && $self['processingStartedAt'] = $processingStartedAt;
+        null !== $responseBody && $self['responseBody'] = $responseBody;
+
+        return $self;
+    }
+
+    public function withID(string $id): self
+    {
+        $self = clone $this;
+        $self['id'] = $id;
+
+        return $self;
+    }
+
+    public function withCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $self = clone $this;
+        $self['createdAt'] = $createdAt;
+
+        return $self;
+    }
+
+    public function withDeliveryAttempts(int $deliveryAttempts): self
+    {
+        $self = clone $this;
+        $self['deliveryAttempts'] = $deliveryAttempts;
+
+        return $self;
+    }
+
+    public function withDeliveryStatus(string $deliveryStatus): self
+    {
+        $self = clone $this;
+        $self['deliveryStatus'] = $deliveryStatus;
+
+        return $self;
+    }
+
+    public function withErrorMessage(?string $errorMessage): self
+    {
+        $self = clone $this;
+        $self['errorMessage'] = $errorMessage;
 
         return $self;
     }
 
     /**
-     * A paginated list of webhook delivery records.
+     * The exact event body that was delivered, or attempted, for this record. One of the three
+     * webhook envelopes: a message status change, an inbound message, or a template status change.
+     * Read field and event to tell which, the same way your endpoint does.
      *
-     * @param Data|DataShape|null $data
+     * @param EventDataShape $eventData
      */
-    public function withData(Data|array|null $data): self
-    {
+    public function withEventData(
+        MessageEvent|array|InboundMessageEvent|TemplateEvent $eventData
+    ): self {
         $self = clone $this;
-        $self['data'] = $data;
+        $self['eventData'] = $eventData;
 
         return $self;
     }
 
-    /**
-     * Error information.
-     *
-     * @param ErrorDetail|ErrorDetailShape|null $error
-     */
-    public function withError(ErrorDetail|array|null $error): self
+    public function withEventType(string $eventType): self
     {
         $self = clone $this;
-        $self['error'] = $error;
+        $self['eventType'] = $eventType;
 
         return $self;
     }
 
-    /**
-     * Request and response metadata.
-     *
-     * @param APIMeta|APIMetaShape $meta
-     */
-    public function withMeta(APIMeta|array $meta): self
+    public function withHTTPStatusCode(?int $httpStatusCode): self
     {
         $self = clone $this;
-        $self['meta'] = $meta;
+        $self['httpStatusCode'] = $httpStatusCode;
 
         return $self;
     }
 
-    /**
-     * Indicates whether the request was successful.
-     */
-    public function withSuccess(bool $success): self
+    public function withProcessingCompletedAt(
+        ?\DateTimeInterface $processingCompletedAt
+    ): self {
+        $self = clone $this;
+        $self['processingCompletedAt'] = $processingCompletedAt;
+
+        return $self;
+    }
+
+    public function withProcessingStartedAt(
+        ?\DateTimeInterface $processingStartedAt
+    ): self {
+        $self = clone $this;
+        $self['processingStartedAt'] = $processingStartedAt;
+
+        return $self;
+    }
+
+    public function withResponseBody(?string $responseBody): self
     {
         $self = clone $this;
-        $self['success'] = $success;
+        $self['responseBody'] = $responseBody;
 
         return $self;
     }

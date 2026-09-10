@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
@@ -16,9 +15,9 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\WebhooksService::list()
  *
  * @phpstan-type WebhookListParamsShape = array{
- *   page: int,
- *   pageSize: int,
  *   isActive?: bool|null,
+ *   page?: int|null,
+ *   pageSize?: int|null,
  *   search?: string|null,
  *   xProfileID?: string|null,
  * }
@@ -29,14 +28,14 @@ final class WebhookListParams implements BaseModel
     use SdkModel;
     use SdkParams;
 
-    #[Required]
-    public int $page;
-
-    #[Required]
-    public int $pageSize;
-
     #[Optional(nullable: true)]
     public ?bool $isActive;
+
+    #[Optional]
+    public ?int $page;
+
+    #[Optional]
+    public ?int $pageSize;
 
     #[Optional(nullable: true)]
     public ?string $search;
@@ -44,20 +43,6 @@ final class WebhookListParams implements BaseModel
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new WebhookListParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * WebhookListParams::with(page: ..., pageSize: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new WebhookListParams)->withPage(...)->withPageSize(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -69,20 +54,27 @@ final class WebhookListParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        int $page,
-        int $pageSize,
         ?bool $isActive = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $xProfileID = null,
     ): self {
         $self = new self;
 
-        $self['page'] = $page;
-        $self['pageSize'] = $pageSize;
-
         null !== $isActive && $self['isActive'] = $isActive;
+        null !== $page && $self['page'] = $page;
+        null !== $pageSize && $self['pageSize'] = $pageSize;
         null !== $search && $self['search'] = $search;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    public function withIsActive(?bool $isActive): self
+    {
+        $self = clone $this;
+        $self['isActive'] = $isActive;
 
         return $self;
     }
@@ -99,14 +91,6 @@ final class WebhookListParams implements BaseModel
     {
         $self = clone $this;
         $self['pageSize'] = $pageSize;
-
-        return $self;
-    }
-
-    public function withIsActive(?bool $isActive): self
-    {
-        $self = clone $this;
-        $self['isActive'] = $isActive;
 
         return $self;
     }

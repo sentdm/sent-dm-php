@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SentDm\Conversations;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
@@ -16,7 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\ConversationsService::list()
  *
  * @phpstan-type ConversationListParamsShape = array{
- *   page: int, pageSize: int, xProfileID?: string|null
+ *   page?: int|null, pageSize?: int|null, xProfileID?: string|null
  * }
  */
 final class ConversationListParams implements BaseModel
@@ -25,29 +24,15 @@ final class ConversationListParams implements BaseModel
     use SdkModel;
     use SdkParams;
 
-    #[Required]
-    public int $page;
+    #[Optional]
+    public ?int $page;
 
-    #[Required]
-    public int $pageSize;
+    #[Optional]
+    public ?int $pageSize;
 
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new ConversationListParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * ConversationListParams::with(page: ..., pageSize: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new ConversationListParams)->withPage(...)->withPageSize(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -59,15 +44,14 @@ final class ConversationListParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $xProfileID = null
     ): self {
         $self = new self;
 
-        $self['page'] = $page;
-        $self['pageSize'] = $pageSize;
-
+        null !== $page && $self['page'] = $page;
+        null !== $pageSize && $self['pageSize'] = $pageSize;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;

@@ -10,8 +10,9 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesContract;
 use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\Template;
 use SentDm\Templates\TemplateDefinition;
-use SentDm\Templates\TemplateListResponse;
+use SentDm\TemplatesPage;
 
 /**
  * Reusable message bodies with named variables.
@@ -163,36 +164,38 @@ final class TemplatesService implements TemplatesContract
      *
      * Retrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.
      *
-     * @param int $page Query param: Page number (1-indexed)
-     * @param int $pageSize Query param: Number of items per page
      * @param string|null $category Query param: Optional category filter: MARKETING, UTILITY, AUTHENTICATION
      * @param bool|null $isWelcomePlayground Query param: Accepted and ignored. It used to filter on the welcome-playground marker inside a template's LOB
      * details; that filter is gone and nothing reads this value, so sending it neither narrows nor
      * widens the result. Retained only so a client still passing is_welcome_playground keeps
      * binding instead of the request shape changing under it.
+     * @param int $page Query param: Page number (1-indexed)
+     * @param int $pageSize Query param: Number of items per page
      * @param string|null $search Query param: Optional search term for filtering templates
      * @param string|null $status Query param: Optional status filter: APPROVED, PENDING, REJECTED
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return TemplatesPage<Template>
+     *
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
         ?string $category = null,
         ?bool $isWelcomePlayground = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $status = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateListResponse {
+    ): TemplatesPage {
         $params = Util::removeNulls(
             [
-                'page' => $page,
-                'pageSize' => $pageSize,
                 'category' => $category,
                 'isWelcomePlayground' => $isWelcomePlayground,
+                'page' => $page,
+                'pageSize' => $pageSize,
                 'search' => $search,
                 'status' => $status,
                 'xProfileID' => $xProfileID,

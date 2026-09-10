@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Conversations\APIResponseOfConversationMessagesList;
 use SentDm\Conversations\ConversationListMessagesParams;
 use SentDm\Conversations\ConversationListParams;
+use SentDm\Conversations\ConversationMessagesList\Message;
+use SentDm\ConversationsPage;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -37,11 +38,11 @@ final class ConversationsRawService implements ConversationsRawContract
      * Retrieves a paginated list of the authenticated customer's messages across all conversations, ordered by created date (most recent first).
      *
      * @param array{
-     *   page: int, pageSize: int, xProfileID?: string
+     *   page?: int, pageSize?: int, xProfileID?: string
      * }|ConversationListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfConversationMessagesList>
+     * @return BaseResponse<ConversationsPage<Message>>
      *
      * @throws APIException
      */
@@ -71,7 +72,8 @@ final class ConversationsRawService implements ConversationsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfConversationMessagesList::class,
+            convert: Message::class,
+            page: ConversationsPage::class,
         );
     }
 
@@ -82,11 +84,11 @@ final class ConversationsRawService implements ConversationsRawContract
      *
      * @param string $id path param: Conversation id from the route
      * @param array{
-     *   page: int, pageSize: int, xProfileID?: string
+     *   page?: int, pageSize?: int, xProfileID?: string
      * }|ConversationListMessagesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfConversationMessagesList>
+     * @return BaseResponse<ConversationsPage<Message>>
      *
      * @throws APIException
      */
@@ -117,7 +119,8 @@ final class ConversationsRawService implements ConversationsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfConversationMessagesList::class,
+            convert: Message::class,
+            page: ConversationsPage::class,
         );
     }
 }

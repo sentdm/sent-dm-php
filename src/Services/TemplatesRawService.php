@@ -11,13 +11,14 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesRawContract;
 use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\Template;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateDeleteParams;
 use SentDm\Templates\TemplateListParams;
-use SentDm\Templates\TemplateListResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
+use SentDm\TemplatesPage;
 
 /**
  * Reusable message bodies with named variables.
@@ -179,17 +180,17 @@ final class TemplatesRawService implements TemplatesRawContract
      * Retrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.
      *
      * @param array{
-     *   page: int,
-     *   pageSize: int,
      *   category?: string|null,
      *   isWelcomePlayground?: bool|null,
+     *   page?: int,
+     *   pageSize?: int,
      *   search?: string|null,
      *   status?: string|null,
      *   xProfileID?: string,
      * }|TemplateListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateListResponse>
+     * @return BaseResponse<TemplatesPage<Template>>
      *
      * @throws APIException
      */
@@ -203,10 +204,10 @@ final class TemplatesRawService implements TemplatesRawContract
         );
         $query_params = array_flip(
             [
-                'page',
-                'pageSize',
                 'category',
                 'isWelcomePlayground',
+                'page',
+                'pageSize',
                 'search',
                 'status',
             ],
@@ -222,8 +223,8 @@ final class TemplatesRawService implements TemplatesRawContract
             query: Util::array_transform_keys(
                 array_intersect_key($parsed, $query_params),
                 [
-                    'pageSize' => 'page_size',
                     'isWelcomePlayground' => 'is_welcome_playground',
+                    'pageSize' => 'page_size',
                 ],
             ),
             headers: Util::array_transform_keys(
@@ -231,7 +232,8 @@ final class TemplatesRawService implements TemplatesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: TemplateListResponse::class,
+            convert: Template::class,
+            page: TemplatesPage::class,
         );
     }
 

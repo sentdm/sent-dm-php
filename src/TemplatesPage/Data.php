@@ -2,23 +2,18 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Templates\TemplateListResponse;
+namespace SentDm\TemplatesPage;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\Template;
-use SentDm\Webhooks\PaginationMeta;
+use SentDm\TemplatesPage\Data\Pagination;
 
 /**
- * A paginated list of templates.
- *
- * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
- * @phpstan-import-type TemplateShape from \SentDm\Templates\Template
+ * @phpstan-import-type PaginationShape from \SentDm\TemplatesPage\Data\Pagination
  *
  * @phpstan-type DataShape = array{
- *   pagination?: null|PaginationMeta|PaginationMetaShape,
- *   templates?: list<Template|TemplateShape>|null,
+ *   pagination?: null|Pagination|PaginationShape, templates?: list<mixed>|null
  * }
  */
 final class Data implements BaseModel
@@ -26,18 +21,11 @@ final class Data implements BaseModel
     /** @use SdkModel<DataShape> */
     use SdkModel;
 
-    /**
-     * Pagination metadata for list responses.
-     */
     #[Optional]
-    public ?PaginationMeta $pagination;
+    public ?Pagination $pagination;
 
-    /**
-     * The templates on this page.
-     *
-     * @var list<Template>|null $templates
-     */
-    #[Optional(list: Template::class)]
+    /** @var list<mixed>|null $templates */
+    #[Optional(list: 'mixed')]
     public ?array $templates;
 
     public function __construct()
@@ -50,11 +38,11 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param PaginationMeta|PaginationMetaShape|null $pagination
-     * @param list<Template|TemplateShape>|null $templates
+     * @param Pagination|PaginationShape|null $pagination
+     * @param list<mixed>|null $templates
      */
     public static function with(
-        PaginationMeta|array|null $pagination = null,
+        Pagination|array|null $pagination = null,
         ?array $templates = null
     ): self {
         $self = new self;
@@ -66,11 +54,9 @@ final class Data implements BaseModel
     }
 
     /**
-     * Pagination metadata for list responses.
-     *
-     * @param PaginationMeta|PaginationMetaShape $pagination
+     * @param Pagination|PaginationShape $pagination
      */
-    public function withPagination(PaginationMeta|array $pagination): self
+    public function withPagination(Pagination|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;
@@ -79,9 +65,7 @@ final class Data implements BaseModel
     }
 
     /**
-     * The templates on this page.
-     *
-     * @param list<Template|TemplateShape> $templates
+     * @param list<mixed> $templates
      */
     public function withTemplates(array $templates): self
     {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SentDm\Templates;
 
 use SentDm\Core\Attributes\Optional;
-use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
@@ -16,10 +15,10 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\TemplatesService::list()
  *
  * @phpstan-type TemplateListParamsShape = array{
- *   page: int,
- *   pageSize: int,
  *   category?: string|null,
  *   isWelcomePlayground?: bool|null,
+ *   page?: int|null,
+ *   pageSize?: int|null,
  *   search?: string|null,
  *   status?: string|null,
  *   xProfileID?: string|null,
@@ -30,18 +29,6 @@ final class TemplateListParams implements BaseModel
     /** @use SdkModel<TemplateListParamsShape> */
     use SdkModel;
     use SdkParams;
-
-    /**
-     * Page number (1-indexed).
-     */
-    #[Required]
-    public int $page;
-
-    /**
-     * Number of items per page.
-     */
-    #[Required]
-    public int $pageSize;
 
     /**
      * Optional category filter: MARKETING, UTILITY, AUTHENTICATION.
@@ -59,6 +46,18 @@ final class TemplateListParams implements BaseModel
     public ?bool $isWelcomePlayground;
 
     /**
+     * Page number (1-indexed).
+     */
+    #[Optional]
+    public ?int $page;
+
+    /**
+     * Number of items per page.
+     */
+    #[Optional]
+    public ?int $pageSize;
+
+    /**
      * Optional search term for filtering templates.
      */
     #[Optional(nullable: true)]
@@ -73,20 +72,6 @@ final class TemplateListParams implements BaseModel
     #[Optional]
     public ?string $xProfileID;
 
-    /**
-     * `new TemplateListParams()` is missing required properties by the API.
-     *
-     * To enforce required parameters use
-     * ```
-     * TemplateListParams::with(page: ..., pageSize: ...)
-     * ```
-     *
-     * Otherwise ensure the following setters are called
-     *
-     * ```
-     * (new TemplateListParams)->withPage(...)->withPageSize(...)
-     * ```
-     */
     public function __construct()
     {
         $this->initialize();
@@ -98,46 +83,23 @@ final class TemplateListParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
-        int $page,
-        int $pageSize,
         ?string $category = null,
         ?bool $isWelcomePlayground = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $status = null,
         ?string $xProfileID = null,
     ): self {
         $self = new self;
 
-        $self['page'] = $page;
-        $self['pageSize'] = $pageSize;
-
         null !== $category && $self['category'] = $category;
         null !== $isWelcomePlayground && $self['isWelcomePlayground'] = $isWelcomePlayground;
+        null !== $page && $self['page'] = $page;
+        null !== $pageSize && $self['pageSize'] = $pageSize;
         null !== $search && $self['search'] = $search;
         null !== $status && $self['status'] = $status;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
-
-        return $self;
-    }
-
-    /**
-     * Page number (1-indexed).
-     */
-    public function withPage(int $page): self
-    {
-        $self = clone $this;
-        $self['page'] = $page;
-
-        return $self;
-    }
-
-    /**
-     * Number of items per page.
-     */
-    public function withPageSize(int $pageSize): self
-    {
-        $self = clone $this;
-        $self['pageSize'] = $pageSize;
 
         return $self;
     }
@@ -163,6 +125,28 @@ final class TemplateListParams implements BaseModel
     {
         $self = clone $this;
         $self['isWelcomePlayground'] = $isWelcomePlayground;
+
+        return $self;
+    }
+
+    /**
+     * Page number (1-indexed).
+     */
+    public function withPage(int $page): self
+    {
+        $self = clone $this;
+        $self['page'] = $page;
+
+        return $self;
+    }
+
+    /**
+     * Number of items per page.
+     */
+    public function withPageSize(int $pageSize): self
+    {
+        $self = clone $this;
+        $self['pageSize'] = $pageSize;
 
         return $self;
     }
