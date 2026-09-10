@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Conversations\APIResponseOfConversationMessagesList;
 use SentDm\Conversations\ConversationListMessagesParams;
 use SentDm\Conversations\ConversationListParams;
+use SentDm\Conversations\ConversationMessagesList\Message;
+use SentDm\ConversationsPage;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -41,7 +42,7 @@ final class ConversationsRawService implements ConversationsRawContract
      * }|ConversationListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfConversationMessagesList>
+     * @return BaseResponse<ConversationsPage<Message>>
      *
      * @throws APIException
      */
@@ -71,7 +72,8 @@ final class ConversationsRawService implements ConversationsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfConversationMessagesList::class,
+            convert: Message::class,
+            page: ConversationsPage::class,
         );
     }
 
@@ -86,7 +88,7 @@ final class ConversationsRawService implements ConversationsRawContract
      * }|ConversationListMessagesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfConversationMessagesList>
+     * @return BaseResponse<ConversationsPage<Message>>
      *
      * @throws APIException
      */
@@ -117,7 +119,8 @@ final class ConversationsRawService implements ConversationsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: APIResponseOfConversationMessagesList::class,
+            convert: Message::class,
+            page: ConversationsPage::class,
         );
     }
 }

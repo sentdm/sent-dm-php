@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\APIResponseOfContactMessageSummary;
-use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactResponse;
+use SentDm\ContactsPage;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
 
@@ -98,10 +99,15 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->contacts->list(page: 0, pageSize: 0);
+        $page = $this->client->contacts->list(page: 0, pageSize: 0);
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactListResponse::class, $result);
+        $this->assertInstanceOf(ContactsPage::class, $page);
+
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(ContactResponse::class, $item);
+        }
     }
 
     #[Test]
@@ -111,7 +117,7 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->contacts->list(
+        $page = $this->client->contacts->list(
             page: 0,
             pageSize: 0,
             channel: 'channel',
@@ -121,7 +127,12 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactListResponse::class, $result);
+        $this->assertInstanceOf(ContactsPage::class, $page);
+
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(ContactResponse::class, $item);
+        }
     }
 
     #[Test]

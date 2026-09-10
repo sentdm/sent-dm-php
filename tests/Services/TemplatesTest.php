@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\Templates\APIResponseTemplate;
-use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\Template;
+use SentDm\TemplatesPage;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -79,10 +80,15 @@ final class TemplatesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->templates->list(page: 0, pageSize: 0);
+        $page = $this->client->templates->list(page: 0, pageSize: 0);
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateListResponse::class, $result);
+        $this->assertInstanceOf(TemplatesPage::class, $page);
+
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(Template::class, $item);
+        }
     }
 
     #[Test]
@@ -92,7 +98,7 @@ final class TemplatesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->templates->list(
+        $page = $this->client->templates->list(
             page: 0,
             pageSize: 0,
             category: 'category',
@@ -103,7 +109,12 @@ final class TemplatesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateListResponse::class, $result);
+        $this->assertInstanceOf(TemplatesPage::class, $page);
+
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(Template::class, $item);
+        }
     }
 
     #[Test]

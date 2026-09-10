@@ -7,8 +7,9 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\Template;
 use SentDm\Templates\TemplateDefinition;
-use SentDm\Templates\TemplateListResponse;
+use SentDm\TemplatesPage;
 
 /**
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
@@ -104,6 +105,8 @@ interface TemplatesContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return TemplatesPage<Template>
+     *
      * @throws APIException
      */
     public function list(
@@ -115,7 +118,7 @@ interface TemplatesContract
         ?string $status = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateListResponse;
+    ): TemplatesPage;
 
     /**
      * @api
