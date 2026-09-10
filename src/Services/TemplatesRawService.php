@@ -11,13 +11,14 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesRawContract;
 use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\Template;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDefinition;
 use SentDm\Templates\TemplateDeleteParams;
 use SentDm\Templates\TemplateListParams;
-use SentDm\Templates\TemplateListResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
+use SentDm\TemplatesPage;
 
 /**
  * Reusable message bodies with named variables.
@@ -189,7 +190,7 @@ final class TemplatesRawService implements TemplatesRawContract
      * }|TemplateListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateListResponse>
+     * @return BaseResponse<TemplatesPage<Template>>
      *
      * @throws APIException
      */
@@ -231,7 +232,8 @@ final class TemplatesRawService implements TemplatesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: TemplateListResponse::class,
+            convert: Template::class,
+            page: TemplatesPage::class,
         );
     }
 
