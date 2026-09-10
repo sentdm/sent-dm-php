@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.31.0](https://github.com/sentdm/sent-dm-php/compare/v0.30.0...v0.31.0) (2026-09-09)
+
+
+### Highlights
+
+This release is breaking for the webhook endpoints. Webhook responses now use one shared model instead of a separate type per operation: the create, retrieve, update and toggle-status response types are gone, and all four now return the shared webhook API response model (`ApiResponseWebhook`, in this language's casing). If your code references one of the removed types, or its nested data, error or meta members, point it at the shared model. The list, list-event-types, list-events, rotate-secret and test responses are unchanged, because each returns a different envelope.
+
+### Features
+
+* **api:** repoint dangling model refs at current v3 schema names ([093f8e2](https://github.com/sentdm/sent-dm-php/commit/093f8e2e02072c22dafefc04a0c59f4d82154f5e))
+
 ## [0.30.0](https://github.com/sentdm/sent-dm-php/compare/v0.29.0...v0.30.0) (2026-09-06)
 
 
