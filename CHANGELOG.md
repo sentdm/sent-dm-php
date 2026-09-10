@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.32.0](https://github.com/sentdm/sent-dm-php/compare/v0.31.0...v0.32.0) (2026-09-10)
+
+
+### Features
+
+* **api:** configure page_number pagination for the v3 list endpoints ([947b7b2](https://github.com/sentdm/sent-dm-php/commit/947b7b29508bcb053cd9c1dae70177b2cb0c95ea))
+* **api:** sync generated SDKs from the committed spec ([c493beb](https://github.com/sentdm/sent-dm-php/commit/c493beb28586aae7879485f3e1e12ef6d50a25de))
+
 ## [0.31.0](https://github.com/sentdm/sent-dm-php/compare/v0.30.0...v0.31.0) (2026-09-09)
 
 
