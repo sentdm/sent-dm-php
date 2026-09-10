@@ -3,6 +3,12 @@
 ## [0.32.0](https://github.com/sentdm/sent-dm-php/compare/v0.31.0...v0.32.0) (2026-09-10)
 
 
+### Highlights
+
+The contacts, templates, webhooks, webhook events, conversations, and conversation messages list methods now return a page you can iterate instead of a single response body. Iterate the result and the SDK fetches each page as it goes. This changes those methods' return type, so code that read the response body directly needs to iterate the page, or read its items, instead.
+
+`page` and `page_size` are now optional on those calls. You don't have to pass them to list anything.
+
 ### Features
 
 * **api:** configure page_number pagination for the v3 list endpoints ([947b7b2](https://github.com/sentdm/sent-dm-php/commit/947b7b29508bcb053cd9c1dae70177b2cb0c95ea))
