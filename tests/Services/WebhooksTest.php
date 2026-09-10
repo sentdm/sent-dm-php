@@ -85,31 +85,7 @@ final class WebhooksTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $page = $this->client->webhooks->list(page: 0, pageSize: 0);
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhooksPage::class, $page);
-
-        if ($item = $page->getItems()[0] ?? null) {
-            // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(WebhookResponse::class, $item);
-        }
-    }
-
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $page = $this->client->webhooks->list(
-            page: 0,
-            pageSize: 0,
-            isActive: true,
-            search: 'search',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
+        $page = $this->client->webhooks->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(WebhooksPage::class, $page);
@@ -156,33 +132,7 @@ final class WebhooksTest extends TestCase
         }
 
         $page = $this->client->webhooks->listEvents(
-            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            page: 0,
-            pageSize: 0
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookEventsPage::class, $page);
-
-        if ($item = $page->getItems()[0] ?? null) {
-            // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(WebhookListEventsResponse::class, $item);
-        }
-    }
-
-    #[Test]
-    public function testListEventsWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $page = $this->client->webhooks->listEvents(
-            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            page: 0,
-            pageSize: 0,
-            search: 'search',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType

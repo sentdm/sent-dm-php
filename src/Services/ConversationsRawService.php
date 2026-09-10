@@ -38,7 +38,7 @@ final class ConversationsRawService implements ConversationsRawContract
      * Retrieves a paginated list of the authenticated customer's messages across all conversations, ordered by created date (most recent first).
      *
      * @param array{
-     *   page: int, pageSize: int, xProfileID?: string
+     *   page?: int, pageSize?: int, xProfileID?: string
      * }|ConversationListParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -84,7 +84,7 @@ final class ConversationsRawService implements ConversationsRawContract
      *
      * @param string $id path param: Conversation id from the route
      * @param array{
-     *   page: int, pageSize: int, xProfileID?: string
+     *   page?: int, pageSize?: int, xProfileID?: string
      * }|ConversationListMessagesParams $params
      * @param RequestOpts|null $requestOptions
      *

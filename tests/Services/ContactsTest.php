@@ -99,32 +99,7 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $page = $this->client->contacts->list(page: 0, pageSize: 0);
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactsPage::class, $page);
-
-        if ($item = $page->getItems()[0] ?? null) {
-            // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(ContactResponse::class, $item);
-        }
-    }
-
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $page = $this->client->contacts->list(
-            page: 0,
-            pageSize: 0,
-            channel: 'channel',
-            phone: 'phone',
-            search: 'search',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
+        $page = $this->client->contacts->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ContactsPage::class, $page);

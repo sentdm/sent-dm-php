@@ -174,9 +174,9 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves a paginated list of webhooks for the authenticated customer.
      *
+     * @param bool|null $isActive Query param
      * @param int $page Query param
      * @param int $pageSize Query param
-     * @param bool|null $isActive Query param
      * @param string|null $search Query param
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
@@ -186,18 +186,18 @@ final class WebhooksService implements WebhooksContract
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
         ?bool $isActive = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): WebhooksPage {
         $params = Util::removeNulls(
             [
+                'isActive' => $isActive,
                 'page' => $page,
                 'pageSize' => $pageSize,
-                'isActive' => $isActive,
                 'search' => $search,
                 'xProfileID' => $xProfileID,
             ],
@@ -272,8 +272,8 @@ final class WebhooksService implements WebhooksContract
      */
     public function listEvents(
         string $id,
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,

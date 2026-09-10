@@ -180,10 +180,10 @@ final class TemplatesRawService implements TemplatesRawContract
      * Retrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.
      *
      * @param array{
-     *   page: int,
-     *   pageSize: int,
      *   category?: string|null,
      *   isWelcomePlayground?: bool|null,
+     *   page?: int,
+     *   pageSize?: int,
      *   search?: string|null,
      *   status?: string|null,
      *   xProfileID?: string,
@@ -204,10 +204,10 @@ final class TemplatesRawService implements TemplatesRawContract
         );
         $query_params = array_flip(
             [
-                'page',
-                'pageSize',
                 'category',
                 'isWelcomePlayground',
+                'page',
+                'pageSize',
                 'search',
                 'status',
             ],
@@ -223,8 +223,8 @@ final class TemplatesRawService implements TemplatesRawContract
             query: Util::array_transform_keys(
                 array_intersect_key($parsed, $query_params),
                 [
-                    'pageSize' => 'page_size',
                     'isWelcomePlayground' => 'is_welcome_playground',
+                    'pageSize' => 'page_size',
                 ],
             ),
             headers: Util::array_transform_keys(

@@ -79,9 +79,9 @@ interface ContactsContract
     /**
      * @api
      *
+     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
      * @param int $page Query param: Page number (1-indexed)
      * @param int $pageSize Query param: Number of items per page
-     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
      * @param string|null $phone Query param: Optional phone number filter (alternative to list view)
      * @param string|null $search Query param: Optional search term for filtering contacts
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -92,9 +92,9 @@ interface ContactsContract
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
         ?string $channel = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $phone = null,
         ?string $search = null,
         ?string $xProfileID = null,

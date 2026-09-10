@@ -191,9 +191,9 @@ final class WebhooksRawService implements WebhooksRawContract
      * Retrieves a paginated list of webhooks for the authenticated customer.
      *
      * @param array{
-     *   page: int,
-     *   pageSize: int,
      *   isActive?: bool|null,
+     *   page?: int,
+     *   pageSize?: int,
      *   search?: string|null,
      *   xProfileID?: string,
      * }|WebhookListParams $params
@@ -211,7 +211,7 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $query_params = array_flip(['page', 'pageSize', 'isActive', 'search']);
+        $query_params = array_flip(['isActive', 'page', 'pageSize', 'search']);
 
         /** @var array<string,string> */
         $header_params = array_diff_key($parsed, $query_params);
@@ -222,7 +222,7 @@ final class WebhooksRawService implements WebhooksRawContract
             path: 'v3/webhooks',
             query: Util::array_transform_keys(
                 array_intersect_key($parsed, $query_params),
-                ['pageSize' => 'page_size', 'isActive' => 'is_active'],
+                ['isActive' => 'is_active', 'pageSize' => 'page_size'],
             ),
             headers: Util::array_transform_keys(
                 $header_params,
@@ -310,7 +310,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   page: int, pageSize: int, search?: string|null, xProfileID?: string
+     *   page?: int, pageSize?: int, search?: string|null, xProfileID?: string
      * }|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *

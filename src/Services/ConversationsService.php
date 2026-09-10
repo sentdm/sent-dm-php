@@ -51,8 +51,8 @@ final class ConversationsService implements ConversationsContract
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): ConversationsPage {
@@ -83,8 +83,8 @@ final class ConversationsService implements ConversationsContract
      */
     public function listMessages(
         string $id,
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): ConversationsPage {

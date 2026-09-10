@@ -175,9 +175,9 @@ final class ContactsRawService implements ContactsRawContract
      * Retrieves a paginated list of contacts for the authenticated customer. Supports filtering by search term, channel, or phone number.
      *
      * @param array{
-     *   page: int,
-     *   pageSize: int,
      *   channel?: string|null,
+     *   page?: int,
+     *   pageSize?: int,
      *   phone?: string|null,
      *   search?: string|null,
      *   xProfileID?: string,
@@ -197,7 +197,7 @@ final class ContactsRawService implements ContactsRawContract
             $requestOptions,
         );
         $query_params = array_flip(
-            ['page', 'pageSize', 'channel', 'phone', 'search']
+            ['channel', 'page', 'pageSize', 'phone', 'search']
         );
 
         /** @var array<string,string> */

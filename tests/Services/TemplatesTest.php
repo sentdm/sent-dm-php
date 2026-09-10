@@ -80,33 +80,7 @@ final class TemplatesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $page = $this->client->templates->list(page: 0, pageSize: 0);
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplatesPage::class, $page);
-
-        if ($item = $page->getItems()[0] ?? null) {
-            // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(Template::class, $item);
-        }
-    }
-
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $page = $this->client->templates->list(
-            page: 0,
-            pageSize: 0,
-            category: 'category',
-            isWelcomePlayground: true,
-            search: 'search',
-            status: 'status',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
+        $page = $this->client->templates->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(TemplatesPage::class, $page);

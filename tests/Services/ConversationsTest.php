@@ -36,29 +36,7 @@ final class ConversationsTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $page = $this->client->conversations->list(page: 0, pageSize: 0);
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ConversationsPage::class, $page);
-
-        if ($item = $page->getItems()[0] ?? null) {
-            // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(Message::class, $item);
-        }
-    }
-
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $page = $this->client->conversations->list(
-            page: 0,
-            pageSize: 0,
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'
-        );
+        $page = $this->client->conversations->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(ConversationsPage::class, $page);
@@ -77,32 +55,7 @@ final class ConversationsTest extends TestCase
         }
 
         $page = $this->client->conversations->listMessages(
-            '08fab313-c9e2-502c-975e-08b0356c432e',
-            page: 0,
-            pageSize: 0
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ConversationsPage::class, $page);
-
-        if ($item = $page->getItems()[0] ?? null) {
-            // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(Message::class, $item);
-        }
-    }
-
-    #[Test]
-    public function testListMessagesWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $page = $this->client->conversations->listMessages(
-            '08fab313-c9e2-502c-975e-08b0356c432e',
-            page: 0,
-            pageSize: 0,
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+            '08fab313-c9e2-502c-975e-08b0356c432e'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
