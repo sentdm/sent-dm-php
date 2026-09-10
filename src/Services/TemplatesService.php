@@ -10,8 +10,9 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\TemplatesContract;
 use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\Template;
 use SentDm\Templates\TemplateDefinition;
-use SentDm\Templates\TemplateListResponse;
+use SentDm\TemplatesPage;
 
 /**
  * Reusable message bodies with named variables.
@@ -175,6 +176,8 @@ final class TemplatesService implements TemplatesContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return TemplatesPage<Template>
+     *
      * @throws APIException
      */
     public function list(
@@ -186,7 +189,7 @@ final class TemplatesService implements TemplatesContract
         ?string $status = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): TemplateListResponse {
+    ): TemplatesPage {
         $params = Util::removeNulls(
             [
                 'page' => $page,

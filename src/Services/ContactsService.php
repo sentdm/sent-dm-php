@@ -7,7 +7,8 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Contacts\APIResponseOfContact;
 use SentDm\Contacts\APIResponseOfContactMessageSummary;
-use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactResponse;
+use SentDm\ContactsPage;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
@@ -152,6 +153,8 @@ final class ContactsService implements ContactsContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return ContactsPage<ContactResponse>
+     *
      * @throws APIException
      */
     public function list(
@@ -162,7 +165,7 @@ final class ContactsService implements ContactsContract
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactListResponse {
+    ): ContactsPage {
         $params = Util::removeNulls(
             [
                 'page' => $page,

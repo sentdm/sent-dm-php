@@ -6,12 +6,14 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
+use SentDm\WebhookEventsPage;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
-use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
+use SentDm\WebhooksPage;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -104,6 +106,8 @@ interface WebhooksContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return WebhooksPage<WebhookResponse>
+     *
      * @throws APIException
      */
     public function list(
@@ -113,7 +117,7 @@ interface WebhooksContract
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookListResponse;
+    ): WebhooksPage;
 
     /**
      * @api
@@ -152,6 +156,8 @@ interface WebhooksContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return WebhookEventsPage<WebhookListEventsResponse>
+     *
      * @throws APIException
      */
     public function listEvents(
@@ -161,7 +167,7 @@ interface WebhooksContract
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookListEventsResponse;
+    ): WebhookEventsPage;
 
     /**
      * @api

@@ -10,10 +10,11 @@ use SentDm\Contacts\APIResponseOfContactMessageSummary;
 use SentDm\Contacts\ContactCreateParams;
 use SentDm\Contacts\ContactDeleteParams;
 use SentDm\Contacts\ContactListParams;
-use SentDm\Contacts\ContactListResponse;
+use SentDm\Contacts\ContactResponse;
 use SentDm\Contacts\ContactRetrieveMessageSummaryParams;
 use SentDm\Contacts\ContactRetrieveParams;
 use SentDm\Contacts\ContactUpdateParams;
+use SentDm\ContactsPage;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -183,7 +184,7 @@ final class ContactsRawService implements ContactsRawContract
      * }|ContactListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ContactListResponse>
+     * @return BaseResponse<ContactsPage<ContactResponse>>
      *
      * @throws APIException
      */
@@ -215,7 +216,8 @@ final class ContactsRawService implements ContactsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: ContactListResponse::class,
+            convert: ContactResponse::class,
+            page: ContactsPage::class,
         );
     }
 

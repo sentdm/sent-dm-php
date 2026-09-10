@@ -10,6 +10,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksRawContract;
+use SentDm\WebhookEventsPage;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
 use SentDm\Webhooks\WebhookDeleteParams;
@@ -18,7 +19,7 @@ use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesParams;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
-use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
@@ -26,6 +27,7 @@ use SentDm\Webhooks\WebhookTestParams;
 use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\Webhooks\WebhookToggleStatusParams;
 use SentDm\Webhooks\WebhookUpdateParams;
+use SentDm\WebhooksPage;
 
 /**
  * Delivery reports and inbound messages, pushed to you.
@@ -197,7 +199,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookListResponse>
+     * @return BaseResponse<WebhooksPage<WebhookResponse>>
      *
      * @throws APIException
      */
@@ -227,7 +229,8 @@ final class WebhooksRawService implements WebhooksRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: WebhookListResponse::class,
+            convert: WebhookResponse::class,
+            page: WebhooksPage::class,
         );
     }
 
@@ -311,7 +314,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookListEventsResponse>
+     * @return BaseResponse<WebhookEventsPage<WebhookListEventsResponse>>
      *
      * @throws APIException
      */
@@ -343,6 +346,7 @@ final class WebhooksRawService implements WebhooksRawContract
             ),
             options: $options,
             convert: WebhookListEventsResponse::class,
+            page: WebhookEventsPage::class,
         );
     }
 

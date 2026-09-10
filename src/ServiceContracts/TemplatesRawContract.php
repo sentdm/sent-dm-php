@@ -8,12 +8,13 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Templates\APIResponseTemplate;
+use SentDm\Templates\Template;
 use SentDm\Templates\TemplateCreateParams;
 use SentDm\Templates\TemplateDeleteParams;
 use SentDm\Templates\TemplateListParams;
-use SentDm\Templates\TemplateListResponse;
 use SentDm\Templates\TemplateRetrieveParams;
 use SentDm\Templates\TemplateUpdateParams;
+use SentDm\TemplatesPage;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -75,7 +76,7 @@ interface TemplatesRawContract
      * @param array<string,mixed>|TemplateListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<TemplateListResponse>
+     * @return BaseResponse<TemplatesPage<Template>>
      *
      * @throws APIException
      */
