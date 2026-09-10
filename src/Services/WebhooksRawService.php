@@ -10,6 +10,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksRawContract;
+use SentDm\WebhookEventsPage;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
 use SentDm\Webhooks\WebhookDeleteParams;
@@ -18,7 +19,7 @@ use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesParams;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
-use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
@@ -26,6 +27,7 @@ use SentDm\Webhooks\WebhookTestParams;
 use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\Webhooks\WebhookToggleStatusParams;
 use SentDm\Webhooks\WebhookUpdateParams;
+use SentDm\WebhooksPage;
 
 /**
  * Delivery reports and inbound messages, pushed to you.
@@ -189,15 +191,15 @@ final class WebhooksRawService implements WebhooksRawContract
      * Retrieves a paginated list of webhooks for the authenticated customer.
      *
      * @param array{
-     *   page: int,
-     *   pageSize: int,
      *   isActive?: bool|null,
+     *   page?: int,
+     *   pageSize?: int,
      *   search?: string|null,
      *   xProfileID?: string,
      * }|WebhookListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookListResponse>
+     * @return BaseResponse<WebhooksPage<WebhookResponse>>
      *
      * @throws APIException
      */
@@ -209,7 +211,7 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $query_params = array_flip(['page', 'pageSize', 'isActive', 'search']);
+        $query_params = array_flip(['isActive', 'page', 'pageSize', 'search']);
 
         /** @var array<string,string> */
         $header_params = array_diff_key($parsed, $query_params);
@@ -220,14 +222,15 @@ final class WebhooksRawService implements WebhooksRawContract
             path: 'v3/webhooks',
             query: Util::array_transform_keys(
                 array_intersect_key($parsed, $query_params),
-                ['pageSize' => 'page_size', 'isActive' => 'is_active'],
+                ['isActive' => 'is_active', 'pageSize' => 'page_size'],
             ),
             headers: Util::array_transform_keys(
                 $header_params,
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: WebhookListResponse::class,
+            convert: WebhookResponse::class,
+            page: WebhooksPage::class,
         );
     }
 
@@ -307,11 +310,11 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   page: int, pageSize: int, search?: string|null, xProfileID?: string
+     *   page?: int, pageSize?: int, search?: string|null, xProfileID?: string
      * }|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookListEventsResponse>
+     * @return BaseResponse<WebhookEventsPage<WebhookListEventsResponse>>
      *
      * @throws APIException
      */
@@ -343,6 +346,7 @@ final class WebhooksRawService implements WebhooksRawContract
             ),
             options: $options,
             convert: WebhookListEventsResponse::class,
+            page: WebhookEventsPage::class,
         );
     }
 

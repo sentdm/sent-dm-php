@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\Templates\APIResponseTemplate;
-use SentDm\Templates\TemplateListResponse;
+use SentDm\Templates\Template;
+use SentDm\TemplatesPage;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -79,31 +80,15 @@ final class TemplatesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->templates->list(page: 0, pageSize: 0);
+        $page = $this->client->templates->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateListResponse::class, $result);
-    }
+        $this->assertInstanceOf(TemplatesPage::class, $page);
 
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(Template::class, $item);
         }
-
-        $result = $this->client->templates->list(
-            page: 0,
-            pageSize: 0,
-            category: 'category',
-            isWelcomePlayground: true,
-            search: 'search',
-            status: 'status',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(TemplateListResponse::class, $result);
     }
 
     #[Test]
