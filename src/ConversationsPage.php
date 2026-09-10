@@ -13,6 +13,7 @@ use SentDm\Core\Conversion;
 use SentDm\Core\Conversion\Contracts\Converter;
 use SentDm\Core\Conversion\Contracts\ConverterSource;
 use SentDm\Core\Conversion\ListOf;
+use SentDm\Core\Util;
 
 /**
  * @phpstan-type ConversationsPageShape = array{data?: Data|null}
@@ -91,10 +92,9 @@ final class ConversationsPage implements BaseModel, BasePage
     public function nextRequest(): ?array
     {
         /** @var int */
-        $curr = $this->data->pagination->page ?? 1;
+        $curr = Util::dig($this->requestInfo, ['query', 'page']) ?? 1;
         if (!($this
-            ->data->pagination->hasMore ?? null) || !count($this->getItems()) || ($curr >= ($this
-            ->data->pagination->totalPages ?? null))) {
+            ->data->pagination->hasMore ?? null) || !count($this->getItems())) {
             return null;
         }
 

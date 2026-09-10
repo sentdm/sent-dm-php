@@ -9,9 +9,7 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type PaginationShape = array{
- *   hasMore?: bool|null, page?: int|null, totalPages?: int|null
- * }
+ * @phpstan-type PaginationShape = array{hasMore?: bool|null}
  */
 final class Pagination implements BaseModel
 {
@@ -20,12 +18,6 @@ final class Pagination implements BaseModel
 
     #[Optional('has_more')]
     public ?bool $hasMore;
-
-    #[Optional]
-    public ?int $page;
-
-    #[Optional('total_pages')]
-    public ?int $totalPages;
 
     public function __construct()
     {
@@ -37,16 +29,11 @@ final class Pagination implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(
-        ?bool $hasMore = null,
-        ?int $page = null,
-        ?int $totalPages = null
-    ): self {
+    public static function with(?bool $hasMore = null): self
+    {
         $self = new self;
 
         null !== $hasMore && $self['hasMore'] = $hasMore;
-        null !== $page && $self['page'] = $page;
-        null !== $totalPages && $self['totalPages'] = $totalPages;
 
         return $self;
     }
@@ -55,22 +42,6 @@ final class Pagination implements BaseModel
     {
         $self = clone $this;
         $self['hasMore'] = $hasMore;
-
-        return $self;
-    }
-
-    public function withPage(int $page): self
-    {
-        $self = clone $this;
-        $self['page'] = $page;
-
-        return $self;
-    }
-
-    public function withTotalPages(int $totalPages): self
-    {
-        $self = clone $this;
-        $self['totalPages'] = $totalPages;
 
         return $self;
     }
