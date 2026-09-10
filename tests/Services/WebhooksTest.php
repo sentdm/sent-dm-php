@@ -7,12 +7,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
+use SentDm\WebhookEventsPage;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
-use SentDm\Webhooks\WebhookListResponse;
+use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
+use SentDm\WebhooksPage;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -83,29 +85,15 @@ final class WebhooksTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->webhooks->list(page: 0, pageSize: 0);
+        $page = $this->client->webhooks->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookListResponse::class, $result);
-    }
+        $this->assertInstanceOf(WebhooksPage::class, $page);
 
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(WebhookResponse::class, $item);
         }
-
-        $result = $this->client->webhooks->list(
-            page: 0,
-            pageSize: 0,
-            isActive: true,
-            search: 'search',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookListResponse::class, $result);
     }
 
     #[Test]
@@ -143,33 +131,17 @@ final class WebhooksTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->webhooks->listEvents(
-            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            page: 0,
-            pageSize: 0
+        $page = $this->client->webhooks->listEvents(
+            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8'
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookListEventsResponse::class, $result);
-    }
+        $this->assertInstanceOf(WebhookEventsPage::class, $page);
 
-    #[Test]
-    public function testListEventsWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(WebhookListEventsResponse::class, $item);
         }
-
-        $result = $this->client->webhooks->listEvents(
-            'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-            page: 0,
-            pageSize: 0,
-            search: 'search',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookListEventsResponse::class, $result);
     }
 
     #[Test]

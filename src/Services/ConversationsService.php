@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Conversations\APIResponseOfConversationMessagesList;
+use SentDm\Conversations\ConversationMessagesList\Message;
+use SentDm\ConversationsPage;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
@@ -45,14 +46,16 @@ final class ConversationsService implements ConversationsContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return ConversationsPage<Message>
+     *
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfConversationMessagesList {
+    ): ConversationsPage {
         $params = Util::removeNulls(
             ['page' => $page, 'pageSize' => $pageSize, 'xProfileID' => $xProfileID]
         );
@@ -74,15 +77,17 @@ final class ConversationsService implements ConversationsContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return ConversationsPage<Message>
+     *
      * @throws APIException
      */
     public function listMessages(
         string $id,
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): APIResponseOfConversationMessagesList {
+    ): ConversationsPage {
         $params = Util::removeNulls(
             ['page' => $page, 'pageSize' => $pageSize, 'xProfileID' => $xProfileID]
         );

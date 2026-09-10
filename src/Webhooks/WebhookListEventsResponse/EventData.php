@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\Data\Event;
+namespace SentDm\Webhooks\WebhookListEventsResponse;
 
 use SentDm\Core\Concerns\SdkUnion;
 use SentDm\Core\Conversion\Contracts\Converter;

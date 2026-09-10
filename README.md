@@ -50,6 +50,33 @@ and named parameters to initialize value objects.
 
 However, builders are also provided `(new TemplateBodyContent)->withTemplate('template')`.
 
+### Pagination
+
+List methods in the Sent API are paginated.
+
+This library provides auto-paginating iterators with each list response, so you do not have to request successive pages manually:
+
+```php
+<?php
+
+use SentDm\Client;
+
+$client = new Client(apiKey: getenv('SENT_DM_API_KEY') ?: 'My API Key');
+
+$page = $client->webhooks->list();
+
+var_dump($page);
+
+// fetch items from the current page
+foreach ($page->getItems() as $item) {
+  var_dump($item->id);
+}
+// make additional network requests to fetch items from all pages, including and after the current page
+foreach ($page->pagingEachItem() as $item) {
+  var_dump($item->id);
+}
+```
+
 ### Handling errors
 
 When the library is unable to connect to the API, or if the API returns a non-success status code (i.e., 4xx or 5xx response), a subclass of `SentDm\Core\Exceptions\APIException` will be thrown:
