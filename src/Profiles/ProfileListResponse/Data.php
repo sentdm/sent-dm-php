@@ -7,18 +7,18 @@ namespace SentDm\Profiles\ProfileListResponse;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\ProfileListResponse\Data\Pagination;
-use SentDm\Profiles\ProfileListResponse\Data\Profile;
+use SentDm\Profiles\ProfileDetail;
+use SentDm\Webhooks\PaginationMeta;
 
 /**
  * The profiles in the organization.
  *
- * @phpstan-import-type PaginationShape from \SentDm\Profiles\ProfileListResponse\Data\Pagination
- * @phpstan-import-type ProfileShape from \SentDm\Profiles\ProfileListResponse\Data\Profile
+ * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
+ * @phpstan-import-type ProfileDetailShape from \SentDm\Profiles\ProfileDetail
  *
  * @phpstan-type DataShape = array{
- *   pagination?: null|Pagination|PaginationShape,
- *   profiles?: list<Profile|ProfileShape>|null,
+ *   pagination?: null|PaginationMeta|PaginationMetaShape,
+ *   profiles?: list<ProfileDetail|ProfileDetailShape>|null,
  * }
  */
 final class Data implements BaseModel
@@ -30,14 +30,14 @@ final class Data implements BaseModel
      * Pagination metadata for list responses.
      */
     #[Optional]
-    public ?Pagination $pagination;
+    public ?PaginationMeta $pagination;
 
     /**
      * The profiles on this page.
      *
-     * @var list<Profile>|null $profiles
+     * @var list<ProfileDetail>|null $profiles
      */
-    #[Optional(list: Profile::class)]
+    #[Optional(list: ProfileDetail::class)]
     public ?array $profiles;
 
     public function __construct()
@@ -50,11 +50,11 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Pagination|PaginationShape|null $pagination
-     * @param list<Profile|ProfileShape>|null $profiles
+     * @param PaginationMeta|PaginationMetaShape|null $pagination
+     * @param list<ProfileDetail|ProfileDetailShape>|null $profiles
      */
     public static function with(
-        Pagination|array|null $pagination = null,
+        PaginationMeta|array|null $pagination = null,
         ?array $profiles = null
     ): self {
         $self = new self;
@@ -68,9 +68,9 @@ final class Data implements BaseModel
     /**
      * Pagination metadata for list responses.
      *
-     * @param Pagination|PaginationShape $pagination
+     * @param PaginationMeta|PaginationMetaShape $pagination
      */
-    public function withPagination(Pagination|array $pagination): self
+    public function withPagination(PaginationMeta|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;
@@ -81,7 +81,7 @@ final class Data implements BaseModel
     /**
      * The profiles on this page.
      *
-     * @param list<Profile|ProfileShape> $profiles
+     * @param list<ProfileDetail|ProfileDetailShape> $profiles
      */
     public function withProfiles(array $profiles): self
     {

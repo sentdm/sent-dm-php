@@ -6,11 +6,10 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
-use SentDm\Contacts\ContactGetMessageSummaryResponse;
-use SentDm\Contacts\ContactGetResponse;
-use SentDm\Contacts\ContactListResponse;
-use SentDm\Contacts\ContactNewResponse;
-use SentDm\Contacts\ContactUpdateResponse;
+use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
+use SentDm\Contacts\ContactResponse;
+use SentDm\ContactsPage;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
 
@@ -42,7 +41,7 @@ final class ContactsTest extends TestCase
         $result = $this->client->contacts->create(phoneNumber: '+1234567890');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
@@ -60,7 +59,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
@@ -75,7 +74,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactGetResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
@@ -90,7 +89,7 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactUpdateResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfContact::class, $result);
     }
 
     #[Test]
@@ -100,30 +99,15 @@ final class ContactsTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->contacts->list(page: 0, pageSize: 0);
+        $page = $this->client->contacts->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactListResponse::class, $result);
-    }
+        $this->assertInstanceOf(ContactsPage::class, $page);
 
-    #[Test]
-    public function testListWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
+        if ($item = $page->getItems()[0] ?? null) {
+            // @phpstan-ignore-next-line method.alreadyNarrowedType
+            $this->assertInstanceOf(ContactResponse::class, $item);
         }
-
-        $result = $this->client->contacts->list(
-            page: 0,
-            pageSize: 0,
-            channel: 'channel',
-            phone: 'phone',
-            search: 'search',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactListResponse::class, $result);
     }
 
     #[Test]
@@ -153,6 +137,6 @@ final class ContactsTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ContactGetMessageSummaryResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfContactMessageSummary::class, $result);
     }
 }

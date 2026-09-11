@@ -9,15 +9,14 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksContract;
-use SentDm\Webhooks\WebhookGetResponse;
+use SentDm\WebhookEventsPage;
+use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
-use SentDm\Webhooks\WebhookListResponse;
-use SentDm\Webhooks\WebhookNewResponse;
+use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestResponse;
-use SentDm\Webhooks\WebhookToggleStatusResponse;
-use SentDm\Webhooks\WebhookUpdateResponse;
+use SentDm\WebhooksPage;
 
 /**
  * Delivery reports and inbound messages, pushed to you.
@@ -73,7 +72,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookNewResponse {
+    ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
                 'displayName' => $displayName,
@@ -108,7 +107,7 @@ final class WebhooksService implements WebhooksContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookGetResponse {
+    ): APIResponseWebhook {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -149,7 +148,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookUpdateResponse {
+    ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
                 'displayName' => $displayName,
@@ -175,28 +174,30 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves a paginated list of webhooks for the authenticated customer.
      *
+     * @param bool|null $isActive Query param
      * @param int $page Query param
      * @param int $pageSize Query param
-     * @param bool|null $isActive Query param
      * @param string|null $search Query param
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return WebhooksPage<WebhookResponse>
+     *
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
         ?bool $isActive = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookListResponse {
+    ): WebhooksPage {
         $params = Util::removeNulls(
             [
+                'isActive' => $isActive,
                 'page' => $page,
                 'pageSize' => $pageSize,
-                'isActive' => $isActive,
                 'search' => $search,
                 'xProfileID' => $xProfileID,
             ],
@@ -265,16 +266,18 @@ final class WebhooksService implements WebhooksContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return WebhookEventsPage<WebhookListEventsResponse>
+     *
      * @throws APIException
      */
     public function listEvents(
         string $id,
-        int $page,
-        int $pageSize,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookListEventsResponse {
+    ): WebhookEventsPage {
         $params = Util::removeNulls(
             [
                 'page' => $page,
@@ -385,7 +388,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookToggleStatusResponse {
+    ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
                 'isActive' => $isActive,

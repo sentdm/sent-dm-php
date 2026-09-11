@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Contacts\ContactGetMessageSummaryResponse;
-use SentDm\Contacts\ContactGetResponse;
-use SentDm\Contacts\ContactListResponse;
-use SentDm\Contacts\ContactNewResponse;
-use SentDm\Contacts\ContactUpdateResponse;
+use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
+use SentDm\Contacts\ContactResponse;
+use SentDm\ContactsPage;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 
@@ -35,7 +34,7 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactNewResponse;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -50,7 +49,7 @@ interface ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactGetResponse;
+    ): APIResponseOfContact;
 
     /**
      * @api
@@ -75,30 +74,32 @@ interface ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactUpdateResponse;
+    ): APIResponseOfContact;
 
     /**
      * @api
      *
+     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
      * @param int $page Query param: Page number (1-indexed)
      * @param int $pageSize Query param: Number of items per page
-     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
      * @param string|null $phone Query param: Optional phone number filter (alternative to list view)
      * @param string|null $search Query param: Optional search term for filtering contacts
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return ContactsPage<ContactResponse>
+     *
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
         ?string $channel = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $phone = null,
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactListResponse;
+    ): ContactsPage;
 
     /**
      * @deprecated
@@ -132,5 +133,5 @@ interface ContactsContract
         string $contactID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactGetMessageSummaryResponse;
+    ): APIResponseOfContactMessageSummary;
 }

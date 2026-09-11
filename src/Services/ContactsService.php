@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace SentDm\Services;
 
 use SentDm\Client;
-use SentDm\Contacts\ContactGetMessageSummaryResponse;
-use SentDm\Contacts\ContactGetResponse;
-use SentDm\Contacts\ContactListResponse;
-use SentDm\Contacts\ContactNewResponse;
-use SentDm\Contacts\ContactUpdateResponse;
+use SentDm\Contacts\APIResponseOfContact;
+use SentDm\Contacts\APIResponseOfContactMessageSummary;
+use SentDm\Contacts\ContactResponse;
+use SentDm\ContactsPage;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
@@ -59,7 +58,7 @@ final class ContactsService implements ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactNewResponse {
+    ): APIResponseOfContact {
         $params = Util::removeNulls(
             [
                 'phoneNumber' => $phoneNumber,
@@ -90,7 +89,7 @@ final class ContactsService implements ContactsContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactGetResponse {
+    ): APIResponseOfContact {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -124,7 +123,7 @@ final class ContactsService implements ContactsContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactUpdateResponse {
+    ): APIResponseOfContact {
         $params = Util::removeNulls(
             [
                 'defaultChannel' => $defaultChannel,
@@ -146,30 +145,32 @@ final class ContactsService implements ContactsContract
      *
      * Retrieves a paginated list of contacts for the authenticated customer. Supports filtering by search term, channel, or phone number.
      *
+     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
      * @param int $page Query param: Page number (1-indexed)
      * @param int $pageSize Query param: Number of items per page
-     * @param string|null $channel Query param: Optional channel filter (sms, whatsapp)
      * @param string|null $phone Query param: Optional phone number filter (alternative to list view)
      * @param string|null $search Query param: Optional search term for filtering contacts
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
+     * @return ContactsPage<ContactResponse>
+     *
      * @throws APIException
      */
     public function list(
-        int $page,
-        int $pageSize,
         ?string $channel = null,
+        ?int $page = null,
+        ?int $pageSize = null,
         ?string $phone = null,
         ?string $search = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactListResponse {
+    ): ContactsPage {
         $params = Util::removeNulls(
             [
+                'channel' => $channel,
                 'page' => $page,
                 'pageSize' => $pageSize,
-                'channel' => $channel,
                 'phone' => $phone,
                 'search' => $search,
                 'xProfileID' => $xProfileID,
@@ -231,7 +232,7 @@ final class ContactsService implements ContactsContract
         string $contactID,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ContactGetMessageSummaryResponse {
+    ): APIResponseOfContactMessageSummary {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

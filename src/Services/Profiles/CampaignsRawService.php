@@ -8,14 +8,13 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Profiles\Campaigns\APIResponseOfBrandCampaign;
+use SentDm\Profiles\Campaigns\APIResponseOfListOfBrandCampaign;
 use SentDm\Profiles\Campaigns\CampaignCreateParams;
-use SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign;
+use SentDm\Profiles\Campaigns\CampaignData;
 use SentDm\Profiles\Campaigns\CampaignDeleteParams;
 use SentDm\Profiles\Campaigns\CampaignListParams;
-use SentDm\Profiles\Campaigns\CampaignListResponse;
-use SentDm\Profiles\Campaigns\CampaignNewResponse;
 use SentDm\Profiles\Campaigns\CampaignUpdateParams;
-use SentDm\Profiles\Campaigns\CampaignUpdateResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Profiles\CampaignsRawContract;
 
@@ -26,8 +25,7 @@ use SentDm\ServiceContracts\Profiles\CampaignsRawContract;
  *
  * New integrations should not start here.
  *
- * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignCreateParams\Campaign
- * @phpstan-import-type CampaignShape from \SentDm\Profiles\Campaigns\CampaignUpdateParams\Campaign as CampaignShape1
+ * @phpstan-import-type CampaignDataShape from \SentDm\Profiles\Campaigns\CampaignData
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class CampaignsRawService implements CampaignsRawContract
@@ -49,14 +47,14 @@ final class CampaignsRawService implements CampaignsRawContract
      *
      * @param string $profileID Path param: Profile ID from route
      * @param array{
-     *   campaign: Campaign|CampaignShape,
+     *   campaign: CampaignData|CampaignDataShape,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
      * }|CampaignCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<CampaignNewResponse>
+     * @return BaseResponse<APIResponseOfBrandCampaign>
      *
      * @throws APIException
      */
@@ -86,7 +84,7 @@ final class CampaignsRawService implements CampaignsRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: CampaignNewResponse::class,
+            convert: APIResponseOfBrandCampaign::class,
         );
     }
 
@@ -102,14 +100,14 @@ final class CampaignsRawService implements CampaignsRawContract
      * @param string $campaignID Path param: Campaign ID from route
      * @param array{
      *   profileID: string,
-     *   campaign: CampaignUpdateParams\Campaign|CampaignShape1,
+     *   campaign: CampaignData|CampaignDataShape,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
      * }|CampaignUpdateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<CampaignUpdateResponse>
+     * @return BaseResponse<APIResponseOfBrandCampaign>
      *
      * @throws APIException
      */
@@ -141,7 +139,7 @@ final class CampaignsRawService implements CampaignsRawContract
                 array_flip(['profileID']),
             ),
             options: $options,
-            convert: CampaignUpdateResponse::class,
+            convert: APIResponseOfBrandCampaign::class,
         );
     }
 
@@ -158,7 +156,7 @@ final class CampaignsRawService implements CampaignsRawContract
      * @param array{xProfileID?: string}|CampaignListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<CampaignListResponse>
+     * @return BaseResponse<APIResponseOfListOfBrandCampaign>
      *
      * @throws APIException
      */
@@ -181,7 +179,7 @@ final class CampaignsRawService implements CampaignsRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: CampaignListResponse::class,
+            convert: APIResponseOfListOfBrandCampaign::class,
         );
     }
 

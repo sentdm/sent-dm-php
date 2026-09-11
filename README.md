@@ -13,7 +13,7 @@ The REST API documentation can be found on [docs.sent.dm](https://docs.sent.dm).
 <!-- x-release-please-start-version -->
 
 ```
-composer require "sentdm/sent-dm-php 0.30.0"
+composer require "sentdm/sent-dm-php 0.32.0"
 ```
 
 <!-- x-release-please-end -->
@@ -49,6 +49,33 @@ It is recommended to use the static `with` constructor `TemplateBodyContent::wit
 and named parameters to initialize value objects.
 
 However, builders are also provided `(new TemplateBodyContent)->withTemplate('template')`.
+
+### Pagination
+
+List methods in the Sent API are paginated.
+
+This library provides auto-paginating iterators with each list response, so you do not have to request successive pages manually:
+
+```php
+<?php
+
+use SentDm\Client;
+
+$client = new Client(apiKey: getenv('SENT_DM_API_KEY') ?: 'My API Key');
+
+$page = $client->webhooks->list();
+
+var_dump($page);
+
+// fetch items from the current page
+foreach ($page->getItems() as $item) {
+  var_dump($item->id);
+}
+// make additional network requests to fetch items from all pages, including and after the current page
+foreach ($page->pagingEachItem() as $item) {
+  var_dump($item->id);
+}
+```
 
 ### Handling errors
 
