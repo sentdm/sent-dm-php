@@ -57,9 +57,15 @@ final class TemplateEventPayload implements BaseModel
     public ?string $category;
 
     /**
-     * The channel the template applies to.
+     * The channel leg this decision is about, for example whatsapp, sms, or rcs.
+     * A template is reviewed per channel and the legs come back independently, so each one reports
+     * separately.
+     *
+     * Omitted when the decision applies to the template as a whole rather than to one leg. That
+     * event is the broader news: a template-wide rejection blocks every channel, whatever the
+     * individual legs say.
      */
-    #[Optional]
+    #[Optional(nullable: true)]
     public ?string $channel;
 
     /**
@@ -185,9 +191,15 @@ final class TemplateEventPayload implements BaseModel
     }
 
     /**
-     * The channel the template applies to.
+     * The channel leg this decision is about, for example whatsapp, sms, or rcs.
+     * A template is reviewed per channel and the legs come back independently, so each one reports
+     * separately.
+     *
+     * Omitted when the decision applies to the template as a whole rather than to one leg. That
+     * event is the broader news: a template-wide rejection blocks every channel, whatever the
+     * individual legs say.
      */
-    public function withChannel(string $channel): self
+    public function withChannel(?string $channel): self
     {
         $self = clone $this;
         $self['channel'] = $channel;

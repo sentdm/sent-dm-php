@@ -83,7 +83,8 @@ final class Template implements BaseModel
     public ?string $name;
 
     /**
-     * Template status: APPROVED, PENDING, REJECTED.
+     * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
+     * submit_for_review: false starts as DRAFT and stays there until it is submitted.
      */
     #[Optional]
     public ?string $status;
@@ -252,7 +253,8 @@ final class Template implements BaseModel
     }
 
     /**
-     * Template status: APPROVED, PENDING, REJECTED.
+     * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
+     * submit_for_review: false starts as DRAFT and stays there until it is submitted.
      */
     public function withStatus(string $status): self
     {

@@ -40,7 +40,7 @@ final class TemplatesService implements TemplatesContract
     /**
      * @api
      *
-     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission.
+     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. There is no `name` field on create — the display name is derived from the template's content and can be changed afterwards with `PUT /v3/templates/{id}`.
      *
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided)
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
@@ -112,7 +112,7 @@ final class TemplatesService implements TemplatesContract
     /**
      * @api
      *
-     * Updates an existing template's name, category, language, definition, or submits it for review.
+     * Updates an existing template's name, category, language, definition, or submits it for review. While the template is in review (status PENDING, or any channel awaiting a verdict) its definition, category and language are frozen and a resubmission is refused — those requests answer 409 CONFLICT_006. The display name stays editable throughout.
      *
      * @param string $id Path param: Template ID from route parameter
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
