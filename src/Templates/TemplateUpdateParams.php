@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Updates an existing template's name, category, language, definition, or submits it for review.
+ * Updates an existing template's name, category, language, definition, or submits it for review. While the template is in review (status PENDING, or any channel awaiting a verdict) its definition, category and language are frozen and a resubmission is refused — those requests answer 409 CONFLICT_006. The display name stays editable throughout.
  *
  * @see SentDm\Services\TemplatesService::update()
  *
