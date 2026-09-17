@@ -26,6 +26,13 @@ final class TemplateBodyContent implements BaseModel
     /**
      * The body copy, with variables written as {{index:variable}}.
      *
+     * Length cap depends on which channel this body belongs to:
+     * TemplateContentLimits.MaxBodyLength (1024) for multiChannel, sms and
+     * whatsapp — Meta's BODY limit, which a multiChannel body may be delivered under —
+     * and TemplateContentLimits.MaxRcsBodyLength (3072) for an rcs body, which never
+     * reaches Meta. The maxLength advertised on this schema is the 1024 one, because all four
+     * channel bodies share this single schema — an rcs body between the two is accepted.
+     *
      * Meta requires every variable to carry surrounding context, so a body is refused unless it also
      * satisfies all of the following (enforced by TemplateDefinitionValidator):
      * At least one letter before the first variable and after the last — trailing punctuation
@@ -101,6 +108,13 @@ final class TemplateBodyContent implements BaseModel
 
     /**
      * The body copy, with variables written as {{index:variable}}.
+     *
+     * Length cap depends on which channel this body belongs to:
+     * TemplateContentLimits.MaxBodyLength (1024) for multiChannel, sms and
+     * whatsapp — Meta's BODY limit, which a multiChannel body may be delivered under —
+     * and TemplateContentLimits.MaxRcsBodyLength (3072) for an rcs body, which never
+     * reaches Meta. The maxLength advertised on this schema is the 1024 one, because all four
+     * channel bodies share this single schema — an rcs body between the two is accepted.
      *
      * Meta requires every variable to carry surrounding context, so a body is refused unless it also
      * satisfies all of the following (enforced by TemplateDefinitionValidator):

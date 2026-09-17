@@ -9,7 +9,17 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Body section of a message template with channel-specific content.
+ * Body section of a message template.
+ *
+ * A body picks one of two authoring strategies, and mixing them is refused
+ * (TemplateDefinitionValidator.HaveValidChannelConfiguration):
+ * a shared multiChannel body on its own, or
+ * an explicit sms + whatsapp pair, both present.
+ *
+ * multiChannel together with sms or whatsapp is rejected, and so is
+ * sms or whatsapp on its own — every template is expected to be deliverable on every
+ * channel. rcs is the one true override: it may accompany either strategy to vary the copy,
+ * but cannot stand alone.
  *
  * @phpstan-import-type TemplateBodyContentShape from \SentDm\Templates\TemplateBodyContent
  *
@@ -26,25 +36,27 @@ final class TemplateBody implements BaseModel
     use SdkModel;
 
     /**
-     * Content that will be used for all channels (SMS and WhatsApp) unless channel-specific content is provided.
+     * The shared body, used for every channel. One half of the choice described above.
      */
     #[Optional(nullable: true)]
     public ?TemplateBodyContent $multiChannel;
 
     /**
-     * RCS-specific content that overrides multi-channel content for RCS messages.
+     * RCS-specific copy that overrides the chosen strategy for RCS only. The one true override:
+     * optional on top of either strategy, but it cannot be the only body present. Its length cap is
+     * the higher one described on Template.
      */
     #[Optional(nullable: true)]
     public ?TemplateBodyContent $rcs;
 
     /**
-     * SMS-specific content that overrides multi-channel content for SMS messages.
+     * The SMS body. It does not override multiChannel, it replaces it.
      */
     #[Optional(nullable: true)]
     public ?TemplateBodyContent $sms;
 
     /**
-     * WhatsApp-specific content that overrides multi-channel content for WhatsApp messages.
+     * The WhatsApp body. It does not override multiChannel, it replaces it.
      */
     #[Optional(nullable: true)]
     public ?TemplateBodyContent $whatsapp;
@@ -81,7 +93,7 @@ final class TemplateBody implements BaseModel
     }
 
     /**
-     * Content that will be used for all channels (SMS and WhatsApp) unless channel-specific content is provided.
+     * The shared body, used for every channel. One half of the choice described above.
      *
      * @param TemplateBodyContent|TemplateBodyContentShape|null $multiChannel
      */
@@ -95,7 +107,9 @@ final class TemplateBody implements BaseModel
     }
 
     /**
-     * RCS-specific content that overrides multi-channel content for RCS messages.
+     * RCS-specific copy that overrides the chosen strategy for RCS only. The one true override:
+     * optional on top of either strategy, but it cannot be the only body present. Its length cap is
+     * the higher one described on Template.
      *
      * @param TemplateBodyContent|TemplateBodyContentShape|null $rcs
      */
@@ -108,7 +122,7 @@ final class TemplateBody implements BaseModel
     }
 
     /**
-     * SMS-specific content that overrides multi-channel content for SMS messages.
+     * The SMS body. It does not override multiChannel, it replaces it.
      *
      * @param TemplateBodyContent|TemplateBodyContentShape|null $sms
      */
@@ -121,7 +135,7 @@ final class TemplateBody implements BaseModel
     }
 
     /**
-     * WhatsApp-specific content that overrides multi-channel content for WhatsApp messages.
+     * The WhatsApp body. It does not override multiChannel, it replaces it.
      *
      * @param TemplateBodyContent|TemplateBodyContentShape|null $whatsapp
      */
