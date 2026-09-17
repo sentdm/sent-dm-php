@@ -22,15 +22,31 @@ final class TemplateVariable implements BaseModel
     /** @use SdkModel<TemplateVariableShape> */
     use SdkModel;
 
+    /**
+     * The variable's name, and the key callers use for it in a send request's parameters object.
+     * Must start with a letter and hold only letters, digits and underscores.
+     */
     #[Required]
     public string $name;
 
     #[Required]
     public Props $props;
 
+    /**
+     * One of variable, link or media. Decides which Props fields
+     * are required.
+     */
     #[Required]
     public string $type;
 
+    /**
+     * The variable's index, and the number its {{index:variable}} placeholder refers to.
+     *
+     * Omitting it is only safe for a section holding a single variable. The field is a
+     * non-nullable int, so every variable that leaves it out defaults to 0, and a section with two
+     * such variables is refused by the unique-id rule ("variables must have unique IDs"). Number
+     * them from 0 in the order they appear.
+     */
     #[Optional]
     public ?int $id;
 
@@ -77,6 +93,10 @@ final class TemplateVariable implements BaseModel
         return $self;
     }
 
+    /**
+     * The variable's name, and the key callers use for it in a send request's parameters object.
+     * Must start with a letter and hold only letters, digits and underscores.
+     */
     public function withName(string $name): self
     {
         $self = clone $this;
@@ -96,6 +116,10 @@ final class TemplateVariable implements BaseModel
         return $self;
     }
 
+    /**
+     * One of variable, link or media. Decides which Props fields
+     * are required.
+     */
     public function withType(string $type): self
     {
         $self = clone $this;
@@ -104,6 +128,14 @@ final class TemplateVariable implements BaseModel
         return $self;
     }
 
+    /**
+     * The variable's index, and the number its {{index:variable}} placeholder refers to.
+     *
+     * Omitting it is only safe for a section holding a single variable. The field is a
+     * non-nullable int, so every variable that leaves it out defaults to 0, and a section with two
+     * such variables is refused by the unique-id rule ("variables must have unique IDs"). Number
+     * them from 0 in the order they appear.
+     */
     public function withID(int $id): self
     {
         $self = clone $this;

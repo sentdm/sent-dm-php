@@ -15,6 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type TemplateShape = array{
  *   customerID: string,
  *   id?: string|null,
+ *   autoReplyAction?: string|null,
  *   category?: string|null,
  *   channels?: list<string>|null,
  *   createdAt?: \DateTimeInterface|null,
@@ -45,13 +46,39 @@ final class Template implements BaseModel
     public ?string $id;
 
     /**
+     * Which consent keyword this template answers, when it is one of Sent's auto-replies:
+     * OPT_IN, OPT_OUT, HELP, or OTHER for a customer-defined keyword.
+     * Null for an ordinary template, and omitted from the response, so its presence is the answer to
+     * "is this an auto-reply".
+     *
+     * Deliberately not required, unlike CustomerId, even though the
+     * same "no single mapper" argument applies: NJsonSchema publishes a C# required member in the
+     * schema's required array, so the contract would have advertised a field this response omits
+     * for every ordinary template, and a generated client could refuse the common case. A compile-time
+     * guard is not worth a wrong published contract. Every mapping site sets it explicitly, and
+     * TemplateResponseSchemaTests pins the field as optional so it cannot be reintroduced.
+     */
+    #[Optional('auto_reply_action', nullable: true)]
+    public ?string $autoReplyAction;
+
+    /**
      * Template category: MARKETING, UTILITY, AUTHENTICATION.
      */
     #[Optional]
     public ?string $category;
 
     /**
-     * Supported channels: sms, whatsapp.
+     * The channels this template's definition can render on, in canonical order: sms,
+     * whatsapp, rcs.
+     *
+     * Derived from the definition's body, mirroring each channel's send-time fallback chain, so a
+     * channel is listed only when a real body would be produced for it: SMS reads
+     * sms ?? multiChannel, WhatsApp reads whatsapp ?? multiChannel, and RCS reads
+     * rcs ?? multiChannel ?? sms. A multiChannel body therefore reports all three, and
+     * the extra SMS fallback on RCS is why an sms/whatsapp pair reports RCS too.
+     *
+     * This says what the content can render on, not what may be sent: sending also needs the
+     * template approved for that channel.
      *
      * @var list<string>|null $channels
      */
@@ -83,7 +110,8 @@ final class Template implements BaseModel
     public ?string $name;
 
     /**
-     * Template status: APPROVED, PENDING, REJECTED.
+     * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
+     * submit_for_review: false starts as DRAFT and stays there until it is submitted.
      */
     #[Optional]
     public ?string $status;
@@ -132,6 +160,7 @@ final class Template implements BaseModel
     public static function with(
         string $customerID,
         ?string $id = null,
+        ?string $autoReplyAction = null,
         ?string $category = null,
         ?array $channels = null,
         ?\DateTimeInterface $createdAt = null,
@@ -147,6 +176,7 @@ final class Template implements BaseModel
         $self['customerID'] = $customerID;
 
         null !== $id && $self['id'] = $id;
+        null !== $autoReplyAction && $self['autoReplyAction'] = $autoReplyAction;
         null !== $category && $self['category'] = $category;
         null !== $channels && $self['channels'] = $channels;
         null !== $createdAt && $self['createdAt'] = $createdAt;
@@ -184,6 +214,27 @@ final class Template implements BaseModel
     }
 
     /**
+     * Which consent keyword this template answers, when it is one of Sent's auto-replies:
+     * OPT_IN, OPT_OUT, HELP, or OTHER for a customer-defined keyword.
+     * Null for an ordinary template, and omitted from the response, so its presence is the answer to
+     * "is this an auto-reply".
+     *
+     * Deliberately not required, unlike CustomerId, even though the
+     * same "no single mapper" argument applies: NJsonSchema publishes a C# required member in the
+     * schema's required array, so the contract would have advertised a field this response omits
+     * for every ordinary template, and a generated client could refuse the common case. A compile-time
+     * guard is not worth a wrong published contract. Every mapping site sets it explicitly, and
+     * TemplateResponseSchemaTests pins the field as optional so it cannot be reintroduced.
+     */
+    public function withAutoReplyAction(?string $autoReplyAction): self
+    {
+        $self = clone $this;
+        $self['autoReplyAction'] = $autoReplyAction;
+
+        return $self;
+    }
+
+    /**
      * Template category: MARKETING, UTILITY, AUTHENTICATION.
      */
     public function withCategory(string $category): self
@@ -195,7 +246,17 @@ final class Template implements BaseModel
     }
 
     /**
-     * Supported channels: sms, whatsapp.
+     * The channels this template's definition can render on, in canonical order: sms,
+     * whatsapp, rcs.
+     *
+     * Derived from the definition's body, mirroring each channel's send-time fallback chain, so a
+     * channel is listed only when a real body would be produced for it: SMS reads
+     * sms ?? multiChannel, WhatsApp reads whatsapp ?? multiChannel, and RCS reads
+     * rcs ?? multiChannel ?? sms. A multiChannel body therefore reports all three, and
+     * the extra SMS fallback on RCS is why an sms/whatsapp pair reports RCS too.
+     *
+     * This says what the content can render on, not what may be sent: sending also needs the
+     * template approved for that channel.
      *
      * @param list<string>|null $channels
      */
@@ -252,7 +313,8 @@ final class Template implements BaseModel
     }
 
     /**
-     * Template status: APPROVED, PENDING, REJECTED.
+     * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
+     * submit_for_review: false starts as DRAFT and stays there until it is submitted.
      */
     public function withStatus(string $status): self
     {
