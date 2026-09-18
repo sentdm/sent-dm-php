@@ -17,6 +17,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   status: string,
  *   whatsappTemplateID: string,
  *   accountID?: string|null,
+ *   autoReplyAction?: string|null,
  *   category?: string|null,
  *   channel?: string|null,
  *   language?: string|null,
@@ -50,6 +51,25 @@ final class TemplateEventPayload implements BaseModel
     public ?string $accountID;
 
     /**
+     * Which consent keyword this template answers, when it is one of Sent's auto-replies:
+     * OPT_IN, OPT_OUT, HELP, or OTHER for a customer-defined keyword.
+     *
+     * Omitted for an ordinary template, so its presence is the answer to "is this an
+     * auto-reply". Sent creates the three compliance auto-replies at signup and they go through
+     * review like any other template, so their events arrive mixed in with the customer's own with
+     * nothing else to tell them apart.
+     *
+     * Named for the reader rather than after Template.OptAction, which it is mapped
+     * from. The MCP tool result deliberately keeps OptAction, OptKeywords and
+     * IsOpt: it mirrors the internal shape on purpose and publishes the keywords too, so
+     * renaming one of the three there would leave a surface half in each vocabulary. Two names for
+     * one concept, each consistent within its own surface, chosen over a rename that breaks MCP
+     * clients silently.
+     */
+    #[Optional('auto_reply_action', nullable: true)]
+    public ?string $autoReplyAction;
+
+    /**
      * The template's category, for example UTILITY, MARKETING, or
      * AUTHENTICATION.
      */
@@ -57,9 +77,15 @@ final class TemplateEventPayload implements BaseModel
     public ?string $category;
 
     /**
-     * The channel the template applies to.
+     * The channel leg this decision is about, for example whatsapp, sms, or rcs.
+     * A template is reviewed per channel and the legs come back independently, so each one reports
+     * separately.
+     *
+     * Omitted when the decision applies to the template as a whole rather than to one leg. That
+     * event is the broader news: a template-wide rejection blocks every channel, whatever the
+     * individual legs say.
      */
-    #[Optional]
+    #[Optional(nullable: true)]
     public ?string $channel;
 
     /**
@@ -115,6 +141,7 @@ final class TemplateEventPayload implements BaseModel
         string $status,
         string $whatsappTemplateID,
         ?string $accountID = null,
+        ?string $autoReplyAction = null,
         ?string $category = null,
         ?string $channel = null,
         ?string $language = null,
@@ -128,6 +155,7 @@ final class TemplateEventPayload implements BaseModel
         $self['whatsappTemplateID'] = $whatsappTemplateID;
 
         null !== $accountID && $self['accountID'] = $accountID;
+        null !== $autoReplyAction && $self['autoReplyAction'] = $autoReplyAction;
         null !== $category && $self['category'] = $category;
         null !== $channel && $self['channel'] = $channel;
         null !== $language && $self['language'] = $language;
@@ -173,6 +201,30 @@ final class TemplateEventPayload implements BaseModel
     }
 
     /**
+     * Which consent keyword this template answers, when it is one of Sent's auto-replies:
+     * OPT_IN, OPT_OUT, HELP, or OTHER for a customer-defined keyword.
+     *
+     * Omitted for an ordinary template, so its presence is the answer to "is this an
+     * auto-reply". Sent creates the three compliance auto-replies at signup and they go through
+     * review like any other template, so their events arrive mixed in with the customer's own with
+     * nothing else to tell them apart.
+     *
+     * Named for the reader rather than after Template.OptAction, which it is mapped
+     * from. The MCP tool result deliberately keeps OptAction, OptKeywords and
+     * IsOpt: it mirrors the internal shape on purpose and publishes the keywords too, so
+     * renaming one of the three there would leave a surface half in each vocabulary. Two names for
+     * one concept, each consistent within its own surface, chosen over a rename that breaks MCP
+     * clients silently.
+     */
+    public function withAutoReplyAction(?string $autoReplyAction): self
+    {
+        $self = clone $this;
+        $self['autoReplyAction'] = $autoReplyAction;
+
+        return $self;
+    }
+
+    /**
      * The template's category, for example UTILITY, MARKETING, or
      * AUTHENTICATION.
      */
@@ -185,9 +237,15 @@ final class TemplateEventPayload implements BaseModel
     }
 
     /**
-     * The channel the template applies to.
+     * The channel leg this decision is about, for example whatsapp, sms, or rcs.
+     * A template is reviewed per channel and the legs come back independently, so each one reports
+     * separately.
+     *
+     * Omitted when the decision applies to the template as a whole rather than to one leg. That
+     * event is the broader news: a template-wide rejection blocks every channel, whatever the
+     * individual legs say.
      */
-    public function withChannel(string $channel): self
+    public function withChannel(?string $channel): self
     {
         $self = clone $this;
         $self['channel'] = $channel;

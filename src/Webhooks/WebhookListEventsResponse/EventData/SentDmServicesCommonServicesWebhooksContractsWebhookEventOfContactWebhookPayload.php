@@ -2,29 +2,32 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks;
+namespace SentDm\Webhooks\WebhookListEventsResponse\EventData;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload\Payload;
 
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares this shape and
  * varies only in Payload.
  *
- * @phpstan-import-type InboundMessageEventPayloadShape from \SentDm\Webhooks\InboundMessageEventPayload
+ * @phpstan-import-type PayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload\Payload
  *
- * @phpstan-type InboundMessageEventShape = array{
+ * @phpstan-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayloadShape = array{
  *   event?: string|null,
  *   field?: string|null,
- *   payload?: null|InboundMessageEventPayload|InboundMessageEventPayloadShape,
+ *   payload?: null|Payload|PayloadShape,
  *   requestID?: string|null,
  *   timestamp?: string|null,
  * }
  */
-final class InboundMessageEvent implements BaseModel
+final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload implements BaseModel
 {
-    /** @use SdkModel<InboundMessageEventShape> */
+    /**
+     * @use SdkModel<SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayloadShape>
+     */
     use SdkModel;
 
     /**
@@ -43,10 +46,20 @@ final class InboundMessageEvent implements BaseModel
     public ?string $field;
 
     /**
-     * Body of a message.received event. Delivered when a contact messages one of your numbers.
+     * Body of a contact.opt_in, contact.opt_out or contact.help event. Delivered
+     * when a contact signals a consent change or asks for help.
+     *
+     * These events state the signal outright, so you do not have to recognise keywords in the
+     * text of a message.received event. They also cover cases that produce no inbound message
+     * at all, such as a network handling an opt-out on your behalf.
+     *
+     * Fields are ordered identity → resulting state → provenance → join key. Nothing here
+     * restates the envelope: which of the three signals occurred is the envelope's event, and
+     * when it was emitted is its timestamp. Retries carry the same X-Webhook-Event-ID
+     * header, which is what to deduplicate on.
      */
     #[Optional(nullable: true)]
-    public ?InboundMessageEventPayload $payload;
+    public ?Payload $payload;
 
     /**
      * The event-specific body.
@@ -72,12 +85,12 @@ final class InboundMessageEvent implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param InboundMessageEventPayload|InboundMessageEventPayloadShape|null $payload
+     * @param Payload|PayloadShape|null $payload
      */
     public static function with(
         ?string $event = null,
         ?string $field = null,
-        InboundMessageEventPayload|array|null $payload = null,
+        Payload|array|null $payload = null,
         ?string $requestID = null,
         ?string $timestamp = null,
     ): self {
@@ -118,13 +131,22 @@ final class InboundMessageEvent implements BaseModel
     }
 
     /**
-     * Body of a message.received event. Delivered when a contact messages one of your numbers.
+     * Body of a contact.opt_in, contact.opt_out or contact.help event. Delivered
+     * when a contact signals a consent change or asks for help.
      *
-     * @param InboundMessageEventPayload|InboundMessageEventPayloadShape|null $payload
+     * These events state the signal outright, so you do not have to recognise keywords in the
+     * text of a message.received event. They also cover cases that produce no inbound message
+     * at all, such as a network handling an opt-out on your behalf.
+     *
+     * Fields are ordered identity → resulting state → provenance → join key. Nothing here
+     * restates the envelope: which of the three signals occurred is the envelope's event, and
+     * when it was emitted is its timestamp. Retries carry the same X-Webhook-Event-ID
+     * header, which is what to deduplicate on.
+     *
+     * @param Payload|PayloadShape|null $payload
      */
-    public function withPayload(
-        InboundMessageEventPayload|array|null $payload
-    ): self {
+    public function withPayload(Payload|array|null $payload): self
+    {
         $self = clone $this;
         $self['payload'] = $payload;
 

@@ -18,6 +18,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   event?: string|null,
  *   field?: string|null,
  *   payload?: null|TemplateEventPayload|TemplateEventPayloadShape,
+ *   requestID?: string|null,
  *   timestamp?: string|null,
  * }
  */
@@ -27,15 +28,16 @@ final class TemplateEvent implements BaseModel
     use SdkModel;
 
     /**
-     * The specific event within the family, for example message.delivered or
-     * message.received. Absent on events that have no subtype, so treat it as optional.
+     * The specific event within the family, for example message.delivered,
+     * message.received or contact.opt_out. Absent on events that have no subtype, so
+     * treat it as optional.
      */
     #[Optional(nullable: true)]
     public ?string $event;
 
     /**
-     * The event family, for example message or templates. Route on this first, then
-     * on event for the specific change.
+     * The event family, for example message, templates or contact. Route on
+     * this first, then on event for the specific change.
      */
     #[Optional]
     public ?string $field;
@@ -46,6 +48,12 @@ final class TemplateEvent implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?TemplateEventPayload $payload;
+
+    /**
+     * The event-specific body.
+     */
+    #[Optional('request_id', nullable: true)]
+    public ?string $requestID;
 
     /**
      * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
@@ -71,6 +79,7 @@ final class TemplateEvent implements BaseModel
         ?string $event = null,
         ?string $field = null,
         TemplateEventPayload|array|null $payload = null,
+        ?string $requestID = null,
         ?string $timestamp = null,
     ): self {
         $self = new self;
@@ -78,14 +87,16 @@ final class TemplateEvent implements BaseModel
         null !== $event && $self['event'] = $event;
         null !== $field && $self['field'] = $field;
         null !== $payload && $self['payload'] = $payload;
+        null !== $requestID && $self['requestID'] = $requestID;
         null !== $timestamp && $self['timestamp'] = $timestamp;
 
         return $self;
     }
 
     /**
-     * The specific event within the family, for example message.delivered or
-     * message.received. Absent on events that have no subtype, so treat it as optional.
+     * The specific event within the family, for example message.delivered,
+     * message.received or contact.opt_out. Absent on events that have no subtype, so
+     * treat it as optional.
      */
     public function withEvent(?string $event): self
     {
@@ -96,8 +107,8 @@ final class TemplateEvent implements BaseModel
     }
 
     /**
-     * The event family, for example message or templates. Route on this first, then
-     * on event for the specific change.
+     * The event family, for example message, templates or contact. Route on
+     * this first, then on event for the specific change.
      */
     public function withField(string $field): self
     {
@@ -117,6 +128,17 @@ final class TemplateEvent implements BaseModel
     {
         $self = clone $this;
         $self['payload'] = $payload;
+
+        return $self;
+    }
+
+    /**
+     * The event-specific body.
+     */
+    public function withRequestID(?string $requestID): self
+    {
+        $self = clone $this;
+        $self['requestID'] = $requestID;
 
         return $self;
     }

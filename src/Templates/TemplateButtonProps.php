@@ -48,6 +48,19 @@ final class TemplateButtonProps implements BaseModel
     #[Required]
     public string $quickReplyType;
 
+    /**
+     * The button's label. Required for every button type, and capped at
+     * TemplateContentLimits.MaxButtonTextLength (25) characters.
+     *
+     * Meta accepts only static text here, so a label is refused when it contains a
+     * {{...}} variable placeholder, a newline, an emoji, or WhatsApp formatting markup
+     * (*, _, ~) — enforced by ApplyButtonLabelContentRules in
+     * TemplateButtonValidator. Meta reports all four as one error: "Buttons can't have any
+     * variables, newlines, emojis, or formatting characters."
+     *
+     * AUTHENTICATION OTP buttons are the exception: Meta auto-localizes their label from the
+     * template language, and the converter drops whatever text was sent.
+     */
     #[Required]
     public string $text;
 
@@ -199,6 +212,19 @@ final class TemplateButtonProps implements BaseModel
         return $self;
     }
 
+    /**
+     * The button's label. Required for every button type, and capped at
+     * TemplateContentLimits.MaxButtonTextLength (25) characters.
+     *
+     * Meta accepts only static text here, so a label is refused when it contains a
+     * {{...}} variable placeholder, a newline, an emoji, or WhatsApp formatting markup
+     * (*, _, ~) — enforced by ApplyButtonLabelContentRules in
+     * TemplateButtonValidator. Meta reports all four as one error: "Buttons can't have any
+     * variables, newlines, emojis, or formatting characters."
+     *
+     * AUTHENTICATION OTP buttons are the exception: Meta auto-localizes their label from the
+     * template language, and the converter drops whatever text was sent.
+     */
     public function withText(string $text): self
     {
         $self = clone $this;

@@ -38,7 +38,12 @@ final class TemplateButton implements BaseModel
     public string $type;
 
     /**
-     * The unique identifier of the button (1-based index).
+     * The button's identifier (1-based index), unique within the template.
+     *
+     * Omitting it is only safe for a template holding a single button. The field is a
+     * non-nullable int, so every button that leaves it out defaults to 0, and two such buttons are
+     * refused by the unique-id rule ("Button IDs must be unique"). Number them from 1 in the order
+     * they should appear — order matters on RCS, where only the first four buttons render.
      */
     #[Optional]
     public ?int $id;
@@ -109,7 +114,12 @@ final class TemplateButton implements BaseModel
     }
 
     /**
-     * The unique identifier of the button (1-based index).
+     * The button's identifier (1-based index), unique within the template.
+     *
+     * Omitting it is only safe for a template holding a single button. The field is a
+     * non-nullable int, so every button that leaves it out defaults to 0, and two such buttons are
+     * refused by the unique-id rule ("Button IDs must be unique"). Number them from 1 in the order
+     * they should appear — order matters on RCS, where only the first four buttons render.
      */
     public function withID(int $id): self
     {
