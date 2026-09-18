@@ -2,32 +2,29 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\EventData;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWebhookPayload\Payload;
 
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares this shape and
  * varies only in Payload.
  *
- * @phpstan-import-type PayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWebhookPayload\Payload
+ * @phpstan-import-type ChannelEventPayloadShape from \SentDm\Webhooks\ChannelEventPayload
  *
- * @phpstan-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWebhookPayloadShape = array{
+ * @phpstan-type ChannelEventShape = array{
  *   event?: string|null,
  *   field?: string|null,
- *   payload?: null|Payload|PayloadShape,
+ *   payload?: null|ChannelEventPayload|ChannelEventPayloadShape,
  *   requestID?: string|null,
  *   timestamp?: string|null,
  * }
  */
-final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWebhookPayload implements BaseModel
+final class ChannelEvent implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWebhookPayloadShape>
-     */
+    /** @use SdkModel<ChannelEventShape> */
     use SdkModel;
 
     /**
@@ -69,7 +66,7 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWe
      * on this payload.
      */
     #[Optional(nullable: true)]
-    public ?Payload $payload;
+    public ?ChannelEventPayload $payload;
 
     /**
      * The event-specific body.
@@ -95,12 +92,12 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWe
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param ChannelEventPayload|ChannelEventPayloadShape|null $payload
      */
     public static function with(
         ?string $event = null,
         ?string $field = null,
-        Payload|array|null $payload = null,
+        ChannelEventPayload|array|null $payload = null,
         ?string $requestID = null,
         ?string $timestamp = null,
     ): self {
@@ -163,9 +160,9 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWe
      * rule, without either showing up here. Those are separate surfaces and deliberately not modelled
      * on this payload.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param ChannelEventPayload|ChannelEventPayloadShape|null $payload
      */
-    public function withPayload(Payload|array|null $payload): self
+    public function withPayload(ChannelEventPayload|array|null $payload): self
     {
         $self = clone $this;
         $self['payload'] = $payload;

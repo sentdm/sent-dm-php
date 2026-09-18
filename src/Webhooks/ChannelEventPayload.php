@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfChannelWebhookPayload;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
@@ -32,7 +32,7 @@ use SentDm\Core\Contracts\BaseModel;
  * rule, without either showing up here. Those are separate surfaces and deliberately not modelled
  * on this payload.
  *
- * @phpstan-type PayloadShape = array{
+ * @phpstan-type ChannelEventPayloadShape = array{
  *   country: string,
  *   accountID?: string|null,
  *   channel?: string|null,
@@ -43,9 +43,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   updatedAt?: string|null,
  * }
  */
-final class Payload implements BaseModel
+final class ChannelEventPayload implements BaseModel
 {
-    /** @use SdkModel<PayloadShape> */
+    /** @use SdkModel<ChannelEventPayloadShape> */
     use SdkModel;
 
     /**
@@ -126,17 +126,17 @@ final class Payload implements BaseModel
     public ?string $updatedAt;
 
     /**
-     * `new Payload()` is missing required properties by the API.
+     * `new ChannelEventPayload()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * Payload::with(country: ...)
+     * ChannelEventPayload::with(country: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new Payload)->withCountry(...)
+     * (new ChannelEventPayload)->withCountry(...)
      * ```
      */
     public function __construct()

@@ -2,32 +2,29 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\EventData;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload\Payload;
 
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares this shape and
  * varies only in Payload.
  *
- * @phpstan-import-type PayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload\Payload
+ * @phpstan-import-type ContactEventPayloadShape from \SentDm\Webhooks\ContactEventPayload
  *
- * @phpstan-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayloadShape = array{
+ * @phpstan-type ContactEventShape = array{
  *   event?: string|null,
  *   field?: string|null,
- *   payload?: null|Payload|PayloadShape,
+ *   payload?: null|ContactEventPayload|ContactEventPayloadShape,
  *   requestID?: string|null,
  *   timestamp?: string|null,
  * }
  */
-final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload implements BaseModel
+final class ContactEvent implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayloadShape>
-     */
+    /** @use SdkModel<ContactEventShape> */
     use SdkModel;
 
     /**
@@ -59,7 +56,7 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWe
      * header, which is what to deduplicate on.
      */
     #[Optional(nullable: true)]
-    public ?Payload $payload;
+    public ?ContactEventPayload $payload;
 
     /**
      * The event-specific body.
@@ -85,12 +82,12 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWe
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param ContactEventPayload|ContactEventPayloadShape|null $payload
      */
     public static function with(
         ?string $event = null,
         ?string $field = null,
-        Payload|array|null $payload = null,
+        ContactEventPayload|array|null $payload = null,
         ?string $requestID = null,
         ?string $timestamp = null,
     ): self {
@@ -143,9 +140,9 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWe
      * when it was emitted is its timestamp. Retries carry the same X-Webhook-Event-ID
      * header, which is what to deduplicate on.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param ContactEventPayload|ContactEventPayloadShape|null $payload
      */
-    public function withPayload(Payload|array|null $payload): self
+    public function withPayload(ContactEventPayload|array|null $payload): self
     {
         $self = clone $this;
         $self['payload'] = $payload;
