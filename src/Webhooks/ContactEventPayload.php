@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfContactWebhookPayload;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
@@ -22,7 +22,7 @@ use SentDm\Core\Contracts\BaseModel;
  * when it was emitted is its timestamp. Retries carry the same X-Webhook-Event-ID
  * header, which is what to deduplicate on.
  *
- * @phpstan-type PayloadShape = array{
+ * @phpstan-type ContactEventPayloadShape = array{
  *   optOut: bool,
  *   source: string,
  *   accountID?: string|null,
@@ -33,9 +33,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   text?: string|null,
  * }
  */
-final class Payload implements BaseModel
+final class ContactEventPayload implements BaseModel
 {
-    /** @use SdkModel<PayloadShape> */
+    /** @use SdkModel<ContactEventPayloadShape> */
     use SdkModel;
 
     /**
@@ -110,17 +110,17 @@ final class Payload implements BaseModel
     public ?string $text;
 
     /**
-     * `new Payload()` is missing required properties by the API.
+     * `new ContactEventPayload()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * Payload::with(optOut: ..., source: ...)
+     * ContactEventPayload::with(optOut: ..., source: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new Payload)->withOptOut(...)->withSource(...)
+     * (new ContactEventPayload)->withOptOut(...)->withSource(...)
      * ```
      */
     public function __construct()
