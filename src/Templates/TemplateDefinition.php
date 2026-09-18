@@ -33,7 +33,17 @@ final class TemplateDefinition implements BaseModel
     use SdkModel;
 
     /**
-     * Body section of a message template with channel-specific content.
+     * Body section of a message template.
+     *
+     * A body picks one of two authoring strategies, and mixing them is refused
+     * (TemplateDefinitionValidator.HaveValidChannelConfiguration):
+     * a shared multiChannel body on its own, or
+     * an explicit sms + whatsapp pair, both present.
+     *
+     * multiChannel together with sms or whatsapp is rejected, and so is
+     * sms or whatsapp on its own — every template is expected to be deliverable on every
+     * channel. rcs is the one true override: it may accompany either strategy to vary the copy,
+     * but cannot stand alone.
      */
     #[Required]
     public TemplateBody $body;
@@ -122,7 +132,17 @@ final class TemplateDefinition implements BaseModel
     }
 
     /**
-     * Body section of a message template with channel-specific content.
+     * Body section of a message template.
+     *
+     * A body picks one of two authoring strategies, and mixing them is refused
+     * (TemplateDefinitionValidator.HaveValidChannelConfiguration):
+     * a shared multiChannel body on its own, or
+     * an explicit sms + whatsapp pair, both present.
+     *
+     * multiChannel together with sms or whatsapp is rejected, and so is
+     * sms or whatsapp on its own — every template is expected to be deliverable on every
+     * channel. rcs is the one true override: it may accompany either strategy to vary the copy,
+     * but cannot stand alone.
      *
      * @param TemplateBody|TemplateBodyShape $body
      */

@@ -17,6 +17,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   messageStatus: string,
  *   accountID?: string|null,
  *   agentID?: string|null,
+ *   body?: string|null,
  *   channel?: string|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
@@ -49,6 +50,14 @@ final class MessageEventPayload implements BaseModel
      */
     #[Optional('agent_id', nullable: true)]
     public ?string $agentID;
+
+    /**
+     * The rendered message body, as plain text. Sent as null when we aren't asserting a
+     * body for this event. The field is always present, so read it and check for null rather than
+     * checking whether the key exists. Truncated to 3072 characters.
+     */
+    #[Optional(nullable: true)]
+    public ?string $body;
 
     /**
      * The channel the message went out on, for example sms or whatsapp. A message
@@ -118,6 +127,7 @@ final class MessageEventPayload implements BaseModel
         string $messageStatus,
         ?string $accountID = null,
         ?string $agentID = null,
+        ?string $body = null,
         ?string $channel = null,
         ?string $messageID = null,
         ?string $outboundNumber = null,
@@ -131,6 +141,7 @@ final class MessageEventPayload implements BaseModel
 
         null !== $accountID && $self['accountID'] = $accountID;
         null !== $agentID && $self['agentID'] = $agentID;
+        null !== $body && $self['body'] = $body;
         null !== $channel && $self['channel'] = $channel;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
@@ -172,6 +183,19 @@ final class MessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['agentID'] = $agentID;
+
+        return $self;
+    }
+
+    /**
+     * The rendered message body, as plain text. Sent as null when we aren't asserting a
+     * body for this event. The field is always present, so read it and check for null rather than
+     * checking whether the key exists. Truncated to 3072 characters.
+     */
+    public function withBody(?string $body): self
+    {
+        $self = clone $this;
+        $self['body'] = $body;
 
         return $self;
     }
