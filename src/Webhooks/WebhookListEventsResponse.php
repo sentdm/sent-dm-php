@@ -47,14 +47,15 @@ final class WebhookListEventsResponse implements BaseModel
     public ?string $errorMessage;
 
     /**
-     * The exact event body that was delivered, or attempted, for this record. One of the three
-     * webhook envelopes: a message status change, an inbound message, or a template status change.
-     * Read field and event to tell which, the same way your endpoint does.
+     * The exact event body that was delivered, or attempted, for this record. One of the four
+     * webhook envelopes: a message status change, an inbound message, a template status change, or
+     * a contact consent signal. Read field and event to tell which, the same way
+     * your endpoint does.
      *
      * @var EventDataVariants|null $eventData
      */
     #[Optional('event_data')]
-    public MessageEvent|InboundMessageEvent|TemplateEvent|null $eventData;
+    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|null $eventData;
 
     #[Optional('event_type')]
     public ?string $eventType;
@@ -89,7 +90,7 @@ final class WebhookListEventsResponse implements BaseModel
         ?int $deliveryAttempts = null,
         ?string $deliveryStatus = null,
         ?string $errorMessage = null,
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|null $eventData = null,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|null $eventData = null,
         ?string $eventType = null,
         ?int $httpStatusCode = null,
         ?\DateTimeInterface $processingCompletedAt = null,
@@ -154,14 +155,15 @@ final class WebhookListEventsResponse implements BaseModel
     }
 
     /**
-     * The exact event body that was delivered, or attempted, for this record. One of the three
-     * webhook envelopes: a message status change, an inbound message, or a template status change.
-     * Read field and event to tell which, the same way your endpoint does.
+     * The exact event body that was delivered, or attempted, for this record. One of the four
+     * webhook envelopes: a message status change, an inbound message, a template status change, or
+     * a contact consent signal. Read field and event to tell which, the same way
+     * your endpoint does.
      *
      * @param EventDataShape $eventData
      */
     public function withEventData(
-        MessageEvent|array|InboundMessageEvent|TemplateEvent $eventData
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent $eventData,
     ): self {
         $self = clone $this;
         $self['eventData'] = $eventData;
