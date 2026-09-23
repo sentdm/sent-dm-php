@@ -8,6 +8,7 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\ChannelEventPayload\Compliance;
 
 /**
  * Body of a channel event: where one of the customer's channels stands in provisioning and
@@ -32,10 +33,13 @@ use SentDm\Core\Contracts\BaseModel;
  * rule, without either showing up here. Those are separate surfaces and deliberately not modelled
  * on this payload.
  *
+ * @phpstan-import-type ComplianceShape from \SentDm\Webhooks\ChannelEventPayload\Compliance
+ *
  * @phpstan-type ChannelEventPayloadShape = array{
  *   country: string,
  *   accountID?: string|null,
  *   channel?: string|null,
+ *   compliance?: null|Compliance|ComplianceShape,
  *   numberType?: string|null,
  *   reason?: string|null,
  *   senderValue?: string|null,
@@ -61,6 +65,8 @@ final class ChannelEventPayload implements BaseModel
      * The account whose market this is, named as on every other family. When an organization
      * receives an event for one of its sender profiles this is the profile, so a reseller compares
      * it with its own id and anything different is one of its profiles.
+     * Matches customer_id on GET /v3/channels and the sender profile's id.
+     * Together with channel, country, and number_type, it identifies the market.
      */
     #[Optional('account_id')]
     public ?string $accountID;
@@ -72,6 +78,24 @@ final class ChannelEventPayload implements BaseModel
      */
     #[Optional]
     public ?string $channel;
+
+    /**
+     * What a market has been given: the identity it registers under, its programme, and any documents attached.
+     *
+     * What it does not carry is what the market asks for. That is the subject of
+     * GET /v3/compliance/requirements, and it is the same answer for every caller — a description of what
+     * a compliance regime wants, not a record of one customer's progress through it. It was reported here as
+     * well for a while, which put the same array in six response shapes and left a caller deciding which of two
+     * sources to believe.
+     *
+     * Present on a list read for markets that register (carrying brand and campaign), but with
+     * documents absent — documents are not fetched for a list, because a catalog lookup and a document
+     * read per market would multiply across a page. Absent documents is distinct from an empty list:
+     * absent says they were not fetched; empty says the market has been given none. The parent object is null
+     * only when the market registers with nobody and compliance was not computed — nothing to show at all.
+     */
+    #[Optional(nullable: true)]
+    public ?Compliance $compliance;
 
     /**
      * The kind of sender the market uses, for example TEN_DLC, LOCAL, or
@@ -148,11 +172,14 @@ final class ChannelEventPayload implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param Compliance|ComplianceShape|null $compliance
      */
     public static function with(
         string $country,
         ?string $accountID = null,
         ?string $channel = null,
+        Compliance|array|null $compliance = null,
         ?string $numberType = null,
         ?string $reason = null,
         ?string $senderValue = null,
@@ -165,6 +192,7 @@ final class ChannelEventPayload implements BaseModel
 
         null !== $accountID && $self['accountID'] = $accountID;
         null !== $channel && $self['channel'] = $channel;
+        null !== $compliance && $self['compliance'] = $compliance;
         null !== $numberType && $self['numberType'] = $numberType;
         null !== $reason && $self['reason'] = $reason;
         null !== $senderValue && $self['senderValue'] = $senderValue;
@@ -192,6 +220,8 @@ final class ChannelEventPayload implements BaseModel
      * The account whose market this is, named as on every other family. When an organization
      * receives an event for one of its sender profiles this is the profile, so a reseller compares
      * it with its own id and anything different is one of its profiles.
+     * Matches customer_id on GET /v3/channels and the sender profile's id.
+     * Together with channel, country, and number_type, it identifies the market.
      */
     public function withAccountID(string $accountID): self
     {
@@ -210,6 +240,31 @@ final class ChannelEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['channel'] = $channel;
+
+        return $self;
+    }
+
+    /**
+     * What a market has been given: the identity it registers under, its programme, and any documents attached.
+     *
+     * What it does not carry is what the market asks for. That is the subject of
+     * GET /v3/compliance/requirements, and it is the same answer for every caller — a description of what
+     * a compliance regime wants, not a record of one customer's progress through it. It was reported here as
+     * well for a while, which put the same array in six response shapes and left a caller deciding which of two
+     * sources to believe.
+     *
+     * Present on a list read for markets that register (carrying brand and campaign), but with
+     * documents absent — documents are not fetched for a list, because a catalog lookup and a document
+     * read per market would multiply across a page. Absent documents is distinct from an empty list:
+     * absent says they were not fetched; empty says the market has been given none. The parent object is null
+     * only when the market registers with nobody and compliance was not computed — nothing to show at all.
+     *
+     * @param Compliance|ComplianceShape|null $compliance
+     */
+    public function withCompliance(Compliance|array|null $compliance): self
+    {
+        $self = clone $this;
+        $self['compliance'] = $compliance;
 
         return $self;
     }
