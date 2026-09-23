@@ -21,6 +21,8 @@ use SentDm\Core\Contracts\BaseModel;
  *   channel?: string|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
+ *   scheduleReason?: string|null,
+ *   scheduledAt?: string|null,
  *   templateID?: string|null,
  *   templateName?: string|null,
  *   updatedAt?: string|null,
@@ -80,6 +82,20 @@ final class MessageEventPayload implements BaseModel
     public ?string $outboundNumber;
 
     /**
+     * message.scheduled only: why the message is held, either because you scheduled it or because
+     * the recipient is inside a protected quiet-hours window. Omitted on every other event.
+     */
+    #[Optional('schedule_reason', nullable: true)]
+    public ?string $scheduleReason;
+
+    /**
+     * message.scheduled only: when the held message will be released for delivery, in UTC
+     * (yyyy-MM-ddTHH:mm:ssZ). Omitted on every other event.
+     */
+    #[Optional('scheduled_at', nullable: true)]
+    public ?string $scheduledAt;
+
+    /**
      * The template the message was sent from, when it was sent from one.
      */
     #[Optional('template_id', nullable: true)]
@@ -131,6 +147,8 @@ final class MessageEventPayload implements BaseModel
         ?string $channel = null,
         ?string $messageID = null,
         ?string $outboundNumber = null,
+        ?string $scheduleReason = null,
+        ?string $scheduledAt = null,
         ?string $templateID = null,
         ?string $templateName = null,
         ?string $updatedAt = null,
@@ -145,6 +163,8 @@ final class MessageEventPayload implements BaseModel
         null !== $channel && $self['channel'] = $channel;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
+        null !== $scheduleReason && $self['scheduleReason'] = $scheduleReason;
+        null !== $scheduledAt && $self['scheduledAt'] = $scheduledAt;
         null !== $templateID && $self['templateID'] = $templateID;
         null !== $templateName && $self['templateName'] = $templateName;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
@@ -231,6 +251,30 @@ final class MessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['outboundNumber'] = $outboundNumber;
+
+        return $self;
+    }
+
+    /**
+     * message.scheduled only: why the message is held, either because you scheduled it or because
+     * the recipient is inside a protected quiet-hours window. Omitted on every other event.
+     */
+    public function withScheduleReason(?string $scheduleReason): self
+    {
+        $self = clone $this;
+        $self['scheduleReason'] = $scheduleReason;
+
+        return $self;
+    }
+
+    /**
+     * message.scheduled only: when the held message will be released for delivery, in UTC
+     * (yyyy-MM-ddTHH:mm:ssZ). Omitted on every other event.
+     */
+    public function withScheduledAt(?string $scheduledAt): self
+    {
+        $self = clone $this;
+        $self['scheduledAt'] = $scheduledAt;
 
         return $self;
     }
