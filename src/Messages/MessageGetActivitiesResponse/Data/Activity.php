@@ -11,11 +11,15 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * A single message activity event for v3 API.
  *
+ * The activity list mixes statuses, so unlike a message it is one shape rather than two: a SCHEDULED
+ * entry carries scheduled_at, and every other entry has no such key.
+ *
  * @phpstan-type ActivityShape = array{
  *   activeContactPrice?: string|null,
  *   description?: string|null,
  *   from?: string|null,
  *   price?: string|null,
+ *   scheduledAt?: \DateTimeInterface|null,
  *   status?: string|null,
  *   timestamp?: \DateTimeInterface|null,
  * }
@@ -50,7 +54,15 @@ final class Activity implements BaseModel
     public ?string $price;
 
     /**
-     * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, READ, FAILED.
+     * SCHEDULED activities only: when the held message will be released for delivery, in UTC. Same wire name
+     * as on the send response, the message and the webhook. Omitted on every other activity. A message that quiet
+     * hours moved at release has two SCHEDULED entries, each carrying the instant as it stood at that moment.
+     */
+    #[Optional('scheduled_at', nullable: true)]
+    public ?\DateTimeInterface $scheduledAt;
+
+    /**
+     * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SCHEDULED, SENT, DELIVERED, READ, FAILED.
      * Inbound (from contact): RECEIVED (terminal).
      */
     #[Optional]
@@ -77,6 +89,7 @@ final class Activity implements BaseModel
         ?string $description = null,
         ?string $from = null,
         ?string $price = null,
+        ?\DateTimeInterface $scheduledAt = null,
         ?string $status = null,
         ?\DateTimeInterface $timestamp = null,
     ): self {
@@ -86,6 +99,7 @@ final class Activity implements BaseModel
         null !== $description && $self['description'] = $description;
         null !== $from && $self['from'] = $from;
         null !== $price && $self['price'] = $price;
+        null !== $scheduledAt && $self['scheduledAt'] = $scheduledAt;
         null !== $status && $self['status'] = $status;
         null !== $timestamp && $self['timestamp'] = $timestamp;
 
@@ -137,7 +151,20 @@ final class Activity implements BaseModel
     }
 
     /**
-     * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, READ, FAILED.
+     * SCHEDULED activities only: when the held message will be released for delivery, in UTC. Same wire name
+     * as on the send response, the message and the webhook. Omitted on every other activity. A message that quiet
+     * hours moved at release has two SCHEDULED entries, each carrying the instant as it stood at that moment.
+     */
+    public function withScheduledAt(?\DateTimeInterface $scheduledAt): self
+    {
+        $self = clone $this;
+        $self['scheduledAt'] = $scheduledAt;
+
+        return $self;
+    }
+
+    /**
+     * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SCHEDULED, SENT, DELIVERED, READ, FAILED.
      * Inbound (from contact): RECEIVED (terminal).
      */
     public function withStatus(string $status): self

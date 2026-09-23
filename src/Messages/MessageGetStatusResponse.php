@@ -32,6 +32,11 @@ final class MessageGetStatusResponse implements BaseModel
 
     /**
      * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+     *
+     * The shape of a message that was sent immediately: it never has a scheduled_at key. A message that is
+     * or was held for a later instant is a ScheduledMessageResponse, and the endpoint decides which of
+     * the two to answer with. From
+     * always returns this type.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
@@ -86,6 +91,11 @@ final class MessageGetStatusResponse implements BaseModel
 
     /**
      * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+     *
+     * The shape of a message that was sent immediately: it never has a scheduled_at key. A message that is
+     * or was held for a later instant is a ScheduledMessageResponse, and the endpoint decides which of
+     * the two to answer with. From
+     * always returns this type.
      *
      * @param Data|DataShape|null $data
      */

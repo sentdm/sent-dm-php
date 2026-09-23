@@ -7,6 +7,7 @@ namespace SentDm\Templates;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Templates\TemplateBody\Mms;
 
 /**
  * Body section of a message template.
@@ -21,9 +22,11 @@ use SentDm\Core\Contracts\BaseModel;
  * channel. rcs is the one true override: it may accompany either strategy to vary the copy,
  * but cannot stand alone.
  *
+ * @phpstan-import-type MmsShape from \SentDm\Templates\TemplateBody\Mms
  * @phpstan-import-type TemplateBodyContentShape from \SentDm\Templates\TemplateBodyContent
  *
  * @phpstan-type TemplateBodyShape = array{
+ *   mms?: null|Mms|MmsShape,
  *   multiChannel?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   rcs?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   sms?: null|TemplateBodyContent|TemplateBodyContentShape,
@@ -34,6 +37,18 @@ final class TemplateBody implements BaseModel
 {
     /** @use SdkModel<TemplateBodyShape> */
     use SdkModel;
+
+    /**
+     * MMS-specific content — subject, text and attachments.
+     *
+     * Like Rcs, an override that cannot stand on its own: a template still needs a
+     * MultiChannel body or the Sms + Whatsapp pair to be
+     * deliverable at all. Unlike Rcs, it has no fallback at send time — MMS with no
+     * media is a more expensive SMS, so a template without this slot is deliberately not MMS-capable
+     * and never produces an MMS route candidate.
+     */
+    #[Optional(nullable: true)]
+    public ?Mms $mms;
 
     /**
      * The shared body, used for every channel. One half of the choice described above.
@@ -71,12 +86,14 @@ final class TemplateBody implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
+     * @param Mms|MmsShape|null $mms
      * @param TemplateBodyContent|TemplateBodyContentShape|null $multiChannel
      * @param TemplateBodyContent|TemplateBodyContentShape|null $rcs
      * @param TemplateBodyContent|TemplateBodyContentShape|null $sms
      * @param TemplateBodyContent|TemplateBodyContentShape|null $whatsapp
      */
     public static function with(
+        Mms|array|null $mms = null,
         TemplateBodyContent|array|null $multiChannel = null,
         TemplateBodyContent|array|null $rcs = null,
         TemplateBodyContent|array|null $sms = null,
@@ -84,10 +101,30 @@ final class TemplateBody implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $mms && $self['mms'] = $mms;
         null !== $multiChannel && $self['multiChannel'] = $multiChannel;
         null !== $rcs && $self['rcs'] = $rcs;
         null !== $sms && $self['sms'] = $sms;
         null !== $whatsapp && $self['whatsapp'] = $whatsapp;
+
+        return $self;
+    }
+
+    /**
+     * MMS-specific content — subject, text and attachments.
+     *
+     * Like Rcs, an override that cannot stand on its own: a template still needs a
+     * MultiChannel body or the Sms + Whatsapp pair to be
+     * deliverable at all. Unlike Rcs, it has no fallback at send time — MMS with no
+     * media is a more expensive SMS, so a template without this slot is deliberately not MMS-capable
+     * and never produces an MMS route candidate.
+     *
+     * @param Mms|MmsShape|null $mms
+     */
+    public function withMms(Mms|array|null $mms): self
+    {
+        $self = clone $this;
+        $self['mms'] = $mms;
 
         return $self;
     }

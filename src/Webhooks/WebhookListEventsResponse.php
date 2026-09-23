@@ -7,6 +7,7 @@ namespace SentDm\Webhooks;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload;
 
 /**
  * @phpstan-import-type EventDataVariants from \SentDm\Webhooks\WebhookListEventsResponse\EventData
@@ -47,15 +48,29 @@ final class WebhookListEventsResponse implements BaseModel
     public ?string $errorMessage;
 
     /**
-     * The exact event body that was delivered, or attempted, for this record. One of the four
-     * webhook envelopes: a message status change, an inbound message, a template status change, or
-     * a contact consent signal. Read field and event to tell which, the same way
-     * your endpoint does.
+     * The exact event body that was delivered, or attempted, for this record. One of the six
+     * webhook envelopes:
+     *
+     * message — an outbound message changed status.
+     * message with event: message.received — someone replied to you.
+     * templates — a template was approved, rejected, paused or similar.
+     * channel — one of your markets moved in provisioning or compliance.
+     * contact — a consent signal: opt-in, opt-out or help.
+     * link — a tracked short link was clicked or a hosted file downloaded, or one
+     *   expired or was revoked.
+     *
+     * Read field and event to tell which, the same way your endpoint does.
+     * The two message envelopes are the reason that is two fields and not one: they share
+     * a field and differ by event.
+     *
+     * Treat the list as open. It has grown twice — channel and then link —
+     * and a handler that rejects an envelope it does not recognise will break on the next
+     * addition rather than ignore it.
      *
      * @var EventDataVariants|null $eventData
      */
     #[Optional('event_data')]
-    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|null $eventData;
+    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|null $eventData;
 
     #[Optional('event_type')]
     public ?string $eventType;
@@ -90,7 +105,7 @@ final class WebhookListEventsResponse implements BaseModel
         ?int $deliveryAttempts = null,
         ?string $deliveryStatus = null,
         ?string $errorMessage = null,
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|null $eventData = null,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|null $eventData = null,
         ?string $eventType = null,
         ?int $httpStatusCode = null,
         ?\DateTimeInterface $processingCompletedAt = null,
@@ -155,15 +170,29 @@ final class WebhookListEventsResponse implements BaseModel
     }
 
     /**
-     * The exact event body that was delivered, or attempted, for this record. One of the four
-     * webhook envelopes: a message status change, an inbound message, a template status change, or
-     * a contact consent signal. Read field and event to tell which, the same way
-     * your endpoint does.
+     * The exact event body that was delivered, or attempted, for this record. One of the six
+     * webhook envelopes:
+     *
+     * message — an outbound message changed status.
+     * message with event: message.received — someone replied to you.
+     * templates — a template was approved, rejected, paused or similar.
+     * channel — one of your markets moved in provisioning or compliance.
+     * contact — a consent signal: opt-in, opt-out or help.
+     * link — a tracked short link was clicked or a hosted file downloaded, or one
+     *   expired or was revoked.
+     *
+     * Read field and event to tell which, the same way your endpoint does.
+     * The two message envelopes are the reason that is two fields and not one: they share
+     * a field and differ by event.
+     *
+     * Treat the list as open. It has grown twice — channel and then link —
+     * and a handler that rejects an envelope it does not recognise will break on the next
+     * addition rather than ignore it.
      *
      * @param EventDataShape $eventData
      */
     public function withEventData(
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent $eventData,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload $eventData,
     ): self {
         $self = clone $this;
         $self['eventData'] = $eventData;

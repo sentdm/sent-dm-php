@@ -39,7 +39,9 @@ final class MessageSendResponse implements BaseModel
      * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
      * endpoint makes.
      *
-     * The wire is unchanged by the move: same names, same values.
+     * The shape of an immediate send: it never has a scheduled_at key. A send that carried
+     * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
+     * answer with. From always returns this type.
      */
     #[Optional(nullable: true)]
     public ?Data $data;
@@ -101,7 +103,9 @@ final class MessageSendResponse implements BaseModel
      * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
      * endpoint makes.
      *
-     * The wire is unchanged by the move: same names, same values.
+     * The shape of an immediate send: it never has a scheduled_at key. A send that carried
+     * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
+     * answer with. From always returns this type.
      *
      * @param Data|DataShape|null $data
      */

@@ -18,7 +18,9 @@ use SentDm\Messages\MessageSendResponse\Data\Recipient;
  * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
  * endpoint makes.
  *
- * The wire is unchanged by the move: same names, same values.
+ * The shape of an immediate send: it never has a scheduled_at key. A send that carried
+ * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
+ * answer with. From always returns this type.
  *
  * @phpstan-import-type RecipientShape from \SentDm\Messages\MessageSendResponse\Data\Recipient
  *
@@ -39,7 +41,9 @@ final class Data implements BaseModel
     public ?array $recipients;
 
     /**
-     * Overall status — QUEUED once the batch is accepted for delivery.
+     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
+     *             here too; each message moves to SCHEDULED once it is held, as GET /v3/messages/{id} and the
+     *             message.scheduled webhook report.
      */
     #[Optional]
     public ?string $status;
@@ -90,7 +94,9 @@ final class Data implements BaseModel
     }
 
     /**
-     * Overall status — QUEUED once the batch is accepted for delivery.
+     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
+     *             here too; each message moves to SCHEDULED once it is held, as GET /v3/messages/{id} and the
+     *             message.scheduled webhook report.
      */
     public function withStatus(string $status): self
     {

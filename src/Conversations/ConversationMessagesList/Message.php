@@ -13,6 +13,11 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
  *
+ * The shape of a message that was sent immediately: it never has a scheduled_at key. A message that is
+ * or was held for a later instant is a ScheduledMessageResponse, and the endpoint decides which of
+ * the two to answer with. From
+ * always returns this type.
+ *
  * @phpstan-import-type EventShape from \SentDm\Conversations\ConversationMessagesList\Message\Event
  * @phpstan-import-type MessageBodyShape from \SentDm\Conversations\ConversationMessagesList\Message\MessageBody
  *
@@ -68,7 +73,14 @@ final class Message implements BaseModel
 
     /**
      * Structured message body format for database storage.
-     * Preserves channel-specific components (header, body, footer, buttons).
+     * Preserves channel-specific components (header, header media, body, footer, buttons, MMS subject
+     * and media).
+     *
+     * Persisted as the messageBody jsonb column on Messages. Every write path goes
+     * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope shape is
+     * stable regardless of channel or status. Anything that rebuilds this object field by field — the
+     * four IMessageBodyStrategy implementations and MessageUtils.BuildSegmentBody — has to
+     * carry every member, or that member is silently dropped on whichever path forgot it.
      */
     #[Optional('message_body', nullable: true)]
     public ?MessageBody $messageBody;
@@ -221,7 +233,14 @@ final class Message implements BaseModel
 
     /**
      * Structured message body format for database storage.
-     * Preserves channel-specific components (header, body, footer, buttons).
+     * Preserves channel-specific components (header, header media, body, footer, buttons, MMS subject
+     * and media).
+     *
+     * Persisted as the messageBody jsonb column on Messages. Every write path goes
+     * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope shape is
+     * stable regardless of channel or status. Anything that rebuilds this object field by field — the
+     * four IMessageBodyStrategy implementations and MessageUtils.BuildSegmentBody — has to
+     * carry every member, or that member is silently dropped on whichever path forgot it.
      *
      * @param MessageBody|MessageBodyShape|null $messageBody
      */
