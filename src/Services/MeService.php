@@ -51,6 +51,9 @@ final class MeService implements MeContract
      *
      * `sending_phone_number_profile_id` names the account that holds that number in inventory — normally this account, and a different one where a number is shared. Both are `null` when the account has no US SMS sender.
      *
+     * **Template auto-creation:**
+     * `enable_template_auto_creation_for_sp` reports whether this account may mark a template for automatic creation on its sender profiles. It is granted by Sent and off by default. A `profile` reports `false`, having no sender profiles of its own to create anything on.
+     *
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
