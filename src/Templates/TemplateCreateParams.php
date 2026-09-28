@@ -17,6 +17,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  *
  * @phpstan-type TemplateCreateParamsShape = array{
+ *   autoCreateForSp?: bool|null,
  *   category?: string|null,
  *   creationSource?: string|null,
  *   definition?: null|TemplateDefinition|TemplateDefinitionShape,
@@ -32,6 +33,14 @@ final class TemplateCreateParams implements BaseModel
     /** @use SdkModel<TemplateCreateParamsShape> */
     use SdkModel;
     use SdkParams;
+
+    /**
+     * Create this template automatically on every sender profile of the organization, now and in future
+     * (default: false). Accepted only from an organization that has been enabled for it, and only at
+     * creation — it cannot be changed afterwards.
+     */
+    #[Optional('auto_create_for_sp')]
+    public ?bool $autoCreateForSp;
 
     /**
      * Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided).
@@ -89,6 +98,7 @@ final class TemplateCreateParams implements BaseModel
      * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      */
     public static function with(
+        ?bool $autoCreateForSp = null,
         ?string $category = null,
         ?string $creationSource = null,
         TemplateDefinition|array|null $definition = null,
@@ -100,6 +110,7 @@ final class TemplateCreateParams implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $autoCreateForSp && $self['autoCreateForSp'] = $autoCreateForSp;
         null !== $category && $self['category'] = $category;
         null !== $creationSource && $self['creationSource'] = $creationSource;
         null !== $definition && $self['definition'] = $definition;
@@ -108,6 +119,19 @@ final class TemplateCreateParams implements BaseModel
         null !== $submitForReview && $self['submitForReview'] = $submitForReview;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    /**
+     * Create this template automatically on every sender profile of the organization, now and in future
+     * (default: false). Accepted only from an organization that has been enabled for it, and only at
+     * creation — it cannot be changed afterwards.
+     */
+    public function withAutoCreateForSp(bool $autoCreateForSp): self
+    {
+        $self = clone $this;
+        $self['autoCreateForSp'] = $autoCreateForSp;
 
         return $self;
     }
