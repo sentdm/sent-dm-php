@@ -11,6 +11,7 @@ use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksContract;
 use SentDm\WebhookEventsPage;
 use SentDm\Webhooks\APIResponseWebhook;
+use SentDm\Webhooks\WebhookCreateParams\SenderProfile;
 use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookResponse;
@@ -25,6 +26,8 @@ use SentDm\WebhooksPage;
  *
  * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
  *
+ * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookCreateParams\SenderProfile
+ * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookUpdateParams\SenderProfile as SenderProfileShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class WebhooksService implements WebhooksContract
@@ -54,6 +57,8 @@ final class WebhooksService implements WebhooksContract
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param SenderProfile|SenderProfileShape|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
+     * and future profile. Responses never return it.
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -68,6 +73,7 @@ final class WebhooksService implements WebhooksContract
         ?array $eventTypes = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
+        SenderProfile|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -81,6 +87,7 @@ final class WebhooksService implements WebhooksContract
                 'eventTypes' => $eventTypes,
                 'retryCount' => $retryCount,
                 'sandbox' => $sandbox,
+                'senderProfile' => $senderProfile,
                 'timeoutSeconds' => $timeoutSeconds,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
@@ -129,6 +136,8 @@ final class WebhooksService implements WebhooksContract
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
+     * @param \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|SenderProfileShape1|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
+     * and future profile. Responses never return it.
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -144,6 +153,7 @@ final class WebhooksService implements WebhooksContract
         ?array $eventTypes = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
+        \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -157,6 +167,7 @@ final class WebhooksService implements WebhooksContract
                 'eventTypes' => $eventTypes,
                 'retryCount' => $retryCount,
                 'sandbox' => $sandbox,
+                'senderProfile' => $senderProfile,
                 'timeoutSeconds' => $timeoutSeconds,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
@@ -257,7 +268,7 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Retrieves a paginated list of delivery events for the specified webhook.
+     * Retrieves a paginated list of delivery events for the specified webhook. If the webhook is cloned onto your sender profiles, the list includes what those clones received; read payload.account_id to tell whose event it is.
      *
      * @param string $id Path param
      * @param int $page Query param

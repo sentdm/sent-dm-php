@@ -8,15 +8,19 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\InboundMessageEventPayload\Media;
 
 /**
  * Body of a message.received event. Delivered when a contact messages one of your numbers.
+ *
+ * @phpstan-import-type MediaShape from \SentDm\Webhooks\InboundMessageEventPayload\Media
  *
  * @phpstan-type InboundMessageEventPayloadShape = array{
  *   inboundNumber: string,
  *   receivedAt: string,
  *   accountID?: string|null,
  *   channel?: string|null,
+ *   media?: list<Media|MediaShape>|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
  *   text?: string|null,
@@ -47,10 +51,26 @@ final class InboundMessageEventPayload implements BaseModel
     public ?string $accountID;
 
     /**
-     * The channel the message arrived on, for example sms or whatsapp.
+     * The channel the message arrived on, for example sms or mms.
      */
     #[Optional]
     public ?string $channel;
+
+    /**
+     * Attachments the contact sent, present only on channels that carry them (mms today) and
+     * omitted entirely otherwise.
+     *
+     * Each url points at the carrier's own copy of the file — sent.dm records where the
+     * attachment is, not the attachment itself. The link is unauthenticated and expires on the
+     * carrier's schedule, which differs between them: assume days, not months. Download what you need
+     * on receipt; re-reading the message through GET /v3/messages/{id} returns the same stored
+     * link, not a fresh one, so once it lapses the entry remains with whatever the carrier declared
+     * about the file but the file is no longer reachable.
+     *
+     * @var list<Media>|null $media
+     */
+    #[Optional(list: Media::class, nullable: true)]
+    public ?array $media;
 
     /**
      * The inbound message.
@@ -102,12 +122,15 @@ final class InboundMessageEventPayload implements BaseModel
      * Construct an instance from the required parameters.
      *
      * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param list<Media|MediaShape>|null $media
      */
     public static function with(
         string $inboundNumber,
         string $receivedAt,
         ?string $accountID = null,
         ?string $channel = null,
+        ?array $media = null,
         ?string $messageID = null,
         ?string $outboundNumber = null,
         ?string $text = null,
@@ -120,6 +143,7 @@ final class InboundMessageEventPayload implements BaseModel
 
         null !== $accountID && $self['accountID'] = $accountID;
         null !== $channel && $self['channel'] = $channel;
+        null !== $media && $self['media'] = $media;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
         null !== $text && $self['text'] = $text;
@@ -162,12 +186,33 @@ final class InboundMessageEventPayload implements BaseModel
     }
 
     /**
-     * The channel the message arrived on, for example sms or whatsapp.
+     * The channel the message arrived on, for example sms or mms.
      */
     public function withChannel(string $channel): self
     {
         $self = clone $this;
         $self['channel'] = $channel;
+
+        return $self;
+    }
+
+    /**
+     * Attachments the contact sent, present only on channels that carry them (mms today) and
+     * omitted entirely otherwise.
+     *
+     * Each url points at the carrier's own copy of the file — sent.dm records where the
+     * attachment is, not the attachment itself. The link is unauthenticated and expires on the
+     * carrier's schedule, which differs between them: assume days, not months. Download what you need
+     * on receipt; re-reading the message through GET /v3/messages/{id} returns the same stored
+     * link, not a fresh one, so once it lapses the entry remains with whatever the carrier declared
+     * about the file but the file is no longer reachable.
+     *
+     * @param list<Media|MediaShape>|null $media
+     */
+    public function withMedia(?array $media): self
+    {
+        $self = clone $this;
+        $self['media'] = $media;
 
         return $self;
     }
