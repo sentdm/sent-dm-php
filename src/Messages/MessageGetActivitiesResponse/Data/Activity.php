@@ -19,6 +19,8 @@ use SentDm\Core\Contracts\BaseModel;
  *   description?: string|null,
  *   from?: string|null,
  *   price?: string|null,
+ *   reason?: string|null,
+ *   reasonCode?: string|null,
  *   scheduledAt?: \DateTimeInterface|null,
  *   status?: string|null,
  *   timestamp?: \DateTimeInterface|null,
@@ -52,6 +54,22 @@ final class Activity implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?string $price;
+
+    /**
+     * A human-readable sentence for reason_code, for example "The recipient is not registered on this channel"
+     * Omitted whenever reason_code is.
+     */
+    #[Optional(nullable: true)]
+    public ?string $reason;
+
+    /**
+     * Why the message reached this status, as a stable platform code such as DELIVERY_007
+     * or BUSINESS_003. Present on FAILED, FILTERED and BLOCKED activities;
+     * omitted on every status that needs no explanation. Switch on this rather than on reason: the code
+     * is stable, the wording may be improved. Same wire name and vocabulary as on the message and the webhook.
+     */
+    #[Optional('reason_code', nullable: true)]
+    public ?string $reasonCode;
 
     /**
      * SCHEDULED activities only: when the held message will be released for delivery, in UTC. Same wire name
@@ -89,6 +107,8 @@ final class Activity implements BaseModel
         ?string $description = null,
         ?string $from = null,
         ?string $price = null,
+        ?string $reason = null,
+        ?string $reasonCode = null,
         ?\DateTimeInterface $scheduledAt = null,
         ?string $status = null,
         ?\DateTimeInterface $timestamp = null,
@@ -99,6 +119,8 @@ final class Activity implements BaseModel
         null !== $description && $self['description'] = $description;
         null !== $from && $self['from'] = $from;
         null !== $price && $self['price'] = $price;
+        null !== $reason && $self['reason'] = $reason;
+        null !== $reasonCode && $self['reasonCode'] = $reasonCode;
         null !== $scheduledAt && $self['scheduledAt'] = $scheduledAt;
         null !== $status && $self['status'] = $status;
         null !== $timestamp && $self['timestamp'] = $timestamp;
@@ -146,6 +168,32 @@ final class Activity implements BaseModel
     {
         $self = clone $this;
         $self['price'] = $price;
+
+        return $self;
+    }
+
+    /**
+     * A human-readable sentence for reason_code, for example "The recipient is not registered on this channel"
+     * Omitted whenever reason_code is.
+     */
+    public function withReason(?string $reason): self
+    {
+        $self = clone $this;
+        $self['reason'] = $reason;
+
+        return $self;
+    }
+
+    /**
+     * Why the message reached this status, as a stable platform code such as DELIVERY_007
+     * or BUSINESS_003. Present on FAILED, FILTERED and BLOCKED activities;
+     * omitted on every status that needs no explanation. Switch on this rather than on reason: the code
+     * is stable, the wording may be improved. Same wire name and vocabulary as on the message and the webhook.
+     */
+    public function withReasonCode(?string $reasonCode): self
+    {
+        $self = clone $this;
+        $self['reasonCode'] = $reasonCode;
 
         return $self;
     }

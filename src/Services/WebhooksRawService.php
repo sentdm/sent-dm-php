@@ -13,6 +13,7 @@ use SentDm\ServiceContracts\WebhooksRawContract;
 use SentDm\WebhookEventsPage;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
+use SentDm\Webhooks\WebhookCreateParams\SenderProfile;
 use SentDm\Webhooks\WebhookDeleteParams;
 use SentDm\Webhooks\WebhookListEventsParams;
 use SentDm\Webhooks\WebhookListEventsResponse;
@@ -36,6 +37,8 @@ use SentDm\WebhooksPage;
  *
  * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
  *
+ * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookCreateParams\SenderProfile
+ * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookUpdateParams\SenderProfile as SenderProfileShape1
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class WebhooksRawService implements WebhooksRawContract
@@ -58,6 +61,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *   eventTypes?: list<string>,
      *   retryCount?: int,
      *   sandbox?: bool,
+     *   senderProfile?: SenderProfile|SenderProfileShape|null,
      *   timeoutSeconds?: int,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
@@ -145,6 +149,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *   eventTypes?: list<string>,
      *   retryCount?: int,
      *   sandbox?: bool,
+     *   senderProfile?: WebhookUpdateParams\SenderProfile|SenderProfileShape1|null,
      *   timeoutSeconds?: int,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
@@ -306,7 +311,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Retrieves a paginated list of delivery events for the specified webhook.
+     * Retrieves a paginated list of delivery events for the specified webhook. If the webhook is cloned onto your sender profiles, the list includes what those clones received; read payload.account_id to tell whose event it is.
      *
      * @param string $id Path param
      * @param array{
