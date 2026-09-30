@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.35.0](https://github.com/sentdm/sent-dm-php/compare/v0.34.0...v0.35.0) (2026-09-30)
+
+
+### Features
+
+* **api:** sync OpenAPI spec from production ([b7b1e97](https://github.com/sentdm/sent-dm-php/commit/b7b1e976b367cab2f044b4d8be3592ef11fce730))
+
+## [0.34.0](https://github.com/sentdm/sent-dm-php/compare/v0.33.0...v0.34.0) (2026-09-30)
+
+
+### Features
+
+* **api:** sync generated SDKs from the committed spec ([6789896](https://github.com/sentdm/sent-dm-php/commit/67898969e5c8a0871ec48b79f0468d225b94d09b))
+* **api:** sync OpenAPI spec from production ([aae8228](https://github.com/sentdm/sent-dm-php/commit/aae822873b46f74739a77be8f5033aab391afecf))
+* **api:** sync OpenAPI spec from production ([0eeda0b](https://github.com/sentdm/sent-dm-php/commit/0eeda0b20adb695a5a7d0e034401cb0f87fc7f3a))
+
 ## [0.33.0](https://github.com/sentdm/sent-dm-php/compare/v0.32.0...v0.33.0) (2026-09-18)
 
 
