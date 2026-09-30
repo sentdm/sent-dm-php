@@ -21,6 +21,8 @@ use SentDm\Core\Contracts\BaseModel;
  *   channel?: string|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
+ *   reason?: string|null,
+ *   reasonCode?: string|null,
  *   scheduleReason?: string|null,
  *   scheduledAt?: string|null,
  *   templateID?: string|null,
@@ -80,6 +82,24 @@ final class MessageEventPayload implements BaseModel
      */
     #[Optional('outbound_number')]
     public ?string $outboundNumber;
+
+    /**
+     * A human-readable sentence for ReasonCode, for example "The recipient is not registered on
+     * this channel". Omitted whenever reason_code is.
+     */
+    #[Optional(nullable: true)]
+    public ?string $reason;
+
+    /**
+     * Why the message reached this status, as a stable platform code such as
+     * DELIVERY_007 or BUSINESS_003. Present on
+     * message.failed, message.filtered and message.blocked; omitted on every status that
+     * needs no explanation. Switch on this rather than on Reason: the code is
+     * stable, the wording may be improved. It is the platform's classification of the outcome and never a
+     * carrier or vendor code.
+     */
+    #[Optional('reason_code', nullable: true)]
+    public ?string $reasonCode;
 
     /**
      * message.scheduled only: why the message is held, either because you scheduled it or because
@@ -147,6 +167,8 @@ final class MessageEventPayload implements BaseModel
         ?string $channel = null,
         ?string $messageID = null,
         ?string $outboundNumber = null,
+        ?string $reason = null,
+        ?string $reasonCode = null,
         ?string $scheduleReason = null,
         ?string $scheduledAt = null,
         ?string $templateID = null,
@@ -163,6 +185,8 @@ final class MessageEventPayload implements BaseModel
         null !== $channel && $self['channel'] = $channel;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
+        null !== $reason && $self['reason'] = $reason;
+        null !== $reasonCode && $self['reasonCode'] = $reasonCode;
         null !== $scheduleReason && $self['scheduleReason'] = $scheduleReason;
         null !== $scheduledAt && $self['scheduledAt'] = $scheduledAt;
         null !== $templateID && $self['templateID'] = $templateID;
@@ -251,6 +275,34 @@ final class MessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['outboundNumber'] = $outboundNumber;
+
+        return $self;
+    }
+
+    /**
+     * A human-readable sentence for ReasonCode, for example "The recipient is not registered on
+     * this channel". Omitted whenever reason_code is.
+     */
+    public function withReason(?string $reason): self
+    {
+        $self = clone $this;
+        $self['reason'] = $reason;
+
+        return $self;
+    }
+
+    /**
+     * Why the message reached this status, as a stable platform code such as
+     * DELIVERY_007 or BUSINESS_003. Present on
+     * message.failed, message.filtered and message.blocked; omitted on every status that
+     * needs no explanation. Switch on this rather than on Reason: the code is
+     * stable, the wording may be improved. It is the platform's classification of the outcome and never a
+     * carrier or vendor code.
+     */
+    public function withReasonCode(?string $reasonCode): self
+    {
+        $self = clone $this;
+        $self['reasonCode'] = $reasonCode;
 
         return $self;
     }

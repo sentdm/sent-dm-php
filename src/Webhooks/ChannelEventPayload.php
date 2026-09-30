@@ -42,6 +42,7 @@ use SentDm\Webhooks\ChannelEventPayload\Compliance;
  *   compliance?: null|Compliance|ComplianceShape,
  *   numberType?: string|null,
  *   reason?: string|null,
+ *   reasonCode?: string|null,
  *   senderValue?: string|null,
  *   status?: string|null,
  *   updatedAt?: string|null,
@@ -105,12 +106,21 @@ final class ChannelEventPayload implements BaseModel
     public ?string $numberType;
 
     /**
-     * Why the market reached this state, when a reason was given — a correction explained, or a
-     * campaign lapse. Free text, passed through from the registry or carrier that
-     * wrote it, so treat it as a message to show a human rather than a value to branch on.
+     * Why the market reached this state, as a sentence to show a person: the specific explanation when one was
+     * given (a correction explained, a campaign lapse), otherwise what reason_code means for this market.
+     * Not a value to branch on.
      */
     #[Optional(nullable: true)]
     public ?string $reason;
+
+    /**
+     * Why the market is not ACTIVE, as a stable code: an ErrorCodes CHANNEL_xxx value such
+     * as CHANNEL_001 (something you owe) or CHANNEL_002 (a correction was requested). The same code
+     * the channels resource reports for the market. Switch on this rather than on reason. Omitted while
+     * ACTIVE.
+     */
+    #[Optional('reason_code', nullable: true)]
+    public ?string $reasonCode;
 
     /**
      * The sender itself — a number in E.164, or an alphanumeric sender ID.
@@ -182,6 +192,7 @@ final class ChannelEventPayload implements BaseModel
         Compliance|array|null $compliance = null,
         ?string $numberType = null,
         ?string $reason = null,
+        ?string $reasonCode = null,
         ?string $senderValue = null,
         ?string $status = null,
         ?string $updatedAt = null,
@@ -195,6 +206,7 @@ final class ChannelEventPayload implements BaseModel
         null !== $compliance && $self['compliance'] = $compliance;
         null !== $numberType && $self['numberType'] = $numberType;
         null !== $reason && $self['reason'] = $reason;
+        null !== $reasonCode && $self['reasonCode'] = $reasonCode;
         null !== $senderValue && $self['senderValue'] = $senderValue;
         null !== $status && $self['status'] = $status;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
@@ -282,14 +294,28 @@ final class ChannelEventPayload implements BaseModel
     }
 
     /**
-     * Why the market reached this state, when a reason was given — a correction explained, or a
-     * campaign lapse. Free text, passed through from the registry or carrier that
-     * wrote it, so treat it as a message to show a human rather than a value to branch on.
+     * Why the market reached this state, as a sentence to show a person: the specific explanation when one was
+     * given (a correction explained, a campaign lapse), otherwise what reason_code means for this market.
+     * Not a value to branch on.
      */
     public function withReason(?string $reason): self
     {
         $self = clone $this;
         $self['reason'] = $reason;
+
+        return $self;
+    }
+
+    /**
+     * Why the market is not ACTIVE, as a stable code: an ErrorCodes CHANNEL_xxx value such
+     * as CHANNEL_001 (something you owe) or CHANNEL_002 (a correction was requested). The same code
+     * the channels resource reports for the market. Switch on this rather than on reason. Omitted while
+     * ACTIVE.
+     */
+    public function withReasonCode(?string $reasonCode): self
+    {
+        $self = clone $this;
+        $self['reasonCode'] = $reasonCode;
 
         return $self;
     }

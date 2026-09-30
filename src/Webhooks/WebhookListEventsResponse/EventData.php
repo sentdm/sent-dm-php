@@ -12,6 +12,7 @@ use SentDm\Webhooks\ContactEvent;
 use SentDm\Webhooks\InboundMessageEvent;
 use SentDm\Webhooks\MessageEvent;
 use SentDm\Webhooks\TemplateEvent;
+use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload;
 use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload;
 
 /**
@@ -40,9 +41,10 @@ use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServ
  * @phpstan-import-type ChannelEventShape from \SentDm\Webhooks\ChannelEvent
  * @phpstan-import-type ContactEventShape from \SentDm\Webhooks\ContactEvent
  * @phpstan-import-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload
+ * @phpstan-import-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload
  *
- * @phpstan-type EventDataVariants = MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload
- * @phpstan-type EventDataShape = EventDataVariants|MessageEventShape|InboundMessageEventShape|TemplateEventShape|ChannelEventShape|ContactEventShape|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayloadShape
+ * @phpstan-type EventDataVariants = MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload
+ * @phpstan-type EventDataShape = EventDataVariants|MessageEventShape|InboundMessageEventShape|TemplateEventShape|ChannelEventShape|ContactEventShape|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayloadShape|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayloadShape
  */
 final class EventData implements ConverterSource
 {
@@ -60,6 +62,7 @@ final class EventData implements ConverterSource
             ChannelEvent::class,
             ContactEvent::class,
             SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload::class,
+            SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload::class,
         ];
     }
 }

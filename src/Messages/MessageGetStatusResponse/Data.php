@@ -34,6 +34,8 @@ use SentDm\Messages\MessageGetStatusResponse\Data\MessageBody;
  *   phone?: string|null,
  *   phoneInternational?: string|null,
  *   price?: float|null,
+ *   reason?: string|null,
+ *   reasonCode?: string|null,
  *   regionCode?: string|null,
  *   status?: string|null,
  *   templateCategory?: string|null,
@@ -94,6 +96,24 @@ final class Data implements BaseModel
     #[Optional(nullable: true)]
     public ?float $price;
 
+    /**
+     * A human-readable sentence for reason_code, for example "Insufficient balance". Omitted whenever
+     * reason_code is.
+     */
+    #[Optional(nullable: true)]
+    public ?string $reason;
+
+    /**
+     * Why the message is at its current status, as a stable platform code such as
+     * DELIVERY_007, BUSINESS_003 or
+     * DELIVERY_003. Present when the current status is FAILED, FILTERED or
+     * BLOCKED and the lifecycle was loaded; omitted otherwise. Switch on this rather than on
+     * reason: the code is stable, the wording may be improved. It is the platform's
+     * classification of the outcome, never a carrier or vendor code.
+     */
+    #[Optional('reason_code', nullable: true)]
+    public ?string $reasonCode;
+
     #[Optional('region_code')]
     public ?string $regionCode;
 
@@ -135,6 +155,8 @@ final class Data implements BaseModel
         ?string $phone = null,
         ?string $phoneInternational = null,
         ?float $price = null,
+        ?string $reason = null,
+        ?string $reasonCode = null,
         ?string $regionCode = null,
         ?string $status = null,
         ?string $templateCategory = null,
@@ -155,6 +177,8 @@ final class Data implements BaseModel
         null !== $phone && $self['phone'] = $phone;
         null !== $phoneInternational && $self['phoneInternational'] = $phoneInternational;
         null !== $price && $self['price'] = $price;
+        null !== $reason && $self['reason'] = $reason;
+        null !== $reasonCode && $self['reasonCode'] = $reasonCode;
         null !== $regionCode && $self['regionCode'] = $regionCode;
         null !== $status && $self['status'] = $status;
         null !== $templateCategory && $self['templateCategory'] = $templateCategory;
@@ -272,6 +296,34 @@ final class Data implements BaseModel
     {
         $self = clone $this;
         $self['price'] = $price;
+
+        return $self;
+    }
+
+    /**
+     * A human-readable sentence for reason_code, for example "Insufficient balance". Omitted whenever
+     * reason_code is.
+     */
+    public function withReason(?string $reason): self
+    {
+        $self = clone $this;
+        $self['reason'] = $reason;
+
+        return $self;
+    }
+
+    /**
+     * Why the message is at its current status, as a stable platform code such as
+     * DELIVERY_007, BUSINESS_003 or
+     * DELIVERY_003. Present when the current status is FAILED, FILTERED or
+     * BLOCKED and the lifecycle was loaded; omitted otherwise. Switch on this rather than on
+     * reason: the code is stable, the wording may be improved. It is the platform's
+     * classification of the outcome, never a carrier or vendor code.
+     */
+    public function withReasonCode(?string $reasonCode): self
+    {
+        $self = clone $this;
+        $self['reasonCode'] = $reasonCode;
 
         return $self;
     }

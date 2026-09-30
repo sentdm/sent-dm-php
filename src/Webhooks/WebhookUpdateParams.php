@@ -9,11 +9,14 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Core\Conversion\ListOf;
+use SentDm\Webhooks\WebhookUpdateParams\SenderProfile;
 
 /**
  * Updates an existing webhook for the authenticated customer.
  *
  * @see SentDm\Services\WebhooksService::update()
+ *
+ * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookUpdateParams\SenderProfile
  *
  * @phpstan-type WebhookUpdateParamsShape = array{
  *   displayName?: string|null,
@@ -22,6 +25,7 @@ use SentDm\Core\Conversion\ListOf;
  *   eventTypes?: list<string>|null,
  *   retryCount?: int|null,
  *   sandbox?: bool|null,
+ *   senderProfile?: null|SenderProfile|SenderProfileShape,
  *   timeoutSeconds?: int|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -57,6 +61,13 @@ final class WebhookUpdateParams implements BaseModel
     #[Optional]
     public ?bool $sandbox;
 
+    /**
+     * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
+     * and future profile. Responses never return it.
+     */
+    #[Optional('sender_profile', nullable: true)]
+    public ?SenderProfile $senderProfile;
+
     #[Optional('timeout_seconds')]
     public ?int $timeoutSeconds;
 
@@ -78,6 +89,7 @@ final class WebhookUpdateParams implements BaseModel
      *
      * @param array<string,list<string>>|null $eventFilters
      * @param list<string>|null $eventTypes
+     * @param SenderProfile|SenderProfileShape|null $senderProfile
      */
     public static function with(
         ?string $displayName = null,
@@ -86,6 +98,7 @@ final class WebhookUpdateParams implements BaseModel
         ?array $eventTypes = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
+        SenderProfile|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -98,6 +111,7 @@ final class WebhookUpdateParams implements BaseModel
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
         null !== $retryCount && $self['retryCount'] = $retryCount;
         null !== $sandbox && $self['sandbox'] = $sandbox;
+        null !== $senderProfile && $self['senderProfile'] = $senderProfile;
         null !== $timeoutSeconds && $self['timeoutSeconds'] = $timeoutSeconds;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
@@ -159,6 +173,21 @@ final class WebhookUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['sandbox'] = $sandbox;
+
+        return $self;
+    }
+
+    /**
+     * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
+     * and future profile. Responses never return it.
+     *
+     * @param SenderProfile|SenderProfileShape|null $senderProfile
+     */
+    public function withSenderProfile(
+        SenderProfile|array|null $senderProfile
+    ): self {
+        $self = clone $this;
+        $self['senderProfile'] = $senderProfile;
 
         return $self;
     }

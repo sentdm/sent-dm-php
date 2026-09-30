@@ -26,6 +26,7 @@ use SentDm\Me\ProfileSettings;
  *   createdAt?: \DateTimeInterface|null,
  *   description?: string|null,
  *   email?: string|null,
+ *   enableTemplateAutoCreationForSp?: bool|null,
  *   icon?: string|null,
  *   name?: string|null,
  *   organizationID?: string|null,
@@ -73,6 +74,22 @@ final class Data implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?string $email;
+
+    /**
+     * Whether this account may mark a template for automatic creation on its sender profiles. Granted by
+     * Sent per account and off by default, so it is what a template-create form reads to decide whether to
+     * offer the option at all — marking a template without it does nothing.
+     *
+     * Top-level rather than inside settings, which is written for type: "profile" only
+     * and so would never carry it to the account type that can act on it.
+     *
+     * This is the capability, not the stored flag: a profile reports false whatever its
+     * own row holds. A sender profile owns no sender profiles, so a template it marked would have nothing
+     * to be created on and the fan-out would never read the flag. The admin GET /customers/{id}
+     * reports the stored value instead, because that is the one an operator granted.
+     */
+    #[Optional('enable_template_auto_creation_for_sp')]
+    public ?bool $enableTemplateAutoCreationForSp;
 
     /**
      * Account icon URL.
@@ -168,6 +185,7 @@ final class Data implements BaseModel
         ?\DateTimeInterface $createdAt = null,
         ?string $description = null,
         ?string $email = null,
+        ?bool $enableTemplateAutoCreationForSp = null,
         ?string $icon = null,
         ?string $name = null,
         ?string $organizationID = null,
@@ -186,6 +204,7 @@ final class Data implements BaseModel
         null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $description && $self['description'] = $description;
         null !== $email && $self['email'] = $email;
+        null !== $enableTemplateAutoCreationForSp && $self['enableTemplateAutoCreationForSp'] = $enableTemplateAutoCreationForSp;
         null !== $icon && $self['icon'] = $icon;
         null !== $name && $self['name'] = $name;
         null !== $organizationID && $self['organizationID'] = $organizationID;
@@ -254,6 +273,28 @@ final class Data implements BaseModel
     {
         $self = clone $this;
         $self['email'] = $email;
+
+        return $self;
+    }
+
+    /**
+     * Whether this account may mark a template for automatic creation on its sender profiles. Granted by
+     * Sent per account and off by default, so it is what a template-create form reads to decide whether to
+     * offer the option at all — marking a template without it does nothing.
+     *
+     * Top-level rather than inside settings, which is written for type: "profile" only
+     * and so would never carry it to the account type that can act on it.
+     *
+     * This is the capability, not the stored flag: a profile reports false whatever its
+     * own row holds. A sender profile owns no sender profiles, so a template it marked would have nothing
+     * to be created on and the fan-out would never read the flag. The admin GET /customers/{id}
+     * reports the stored value instead, because that is the one an operator granted.
+     */
+    public function withEnableTemplateAutoCreationForSp(
+        bool $enableTemplateAutoCreationForSp
+    ): self {
+        $self = clone $this;
+        $self['enableTemplateAutoCreationForSp'] = $enableTemplateAutoCreationForSp;
 
         return $self;
     }
