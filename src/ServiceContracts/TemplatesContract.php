@@ -20,6 +20,9 @@ interface TemplatesContract
     /**
      * @api
      *
+     * @param bool $autoCreateForSp Body param: Create this template automatically on every sender profile of the organization, now and in future
+     * (default: false). Accepted only from an organization that has been enabled for it, and only at
+     * creation — it cannot be changed afterwards.
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided)
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
      * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
@@ -34,6 +37,7 @@ interface TemplatesContract
      * @throws APIException
      */
     public function create(
+        ?bool $autoCreateForSp = null,
         ?string $category = null,
         ?string $creationSource = null,
         TemplateDefinition|array|null $definition = null,
