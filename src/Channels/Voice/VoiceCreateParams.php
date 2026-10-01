@@ -11,7 +11,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Adds voice to one of the numbers you hold. The number must already be yours (see `GET /v3/channels`); this does not procure one, and nothing registers, so the number can carry calls as soon as this returns.
+ * Adds voice to one of the numbers you hold, or gives you a new one. Send `number` for a number that is already yours (see `GET /v3/channels`); leave it out to be given a new US number, optionally in a particular `area_code`. Sending both is refused. Nothing registers, so the number can carry calls as soon as this returns.
  *
  * What happens on a call is decided by your `callback_url`: when a call arrives on the number, or a caller presses a key on a menu, Sent POSTs a signed question there and follows the answer. The response carries the `callback_secret` the questions are signed with, the one time it is shown without rotating; verify a question the way you verify a webhook. `POST /v3/channels/voice/{number}/test` sends a test question and reports the verdict.
  *
@@ -19,14 +19,15 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * Read the number's settings with `GET /v3/channels/voice` and change them with `PATCH /v3/channels/voice/{number}`.
  *
- * With `sandbox: true` the request is validated and a simulated number reported with `202`, and nothing is written.
+ * With `sandbox: true` the request is validated and a simulated number reported with `202`; nothing is written and no number is bought.
  *
  * @see SentDm\Services\Channels\VoiceService::create()
  *
  * @phpstan-type VoiceCreateParamsShape = array{
  *   callbackURL: string,
- *   number: string,
+ *   areaCode?: string|null,
  *   defaultForAppCalls?: bool|null,
+ *   number?: string|null,
  *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -49,10 +50,12 @@ final class VoiceCreateParams implements BaseModel
     public string $callbackURL;
 
     /**
-     * One of your phone numbers, in E.164 format.
+     * The US area code a new number should be in, as 212. Only for a request that leaves
+     * number out — sending both says two different things about which number to use, and is
+     * refused. Omit it too and the number comes from anywhere in the country.
      */
-    #[Required]
-    public string $number;
+    #[Optional('area_code', nullable: true)]
+    public ?string $areaCode;
 
     /**
      * Make this the line app-originated calls are placed from when a voice token names no number.
@@ -60,6 +63,13 @@ final class VoiceCreateParams implements BaseModel
      */
     #[Optional('default_for_app_calls', nullable: true)]
     public ?bool $defaultForAppCalls;
+
+    /**
+     * One of your phone numbers, in E.164 format. Leave the field out entirely to be given a new one
+     * instead; sending it empty is a refused request rather than a request for a new number.
+     */
+    #[Optional(nullable: true)]
+    public ?string $number;
 
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
@@ -79,13 +89,13 @@ final class VoiceCreateParams implements BaseModel
      *
      * To enforce required parameters use
      * ```
-     * VoiceCreateParams::with(callbackURL: ..., number: ...)
+     * VoiceCreateParams::with(callbackURL: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new VoiceCreateParams)->withCallbackURL(...)->withNumber(...)
+     * (new VoiceCreateParams)->withCallbackURL(...)
      * ```
      */
     public function __construct()
@@ -100,8 +110,9 @@ final class VoiceCreateParams implements BaseModel
      */
     public static function with(
         string $callbackURL,
-        string $number,
+        ?string $areaCode = null,
         ?bool $defaultForAppCalls = null,
+        ?string $number = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -109,9 +120,10 @@ final class VoiceCreateParams implements BaseModel
         $self = new self;
 
         $self['callbackURL'] = $callbackURL;
-        $self['number'] = $number;
 
+        null !== $areaCode && $self['areaCode'] = $areaCode;
         null !== $defaultForAppCalls && $self['defaultForAppCalls'] = $defaultForAppCalls;
+        null !== $number && $self['number'] = $number;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
@@ -135,12 +147,14 @@ final class VoiceCreateParams implements BaseModel
     }
 
     /**
-     * One of your phone numbers, in E.164 format.
+     * The US area code a new number should be in, as 212. Only for a request that leaves
+     * number out — sending both says two different things about which number to use, and is
+     * refused. Omit it too and the number comes from anywhere in the country.
      */
-    public function withNumber(string $number): self
+    public function withAreaCode(?string $areaCode): self
     {
         $self = clone $this;
-        $self['number'] = $number;
+        $self['areaCode'] = $areaCode;
 
         return $self;
     }
@@ -153,6 +167,18 @@ final class VoiceCreateParams implements BaseModel
     {
         $self = clone $this;
         $self['defaultForAppCalls'] = $defaultForAppCalls;
+
+        return $self;
+    }
+
+    /**
+     * One of your phone numbers, in E.164 format. Leave the field out entirely to be given a new one
+     * instead; sending it empty is a refused request rather than a request for a new number.
+     */
+    public function withNumber(?string $number): self
+    {
+        $self = clone $this;
+        $self['number'] = $number;
 
         return $self;
     }

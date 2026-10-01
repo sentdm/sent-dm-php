@@ -50,7 +50,7 @@ final class VoiceService implements VoiceContract
     /**
      * @api
      *
-     * Adds voice to one of the numbers you hold. The number must already be yours (see `GET /v3/channels`); this does not procure one, and nothing registers, so the number can carry calls as soon as this returns.
+     * Adds voice to one of the numbers you hold, or gives you a new one. Send `number` for a number that is already yours (see `GET /v3/channels`); leave it out to be given a new US number, optionally in a particular `area_code`. Sending both is refused. Nothing registers, so the number can carry calls as soon as this returns.
      *
      * What happens on a call is decided by your `callback_url`: when a call arrives on the number, or a caller presses a key on a menu, Sent POSTs a signed question there and follows the answer. The response carries the `callback_secret` the questions are signed with, the one time it is shown without rotating; verify a question the way you verify a webhook. `POST /v3/channels/voice/{number}/test` sends a test question and reports the verdict.
      *
@@ -58,16 +58,20 @@ final class VoiceService implements VoiceContract
      *
      * Read the number's settings with `GET /v3/channels/voice` and change them with `PATCH /v3/channels/voice/{number}`.
      *
-     * With `sandbox: true` the request is validated and a simulated number reported with `202`, and nothing is written.
+     * With `sandbox: true` the request is validated and a simulated number reported with `202`; nothing is written and no number is bought.
      *
      * @param string $callbackURL Body param: Where Sent asks what to do with each call on this number: an absolute HTTP or HTTPS URL on a public
      * host. A signed question is POSTed here when a call arrives or a caller presses a key, and the answer
      * decides the call. Every question is signed with the callback_secret the response returns, the
      * same way your webhooks are signed. Turning the number on again with a different URL replaces it and
      * keeps the secret.
-     * @param string $number Body param: One of your phone numbers, in E.164 format.
+     * @param string|null $areaCode Body param: The US area code a new number should be in, as 212. Only for a request that leaves
+     * number out — sending both says two different things about which number to use, and is
+     * refused. Omit it too and the number comes from anywhere in the country.
      * @param bool|null $defaultForAppCalls Body param: Make this the line app-originated calls are placed from when a voice token names no number.
      * Omit it and your first voice number takes that role; a later one leaves it where it is.
+     * @param string|null $number Body param: One of your phone numbers, in E.164 format. Leave the field out entirely to be given a new one
+     * instead; sending it empty is a refused request rather than a request for a new number.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -78,8 +82,9 @@ final class VoiceService implements VoiceContract
      */
     public function create(
         string $callbackURL,
-        string $number,
+        ?string $areaCode = null,
         ?bool $defaultForAppCalls = null,
+        ?string $number = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -88,8 +93,9 @@ final class VoiceService implements VoiceContract
         $params = Util::removeNulls(
             [
                 'callbackURL' => $callbackURL,
-                'number' => $number,
+                'areaCode' => $areaCode,
                 'defaultForAppCalls' => $defaultForAppCalls,
+                'number' => $number,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
@@ -142,7 +148,7 @@ final class VoiceService implements VoiceContract
      * | `"status": "ACTIVE"` | turns calls on again for a number you turned off; the callback URL and the secret it had are kept |
      * | `"status": "INACTIVE"` | turns calls off; the callback URL and the secret stay on the number |
      * | `"default_for_app_calls": true` | makes this the line app-originated calls are placed from when a voice token names no number |
-     * | `"callback_url": "https://example.com/voice"` | replaces where Sent asks what to do with each call on the number; the signing secret is kept |
+     * | `"callback_url": "https://example.com/voice"` | replaces where Sent asks what to do with each call on the number; the signing secret is kept, and a number that was waiting for its first URL is turned on |
      * | key omitted | left exactly as it is |
      *
      * `status` is matched ignoring case. Any combination is accepted: `status: "ACTIVE"` with `default_for_app_calls: true` turns a number on as the new default, and a `callback_url` sent with either status is written too. A body that names none of the three is refused.
@@ -154,6 +160,8 @@ final class VoiceService implements VoiceContract
      * **Turning the default line off is `409`** while other active voice numbers remain. Move the default to another number first. Turning off your last voice number is allowed; that turns phone calls off.
      *
      * **Making an inactive number the default is `400`.** Send `status: "ACTIVE"` in the same call.
+     *
+     * A number added without a `callback_url` is `INACTIVE` for that one reason, so sending it a `callback_url` turns it on by itself, and it becomes your default line if you have no other active voice number. A number you turned off while it had a URL stays off.
      *
      * **A number you never turned voice on for is `404`.** Add it with `POST /v3/channels/voice`.
      *
