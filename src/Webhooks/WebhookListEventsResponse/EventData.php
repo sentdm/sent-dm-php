@@ -7,12 +7,12 @@ namespace SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Core\Concerns\SdkUnion;
 use SentDm\Core\Conversion\Contracts\Converter;
 use SentDm\Core\Conversion\Contracts\ConverterSource;
+use SentDm\Webhooks\CallEvent;
 use SentDm\Webhooks\ChannelEvent;
 use SentDm\Webhooks\ContactEvent;
 use SentDm\Webhooks\InboundMessageEvent;
 use SentDm\Webhooks\MessageEvent;
 use SentDm\Webhooks\TemplateEvent;
-use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload;
 use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload;
 
 /**
@@ -41,10 +41,10 @@ use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServ
  * @phpstan-import-type ChannelEventShape from \SentDm\Webhooks\ChannelEvent
  * @phpstan-import-type ContactEventShape from \SentDm\Webhooks\ContactEvent
  * @phpstan-import-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload
- * @phpstan-import-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload
+ * @phpstan-import-type CallEventShape from \SentDm\Webhooks\CallEvent
  *
- * @phpstan-type EventDataVariants = MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload
- * @phpstan-type EventDataShape = EventDataVariants|MessageEventShape|InboundMessageEventShape|TemplateEventShape|ChannelEventShape|ContactEventShape|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayloadShape|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayloadShape
+ * @phpstan-type EventDataVariants = MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|CallEvent
+ * @phpstan-type EventDataShape = EventDataVariants|MessageEventShape|InboundMessageEventShape|TemplateEventShape|ChannelEventShape|ContactEventShape|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayloadShape|CallEventShape
  */
 final class EventData implements ConverterSource
 {
@@ -62,7 +62,7 @@ final class EventData implements ConverterSource
             ChannelEvent::class,
             ContactEvent::class,
             SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload::class,
-            SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload::class,
+            CallEvent::class,
         ];
     }
 }
