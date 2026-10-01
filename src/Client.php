@@ -9,6 +9,8 @@ use Http\Discovery\Psr18ClientDiscovery;
 use SentDm\Core\BaseClient;
 use SentDm\Core\Implementation\StreamingHttpClient;
 use SentDm\Core\Util;
+use SentDm\Services\CallsService;
+use SentDm\Services\ChannelsService;
 use SentDm\Services\ContactsService;
 use SentDm\Services\ConversationsService;
 use SentDm\Services\MeService;
@@ -66,6 +68,16 @@ class Client extends BaseClient
      * @api
      */
     public ConversationsService $conversations;
+
+    /**
+     * @api
+     */
+    public CallsService $calls;
+
+    /**
+     * @api
+     */
+    public ChannelsService $channels;
 
     /**
      * @api
@@ -136,6 +148,8 @@ class Client extends BaseClient
         $this->messages = new MessagesService($this);
         $this->contacts = new ContactsService($this);
         $this->conversations = new ConversationsService($this);
+        $this->calls = new CallsService($this);
+        $this->channels = new ChannelsService($this);
         $this->me = new MeService($this);
     }
 

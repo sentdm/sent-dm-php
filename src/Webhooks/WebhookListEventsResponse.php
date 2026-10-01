@@ -7,7 +7,6 @@ namespace SentDm\Webhooks;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload;
 use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload;
 
 /**
@@ -71,7 +70,7 @@ final class WebhookListEventsResponse implements BaseModel
      * @var EventDataVariants|null $eventData
      */
     #[Optional('event_data')]
-    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload|null $eventData;
+    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|CallEvent|null $eventData;
 
     #[Optional('event_type')]
     public ?string $eventType;
@@ -106,7 +105,7 @@ final class WebhookListEventsResponse implements BaseModel
         ?int $deliveryAttempts = null,
         ?string $deliveryStatus = null,
         ?string $errorMessage = null,
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload|null $eventData = null,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|CallEvent|null $eventData = null,
         ?string $eventType = null,
         ?int $httpStatusCode = null,
         ?\DateTimeInterface $processingCompletedAt = null,
@@ -193,7 +192,7 @@ final class WebhookListEventsResponse implements BaseModel
      * @param EventDataShape $eventData
      */
     public function withEventData(
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload $eventData,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload|CallEvent $eventData,
     ): self {
         $self = clone $this;
         $self['eventData'] = $eventData;
