@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.36.0](https://github.com/sentdm/sent-dm-php/compare/v0.35.0...v0.36.0) (2026-10-01)
+
+
+### Features
+
+* **api:** add voice and calls endpoints to the SDKs ([379e2bd](https://github.com/sentdm/sent-dm-php/commit/379e2bdf02b18039e75c545edd46ca510d112538))
+* **api:** sync generated SDKs from the committed spec ([4e0fd31](https://github.com/sentdm/sent-dm-php/commit/4e0fd3111e80c015aa76be7d66008fdb17263435))
+
 ## [0.35.0](https://github.com/sentdm/sent-dm-php/compare/v0.34.0...v0.35.0) (2026-09-30)
 
 
