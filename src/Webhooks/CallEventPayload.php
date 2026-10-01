@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
@@ -24,7 +24,7 @@ use SentDm\Core\Contracts\BaseModel;
  * message_id from; the question/answer contract is a separate surface and stays camelCase.
  * Nothing here is provider-shaped: no provider call id, no namespaced identity.
  *
- * @phpstan-type PayloadShape = array{
+ * @phpstan-type CallEventPayloadShape = array{
  *   callID: string,
  *   accountID?: string|null,
  *   channel?: string|null,
@@ -36,9 +36,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   updatedAt?: string|null,
  * }
  */
-final class Payload implements BaseModel
+final class CallEventPayload implements BaseModel
 {
-    /** @use SdkModel<PayloadShape> */
+    /** @use SdkModel<CallEventPayloadShape> */
     use SdkModel;
 
     /**
@@ -99,17 +99,17 @@ final class Payload implements BaseModel
     public ?string $updatedAt;
 
     /**
-     * `new Payload()` is missing required properties by the API.
+     * `new CallEventPayload()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * Payload::with(callID: ...)
+     * CallEventPayload::with(callID: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new Payload)->withCallID(...)
+     * (new CallEventPayload)->withCallID(...)
      * ```
      */
     public function __construct()

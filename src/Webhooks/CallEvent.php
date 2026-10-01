@@ -2,32 +2,29 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookListEventsResponse\EventData;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload\Payload;
 
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares this shape and
  * varies only in Payload.
  *
- * @phpstan-import-type PayloadShape from \SentDm\Webhooks\WebhookListEventsResponse\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload\Payload
+ * @phpstan-import-type CallEventPayloadShape from \SentDm\Webhooks\CallEventPayload
  *
- * @phpstan-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayloadShape = array{
+ * @phpstan-type CallEventShape = array{
  *   event?: string|null,
  *   field?: string|null,
- *   payload?: null|Payload|PayloadShape,
+ *   payload?: null|CallEventPayload|CallEventPayloadShape,
  *   requestID?: string|null,
  *   timestamp?: string|null,
  * }
  */
-final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload implements BaseModel
+final class CallEvent implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayloadShape>
-     */
+    /** @use SdkModel<CallEventShape> */
     use SdkModel;
 
     /**
@@ -61,7 +58,7 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebho
      * Nothing here is provider-shaped: no provider call id, no namespaced identity.
      */
     #[Optional(nullable: true)]
-    public ?Payload $payload;
+    public ?CallEventPayload $payload;
 
     /**
      * The event-specific body.
@@ -87,12 +84,12 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebho
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param CallEventPayload|CallEventPayloadShape|null $payload
      */
     public static function with(
         ?string $event = null,
         ?string $field = null,
-        Payload|array|null $payload = null,
+        CallEventPayload|array|null $payload = null,
         ?string $requestID = null,
         ?string $timestamp = null,
     ): self {
@@ -147,9 +144,9 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebho
      * message_id from; the question/answer contract is a separate surface and stays camelCase.
      * Nothing here is provider-shaped: no provider call id, no namespaced identity.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param CallEventPayload|CallEventPayloadShape|null $payload
      */
-    public function withPayload(Payload|array|null $payload): self
+    public function withPayload(CallEventPayload|array|null $payload): self
     {
         $self = clone $this;
         $self['payload'] = $payload;
