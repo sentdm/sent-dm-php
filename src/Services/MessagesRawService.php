@@ -10,6 +10,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageResendParams;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
@@ -149,6 +150,56 @@ final class MessagesRawService implements MessagesRawContract
         return $this->client->request(
             method: 'post',
             path: 'v3/messages',
+            headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
+            options: $options,
+            convert: MessageSendResponse::class,
+        );
+    }
+
+    /**
+     * @api
+     *
+     * Resends a finished message on its existing id, typically to retry one BLOCKED for
+     * insufficient balance. Bills again and reruns every send policy, so it can land on BLOCKED
+     * or FILTERED again. Only a terminal message (DELIVERED, FAILED, READ, BLOCKED) or one stuck
+     * at SENT for over 15 minutes can be resent; FILTERED never can. Keeps the original channel.
+     *
+     * @param string $id Message ID
+     * @param array{
+     *   sandbox?: bool|null,
+     *   idempotencyKey?: string|null,
+     *   xProfileID?: string|null,
+     * }|MessageResendParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<MessageSendResponse>
+     *
+     * @throws APIException
+     */
+    public function resend(
+        string $id,
+        array|MessageResendParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse {
+        [$parsed, $options] = MessageResendParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
+
+        // @phpstan-ignore-next-line return.type
+        return $this->client->request(
+            method: 'post',
+            path: ['v3/messages/%1$s/resend', $id],
             headers: Util::array_transform_keys(
                 array_intersect_key($parsed, array_flip(array_keys($header_params))),
                 $header_params,
