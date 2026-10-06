@@ -9,6 +9,8 @@ use Http\Discovery\Psr18ClientDiscovery;
 use SentDm\Core\BaseClient;
 use SentDm\Core\Implementation\StreamingHttpClient;
 use SentDm\Core\Util;
+use SentDm\Services\CallsService;
+use SentDm\Services\ChannelsService;
 use SentDm\Services\ContactsService;
 use SentDm\Services\ConversationsService;
 use SentDm\Services\MeService;
@@ -70,6 +72,16 @@ class Client extends BaseClient
     /**
      * @api
      */
+    public CallsService $calls;
+
+    /**
+     * @api
+     */
+    public ChannelsService $channels;
+
+    /**
+     * @api
+     */
     public MeService $me;
 
     /**
@@ -105,7 +117,7 @@ class Client extends BaseClient
             'Accept' => 'application/json',
             'User-Agent' => sprintf('Sent/PHP %s', VERSION),
             'X-Stainless-Lang' => 'php',
-            'X-Stainless-Package-Version' => '0.35.0',
+            'X-Stainless-Package-Version' => '0.36.0',
             'X-Stainless-Arch' => Util::machtype(),
             'X-Stainless-OS' => Util::ostype(),
             'X-Stainless-Runtime' => php_sapi_name(),
@@ -136,6 +148,8 @@ class Client extends BaseClient
         $this->messages = new MessagesService($this);
         $this->contacts = new ContactsService($this);
         $this->conversations = new ConversationsService($this);
+        $this->calls = new CallsService($this);
+        $this->channels = new ChannelsService($this);
         $this->me = new MeService($this);
     }
 
