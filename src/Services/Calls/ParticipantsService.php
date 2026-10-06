@@ -106,7 +106,7 @@ final class ParticipantsService implements ParticipantsContract
     /**
      * @api
      *
-     * Dials one of your app users or a phone number into a call that is in a conference room, and answers with the participant's own call record. The participant is a call of their own: it has its own id, can be looked up and hung up, and is billed and reported through call.completed and call.failed like any other call. A phone participant is called from caller_id, which must be one of your numbers, or from the call's owning number when omitted, and needs a destination you may call and a positive balance. Only a call your answer connected to a conference can take participants: a call connected to a user or a number answers 409.
+     * Dials one of your app users or a phone number into a call that is in a conference room, and answers with the participant's own call record. The participant is a call of their own: it has its own id, can be looked up and hung up, and is billed and reported through call.completed and call.failed like any other call. Every participant needs a positive balance. A phone participant is called from caller_id, which must be one of your numbers, or from the call's owning number when omitted, and needs a destination you may call. Only a call your answer connected to a conference can take participants: a call connected to a user or a number answers 409.
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param string|null $callerID Body param: The number shown to a phone participant as the caller, in E.164 format. Must be one of your numbers. The call's owning number when omitted

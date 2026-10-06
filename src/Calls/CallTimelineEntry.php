@@ -21,7 +21,7 @@ final class CallTimelineEntry implements BaseModel
     use SdkModel;
 
     /**
-     * initiated, ringing, answered, completed, failed, no_answer or rejected.
+     * INITIATED, RINGING, ANSWERED, COMPLETED, FAILED, NO_ANSWER or REJECTED.
      */
     #[Optional]
     public ?string $status;
@@ -55,7 +55,7 @@ final class CallTimelineEntry implements BaseModel
     }
 
     /**
-     * initiated, ringing, answered, completed, failed, no_answer or rejected.
+     * INITIATED, RINGING, ANSWERED, COMPLETED, FAILED, NO_ANSWER or REJECTED.
      */
     public function withStatus(string $status): self
     {
