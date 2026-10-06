@@ -103,14 +103,19 @@ final class MessageEventPayload implements BaseModel
 
     /**
      * message.scheduled only: why the message is held, either because you scheduled it or because
-     * the recipient is inside a protected quiet-hours window. Omitted on every other event.
+     * the recipient is inside a protected quiet-hours window. Omitted on every other event, including
+     * message.cancelled — that is a property of the hold, not of the cancellation, and repeating it
+     * there would read as "why was this cancelled", which it does not answer.
      */
     #[Optional('schedule_reason', nullable: true)]
     public ?string $scheduleReason;
 
     /**
-     * message.scheduled only: when the held message will be released for delivery, in UTC
-     * (yyyy-MM-ddTHH:mm:ssZ). Omitted on every other event.
+     * message.scheduled and message.cancelled only, in UTC (yyyy-MM-ddTHH:mm:ssZ): on
+     * message.scheduled it is when the held message will be released for delivery, on
+     * message.cancelled the release instant that was called off — the same instant, before and after.
+     * A consumer that recorded a future send from the first event has what it needs to un-record it from the
+     * second. Omitted on every other event.
      */
     #[Optional('scheduled_at', nullable: true)]
     public ?string $scheduledAt;
@@ -309,7 +314,9 @@ final class MessageEventPayload implements BaseModel
 
     /**
      * message.scheduled only: why the message is held, either because you scheduled it or because
-     * the recipient is inside a protected quiet-hours window. Omitted on every other event.
+     * the recipient is inside a protected quiet-hours window. Omitted on every other event, including
+     * message.cancelled — that is a property of the hold, not of the cancellation, and repeating it
+     * there would read as "why was this cancelled", which it does not answer.
      */
     public function withScheduleReason(?string $scheduleReason): self
     {
@@ -320,8 +327,11 @@ final class MessageEventPayload implements BaseModel
     }
 
     /**
-     * message.scheduled only: when the held message will be released for delivery, in UTC
-     * (yyyy-MM-ddTHH:mm:ssZ). Omitted on every other event.
+     * message.scheduled and message.cancelled only, in UTC (yyyy-MM-ddTHH:mm:ssZ): on
+     * message.scheduled it is when the held message will be released for delivery, on
+     * message.cancelled the release instant that was called off — the same instant, before and after.
+     * A consumer that recorded a future send from the first event has what it needs to un-record it from the
+     * second. Omitted on every other event.
      */
     public function withScheduledAt(?string $scheduledAt): self
     {

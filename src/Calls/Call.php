@@ -67,7 +67,7 @@ final class Call implements BaseModel
     public ?\DateTimeInterface $endedAt;
 
     /**
-     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, rejected or no_answer. Null while the call is live, when it completed, and when it failed without a recorded reason.
+     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected or no_answer. Null while the call is live, when it completed, and when it failed without a recorded reason.
      */
     #[Optional('failure_reason', nullable: true)]
     public ?string $failureReason;
@@ -103,7 +103,7 @@ final class Call implements BaseModel
     public ?\DateTimeInterface $startedAt;
 
     /**
-     * initiated, ringing, answered, completed, failed, no_answer or rejected.
+     * INITIATED, RINGING, ANSWERED, COMPLETED, FAILED, NO_ANSWER or REJECTED.
      */
     #[Optional]
     public ?string $status;
@@ -228,7 +228,7 @@ final class Call implements BaseModel
     }
 
     /**
-     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, rejected or no_answer. Null while the call is live, when it completed, and when it failed without a recorded reason.
+     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected or no_answer. Null while the call is live, when it completed, and when it failed without a recorded reason.
      */
     public function withFailureReason(?string $failureReason): self
     {
@@ -296,7 +296,7 @@ final class Call implements BaseModel
     }
 
     /**
-     * initiated, ringing, answered, completed, failed, no_answer or rejected.
+     * INITIATED, RINGING, ANSWERED, COMPLETED, FAILED, NO_ANSWER or REJECTED.
      */
     public function withStatus(string $status): self
     {
