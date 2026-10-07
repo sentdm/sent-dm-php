@@ -65,6 +65,13 @@ final class VoiceService implements VoiceContract
      * decides the call. Every question is signed with the callback_secret the response returns, the
      * same way your webhooks are signed. Turning the number on again with a different URL replaces it and
      * keeps the secret.
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string|null $areaCode Body param: The US area code a new number should be in, as 212. Only for a request that leaves
      * number out — sending both says two different things about which number to use, and is
      * refused. Omit it too and the number comes from anywhere in the country.
@@ -82,6 +89,7 @@ final class VoiceService implements VoiceContract
      */
     public function create(
         string $callbackURL,
+        ?string $apiKey = null,
         ?string $areaCode = null,
         ?bool $defaultForAppCalls = null,
         ?string $number = null,
@@ -93,6 +101,7 @@ final class VoiceService implements VoiceContract
         $params = Util::removeNulls(
             [
                 'callbackURL' => $callbackURL,
+                'apiKey' => $apiKey,
                 'areaCode' => $areaCode,
                 'defaultForAppCalls' => $defaultForAppCalls,
                 'number' => $number,
@@ -170,6 +179,13 @@ final class VoiceService implements VoiceContract
      * With `sandbox: true` nothing is written: the request is validated against the stored number and the number is reported with `200` as it would read after the change.
      *
      * @param string $number Path param: The number in E.164 format with the plus sign URL-encoded, e.g. %2B12125550100
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string|null $callbackURL Body param: A new callback URL for the number, active or not: an absolute HTTP or HTTPS URL on a public host,
      * where Sent asks what to do with each call. The signing secret is kept.
      * @param bool|null $defaultForAppCalls Body param: true makes this the line app-originated calls are placed from when a voice token names no
@@ -187,6 +203,7 @@ final class VoiceService implements VoiceContract
      */
     public function update(
         string $number,
+        ?string $apiKey = null,
         ?string $callbackURL = null,
         ?bool $defaultForAppCalls = null,
         ?bool $sandbox = null,
@@ -197,6 +214,7 @@ final class VoiceService implements VoiceContract
     ): APIResponseOfVoiceNumber {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'callbackURL' => $callbackURL,
                 'defaultForAppCalls' => $defaultForAppCalls,
                 'sandbox' => $sandbox,
@@ -241,6 +259,13 @@ final class VoiceService implements VoiceContract
      *
      * Mints a short-lived token for one of your app users. Call this from your backend and return the token to your app, which passes it to the voice client SDK to register. The identity is bound to the given number, or to your default app-call number when omitted, and calls placed by that identity are routed through the bound number. Minting again re-binds the identity, so an identity can move between numbers.
      *
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string $identity Body param: Your identifier for the app user, such as an agent or account id. Letters, digits, hyphens and underscores only, up to 200 characters.
      * @param string|null $number Body param: One of your voice-enabled phone numbers in E.164 format. Calls placed by this identity are routed through that number. Omit to use your default app-call number.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -253,6 +278,7 @@ final class VoiceService implements VoiceContract
      * @throws APIException
      */
     public function createToken(
+        ?string $apiKey = null,
         ?string $identity = null,
         ?string $number = null,
         ?bool $sandbox = null,
@@ -263,6 +289,7 @@ final class VoiceService implements VoiceContract
     ): APIResponseOfVoiceToken {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'identity' => $identity,
                 'number' => $number,
                 'sandbox' => $sandbox,
@@ -287,6 +314,13 @@ final class VoiceService implements VoiceContract
      *
      * @param string $number Path param: The voice number from the route, in E.164 format with the plus sign URL-encoded (%2B),
      * for example /v3/channels/voice/%2B12025550123/rotate-secret.
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -297,6 +331,7 @@ final class VoiceService implements VoiceContract
      */
     public function rotateSecret(
         string $number,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -304,6 +339,7 @@ final class VoiceService implements VoiceContract
     ): APIResponseOfVoiceSecret {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
@@ -326,6 +362,13 @@ final class VoiceService implements VoiceContract
      * @param string $number Path param: The voice number from the route, in E.164 format with the plus sign URL-encoded (%2B),
      * for example /v3/channels/voice/%2B12025550123/test. The test question goes to this
      * number's callback URL and is signed with this number's secret.
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -336,6 +379,7 @@ final class VoiceService implements VoiceContract
      */
     public function test(
         string $number,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -343,6 +387,7 @@ final class VoiceService implements VoiceContract
     ): APIResponseOfVoiceCallbackTest {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,

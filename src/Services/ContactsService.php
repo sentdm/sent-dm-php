@@ -44,6 +44,13 @@ final class ContactsService implements ContactsContract
      * Creates a new contact by phone number and associates it with the authenticated customer.
      *
      * @param string $phoneNumber Body param: Phone number of the contact to create
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -54,6 +61,7 @@ final class ContactsService implements ContactsContract
      */
     public function create(
         string $phoneNumber,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -62,6 +70,7 @@ final class ContactsService implements ContactsContract
         $params = Util::removeNulls(
             [
                 'phoneNumber' => $phoneNumber,
+                'apiKey' => $apiKey,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
@@ -104,6 +113,13 @@ final class ContactsService implements ContactsContract
      * Updates a contact's default channel and/or opt-out status.
      *
      * @param string $id Path param: Contact ID from route parameter
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string|null $defaultChannel Body param: Default messaging channel: "sms" or "whatsapp"
      * @param bool|null $optOut Body param: Whether the contact has opted out of messaging. Single source of truth — opt-out is
      * per-contact, not per-channel.
@@ -117,6 +133,7 @@ final class ContactsService implements ContactsContract
      */
     public function update(
         string $id,
+        ?string $apiKey = null,
         ?string $defaultChannel = null,
         ?bool $optOut = null,
         ?bool $sandbox = null,
@@ -126,6 +143,7 @@ final class ContactsService implements ContactsContract
     ): APIResponseOfContact {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'defaultChannel' => $defaultChannel,
                 'optOut' => $optOut,
                 'sandbox' => $sandbox,
@@ -195,6 +213,13 @@ final class ContactsService implements ContactsContract
      * Dissociates a contact from the authenticated customer.
      *
      * @param string $id Path param: Contact ID from route parameter
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -204,12 +229,13 @@ final class ContactsService implements ContactsContract
      */
     public function delete(
         string $id,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
         $params = Util::removeNulls(
-            ['sandbox' => $sandbox, 'xProfileID' => $xProfileID]
+            ['apiKey' => $apiKey, 'sandbox' => $sandbox, 'xProfileID' => $xProfileID]
         );
 
         // @phpstan-ignore-next-line argument.type

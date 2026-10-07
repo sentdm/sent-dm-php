@@ -55,6 +55,7 @@ final class ParticipantsTest extends TestCase
         $result = $this->client->calls->participants->update(
             'call_9f2ab000-0000-4000-8000-000000000002',
             id: 'call_9f2ab000-0000-4000-8000-000000000001',
+            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             muted: true,
             sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
@@ -121,6 +122,7 @@ final class ParticipantsTest extends TestCase
         $result = $this->client->calls->participants->remove(
             'call_9f2ab000-0000-4000-8000-000000000002',
             id: 'call_9f2ab000-0000-4000-8000-000000000001',
+            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             sandbox: false,
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );

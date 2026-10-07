@@ -57,6 +57,7 @@ final class VoiceTest extends TestCase
 
         $result = $this->client->channels->voice->create(
             callbackURL: 'https://example.com/voice',
+            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             areaCode: null,
             defaultForAppCalls: false,
             number: '+12125550100',

@@ -50,6 +50,13 @@ final class WebhooksService implements WebhooksContract
      *
      * Creates a new webhook endpoint for the authenticated customer.
      *
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string $displayName Body param
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
@@ -67,6 +74,7 @@ final class WebhooksService implements WebhooksContract
      * @throws APIException
      */
     public function create(
+        ?string $apiKey = null,
         ?string $displayName = null,
         ?string $endpointURL = null,
         ?array $eventFilters = null,
@@ -81,6 +89,7 @@ final class WebhooksService implements WebhooksContract
     ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'displayName' => $displayName,
                 'endpointURL' => $endpointURL,
                 'eventFilters' => $eventFilters,
@@ -129,6 +138,13 @@ final class WebhooksService implements WebhooksContract
      * Updates an existing webhook for the authenticated customer.
      *
      * @param string $id Path param
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string $displayName Body param
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
@@ -147,6 +163,7 @@ final class WebhooksService implements WebhooksContract
      */
     public function update(
         string $id,
+        ?string $apiKey = null,
         ?string $displayName = null,
         ?string $endpointURL = null,
         ?array $eventFilters = null,
@@ -161,6 +178,7 @@ final class WebhooksService implements WebhooksContract
     ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'displayName' => $displayName,
                 'endpointURL' => $endpointURL,
                 'eventFilters' => $eventFilters,
@@ -225,17 +243,28 @@ final class WebhooksService implements WebhooksContract
      *
      * Deletes a webhook for the authenticated customer.
      *
-     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
+     * @param string $id Path param
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
      * @throws APIException
      */
     public function delete(
         string $id,
+        ?string $apiKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
-        $params = Util::removeNulls(['xProfileID' => $xProfileID]);
+        $params = Util::removeNulls(
+            ['apiKey' => $apiKey, 'xProfileID' => $xProfileID]
+        );
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->delete($id, params: $params, requestOptions: $requestOptions);
@@ -310,6 +339,13 @@ final class WebhooksService implements WebhooksContract
      * Generates a new signing secret for the specified webhook. The old secret is immediately invalidated.
      *
      * @param string $id Path param
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -320,6 +356,7 @@ final class WebhooksService implements WebhooksContract
      */
     public function rotateSecret(
         string $id,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -327,6 +364,7 @@ final class WebhooksService implements WebhooksContract
     ): WebhookRotateSecretResponse {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
@@ -345,6 +383,13 @@ final class WebhooksService implements WebhooksContract
      * Sends a test event to the specified webhook endpoint to verify connectivity.
      *
      * @param string $id Path param
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string $eventType Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -356,6 +401,7 @@ final class WebhooksService implements WebhooksContract
      */
     public function test(
         string $id,
+        ?string $apiKey = null,
         ?string $eventType = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
@@ -364,6 +410,7 @@ final class WebhooksService implements WebhooksContract
     ): WebhookTestResponse {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'eventType' => $eventType,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
@@ -383,6 +430,13 @@ final class WebhooksService implements WebhooksContract
      * Activates or deactivates a webhook for the authenticated customer.
      *
      * @param string $id Path param
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $isActive Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -394,6 +448,7 @@ final class WebhooksService implements WebhooksContract
      */
     public function toggleStatus(
         string $id,
+        ?string $apiKey = null,
         ?bool $isActive = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
@@ -402,6 +457,7 @@ final class WebhooksService implements WebhooksContract
     ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
+                'apiKey' => $apiKey,
                 'isActive' => $isActive,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
