@@ -45,7 +45,6 @@ final class ContactsRawService implements ContactsRawContract
      *
      * @param array{
      *   phoneNumber: string,
-     *   apiKey?: string,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
@@ -128,7 +127,6 @@ final class ContactsRawService implements ContactsRawContract
      *
      * @param string $id Path param: Contact ID from route parameter
      * @param array{
-     *   apiKey?: string,
      *   defaultChannel?: string|null,
      *   optOut?: bool|null,
      *   sandbox?: bool,
@@ -235,9 +233,7 @@ final class ContactsRawService implements ContactsRawContract
      * Dissociates a contact from the authenticated customer.
      *
      * @param string $id Path param: Contact ID from route parameter
-     * @param array{
-     *   apiKey?: string, sandbox?: bool, xProfileID?: string
-     * }|ContactDeleteParams $params
+     * @param array{sandbox?: bool, xProfileID?: string}|ContactDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>

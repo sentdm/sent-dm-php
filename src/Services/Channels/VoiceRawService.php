@@ -63,7 +63,6 @@ final class VoiceRawService implements VoiceRawContract
      *
      * @param array{
      *   callbackURL: string,
-     *   apiKey?: string,
      *   areaCode?: string|null,
      *   defaultForAppCalls?: bool|null,
      *   number?: string|null,
@@ -181,7 +180,6 @@ final class VoiceRawService implements VoiceRawContract
      *
      * @param string $number Path param: The number in E.164 format with the plus sign URL-encoded, e.g. %2B12125550100
      * @param array{
-     *   apiKey?: string,
      *   callbackURL?: string|null,
      *   defaultForAppCalls?: bool|null,
      *   sandbox?: bool,
@@ -267,7 +265,6 @@ final class VoiceRawService implements VoiceRawContract
      * Mints a short-lived token for one of your app users. Call this from your backend and return the token to your app, which passes it to the voice client SDK to register. The identity is bound to the given number, or to your default app-call number when omitted, and calls placed by that identity are routed through the bound number. Minting again re-binds the identity, so an identity can move between numbers.
      *
      * @param array{
-     *   apiKey?: string,
      *   identity?: string,
      *   number?: string|null,
      *   sandbox?: bool,
@@ -320,7 +317,7 @@ final class VoiceRawService implements VoiceRawContract
      * @param string $number Path param: The voice number from the route, in E.164 format with the plus sign URL-encoded (%2B),
      * for example /v3/channels/voice/%2B12025550123/rotate-secret.
      * @param array{
-     *   apiKey?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|VoiceRotateSecretParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -369,7 +366,7 @@ final class VoiceRawService implements VoiceRawContract
      * for example /v3/channels/voice/%2B12025550123/test. The test question goes to this
      * number's callback URL and is signed with this number's secret.
      * @param array{
-     *   apiKey?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|VoiceTestParams $params
      * @param RequestOpts|null $requestOptions
      *

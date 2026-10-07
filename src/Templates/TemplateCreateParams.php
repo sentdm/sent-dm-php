@@ -17,7 +17,6 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
  *
  * @phpstan-type TemplateCreateParamsShape = array{
- *   apiKey?: string|null,
  *   autoCreateForSp?: bool|null,
  *   category?: string|null,
  *   creationSource?: string|null,
@@ -34,18 +33,6 @@ final class TemplateCreateParams implements BaseModel
     /** @use SdkModel<TemplateCreateParamsShape> */
     use SdkModel;
     use SdkParams;
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    #[Optional]
-    public ?string $apiKey;
 
     /**
      * Create this template automatically on every sender profile of the organization, now and in future
@@ -111,7 +98,6 @@ final class TemplateCreateParams implements BaseModel
      * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      */
     public static function with(
-        ?string $apiKey = null,
         ?bool $autoCreateForSp = null,
         ?string $category = null,
         ?string $creationSource = null,
@@ -124,7 +110,6 @@ final class TemplateCreateParams implements BaseModel
     ): self {
         $self = new self;
 
-        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $autoCreateForSp && $self['autoCreateForSp'] = $autoCreateForSp;
         null !== $category && $self['category'] = $category;
         null !== $creationSource && $self['creationSource'] = $creationSource;
@@ -134,23 +119,6 @@ final class TemplateCreateParams implements BaseModel
         null !== $submitForReview && $self['submitForReview'] = $submitForReview;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
-
-        return $self;
-    }
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    public function withAPIKey(string $apiKey): self
-    {
-        $self = clone $this;
-        $self['apiKey'] = $apiKey;
 
         return $self;
     }

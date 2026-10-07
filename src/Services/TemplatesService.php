@@ -42,13 +42,6 @@ final class TemplatesService implements TemplatesContract
      *
      * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. There is no `name` field on create — the display name is derived from the template's content and can be changed afterwards with `PUT /v3/templates/{id}`.
      *
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $autoCreateForSp Body param: Create this template automatically on every sender profile of the organization, now and in future
      * (default: false). Accepted only from an organization that has been enabled for it, and only at
      * creation — it cannot be changed afterwards.
@@ -66,7 +59,6 @@ final class TemplatesService implements TemplatesContract
      * @throws APIException
      */
     public function create(
-        ?string $apiKey = null,
         ?bool $autoCreateForSp = null,
         ?string $category = null,
         ?string $creationSource = null,
@@ -80,7 +72,6 @@ final class TemplatesService implements TemplatesContract
     ): APIResponseTemplate {
         $params = Util::removeNulls(
             [
-                'apiKey' => $apiKey,
                 'autoCreateForSp' => $autoCreateForSp,
                 'category' => $category,
                 'creationSource' => $creationSource,
@@ -135,13 +126,6 @@ final class TemplatesService implements TemplatesContract
      * Templates provisioned by Sent (light-onboarding templates, whose names carry the reserved `sent_` prefix) are read-only: every field is refused with 400 VALIDATION_001 and the detail "This template is read-only. Only 'submit for review' is allowed.", and only `submit_for_review` is accepted. A `name` starting with `sent_` is refused for the same reason — the prefix is reserved.
      *
      * @param string $id Path param: Template ID from route parameter
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
      * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US)
@@ -157,7 +141,6 @@ final class TemplatesService implements TemplatesContract
      */
     public function update(
         string $id,
-        ?string $apiKey = null,
         ?string $category = null,
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
@@ -170,7 +153,6 @@ final class TemplatesService implements TemplatesContract
     ): APIResponseTemplate {
         $params = Util::removeNulls(
             [
-                'apiKey' => $apiKey,
                 'category' => $category,
                 'definition' => $definition,
                 'language' => $language,
@@ -243,13 +225,6 @@ final class TemplatesService implements TemplatesContract
      * Deletes a template by ID. Optionally, you can also delete the template from WhatsApp/Meta by setting delete_from_meta=true.
      *
      * @param string $id Path param: Template ID from route parameter
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool|null $deleteFromMeta Body param: Whether to also delete the template from WhatsApp/Meta (optional, defaults to false)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -260,7 +235,6 @@ final class TemplatesService implements TemplatesContract
      */
     public function delete(
         string $id,
-        ?string $apiKey = null,
         ?bool $deleteFromMeta = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,
@@ -268,7 +242,6 @@ final class TemplatesService implements TemplatesContract
     ): mixed {
         $params = Util::removeNulls(
             [
-                'apiKey' => $apiKey,
                 'deleteFromMeta' => $deleteFromMeta,
                 'sandbox' => $sandbox,
                 'xProfileID' => $xProfileID,

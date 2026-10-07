@@ -20,13 +20,6 @@ interface TemplatesContract
     /**
      * @api
      *
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $autoCreateForSp Body param: Create this template automatically on every sender profile of the organization, now and in future
      * (default: false). Accepted only from an organization that has been enabled for it, and only at
      * creation — it cannot be changed afterwards.
@@ -44,7 +37,6 @@ interface TemplatesContract
      * @throws APIException
      */
     public function create(
-        ?string $apiKey = null,
         ?bool $autoCreateForSp = null,
         ?string $category = null,
         ?string $creationSource = null,
@@ -76,13 +68,6 @@ interface TemplatesContract
      * @api
      *
      * @param string $id Path param: Template ID from route parameter
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param string|null $category Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
      * @param TemplateDefinition|TemplateDefinitionShape|null $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US)
@@ -98,7 +83,6 @@ interface TemplatesContract
      */
     public function update(
         string $id,
-        ?string $apiKey = null,
         ?string $category = null,
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
@@ -144,13 +128,6 @@ interface TemplatesContract
      * @api
      *
      * @param string $id Path param: Template ID from route parameter
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool|null $deleteFromMeta Body param: Whether to also delete the template from WhatsApp/Meta (optional, defaults to false)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -161,7 +138,6 @@ interface TemplatesContract
      */
     public function delete(
         string $id,
-        ?string $apiKey = null,
         ?bool $deleteFromMeta = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,

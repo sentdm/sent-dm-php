@@ -48,7 +48,6 @@ final class CampaignsRawService implements CampaignsRawContract
      * @param string $profileID Path param: Profile ID from route
      * @param array{
      *   campaign: CampaignData|CampaignDataShape,
-     *   apiKey?: string,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
@@ -102,7 +101,6 @@ final class CampaignsRawService implements CampaignsRawContract
      * @param array{
      *   profileID: string,
      *   campaign: CampaignData|CampaignDataShape,
-     *   apiKey?: string,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
@@ -196,7 +194,7 @@ final class CampaignsRawService implements CampaignsRawContract
      *
      * @param string $campaignID Path param: Campaign ID from route parameter
      * @param array{
-     *   profileID: string, apiKey?: string, sandbox?: bool, xProfileID?: string
+     *   profileID: string, sandbox?: bool, xProfileID?: string
      * }|CampaignDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

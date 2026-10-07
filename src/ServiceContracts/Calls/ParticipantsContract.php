@@ -21,13 +21,6 @@ interface ParticipantsContract
      *
      * @param string $participantID Path param: The participant's own call id from the route, as listed by the participants endpoint, for example call_9f2ab000-0000-4000-8000-000000000002
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $muted Body param: true to mute the participant, false to unmute them
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -40,7 +33,6 @@ interface ParticipantsContract
     public function update(
         string $participantID,
         string $id,
-        ?string $apiKey = null,
         ?bool $muted = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
@@ -67,13 +59,6 @@ interface ParticipantsContract
      * @api
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param string|null $callerID Body param: The number shown to a phone participant as the caller, in E.164 format. Must be one of your numbers. The call's owning number when omitted
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -86,7 +71,6 @@ interface ParticipantsContract
      */
     public function add(
         string $id,
-        ?string $apiKey = null,
         ?string $callerID = null,
         ?bool $sandbox = null,
         CallParticipantTarget|array|null $to = null,
@@ -100,13 +84,6 @@ interface ParticipantsContract
      *
      * @param string $participantID Path param: The participant's own call id from the route, as listed by the participants endpoint, for example call_9f2ab000-0000-4000-8000-000000000002
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -117,7 +94,6 @@ interface ParticipantsContract
     public function remove(
         string $participantID,
         string $id,
-        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
@@ -127,13 +103,6 @@ interface ParticipantsContract
      * @api
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -143,7 +112,6 @@ interface ParticipantsContract
      */
     public function removeAll(
         string $id,
-        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,

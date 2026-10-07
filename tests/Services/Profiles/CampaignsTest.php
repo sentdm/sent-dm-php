@@ -92,7 +92,6 @@ final class CampaignsTest extends TestCase
                 'termsAndConditionsLink' => 'https://acmecorp.com/terms',
                 'volume' => 'volume',
             ],
-            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
@@ -166,7 +165,6 @@ final class CampaignsTest extends TestCase
                 'termsAndConditionsLink' => 'https://example.com',
                 'volume' => 'volume',
             ],
-            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
@@ -217,7 +215,6 @@ final class CampaignsTest extends TestCase
         $result = $this->client->profiles->campaigns->delete(
             'b2c3d4e5-f6a7-8901-bcde-f12345678901',
             profileID: '770e8400-e29b-41d4-a716-446655440002',
-            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             sandbox: false,
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );

@@ -25,7 +25,6 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-type VoiceCreateParamsShape = array{
  *   callbackURL: string,
- *   apiKey?: string|null,
  *   areaCode?: string|null,
  *   defaultForAppCalls?: bool|null,
  *   number?: string|null,
@@ -49,18 +48,6 @@ final class VoiceCreateParams implements BaseModel
      */
     #[Required('callback_url')]
     public string $callbackURL;
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    #[Optional]
-    public ?string $apiKey;
 
     /**
      * The US area code a new number should be in, as 212. Only for a request that leaves
@@ -123,7 +110,6 @@ final class VoiceCreateParams implements BaseModel
      */
     public static function with(
         string $callbackURL,
-        ?string $apiKey = null,
         ?string $areaCode = null,
         ?bool $defaultForAppCalls = null,
         ?string $number = null,
@@ -135,7 +121,6 @@ final class VoiceCreateParams implements BaseModel
 
         $self['callbackURL'] = $callbackURL;
 
-        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $areaCode && $self['areaCode'] = $areaCode;
         null !== $defaultForAppCalls && $self['defaultForAppCalls'] = $defaultForAppCalls;
         null !== $number && $self['number'] = $number;
@@ -157,23 +142,6 @@ final class VoiceCreateParams implements BaseModel
     {
         $self = clone $this;
         $self['callbackURL'] = $callbackURL;
-
-        return $self;
-    }
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    public function withAPIKey(string $apiKey): self
-    {
-        $self = clone $this;
-        $self['apiKey'] = $apiKey;
 
         return $self;
     }

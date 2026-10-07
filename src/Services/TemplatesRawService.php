@@ -42,7 +42,6 @@ final class TemplatesRawService implements TemplatesRawContract
      * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. There is no `name` field on create — the display name is derived from the template's content and can be changed afterwards with `PUT /v3/templates/{id}`.
      *
      * @param array{
-     *   apiKey?: string,
      *   autoCreateForSp?: bool,
      *   category?: string|null,
      *   creationSource?: string|null,
@@ -137,7 +136,6 @@ final class TemplatesRawService implements TemplatesRawContract
      *
      * @param string $id Path param: Template ID from route parameter
      * @param array{
-     *   apiKey?: string,
      *   category?: string|null,
      *   definition?: TemplateDefinition|TemplateDefinitionShape|null,
      *   language?: string|null,
@@ -253,10 +251,7 @@ final class TemplatesRawService implements TemplatesRawContract
      *
      * @param string $id Path param: Template ID from route parameter
      * @param array{
-     *   apiKey?: string,
-     *   deleteFromMeta?: bool|null,
-     *   sandbox?: bool,
-     *   xProfileID?: string,
+     *   deleteFromMeta?: bool|null, sandbox?: bool, xProfileID?: string
      * }|TemplateDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

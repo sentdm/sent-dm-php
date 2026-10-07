@@ -134,7 +134,7 @@ final class CallsRawService implements CallsRawContract
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{
-     *   apiKey?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|CallHangupParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -215,11 +215,7 @@ final class CallsRawService implements CallsRawContract
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{
-     *   action?: string,
-     *   apiKey?: string,
-     *   sandbox?: bool,
-     *   idempotencyKey?: string,
-     *   xProfileID?: string,
+     *   action?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|CallRecordParams $params
      * @param RequestOpts|null $requestOptions
      *

@@ -89,13 +89,6 @@ final class ProfilesService implements ProfilesContract
      * caller that checks its own write can see it did not take. Requests carrying one are logged, so we can
      * tell when nobody sends them any more and the fields can go for real.
      * @param bool|null $allowTemplateSharing Body param
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param BillingContactInfo|BillingContactInfoShape|null $billingContact Body param: Billing contact information for a profile.
      * Required when billing_model is "profile" or "profile_and_organization".
      * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (default: profile).
@@ -130,7 +123,6 @@ final class ProfilesService implements ProfilesContract
     public function create(
         ?bool $allowContactSharing = null,
         ?bool $allowTemplateSharing = null,
-        ?string $apiKey = null,
         BillingContactInfo|array|null $billingContact = null,
         ?string $billingModel = null,
         BrandsBrandData|array|null $brand = null,
@@ -153,7 +145,6 @@ final class ProfilesService implements ProfilesContract
             [
                 'allowContactSharing' => $allowContactSharing,
                 'allowTemplateSharing' => $allowTemplateSharing,
-                'apiKey' => $apiKey,
                 'billingContact' => $billingContact,
                 'billingModel' => $billingModel,
                 'brand' => $brand,
@@ -244,13 +235,6 @@ final class ProfilesService implements ProfilesContract
      * false, so a caller that checks its own write can see it did not take.
      * @param bool|null $allowNumberChangeDuringOnboarding Body param: Whether number changes are allowed during onboarding (optional)
      * @param bool|null $allowTemplateSharing Body param
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param BillingContactInfo|BillingContactInfoShape|null $billingContact Body param: Billing contact information for a profile.
      * Required when billing_model is "profile" or "profile_and_organization".
      * @param string|null $billingModel Body param: Billing model: profile, organization, or profile_and_organization (optional).
@@ -302,7 +286,6 @@ final class ProfilesService implements ProfilesContract
         ?bool $allowContactSharing = null,
         ?bool $allowNumberChangeDuringOnboarding = null,
         ?bool $allowTemplateSharing = null,
-        ?string $apiKey = null,
         BillingContactInfo|array|null $billingContact = null,
         ?string $billingModel = null,
         BrandsBrandData|array|null $brand = null,
@@ -329,7 +312,6 @@ final class ProfilesService implements ProfilesContract
                 'allowContactSharing' => $allowContactSharing,
                 'allowNumberChangeDuringOnboarding' => $allowNumberChangeDuringOnboarding,
                 'allowTemplateSharing' => $allowTemplateSharing,
-                'apiKey' => $apiKey,
                 'billingContact' => $billingContact,
                 'billingModel' => $billingModel,
                 'brand' => $brand,
@@ -394,13 +376,6 @@ final class ProfilesService implements ProfilesContract
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Anything it still held is released first: phone numbers return to our inventory and can go to whoever asks next, its own WhatsApp account is deregistered, and its routing rules stop being used. Requires admin role in the organization.
      *
      * @param string $profileID Path param: Profile ID from route parameter
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -410,13 +385,12 @@ final class ProfilesService implements ProfilesContract
      */
     public function delete(
         string $profileID,
-        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): mixed {
         $params = Util::removeNulls(
-            ['apiKey' => $apiKey, 'sandbox' => $sandbox, 'xProfileID' => $xProfileID]
+            ['sandbox' => $sandbox, 'xProfileID' => $xProfileID]
         );
 
         // @phpstan-ignore-next-line argument.type
@@ -454,13 +428,6 @@ final class ProfilesService implements ProfilesContract
      *
      * @param string $profileID Path param: Profile ID from route
      * @param string $webHookURL Body param: Webhook URL to call when profile completion finishes (success or failure)
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -472,7 +439,6 @@ final class ProfilesService implements ProfilesContract
     public function complete(
         string $profileID,
         string $webHookURL,
-        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -481,7 +447,6 @@ final class ProfilesService implements ProfilesContract
         $params = Util::removeNulls(
             [
                 'webHookURL' => $webHookURL,
-                'apiKey' => $apiKey,
                 'sandbox' => $sandbox,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,

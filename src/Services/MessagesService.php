@@ -96,13 +96,6 @@ final class MessagesService implements MessagesContract
      *
      * Sends a message to one or more recipients using a template. Supports multi-channel broadcast — when multiple channels are specified (e.g. ["sms", "whatsapp"]), a separate message is created for each (recipient, channel) pair. Returns immediately with per-recipient message IDs for async tracking via webhooks or the GET /messages/{id} endpoint. Sends gated before any delivery attempt do not reject the request — an account-level precondition such as insufficient balance, a template not approved for sending, or free-form content with no open conversation with the contact. The send is accepted with 202 and the affected messages are reported as BLOCKED on GET /messages/{id} and the message.blocked webhook. To send later, set scheduled_at (ISO-8601 with an explicit UTC offset; a value without one is rejected) between 1 minute and 30 days ahead: the response is a ScheduledSendMessageResponse (the same fields plus scheduled_at; status is still QUEUED), each message then moves to SCHEDULED, is held and released at that time (within a few minutes), and a message.scheduled webhook fires once it is held. Balance and template approval are evaluated at release, not at acceptance. Quiet hours are not checked when the request is accepted: if the time falls inside a legally protected quiet-hours window for a recipient, that message is moved to the next allowed time at release and a second message.scheduled webhook reports the new scheduled_at. An account may hold at most 1,000,000 scheduled messages at once (429 LIMIT_001).
      *
-     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
      * @param list<string>|null $channel Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"].
      * Each channel produces a separate message per recipient.
      * "sent" = auto-detect.
@@ -142,7 +135,6 @@ final class MessagesService implements MessagesContract
      * @throws APIException
      */
     public function send(
-        ?string $apiKey = null,
         ?array $channel = null,
         ?array $mediaURLs = null,
         ?bool $sandbox = null,
@@ -157,7 +149,6 @@ final class MessagesService implements MessagesContract
     ): MessageSendResponse {
         $params = Util::removeNulls(
             [
-                'apiKey' => $apiKey,
                 'channel' => $channel,
                 'mediaURLs' => $mediaURLs,
                 'sandbox' => $sandbox,

@@ -41,7 +41,6 @@ use SentDm\Core\Contracts\BaseModel;
  *   allowContactSharing?: bool|null,
  *   allowNumberChangeDuringOnboarding?: bool|null,
  *   allowTemplateSharing?: bool|null,
- *   apiKey?: string|null,
  *   billingContact?: null|BillingContactInfo|BillingContactInfoShape,
  *   billingModel?: string|null,
  *   brand?: null|BrandsBrandData|BrandsBrandDataShape,
@@ -96,18 +95,6 @@ final class ProfileUpdateParams implements BaseModel
      */
     #[Optional('allow_template_sharing', nullable: true)]
     public ?bool $allowTemplateSharing;
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    #[Optional]
-    public ?string $apiKey;
 
     /**
      * Billing contact information for a profile.
@@ -260,7 +247,6 @@ final class ProfileUpdateParams implements BaseModel
         ?bool $allowContactSharing = null,
         ?bool $allowNumberChangeDuringOnboarding = null,
         ?bool $allowTemplateSharing = null,
-        ?string $apiKey = null,
         BillingContactInfo|array|null $billingContact = null,
         ?string $billingModel = null,
         BrandsBrandData|array|null $brand = null,
@@ -286,7 +272,6 @@ final class ProfileUpdateParams implements BaseModel
         null !== $allowContactSharing && $self['allowContactSharing'] = $allowContactSharing;
         null !== $allowNumberChangeDuringOnboarding && $self['allowNumberChangeDuringOnboarding'] = $allowNumberChangeDuringOnboarding;
         null !== $allowTemplateSharing && $self['allowTemplateSharing'] = $allowTemplateSharing;
-        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $billingContact && $self['billingContact'] = $billingContact;
         null !== $billingModel && $self['billingModel'] = $billingModel;
         null !== $brand && $self['brand'] = $brand;
@@ -345,23 +330,6 @@ final class ProfileUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['allowTemplateSharing'] = $allowTemplateSharing;
-
-        return $self;
-    }
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    public function withAPIKey(string $apiKey): self
-    {
-        $self = clone $this;
-        $self['apiKey'] = $apiKey;
 
         return $self;
     }

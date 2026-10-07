@@ -17,7 +17,6 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type CallParticipantTargetShape from \SentDm\Calls\Participants\CallParticipantTarget
  *
  * @phpstan-type ParticipantAddParamsShape = array{
- *   apiKey?: string|null,
  *   callerID?: string|null,
  *   sandbox?: bool|null,
  *   to?: null|CallParticipantTarget|CallParticipantTargetShape,
@@ -30,18 +29,6 @@ final class ParticipantAddParams implements BaseModel
     /** @use SdkModel<ParticipantAddParamsShape> */
     use SdkModel;
     use SdkParams;
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    #[Optional]
-    public ?string $apiKey;
 
     /**
      * The number shown to a phone participant as the caller, in E.164 format. Must be one of your numbers. The call's owning number when omitted.
@@ -81,7 +68,6 @@ final class ParticipantAddParams implements BaseModel
      * @param CallParticipantTarget|CallParticipantTargetShape|null $to
      */
     public static function with(
-        ?string $apiKey = null,
         ?string $callerID = null,
         ?bool $sandbox = null,
         CallParticipantTarget|array|null $to = null,
@@ -90,29 +76,11 @@ final class ParticipantAddParams implements BaseModel
     ): self {
         $self = new self;
 
-        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $callerID && $self['callerID'] = $callerID;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $to && $self['to'] = $to;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
-
-        return $self;
-    }
-
-    /**
-     * API key from the x-api-key header, or empty when the caller sent it as
-     * Authorization: Bearer instead.
-     *
-     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
-     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
-     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
-     * claim, not from this value.
-     */
-    public function withAPIKey(string $apiKey): self
-    {
-        $self = clone $this;
-        $self['apiKey'] = $apiKey;
 
         return $self;
     }
