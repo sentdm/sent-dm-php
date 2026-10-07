@@ -97,6 +97,7 @@ interface WebhooksRawContract
     /**
      * @api
      *
+     * @param string $id Path param
      * @param array<string,mixed>|WebhookDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *

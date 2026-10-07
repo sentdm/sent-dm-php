@@ -64,6 +64,13 @@ interface CallsContract
      * @api
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -74,6 +81,7 @@ interface CallsContract
      */
     public function hangup(
         string $id,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -100,6 +108,13 @@ interface CallsContract
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param string $action Body param: start to begin recording, stop to end it
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -111,6 +126,7 @@ interface CallsContract
     public function record(
         string $id,
         ?string $action = null,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,

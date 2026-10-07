@@ -18,6 +18,7 @@ use SentDm\Messages\MessageSendParams\Template;
  * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
  *
  * @phpstan-type MessageSendParamsShape = array{
+ *   apiKey?: string|null,
  *   channel?: list<string>|null,
  *   mediaURLs?: list<string>|null,
  *   sandbox?: bool|null,
@@ -35,6 +36,18 @@ final class MessageSendParams implements BaseModel
     /** @use SdkModel<MessageSendParamsShape> */
     use SdkModel;
     use SdkParams;
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    #[Optional]
+    public ?string $apiKey;
 
     /**
      * Channels to broadcast on, e.g. ["whatsapp", "sms"].
@@ -136,6 +149,7 @@ final class MessageSendParams implements BaseModel
      * @param list<string>|null $to
      */
     public static function with(
+        ?string $apiKey = null,
         ?array $channel = null,
         ?array $mediaURLs = null,
         ?bool $sandbox = null,
@@ -149,6 +163,7 @@ final class MessageSendParams implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $channel && $self['channel'] = $channel;
         null !== $mediaURLs && $self['mediaURLs'] = $mediaURLs;
         null !== $sandbox && $self['sandbox'] = $sandbox;
@@ -159,6 +174,23 @@ final class MessageSendParams implements BaseModel
         null !== $to && $self['to'] = $to;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    public function withAPIKey(string $apiKey): self
+    {
+        $self = clone $this;
+        $self['apiKey'] = $apiKey;
 
         return $self;
     }

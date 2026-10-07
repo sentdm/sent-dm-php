@@ -109,6 +109,7 @@ final class UsersRawService implements UsersRawContract
      * Sends an invitation to a user to join the organization or profile with a specific role. Requires admin role. The user will receive an invitation email with a token to accept. Invitation tokens expire after 7 days.
      *
      * @param array{
+     *   apiKey?: string,
      *   email?: string,
      *   name?: string,
      *   role?: string,
@@ -157,7 +158,9 @@ final class UsersRawService implements UsersRawContract
      * Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.
      *
      * @param string $userID Path param: User ID from route parameter
-     * @param array{sandbox?: bool, xProfileID?: string}|UserRemoveParams $params
+     * @param array{
+     *   apiKey?: string, sandbox?: bool, xProfileID?: string
+     * }|UserRemoveParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -199,7 +202,11 @@ final class UsersRawService implements UsersRawContract
      *
      * @param string $userID Path param: User ID from route parameter
      * @param array{
-     *   role?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     *   apiKey?: string,
+     *   role?: string,
+     *   sandbox?: bool,
+     *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|UserUpdateRoleParams $params
      * @param RequestOpts|null $requestOptions
      *

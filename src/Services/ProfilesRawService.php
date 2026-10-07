@@ -71,6 +71,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param array{
      *   allowContactSharing?: bool|null,
      *   allowTemplateSharing?: bool|null,
+     *   apiKey?: string,
      *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
      *   billingModel?: string|null,
      *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
@@ -193,6 +194,7 @@ final class ProfilesRawService implements ProfilesRawContract
      *   allowContactSharing?: bool|null,
      *   allowNumberChangeDuringOnboarding?: bool|null,
      *   allowTemplateSharing?: bool|null,
+     *   apiKey?: string,
      *   billingContact?: BillingContactInfo|BillingContactInfoShape|null,
      *   billingModel?: string|null,
      *   brand?: BrandsBrandData|BrandsBrandDataShape|null,
@@ -297,7 +299,9 @@ final class ProfilesRawService implements ProfilesRawContract
      * Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Anything it still held is released first: phone numbers return to our inventory and can go to whoever asks next, its own WhatsApp account is deregistered, and its routing rules stop being used. Requires admin role in the organization.
      *
      * @param string $profileID Path param: Profile ID from route parameter
-     * @param array{sandbox?: bool, xProfileID?: string}|ProfileDeleteParams $params
+     * @param array{
+     *   apiKey?: string, sandbox?: bool, xProfileID?: string
+     * }|ProfileDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -362,6 +366,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param string $profileID Path param: Profile ID from route
      * @param array{
      *   webHookURL: string,
+     *   apiKey?: string,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
      *   xProfileID?: string,

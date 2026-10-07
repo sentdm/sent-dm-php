@@ -55,6 +55,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * Creates a new webhook endpoint for the authenticated customer.
      *
      * @param array{
+     *   apiKey?: string,
      *   displayName?: string,
      *   endpointURL?: string,
      *   eventFilters?: array<string,list<string>>|null,
@@ -143,6 +144,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
+     *   apiKey?: string,
      *   displayName?: string,
      *   endpointURL?: string,
      *   eventFilters?: array<string,list<string>>|null,
@@ -244,7 +246,8 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * Deletes a webhook for the authenticated customer.
      *
-     * @param array{xProfileID?: string}|WebhookDeleteParams $params
+     * @param string $id Path param
+     * @param array{apiKey?: string, xProfileID?: string}|WebhookDeleteParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<mixed>
@@ -260,14 +263,19 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
+        $header_params = ['xProfileID' => 'x-profile-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
             path: ['v3/webhooks/%1$s', $id],
             headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
                 $parsed,
-                ['xProfileID' => 'x-profile-id']
+                array_flip(array_keys($header_params))
             ),
             options: $options,
             convert: null,
@@ -362,7 +370,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     *   apiKey?: string, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
      * }|WebhookRotateSecretParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -407,6 +415,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
+     *   apiKey?: string,
      *   eventType?: string,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
@@ -455,7 +464,11 @@ final class WebhooksRawService implements WebhooksRawContract
      *
      * @param string $id Path param
      * @param array{
-     *   isActive?: bool, sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     *   apiKey?: string,
+     *   isActive?: bool,
+     *   sandbox?: bool,
+     *   idempotencyKey?: string,
+     *   xProfileID?: string,
      * }|WebhookToggleStatusParams $params
      * @param RequestOpts|null $requestOptions
      *

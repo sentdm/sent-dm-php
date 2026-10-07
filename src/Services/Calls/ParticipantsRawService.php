@@ -45,6 +45,7 @@ final class ParticipantsRawService implements ParticipantsRawContract
      * @param string $participantID Path param: The participant's own call id from the route, as listed by the participants endpoint, for example call_9f2ab000-0000-4000-8000-000000000002
      * @param array{
      *   id: string,
+     *   apiKey?: string,
      *   muted?: bool,
      *   sandbox?: bool,
      *   idempotencyKey?: string,
@@ -131,6 +132,7 @@ final class ParticipantsRawService implements ParticipantsRawContract
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{
+     *   apiKey?: string,
      *   callerID?: string|null,
      *   sandbox?: bool,
      *   to?: CallParticipantTarget|CallParticipantTargetShape,
@@ -180,7 +182,7 @@ final class ParticipantsRawService implements ParticipantsRawContract
      *
      * @param string $participantID Path param: The participant's own call id from the route, as listed by the participants endpoint, for example call_9f2ab000-0000-4000-8000-000000000002
      * @param array{
-     *   id: string, sandbox?: bool, xProfileID?: string
+     *   id: string, apiKey?: string, sandbox?: bool, xProfileID?: string
      * }|ParticipantRemoveParams $params
      * @param RequestOpts|null $requestOptions
      *
@@ -225,7 +227,7 @@ final class ParticipantsRawService implements ParticipantsRawContract
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{
-     *   sandbox?: bool, xProfileID?: string
+     *   apiKey?: string, sandbox?: bool, xProfileID?: string
      * }|ParticipantRemoveAllParams $params
      * @param RequestOpts|null $requestOptions
      *

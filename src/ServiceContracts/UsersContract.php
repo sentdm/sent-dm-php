@@ -45,6 +45,13 @@ interface UsersContract
     /**
      * @api
      *
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string $email Body param: User email address (required)
      * @param string $name Body param: User full name (required)
      * @param string $role Body param: User role: admin, billing, or developer (required)
@@ -57,6 +64,7 @@ interface UsersContract
      * @throws APIException
      */
     public function invite(
+        ?string $apiKey = null,
         ?string $email = null,
         ?string $name = null,
         ?string $role = null,
@@ -70,6 +78,13 @@ interface UsersContract
      * @api
      *
      * @param string $userID Path param: User ID from route parameter
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -79,6 +94,7 @@ interface UsersContract
      */
     public function remove(
         string $userID,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
@@ -88,6 +104,13 @@ interface UsersContract
      * @api
      *
      * @param string $userID Path param: User ID from route parameter
+     * @param string $apiKey Body param: API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
      * @param string $role Body param: User role: admin, billing, or developer (required)
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -99,6 +122,7 @@ interface UsersContract
      */
     public function updateRole(
         string $userID,
+        ?string $apiKey = null,
         ?string $role = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,

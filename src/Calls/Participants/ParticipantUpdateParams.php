@@ -17,6 +17,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-type ParticipantUpdateParamsShape = array{
  *   id: string,
+ *   apiKey?: string|null,
  *   muted?: bool|null,
  *   sandbox?: bool|null,
  *   idempotencyKey?: string|null,
@@ -31,6 +32,18 @@ final class ParticipantUpdateParams implements BaseModel
 
     #[Required]
     public string $id;
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    #[Optional]
+    public ?string $apiKey;
 
     /**
      * true to mute the participant, false to unmute them.
@@ -77,6 +90,7 @@ final class ParticipantUpdateParams implements BaseModel
      */
     public static function with(
         string $id,
+        ?string $apiKey = null,
         ?bool $muted = null,
         ?bool $sandbox = null,
         ?string $idempotencyKey = null,
@@ -86,6 +100,7 @@ final class ParticipantUpdateParams implements BaseModel
 
         $self['id'] = $id;
 
+        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $muted && $self['muted'] = $muted;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
@@ -98,6 +113,23 @@ final class ParticipantUpdateParams implements BaseModel
     {
         $self = clone $this;
         $self['id'] = $id;
+
+        return $self;
+    }
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    public function withAPIKey(string $apiKey): self
+    {
+        $self = clone $this;
+        $self['apiKey'] = $apiKey;
 
         return $self;
     }

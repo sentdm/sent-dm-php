@@ -19,7 +19,10 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\Profiles\CampaignsService::delete()
  *
  * @phpstan-type CampaignDeleteParamsShape = array{
- *   profileID: string, sandbox?: bool|null, xProfileID?: string|null
+ *   profileID: string,
+ *   apiKey?: string|null,
+ *   sandbox?: bool|null,
+ *   xProfileID?: string|null,
  * }
  */
 final class CampaignDeleteParams implements BaseModel
@@ -30,6 +33,18 @@ final class CampaignDeleteParams implements BaseModel
 
     #[Required]
     public string $profileID;
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    #[Optional]
+    public ?string $apiKey;
 
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
@@ -67,13 +82,15 @@ final class CampaignDeleteParams implements BaseModel
      */
     public static function with(
         string $profileID,
+        ?string $apiKey = null,
         ?bool $sandbox = null,
-        ?string $xProfileID = null
+        ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         $self['profileID'] = $profileID;
 
+        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
@@ -84,6 +101,23 @@ final class CampaignDeleteParams implements BaseModel
     {
         $self = clone $this;
         $self['profileID'] = $profileID;
+
+        return $self;
+    }
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    public function withAPIKey(string $apiKey): self
+    {
+        $self = clone $this;
+        $self['apiKey'] = $apiKey;
 
         return $self;
     }

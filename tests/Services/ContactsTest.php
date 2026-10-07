@@ -53,6 +53,7 @@ final class ContactsTest extends TestCase
 
         $result = $this->client->contacts->create(
             phoneNumber: '+1234567890',
+            apiKey: 'sntdm_test_xxxxxxxxxxxx',
             sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',

@@ -9,12 +9,26 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type MutationRequestShape = array{sandbox?: bool|null}
+ * @phpstan-type MutationRequestShape = array{
+ *   apiKey?: string|null, sandbox?: bool|null
+ * }
  */
 final class MutationRequest implements BaseModel
 {
     /** @use SdkModel<MutationRequestShape> */
     use SdkModel;
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    #[Optional]
+    public ?string $apiKey;
 
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
@@ -33,11 +47,31 @@ final class MutationRequest implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(?bool $sandbox = null): self
-    {
+    public static function with(
+        ?string $apiKey = null,
+        ?bool $sandbox = null
+    ): self {
         $self = new self;
 
+        null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $sandbox && $self['sandbox'] = $sandbox;
+
+        return $self;
+    }
+
+    /**
+     * API key from the x-api-key header, or empty when the caller sent it as
+     * Authorization: Bearer instead.
+     *
+     * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either header,
+     * and [FromHeader] is required by default, so a Bearer-only request would authenticate and then be
+     * refused with a 400 for a header it never needed. Endpoints read the customer from the CustomerId
+     * claim, not from this value.
+     */
+    public function withAPIKey(string $apiKey): self
+    {
+        $self = clone $this;
+        $self['apiKey'] = $apiKey;
 
         return $self;
     }
