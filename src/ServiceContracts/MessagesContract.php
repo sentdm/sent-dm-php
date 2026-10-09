@@ -7,11 +7,13 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageSendParams\Channel;
 use SentDm\Messages\MessageSendParams\Template;
 use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
 
 /**
+ * @phpstan-import-type ChannelShape from \SentDm\Messages\MessageSendParams\Channel
  * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
@@ -54,6 +56,23 @@ interface MessagesContract
      * Each channel produces a separate message per recipient.
      * "sent" = auto-detect.
      * Defaults to ["sent"] (auto-detect) if omitted.
+     * @param array<string,list<Channel|ChannelShape>>|null $channels Body param: Which of your own numbers to send from, keyed by channel, each channel holding a list of entries:
+     * {"sms": [{"country": "US", "from": ["+12125550000", "+14155550000"]}, {"from": ["+447700800001"]}]}.
+     * Any real channel may be a key; sent, which is auto-detect rather than a channel, is rejected.
+     * country and strategy are accepted and stored but not acted on yet: every entry's
+     * numbers apply to every recipient on that channel.
+     *
+     * This does not choose channels — Channel does, and the two combine:
+     * "channel": ["sms"] with an sms list sends on SMS from those numbers. Each list only
+     * narrows which of its own channel's routes may win, so with Channel left at
+     * auto-detect a recipient best served by a channel with no list still goes out on it. Routing itself
+     * is unchanged: the same rules are scored and ranked the same way, with routes pinned to numbers you
+     * did not list removed from the running.
+     *
+     * Every number must be an active sender on your account. The request itself is still
+     * accepted (202) if one is not — like every other send-time rule, that is decided per message, so
+     * each affected message is recorded BLOCKED with error code BUSINESS_029 and reported on
+     * GET /v3/messages and the status webhook.
      * @param list<string>|null $mediaURLs Body param: Attachments for this send, as publicly fetchable https URLs. Used by the MMS channel and ignored
      * by every other one.
      *
@@ -90,6 +109,7 @@ interface MessagesContract
      */
     public function send(
         ?array $channel = null,
+        ?array $channels = null,
         ?array $mediaURLs = null,
         ?bool $sandbox = null,
         ?\DateTimeInterface $scheduledAt = null,
