@@ -260,15 +260,19 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
+        $header_params = ['xProfileID' => 'x-profile-id'];
 
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
             path: ['v3/webhooks/%1$s', $id],
-            headers: Util::array_transform_keys(
-                $parsed,
-                ['xProfileID' => 'x-profile-id']
-            ),
+            headers: [
+                ...Util::array_transform_keys(
+                    array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                    $header_params,
+                ),
+                'Content-Type' => null,
+            ],
             options: $options,
             convert: null,
         );
