@@ -72,4 +72,19 @@ final class MessagesTest extends TestCase
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(MessageSendResponse::class, $result);
     }
+
+    #[Test]
+    public function testResend(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Mock server tests are disabled');
+        }
+
+        $result = $this->client->messages->resend(
+            '8ba7b830-9dad-11d1-80b4-00c04fd430c8'
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(MessageSendResponse::class, $result);
+    }
 }
