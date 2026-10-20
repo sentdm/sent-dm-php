@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.39.1](https://github.com/sentdm/sent-dm-php/compare/v0.39.0...v0.39.1) (2026-10-20)
+
+
+### Chores
+
+* **ci:** merge the seal-back PR directly when auto-merge is refused ([ceff8b9](https://github.com/sentdm/sent-dm-php/commit/ceff8b96de2b5101e906e2dbb3dca92cffb2c465))
+
 ## [0.39.0](https://github.com/sentdm/sent-dm-php/compare/v0.38.0...v0.39.0) (2026-10-20)
 
 
