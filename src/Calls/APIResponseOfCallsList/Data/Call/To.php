@@ -2,34 +2,32 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls\Participants;
+namespace SentDm\Calls\APIResponseOfCallsList\Data\Call;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * A participant to add to a call.
+ * One end of a call.
  *
- * @phpstan-type CallParticipantTargetShape = array{
- *   kind?: string|null, value?: string|null
- * }
+ * @phpstan-type ToShape = array{kind?: string|null, value?: string|null}
  */
-final class CallParticipantTarget implements BaseModel
+final class To implements BaseModel
 {
-    /** @use SdkModel<CallParticipantTargetShape> */
+    /** @use SdkModel<ToShape> */
     use SdkModel;
 
     /**
-     * user for one of your app users, number for a phone number.
+     * user for one of your app users, number for a phone number, conference for a room, anonymous for a caller who withheld their number.
      */
     #[Optional]
     public ?string $kind;
 
     /**
-     * The app user's identity, or the phone number in E.164 format.
+     * The app user's identity, the phone number in E.164 format, or the room name. Null when the kind is anonymous.
      */
-    #[Optional]
+    #[Optional(nullable: true)]
     public ?string $value;
 
     public function __construct()
@@ -42,8 +40,10 @@ final class CallParticipantTarget implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      */
-    public static function with(?string $kind = null, ?string $value = null): self
-    {
+    public static function with(
+        ?string $kind = null,
+        ?string $value = null
+    ): self {
         $self = new self;
 
         null !== $kind && $self['kind'] = $kind;
@@ -53,7 +53,7 @@ final class CallParticipantTarget implements BaseModel
     }
 
     /**
-     * user for one of your app users, number for a phone number.
+     * user for one of your app users, number for a phone number, conference for a room, anonymous for a caller who withheld their number.
      */
     public function withKind(string $kind): self
     {
@@ -64,9 +64,9 @@ final class CallParticipantTarget implements BaseModel
     }
 
     /**
-     * The app user's identity, or the phone number in E.164 format.
+     * The app user's identity, the phone number in E.164 format, or the room name. Null when the kind is anonymous.
      */
-    public function withValue(string $value): self
+    public function withValue(?string $value): self
     {
         $self = clone $this;
         $self['value'] = $value;

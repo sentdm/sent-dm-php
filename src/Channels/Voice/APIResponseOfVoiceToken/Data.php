@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\Voice;
+namespace SentDm\Channels\Voice\APIResponseOfVoiceToken;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -11,20 +11,21 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * A short-lived token your app passes to the voice client SDK to register.
  *
- * @phpstan-type VoiceTokenShape = array{
+ * @phpstan-type DataShape = array{
  *   token?: string|null,
  *   expiresAt?: \DateTimeInterface|null,
  *   identity?: string|null,
  *   number?: string|null,
  * }
  */
-final class VoiceToken implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<VoiceTokenShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
     /**
-     * The signed token. Hand it to the client SDK unchanged.
+     * The signed token. Hand it to the client SDK unchanged. Treat it as opaque: read the identity,
+     * number, and expiry from this response, not from the token.
      */
     #[Optional]
     public ?string $token;
@@ -74,7 +75,8 @@ final class VoiceToken implements BaseModel
     }
 
     /**
-     * The signed token. Hand it to the client SDK unchanged.
+     * The signed token. Hand it to the client SDK unchanged. Treat it as opaque: read the identity,
+     * number, and expiry from this response, not from the token.
      */
     public function withToken(string $token): self
     {

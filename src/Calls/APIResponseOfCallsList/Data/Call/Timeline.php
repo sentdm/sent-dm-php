@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls;
+namespace SentDm\Calls\APIResponseOfCallsList\Data\Call;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -11,13 +11,13 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * When a call entered a status.
  *
- * @phpstan-type CallTimelineEntryShape = array{
+ * @phpstan-type TimelineShape = array{
  *   status?: string|null, timestamp?: \DateTimeInterface|null
  * }
  */
-final class CallTimelineEntry implements BaseModel
+final class Timeline implements BaseModel
 {
-    /** @use SdkModel<CallTimelineEntryShape> */
+    /** @use SdkModel<TimelineShape> */
     use SdkModel;
 
     /**

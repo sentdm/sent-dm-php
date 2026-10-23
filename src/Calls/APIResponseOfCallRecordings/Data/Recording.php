@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls;
+namespace SentDm\Calls\APIResponseOfCallRecordings\Data;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -11,15 +11,15 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * A short-lived link to a call recording.
  *
- * @phpstan-type CallRecordingShape = array{
+ * @phpstan-type RecordingShape = array{
  *   downloadURL?: string|null,
  *   recordingID?: string|null,
  *   urlExpiresAt?: \DateTimeInterface|null,
  * }
  */
-final class CallRecording implements BaseModel
+final class Recording implements BaseModel
 {
-    /** @use SdkModel<CallRecordingShape> */
+    /** @use SdkModel<RecordingShape> */
     use SdkModel;
 
     /**

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls;
+namespace SentDm\Calls\APIResponseOfCallsList;
 
+use SentDm\Calls\APIResponseOfCallsList\Data\Call;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -12,17 +13,17 @@ use SentDm\Webhooks\PaginationMeta;
 /**
  * Paginated list of calls.
  *
- * @phpstan-import-type CallShape from \SentDm\Calls\Call
+ * @phpstan-import-type CallShape from \SentDm\Calls\APIResponseOfCallsList\Data\Call
  * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  *
- * @phpstan-type CallsListShape = array{
+ * @phpstan-type DataShape = array{
  *   calls?: list<Call|CallShape>|null,
  *   pagination?: null|PaginationMeta|PaginationMetaShape,
  * }
  */
-final class CallsList implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<CallsListShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
     /**

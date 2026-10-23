@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls;
+namespace SentDm\Calls\APIResponseOfCallsList\Data\Call;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -11,11 +11,11 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * One end of a call.
  *
- * @phpstan-type CallPartyShape = array{kind?: string|null, value?: string|null}
+ * @phpstan-type FromShape = array{kind?: string|null, value?: string|null}
  */
-final class CallParty implements BaseModel
+final class From implements BaseModel
 {
-    /** @use SdkModel<CallPartyShape> */
+    /** @use SdkModel<FromShape> */
     use SdkModel;
 
     /**

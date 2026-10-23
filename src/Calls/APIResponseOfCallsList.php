@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Calls;
 
+use SentDm\Calls\APIResponseOfCallsList\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -13,12 +14,12 @@ use SentDm\Webhooks\ErrorDetail;
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type CallsListShape from \SentDm\Calls\CallsList
+ * @phpstan-import-type DataShape from \SentDm\Calls\APIResponseOfCallsList\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type APIResponseOfCallsListShape = array{
- *   data?: null|CallsList|CallsListShape,
+ *   data?: null|Data|DataShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -33,7 +34,7 @@ final class APIResponseOfCallsList implements BaseModel
      * Paginated list of calls.
      */
     #[Optional(nullable: true)]
-    public ?CallsList $data;
+    public ?Data $data;
 
     /**
      * Error information.
@@ -63,12 +64,12 @@ final class APIResponseOfCallsList implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param CallsList|CallsListShape|null $data
+     * @param Data|DataShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        CallsList|array|null $data = null,
+        Data|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -86,9 +87,9 @@ final class APIResponseOfCallsList implements BaseModel
     /**
      * Paginated list of calls.
      *
-     * @param CallsList|CallsListShape|null $data
+     * @param Data|DataShape|null $data
      */
-    public function withData(CallsList|array|null $data): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

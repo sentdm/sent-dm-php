@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls\Participants;
+namespace SentDm\Calls\Participants\APIResponseOfListOfCallParticipant;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -11,7 +11,7 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * A participant of a conference call.
  *
- * @phpstan-type CallParticipantShape = array{
+ * @phpstan-type DataShape = array{
  *   id?: string|null,
  *   durationSeconds?: int|null,
  *   kind?: string|null,
@@ -19,13 +19,13 @@ use SentDm\Core\Contracts\BaseModel;
  *   value?: string|null,
  * }
  */
-final class CallParticipant implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<CallParticipantShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
     /**
-     * The participant's own call id: what the mute and remove endpoints take, and what GET /v3/calls/{id} accepts.
+     * The participant's own call id: what the mute and remove endpoints take, and what GET /v3/voice/calls/{id} accepts.
      */
     #[Optional]
     public ?string $id;
@@ -83,7 +83,7 @@ final class CallParticipant implements BaseModel
     }
 
     /**
-     * The participant's own call id: what the mute and remove endpoints take, and what GET /v3/calls/{id} accepts.
+     * The participant's own call id: what the mute and remove endpoints take, and what GET /v3/voice/calls/{id} accepts.
      */
     public function withID(string $id): self
     {
