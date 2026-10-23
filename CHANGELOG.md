@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.40.0](https://github.com/sentdm/sent-dm-php/compare/v0.39.1...v0.40.0) (2026-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** move calls and voice tokens under the voice resource
+
+### Features
+
+* **api:** move calls and voice tokens under the voice resource ([6fc97dc](https://github.com/sentdm/sent-dm-php/commit/6fc97dc2e03631fc8a630e02a0796640a6e8cc5f))
+* **api:** sync generated SDKs from the committed spec ([9d28956](https://github.com/sentdm/sent-dm-php/commit/9d289564681f258c2d814ed8fdc8c793dc664e5a))
+
 ## [0.39.1](https://github.com/sentdm/sent-dm-php/compare/v0.39.0...v0.39.1) (2026-10-20)
 
 
