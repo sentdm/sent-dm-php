@@ -86,7 +86,7 @@ final class CallEventPayload implements BaseModel
     public ?string $reason;
 
     /**
-     * The recording that became available, the same id GET /v3/calls/{id}/recordings lists it
+     * The recording that became available, the same id GET /v3/voice/calls/{id}/recordings lists it
      * under. Only on call.recording_ready, which is sent once per recording.
      */
     #[Optional('recording_id', nullable: true)]
@@ -229,7 +229,7 @@ final class CallEventPayload implements BaseModel
     }
 
     /**
-     * The recording that became available, the same id GET /v3/calls/{id}/recordings lists it
+     * The recording that became available, the same id GET /v3/voice/calls/{id}/recordings lists it
      * under. Only on call.recording_ready, which is sent once per recording.
      */
     public function withRecordingID(?string $recordingID): self
