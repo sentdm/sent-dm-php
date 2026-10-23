@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Calls;
 
+use SentDm\Calls\APIResponseOfCall\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -13,12 +14,12 @@ use SentDm\Webhooks\ErrorDetail;
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type CallShape from \SentDm\Calls\Call
+ * @phpstan-import-type DataShape from \SentDm\Calls\APIResponseOfCall\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type APIResponseOfCallShape = array{
- *   data?: null|Call|CallShape,
+ *   data?: null|Data|DataShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -33,7 +34,7 @@ final class APIResponseOfCall implements BaseModel
      * A call record.
      */
     #[Optional(nullable: true)]
-    public ?Call $data;
+    public ?Data $data;
 
     /**
      * Error information.
@@ -63,12 +64,12 @@ final class APIResponseOfCall implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Call|CallShape|null $data
+     * @param Data|DataShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        Call|array|null $data = null,
+        Data|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -86,9 +87,9 @@ final class APIResponseOfCall implements BaseModel
     /**
      * A call record.
      *
-     * @param Call|CallShape|null $data
+     * @param Data|DataShape|null $data
      */
-    public function withData(Call|array|null $data): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

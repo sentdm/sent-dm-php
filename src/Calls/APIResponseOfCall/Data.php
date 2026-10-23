@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls;
+namespace SentDm\Calls\APIResponseOfCall;
 
+use SentDm\Calls\APIResponseOfCall\Data\From;
+use SentDm\Calls\APIResponseOfCall\Data\Timeline;
+use SentDm\Calls\APIResponseOfCall\Data\To;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -11,29 +14,31 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * A call record.
  *
- * @phpstan-import-type CallPartyShape from \SentDm\Calls\CallParty
- * @phpstan-import-type CallTimelineEntryShape from \SentDm\Calls\CallTimelineEntry
+ * @phpstan-import-type FromShape from \SentDm\Calls\APIResponseOfCall\Data\From
+ * @phpstan-import-type TimelineShape from \SentDm\Calls\APIResponseOfCall\Data\Timeline
+ * @phpstan-import-type ToShape from \SentDm\Calls\APIResponseOfCall\Data\To
  *
- * @phpstan-type CallShape = array{
+ * @phpstan-type DataShape = array{
  *   id?: string|null,
  *   answeredAt?: \DateTimeInterface|null,
  *   direction?: string|null,
  *   durationSeconds?: int|null,
  *   endedAt?: \DateTimeInterface|null,
  *   failureReason?: string|null,
- *   from?: null|CallParty|CallPartyShape,
+ *   from?: null|From|FromShape,
+ *   mode?: string|null,
  *   number?: string|null,
  *   price?: float|null,
  *   recordingAvailable?: bool|null,
  *   startedAt?: \DateTimeInterface|null,
  *   status?: string|null,
- *   timeline?: list<CallTimelineEntry|CallTimelineEntryShape>|null,
- *   to?: null|CallParty|CallPartyShape,
+ *   timeline?: list<Timeline|TimelineShape>|null,
+ *   to?: null|To|ToShape,
  * }
  */
-final class Call implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<CallShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
     /**
@@ -76,7 +81,13 @@ final class Call implements BaseModel
      * One end of a call.
      */
     #[Optional]
-    public ?CallParty $from;
+    public ?From $from;
+
+    /**
+     * The calling mode: inapp for a call between people in your app and phone numbers, routed by your number's callback URL.
+     */
+    #[Optional]
+    public ?string $mode;
 
     /**
      * Your number that owns the call, in E.164 format: the dialed number for an inbound call, the caller's bound number for a call placed from your app.
@@ -111,16 +122,16 @@ final class Call implements BaseModel
     /**
      * When the call entered each status, oldest first. Only returned when reading one call.
      *
-     * @var list<CallTimelineEntry>|null $timeline
+     * @var list<Timeline>|null $timeline
      */
-    #[Optional(list: CallTimelineEntry::class, nullable: true)]
+    #[Optional(list: Timeline::class, nullable: true)]
     public ?array $timeline;
 
     /**
      * One end of a call.
      */
     #[Optional]
-    public ?CallParty $to;
+    public ?To $to;
 
     public function __construct()
     {
@@ -132,9 +143,9 @@ final class Call implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param CallParty|CallPartyShape|null $from
-     * @param list<CallTimelineEntry|CallTimelineEntryShape>|null $timeline
-     * @param CallParty|CallPartyShape|null $to
+     * @param From|FromShape|null $from
+     * @param list<Timeline|TimelineShape>|null $timeline
+     * @param To|ToShape|null $to
      */
     public static function with(
         ?string $id = null,
@@ -143,14 +154,15 @@ final class Call implements BaseModel
         ?int $durationSeconds = null,
         ?\DateTimeInterface $endedAt = null,
         ?string $failureReason = null,
-        CallParty|array|null $from = null,
+        From|array|null $from = null,
+        ?string $mode = null,
         ?string $number = null,
         ?float $price = null,
         ?bool $recordingAvailable = null,
         ?\DateTimeInterface $startedAt = null,
         ?string $status = null,
         ?array $timeline = null,
-        CallParty|array|null $to = null,
+        To|array|null $to = null,
     ): self {
         $self = new self;
 
@@ -161,6 +173,7 @@ final class Call implements BaseModel
         null !== $endedAt && $self['endedAt'] = $endedAt;
         null !== $failureReason && $self['failureReason'] = $failureReason;
         null !== $from && $self['from'] = $from;
+        null !== $mode && $self['mode'] = $mode;
         null !== $number && $self['number'] = $number;
         null !== $price && $self['price'] = $price;
         null !== $recordingAvailable && $self['recordingAvailable'] = $recordingAvailable;
@@ -241,12 +254,23 @@ final class Call implements BaseModel
     /**
      * One end of a call.
      *
-     * @param CallParty|CallPartyShape $from
+     * @param From|FromShape $from
      */
-    public function withFrom(CallParty|array $from): self
+    public function withFrom(From|array $from): self
     {
         $self = clone $this;
         $self['from'] = $from;
+
+        return $self;
+    }
+
+    /**
+     * The calling mode: inapp for a call between people in your app and phone numbers, routed by your number's callback URL.
+     */
+    public function withMode(string $mode): self
+    {
+        $self = clone $this;
+        $self['mode'] = $mode;
 
         return $self;
     }
@@ -309,7 +333,7 @@ final class Call implements BaseModel
     /**
      * When the call entered each status, oldest first. Only returned when reading one call.
      *
-     * @param list<CallTimelineEntry|CallTimelineEntryShape>|null $timeline
+     * @param list<Timeline|TimelineShape>|null $timeline
      */
     public function withTimeline(?array $timeline): self
     {
@@ -322,9 +346,9 @@ final class Call implements BaseModel
     /**
      * One end of a call.
      *
-     * @param CallParty|CallPartyShape $to
+     * @param To|ToShape $to
      */
-    public function withTo(CallParty|array $to): self
+    public function withTo(To|array $to): self
     {
         $self = clone $this;
         $self['to'] = $to;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Calls\Participants;
 
+use SentDm\Calls\Participants\APIResponseOfListOfCallParticipant\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -13,12 +14,12 @@ use SentDm\Webhooks\ErrorDetail;
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type CallParticipantShape from \SentDm\Calls\Participants\CallParticipant
+ * @phpstan-import-type DataShape from \SentDm\Calls\Participants\APIResponseOfListOfCallParticipant\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type APIResponseOfListOfCallParticipantShape = array{
- *   data?: list<CallParticipant|CallParticipantShape>|null,
+ *   data?: list<Data|DataShape>|null,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -32,9 +33,9 @@ final class APIResponseOfListOfCallParticipant implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @var list<CallParticipant>|null $data
+     * @var list<Data>|null $data
      */
-    #[Optional(list: CallParticipant::class, nullable: true)]
+    #[Optional(list: Data::class, nullable: true)]
     public ?array $data;
 
     /**
@@ -65,7 +66,7 @@ final class APIResponseOfListOfCallParticipant implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<CallParticipant|CallParticipantShape>|null $data
+     * @param list<Data|DataShape>|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
@@ -88,7 +89,7 @@ final class APIResponseOfListOfCallParticipant implements BaseModel
     /**
      * The response data (null if error).
      *
-     * @param list<CallParticipant|CallParticipantShape>|null $data
+     * @param list<Data|DataShape>|null $data
      */
     public function withData(?array $data): self
     {

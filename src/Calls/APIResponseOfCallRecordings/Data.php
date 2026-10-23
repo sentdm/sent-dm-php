@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Calls;
+namespace SentDm\Calls\APIResponseOfCallRecordings;
 
+use SentDm\Calls\APIResponseOfCallRecordings\Data\Recording;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -11,23 +12,23 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * The recordings of a call, each as a short-lived download link.
  *
- * @phpstan-import-type CallRecordingShape from \SentDm\Calls\CallRecording
+ * @phpstan-import-type RecordingShape from \SentDm\Calls\APIResponseOfCallRecordings\Data\Recording
  *
- * @phpstan-type CallRecordingsShape = array{
- *   recordings?: list<CallRecording|CallRecordingShape>|null
+ * @phpstan-type DataShape = array{
+ *   recordings?: list<Recording|RecordingShape>|null
  * }
  */
-final class CallRecordings implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<CallRecordingsShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
     /**
      * Every recording of the call, oldest first. Empty until the first call.recording_ready webhook has been sent, and for a call that was never recorded.
      *
-     * @var list<CallRecording>|null $recordings
+     * @var list<Recording>|null $recordings
      */
-    #[Optional(list: CallRecording::class)]
+    #[Optional(list: Recording::class)]
     public ?array $recordings;
 
     public function __construct()
@@ -40,7 +41,7 @@ final class CallRecordings implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<CallRecording|CallRecordingShape>|null $recordings
+     * @param list<Recording|RecordingShape>|null $recordings
      */
     public static function with(?array $recordings = null): self
     {
@@ -54,7 +55,7 @@ final class CallRecordings implements BaseModel
     /**
      * Every recording of the call, oldest first. Empty until the first call.recording_ready webhook has been sent, and for a call that was never recorded.
      *
-     * @param list<CallRecording|CallRecordingShape> $recordings
+     * @param list<Recording|RecordingShape> $recordings
      */
     public function withRecordings(array $recordings): self
     {

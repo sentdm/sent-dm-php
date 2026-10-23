@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Channels\Voice;
 
+use SentDm\Channels\Voice\APIResponseOfVoiceToken\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
@@ -13,12 +14,12 @@ use SentDm\Webhooks\ErrorDetail;
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type VoiceTokenShape from \SentDm\Channels\Voice\VoiceToken
+ * @phpstan-import-type DataShape from \SentDm\Channels\Voice\APIResponseOfVoiceToken\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type APIResponseOfVoiceTokenShape = array{
- *   data?: null|VoiceToken|VoiceTokenShape,
+ *   data?: null|Data|DataShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -33,7 +34,7 @@ final class APIResponseOfVoiceToken implements BaseModel
      * A short-lived token your app passes to the voice client SDK to register.
      */
     #[Optional(nullable: true)]
-    public ?VoiceToken $data;
+    public ?Data $data;
 
     /**
      * Error information.
@@ -63,12 +64,12 @@ final class APIResponseOfVoiceToken implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param VoiceToken|VoiceTokenShape|null $data
+     * @param Data|DataShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        VoiceToken|array|null $data = null,
+        Data|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -86,9 +87,9 @@ final class APIResponseOfVoiceToken implements BaseModel
     /**
      * A short-lived token your app passes to the voice client SDK to register.
      *
-     * @param VoiceToken|VoiceTokenShape|null $data
+     * @param Data|DataShape|null $data
      */
-    public function withData(VoiceToken|array|null $data): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;
