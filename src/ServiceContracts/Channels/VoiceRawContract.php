@@ -9,9 +9,7 @@ use SentDm\Channels\Voice\APIResponseOfVoiceCallbackTest;
 use SentDm\Channels\Voice\APIResponseOfVoiceNumber;
 use SentDm\Channels\Voice\APIResponseOfVoiceNumberCreated;
 use SentDm\Channels\Voice\APIResponseOfVoiceSecret;
-use SentDm\Channels\Voice\APIResponseOfVoiceToken;
 use SentDm\Channels\Voice\VoiceCreateParams;
-use SentDm\Channels\Voice\VoiceCreateTokenParams;
 use SentDm\Channels\Voice\VoiceListParams;
 use SentDm\Channels\Voice\VoiceRetrieveParams;
 use SentDm\Channels\Voice\VoiceRotateSecretParams;
@@ -87,21 +85,6 @@ interface VoiceRawContract
      */
     public function list(
         array|VoiceListParams $params,
-        RequestOptions|array|null $requestOptions = null,
-    ): BaseResponse;
-
-    /**
-     * @api
-     *
-     * @param array<string,mixed>|VoiceCreateTokenParams $params
-     * @param RequestOpts|null $requestOptions
-     *
-     * @return BaseResponse<APIResponseOfVoiceToken>
-     *
-     * @throws APIException
-     */
-    public function createToken(
-        array|VoiceCreateTokenParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 

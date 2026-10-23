@@ -10,7 +10,6 @@ use SentDm\Channels\Voice\APIResponseOfVoiceCallbackTest;
 use SentDm\Channels\Voice\APIResponseOfVoiceNumber;
 use SentDm\Channels\Voice\APIResponseOfVoiceNumberCreated;
 use SentDm\Channels\Voice\APIResponseOfVoiceSecret;
-use SentDm\Channels\Voice\APIResponseOfVoiceToken;
 use SentDm\Client;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
@@ -106,19 +105,6 @@ final class VoiceTest extends TestCase
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfListOfVoiceNumber::class, $result);
-    }
-
-    #[Test]
-    public function testCreateToken(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->voice->createToken();
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfVoiceToken::class, $result);
     }
 
     #[Test]
