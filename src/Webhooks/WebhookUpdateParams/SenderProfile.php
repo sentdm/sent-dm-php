@@ -11,7 +11,7 @@ use SentDm\Core\Conversion\ListOf;
 
 /**
  * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
- * and future profile. Responses never return it.
+ * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
  *
  * @phpstan-type SenderProfileShape = array{
  *   eventFilters?: array<string,list<string>>|null, eventTypes?: list<string>|null

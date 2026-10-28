@@ -12,10 +12,12 @@ use SentDm\Core\Contracts\BaseModel;
  * One number the profile carries phone calls on.
  *
  * @phpstan-type VoiceNumberCreatedShape = array{
+ *   agentID?: string|null,
  *   callbackURL?: string|null,
  *   createdAt?: \DateTimeInterface|null,
  *   defaultForAppCalls?: bool|null,
  *   number?: string|null,
+ *   routesTo?: string|null,
  *   status?: string|null,
  *   updatedAt?: \DateTimeInterface|null,
  *   callbackSecret?: string|null,
@@ -25,6 +27,14 @@ final class VoiceNumberCreated implements BaseModel
 {
     /** @use SdkModel<VoiceNumberCreatedShape> */
     use SdkModel;
+
+    /**
+     * The voice agent calls to this number go to, such as agent_9f2ab000-0000-4000-8000-000000000001.
+     * It wins over callback_url for calls to the number; calls your app places from the number still
+     * follow your app. Null when no agent answers the number.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
 
     /**
      * Where Sent asks what to do with each call on this number: a signed question is POSTed here when
@@ -49,6 +59,15 @@ final class VoiceNumberCreated implements BaseModel
      */
     #[Optional]
     public ?string $number;
+
+    /**
+     * Who answers calls to this number: agent, the voice agent in agent_id;
+     * agent_pending, that agent once the number has finished moving to it, with calls possibly
+     * unanswered until then; callback, your callback_url; or none, in which case calls
+     * to it are declined.
+     */
+    #[Optional('routes_to')]
+    public ?string $routesTo;
 
     /**
      * ACTIVE while the number carries calls, INACTIVE once it was turned off. Nothing
@@ -79,23 +98,40 @@ final class VoiceNumberCreated implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        ?string $agentID = null,
         ?string $callbackURL = null,
         ?\DateTimeInterface $createdAt = null,
         ?bool $defaultForAppCalls = null,
         ?string $number = null,
+        ?string $routesTo = null,
         ?string $status = null,
         ?\DateTimeInterface $updatedAt = null,
         ?string $callbackSecret = null,
     ): self {
         $self = new self;
 
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $callbackURL && $self['callbackURL'] = $callbackURL;
         null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $defaultForAppCalls && $self['defaultForAppCalls'] = $defaultForAppCalls;
         null !== $number && $self['number'] = $number;
+        null !== $routesTo && $self['routesTo'] = $routesTo;
         null !== $status && $self['status'] = $status;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
         null !== $callbackSecret && $self['callbackSecret'] = $callbackSecret;
+
+        return $self;
+    }
+
+    /**
+     * The voice agent calls to this number go to, such as agent_9f2ab000-0000-4000-8000-000000000001.
+     * It wins over callback_url for calls to the number; calls your app places from the number still
+     * follow your app. Null when no agent answers the number.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
 
         return $self;
     }
@@ -140,6 +176,20 @@ final class VoiceNumberCreated implements BaseModel
     {
         $self = clone $this;
         $self['number'] = $number;
+
+        return $self;
+    }
+
+    /**
+     * Who answers calls to this number: agent, the voice agent in agent_id;
+     * agent_pending, that agent once the number has finished moving to it, with calls possibly
+     * unanswered until then; callback, your callback_url; or none, in which case calls
+     * to it are declined.
+     */
+    public function withRoutesTo(string $routesTo): self
+    {
+        $self = clone $this;
+        $self['routesTo'] = $routesTo;
 
         return $self;
     }
