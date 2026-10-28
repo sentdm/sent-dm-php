@@ -10,12 +10,14 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Body of a call.initiated, call.answered, call.completed, call.failed
- * or call.recording_ready event. Which of them occurred is the envelope's event.
+ * Body of a call.initiated, call.answered, call.agent_connected, call.completed,
+ * call.failed or call.recording_ready event. Which of them occurred is the envelope's
+ * event.
  *
  * Shaped like the message, inbound, template and channel payloads: account_id names the
  * account the event is about, channel names the channel, and updated_at is when the change
- * happened on the call, in the same yyyy-MM-ddTHH:mm:ssZ form. duration_seconds and
+ * happened on the call, in the same yyyy-MM-ddTHH:mm:ssZ form. Every event says how the call is
+ * handled in mode, and an agent call names its agent in agent_id. duration_seconds and
  * price are added on call.completed, reason on call.failed and
  * recording_id on call.recording_ready; each is omitted rather than sent as null when it
  * does not apply.
@@ -27,8 +29,10 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type CallEventPayloadShape = array{
  *   callID: string,
  *   accountID?: string|null,
+ *   agentID?: string|null,
  *   channel?: string|null,
  *   durationSeconds?: int|null,
+ *   mode?: string|null,
  *   number?: string|null,
  *   price?: float|null,
  *   reason?: string|null,
@@ -54,6 +58,12 @@ final class CallEventPayload implements BaseModel
     public ?string $accountID;
 
     /**
+     * The voice agent that answers the call, agent_…. Only on an agent call.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
+
+    /**
      * Always voice.
      */
     #[Optional]
@@ -64,6 +74,13 @@ final class CallEventPayload implements BaseModel
      */
     #[Optional('duration_seconds', nullable: true)]
     public ?int $durationSeconds;
+
+    /**
+     * inapp, a call routed by the number's callback URL, or agent, a call one of the account's voice
+     * agents answers. The same value GET /v3/voice/calls returns.
+     */
+    #[Optional]
+    public ?string $mode;
 
     /**
      * The customer number that owns the call, in E.164 format.
@@ -125,8 +142,10 @@ final class CallEventPayload implements BaseModel
     public static function with(
         string $callID,
         ?string $accountID = null,
+        ?string $agentID = null,
         ?string $channel = null,
         ?int $durationSeconds = null,
+        ?string $mode = null,
         ?string $number = null,
         ?float $price = null,
         ?string $reason = null,
@@ -138,8 +157,10 @@ final class CallEventPayload implements BaseModel
         $self['callID'] = $callID;
 
         null !== $accountID && $self['accountID'] = $accountID;
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $channel && $self['channel'] = $channel;
         null !== $durationSeconds && $self['durationSeconds'] = $durationSeconds;
+        null !== $mode && $self['mode'] = $mode;
         null !== $number && $self['number'] = $number;
         null !== $price && $self['price'] = $price;
         null !== $reason && $self['reason'] = $reason;
@@ -172,6 +193,17 @@ final class CallEventPayload implements BaseModel
     }
 
     /**
+     * The voice agent that answers the call, agent_…. Only on an agent call.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
+
+        return $self;
+    }
+
+    /**
      * Always voice.
      */
     public function withChannel(string $channel): self
@@ -189,6 +221,18 @@ final class CallEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['durationSeconds'] = $durationSeconds;
+
+        return $self;
+    }
+
+    /**
+     * inapp, a call routed by the number's callback URL, or agent, a call one of the account's voice
+     * agents answers. The same value GET /v3/voice/calls returns.
+     */
+    public function withMode(string $mode): self
+    {
+        $self = clone $this;
+        $self['mode'] = $mode;
 
         return $self;
     }

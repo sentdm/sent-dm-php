@@ -12,7 +12,7 @@ use SentDm\Core\Conversion\ListOf;
 use SentDm\Webhooks\WebhookUpdateParams\SenderProfile;
 
 /**
- * Updates an existing webhook for the authenticated customer.
+ * Updates an existing webhook for the authenticated customer. Its version does not change. sender_profile applies to a version 1 webhook and is_inheritable to a version 2 one; retry_count and timeout_seconds apply to version 1 only. A version 1 webhook's response returns its sender_profile selection as saved; a version 2 webhook's response leaves sender_profile out.
  *
  * @see SentDm\Services\WebhooksService::update()
  *
@@ -23,6 +23,7 @@ use SentDm\Webhooks\WebhookUpdateParams\SenderProfile;
  *   endpointURL?: string|null,
  *   eventFilters?: array<string,list<string>>|null,
  *   eventTypes?: list<string>|null,
+ *   isInheritable?: bool|null,
  *   retryCount?: int|null,
  *   sandbox?: bool|null,
  *   senderProfile?: null|SenderProfile|SenderProfileShape,
@@ -51,6 +52,13 @@ final class WebhookUpdateParams implements BaseModel
     #[Optional('event_types', list: 'string')]
     public ?array $eventTypes;
 
+    /**
+     * Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
+     */
+    #[Optional('is_inheritable', nullable: true)]
+    public ?bool $isInheritable;
+
     #[Optional('retry_count')]
     public ?int $retryCount;
 
@@ -63,7 +71,7 @@ final class WebhookUpdateParams implements BaseModel
 
     /**
      * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      */
     #[Optional('sender_profile', nullable: true)]
     public ?SenderProfile $senderProfile;
@@ -96,6 +104,7 @@ final class WebhookUpdateParams implements BaseModel
         ?string $endpointURL = null,
         ?array $eventFilters = null,
         ?array $eventTypes = null,
+        ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
         SenderProfile|array|null $senderProfile = null,
@@ -109,6 +118,7 @@ final class WebhookUpdateParams implements BaseModel
         null !== $endpointURL && $self['endpointURL'] = $endpointURL;
         null !== $eventFilters && $self['eventFilters'] = $eventFilters;
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
+        null !== $isInheritable && $self['isInheritable'] = $isInheritable;
         null !== $retryCount && $self['retryCount'] = $retryCount;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $senderProfile && $self['senderProfile'] = $senderProfile;
@@ -157,6 +167,18 @@ final class WebhookUpdateParams implements BaseModel
         return $self;
     }
 
+    /**
+     * Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
+     */
+    public function withIsInheritable(?bool $isInheritable): self
+    {
+        $self = clone $this;
+        $self['isInheritable'] = $isInheritable;
+
+        return $self;
+    }
+
     public function withRetryCount(int $retryCount): self
     {
         $self = clone $this;
@@ -179,7 +201,7 @@ final class WebhookUpdateParams implements BaseModel
 
     /**
      * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      *
      * @param SenderProfile|SenderProfileShape|null $senderProfile
      */

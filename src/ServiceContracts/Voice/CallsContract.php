@@ -34,8 +34,10 @@ interface CallsContract
     /**
      * @api
      *
+     * @param string|null $agentID Query param: Optional filter on the voice agent that answered the call, such as agent_9f2ab000-0000-4000-8000-000000000001
      * @param string|null $direction Query param: Optional direction filter: outbound for calls placed from your app, inbound for calls to one of your numbers
      * @param \DateTimeInterface|null $from Query param: Only calls started at or after this time (ISO 8601)
+     * @param string|null $mode Query param: Optional mode filter: inapp for calls routed by your number's callback URL, agent for calls one of your voice agents answered
      * @param string|null $number Query param: Optional filter on the number that owns the call, one of your voice-enabled numbers in E.164 format
      * @param int $page Query param: Page number (1-indexed)
      * @param int $pageSize Query param: Number of items per page
@@ -49,8 +51,10 @@ interface CallsContract
      * @throws APIException
      */
     public function list(
+        ?string $agentID = null,
         ?string $direction = null,
         ?\DateTimeInterface $from = null,
+        ?string $mode = null,
         ?string $number = null,
         ?int $page = null,
         ?int $pageSize = null,
