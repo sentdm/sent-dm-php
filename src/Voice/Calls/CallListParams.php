@@ -10,13 +10,15 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Retrieves a paginated list of your calls, most recent first. Filter by direction, status, the owning number, and the time the call started (from and to are inclusive). Use the call webhooks for real-time updates; this list is for looking calls up afterwards.
+ * Retrieves a paginated list of your calls, most recent first. Filter by direction, status, the owning number, the mode (inapp, or agent for calls your voice agents answered), the agent that answered, and the time the call started (from and to are inclusive). Each call carries the phone number it was connected to, the caller id it showed, and the billed legs with what each cost. Use the call webhooks for real-time updates; this list is for looking calls up afterwards.
  *
  * @see SentDm\Services\Voice\CallsService::list()
  *
  * @phpstan-type CallListParamsShape = array{
+ *   agentID?: string|null,
  *   direction?: string|null,
  *   from?: \DateTimeInterface|null,
+ *   mode?: string|null,
  *   number?: string|null,
  *   page?: int|null,
  *   pageSize?: int|null,
@@ -32,6 +34,12 @@ final class CallListParams implements BaseModel
     use SdkParams;
 
     /**
+     * Optional filter on the voice agent that answered the call, such as agent_9f2ab000-0000-4000-8000-000000000001.
+     */
+    #[Optional(nullable: true)]
+    public ?string $agentID;
+
+    /**
      * Optional direction filter: outbound for calls placed from your app, inbound for calls to one of your numbers.
      */
     #[Optional(nullable: true)]
@@ -42,6 +50,12 @@ final class CallListParams implements BaseModel
      */
     #[Optional(nullable: true)]
     public ?\DateTimeInterface $from;
+
+    /**
+     * Optional mode filter: inapp for calls routed by your number's callback URL, agent for calls one of your voice agents answered.
+     */
+    #[Optional(nullable: true)]
+    public ?string $mode;
 
     /**
      * Optional filter on the number that owns the call, one of your voice-enabled numbers in E.164 format.
@@ -87,8 +101,10 @@ final class CallListParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        ?string $agentID = null,
         ?string $direction = null,
         ?\DateTimeInterface $from = null,
+        ?string $mode = null,
         ?string $number = null,
         ?int $page = null,
         ?int $pageSize = null,
@@ -98,14 +114,27 @@ final class CallListParams implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $direction && $self['direction'] = $direction;
         null !== $from && $self['from'] = $from;
+        null !== $mode && $self['mode'] = $mode;
         null !== $number && $self['number'] = $number;
         null !== $page && $self['page'] = $page;
         null !== $pageSize && $self['pageSize'] = $pageSize;
         null !== $status && $self['status'] = $status;
         null !== $to && $self['to'] = $to;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    /**
+     * Optional filter on the voice agent that answered the call, such as agent_9f2ab000-0000-4000-8000-000000000001.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
 
         return $self;
     }
@@ -128,6 +157,17 @@ final class CallListParams implements BaseModel
     {
         $self = clone $this;
         $self['from'] = $from;
+
+        return $self;
+    }
+
+    /**
+     * Optional mode filter: inapp for calls routed by your number's callback URL, agent for calls one of your voice agents answered.
+     */
+    public function withMode(?string $mode): self
+    {
+        $self = clone $this;
+        $self['mode'] = $mode;
 
         return $self;
     }

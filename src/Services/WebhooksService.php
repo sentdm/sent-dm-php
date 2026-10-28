@@ -48,18 +48,24 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Creates a new webhook endpoint for the authenticated customer.
+     * Creates a new webhook endpoint for the authenticated customer. A webhook is version 2 unless the request sets webhook_version to 1: Svix delivers it, signed with the webhook-id, webhook-timestamp and webhook-signature headers, and retries it on its own schedule, so retry_count and timeout_seconds apply to version 1 only. sender_profile applies to version 1 only and is ignored on version 2; is_inheritable applies to version 2 only. A version 1 webhook's response returns its sender_profile selection, with an empty event_types when it is not cloned onto sender profiles; a version 2 webhook's response leaves sender_profile out.
      *
      * @param string $displayName Body param
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
-     * @param int $retryCount Body param
+     * @param bool $isInheritable Body param: Also delivers every sender profile's events to this webhook, at the same URL and with the same signing
+     * secret, and lets each profile see the webhook and read the events about itself. Off by default: the
+     * organization's own events only. Only an organization's version 2 webhook can set it.
+     * @param int $retryCount Body param: Delivery retries. Applies to version 1 only: Svix retries a version 2 webhook on its own schedule.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param SenderProfile|SenderProfileShape|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
-     * @param int $timeoutSeconds Body param
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
+     * @param int $timeoutSeconds Body param: Delivery timeout. Applies to version 1 only.
+     * @param int|null $webhookVersion body param: Who delivers the webhook: 2, the default, is delivered by Svix and signed with the
+     * webhook-id, webhook-timestamp and webhook-signature headers; 1 is the older
+     * delivery, signed with the X-Webhook-* headers, which will be retired
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
@@ -71,10 +77,12 @@ final class WebhooksService implements WebhooksContract
         ?string $endpointURL = null,
         ?array $eventFilters = null,
         ?array $eventTypes = null,
+        ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
         SenderProfile|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
+        ?int $webhookVersion = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
@@ -85,10 +93,12 @@ final class WebhooksService implements WebhooksContract
                 'endpointURL' => $endpointURL,
                 'eventFilters' => $eventFilters,
                 'eventTypes' => $eventTypes,
+                'isInheritable' => $isInheritable,
                 'retryCount' => $retryCount,
                 'sandbox' => $sandbox,
                 'senderProfile' => $senderProfile,
                 'timeoutSeconds' => $timeoutSeconds,
+                'webhookVersion' => $webhookVersion,
                 'idempotencyKey' => $idempotencyKey,
                 'xProfileID' => $xProfileID,
             ],
@@ -103,7 +113,7 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Retrieves a single webhook by ID for the authenticated customer.
+     * Retrieves a single webhook by ID for the authenticated customer. A version 1 webhook includes its sender_profile selection.
      *
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
@@ -126,18 +136,20 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Updates an existing webhook for the authenticated customer.
+     * Updates an existing webhook for the authenticated customer. Its version does not change. sender_profile applies to a version 1 webhook and is_inheritable to a version 2 one; retry_count and timeout_seconds apply to version 1 only. A version 1 webhook's response returns its sender_profile selection as saved; a version 2 webhook's response leaves sender_profile out.
      *
      * @param string $id Path param
      * @param string $displayName Body param
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
+     * @param bool|null $isInheritable Body param: Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|SenderProfileShape1|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -151,6 +163,7 @@ final class WebhooksService implements WebhooksContract
         ?string $endpointURL = null,
         ?array $eventFilters = null,
         ?array $eventTypes = null,
+        ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
         \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|array|null $senderProfile = null,
@@ -165,6 +178,7 @@ final class WebhooksService implements WebhooksContract
                 'endpointURL' => $endpointURL,
                 'eventFilters' => $eventFilters,
                 'eventTypes' => $eventTypes,
+                'isInheritable' => $isInheritable,
                 'retryCount' => $retryCount,
                 'sandbox' => $sandbox,
                 'senderProfile' => $senderProfile,
@@ -183,7 +197,7 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Retrieves a paginated list of webhooks for the authenticated customer.
+     * Retrieves a paginated list of webhooks for the authenticated customer. Each version 1 webhook includes its sender_profile selection.
      *
      * @param bool|null $isActive Query param
      * @param int $page Query param
@@ -268,7 +282,7 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Retrieves a paginated list of delivery events for the specified webhook. If the webhook is cloned onto your sender profiles, the list includes what those clones received; read payload.account_id to tell whose event it is.
+     * Retrieves a paginated list of delivery events for the specified webhook, newest first. If the webhook is cloned onto your sender profiles (version 1) or inheritable by them (version 2, is_inheritable), the list includes their events; read payload.account_id to tell whose event it is. A sender profile may read its organization's inheritable webhook too, and gets the events about itself.
      *
      * @param string $id Path param
      * @param int $page Query param
@@ -307,7 +321,7 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Generates a new signing secret for the specified webhook. The old secret is immediately invalidated.
+     * Generates a new signing secret for the specified webhook. A version 1 webhook's old secret stops verifying at once. A version 2 webhook's deliveries are signed with the new secret at once, and with the old one as well for the next 24 hours, so a receiver can switch over without rejecting any; after that the old secret no longer verifies.
      *
      * @param string $id Path param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -342,7 +356,7 @@ final class WebhooksService implements WebhooksContract
     /**
      * @api
      *
-     * Sends a test event to the specified webhook endpoint to verify connectivity.
+     * Sends a test event to the specified webhook endpoint to verify connectivity. A version 1 webhook is tested at once and the answer says whether it was delivered; a version 2 webhook's test is queued with Svix, which delivers it right after, and the answer says it was queued.
      *
      * @param string $id Path param
      * @param string $eventType Body param

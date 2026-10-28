@@ -30,12 +30,18 @@ interface WebhooksContract
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
-     * @param int $retryCount Body param
+     * @param bool $isInheritable Body param: Also delivers every sender profile's events to this webhook, at the same URL and with the same signing
+     * secret, and lets each profile see the webhook and read the events about itself. Off by default: the
+     * organization's own events only. Only an organization's version 2 webhook can set it.
+     * @param int $retryCount Body param: Delivery retries. Applies to version 1 only: Svix retries a version 2 webhook on its own schedule.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param SenderProfile|SenderProfileShape|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
-     * @param int $timeoutSeconds Body param
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
+     * @param int $timeoutSeconds Body param: Delivery timeout. Applies to version 1 only.
+     * @param int|null $webhookVersion body param: Who delivers the webhook: 2, the default, is delivered by Svix and signed with the
+     * webhook-id, webhook-timestamp and webhook-signature headers; 1 is the older
+     * delivery, signed with the X-Webhook-* headers, which will be retired
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
@@ -47,10 +53,12 @@ interface WebhooksContract
         ?string $endpointURL = null,
         ?array $eventFilters = null,
         ?array $eventTypes = null,
+        ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
         SenderProfile|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
+        ?int $webhookVersion = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
@@ -78,11 +86,13 @@ interface WebhooksContract
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
+     * @param bool|null $isInheritable Body param: Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|SenderProfileShape1|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
@@ -96,6 +106,7 @@ interface WebhooksContract
         ?string $endpointURL = null,
         ?array $eventFilters = null,
         ?array $eventTypes = null,
+        ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
         \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|array|null $senderProfile = null,

@@ -39,30 +39,7 @@ final class VoiceTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->channels->voice->create(
-            callbackURL: 'https://example.com/voice'
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfVoiceNumberCreated::class, $result);
-    }
-
-    #[Test]
-    public function testCreateWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->voice->create(
-            callbackURL: 'https://example.com/voice',
-            areaCode: null,
-            defaultForAppCalls: false,
-            number: '+12125550100',
-            sandbox: false,
-            idempotencyKey: 'req_abc123_retry1',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
+        $result = $this->client->channels->voice->create();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfVoiceNumberCreated::class, $result);
@@ -88,7 +65,7 @@ final class VoiceTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->channels->voice->update('+12125550100');
+        $result = $this->client->channels->voice->update('number');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfVoiceNumber::class, $result);

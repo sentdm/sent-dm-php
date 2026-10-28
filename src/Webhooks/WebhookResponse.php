@@ -8,8 +8,11 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Core\Conversion\ListOf;
+use SentDm\Webhooks\WebhookResponse\SenderProfile;
 
 /**
+ * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookResponse\SenderProfile
+ *
  * @phpstan-type WebhookResponseShape = array{
  *   id?: string|null,
  *   consecutiveFailures?: int|null,
@@ -20,12 +23,15 @@ use SentDm\Core\Conversion\ListOf;
  *   eventFilters?: array<string,list<string>>|null,
  *   eventTypes?: list<string>|null,
  *   isActive?: bool|null,
+ *   isInheritable?: bool|null,
  *   lastDeliveryAttemptAt?: \DateTimeInterface|null,
  *   lastSuccessfulDeliveryAt?: \DateTimeInterface|null,
  *   retryCount?: int|null,
+ *   senderProfile?: null|SenderProfile|SenderProfileShape,
  *   signingSecret?: string|null,
  *   timeoutSeconds?: int|null,
  *   updatedAt?: \DateTimeInterface|null,
+ *   webhookVersion?: int|null,
  * }
  */
 final class WebhookResponse implements BaseModel
@@ -36,6 +42,10 @@ final class WebhookResponse implements BaseModel
     #[Optional]
     public ?string $id;
 
+    /**
+     * Failed attempts since the last success. Version 1 only: always 0 on a version 2 webhook, whose deliveries
+     * are in its events (GET /v3/webhooks/{id}/events).
+     */
     #[Optional('consecutive_failures')]
     public ?int $consecutiveFailures;
 
@@ -66,14 +76,36 @@ final class WebhookResponse implements BaseModel
     #[Optional('is_active')]
     public ?bool $isActive;
 
+    /**
+     * Whether the webhook also receives its organization's sender profiles' events, and each profile sees it and
+     * reads the events about itself. Always false on a version 1 webhook.
+     */
+    #[Optional('is_inheritable')]
+    public ?bool $isInheritable;
+
+    /**
+     * When the webhook was last attempted. Version 1 only: always null on a version 2 webhook.
+     */
     #[Optional('last_delivery_attempt_at', nullable: true)]
     public ?\DateTimeInterface $lastDeliveryAttemptAt;
 
+    /**
+     * When the webhook last received an event. Version 1 only: always null on a version 2 webhook.
+     */
     #[Optional('last_successful_delivery_at', nullable: true)]
     public ?\DateTimeInterface $lastSuccessfulDeliveryAt;
 
     #[Optional('retry_count')]
     public ?int $retryCount;
+
+    /**
+     * The events a version 1 webhook's sender profile clones receive, as a response reports them.
+     *
+     * Its own type, field for field the same as the request's sender_profile. A response is not
+     * a request, whatever it carries.
+     */
+    #[Optional('sender_profile', nullable: true)]
+    public ?SenderProfile $senderProfile;
 
     #[Optional('signing_secret', nullable: true)]
     public ?string $signingSecret;
@@ -83,6 +115,13 @@ final class WebhookResponse implements BaseModel
 
     #[Optional('updated_at', nullable: true)]
     public ?\DateTimeInterface $updatedAt;
+
+    /**
+     * Who delivers the webhook: 1 the older delivery, which will be retired, or 2 Svix. A webhook is
+     * created as version 2 unless the request asks for 1.
+     */
+    #[Optional('webhook_version')]
+    public ?int $webhookVersion;
 
     public function __construct()
     {
@@ -96,6 +135,7 @@ final class WebhookResponse implements BaseModel
      *
      * @param array<string,list<string>>|null $eventFilters
      * @param list<string>|null $eventTypes
+     * @param SenderProfile|SenderProfileShape|null $senderProfile
      */
     public static function with(
         ?string $id = null,
@@ -107,12 +147,15 @@ final class WebhookResponse implements BaseModel
         ?array $eventFilters = null,
         ?array $eventTypes = null,
         ?bool $isActive = null,
+        ?bool $isInheritable = null,
         ?\DateTimeInterface $lastDeliveryAttemptAt = null,
         ?\DateTimeInterface $lastSuccessfulDeliveryAt = null,
         ?int $retryCount = null,
+        SenderProfile|array|null $senderProfile = null,
         ?string $signingSecret = null,
         ?int $timeoutSeconds = null,
         ?\DateTimeInterface $updatedAt = null,
+        ?int $webhookVersion = null,
     ): self {
         $self = new self;
 
@@ -125,12 +168,15 @@ final class WebhookResponse implements BaseModel
         null !== $eventFilters && $self['eventFilters'] = $eventFilters;
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
         null !== $isActive && $self['isActive'] = $isActive;
+        null !== $isInheritable && $self['isInheritable'] = $isInheritable;
         null !== $lastDeliveryAttemptAt && $self['lastDeliveryAttemptAt'] = $lastDeliveryAttemptAt;
         null !== $lastSuccessfulDeliveryAt && $self['lastSuccessfulDeliveryAt'] = $lastSuccessfulDeliveryAt;
         null !== $retryCount && $self['retryCount'] = $retryCount;
+        null !== $senderProfile && $self['senderProfile'] = $senderProfile;
         null !== $signingSecret && $self['signingSecret'] = $signingSecret;
         null !== $timeoutSeconds && $self['timeoutSeconds'] = $timeoutSeconds;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
+        null !== $webhookVersion && $self['webhookVersion'] = $webhookVersion;
 
         return $self;
     }
@@ -143,6 +189,10 @@ final class WebhookResponse implements BaseModel
         return $self;
     }
 
+    /**
+     * Failed attempts since the last success. Version 1 only: always 0 on a version 2 webhook, whose deliveries
+     * are in its events (GET /v3/webhooks/{id}/events).
+     */
     public function withConsecutiveFailures(int $consecutiveFailures): self
     {
         $self = clone $this;
@@ -217,6 +267,21 @@ final class WebhookResponse implements BaseModel
         return $self;
     }
 
+    /**
+     * Whether the webhook also receives its organization's sender profiles' events, and each profile sees it and
+     * reads the events about itself. Always false on a version 1 webhook.
+     */
+    public function withIsInheritable(bool $isInheritable): self
+    {
+        $self = clone $this;
+        $self['isInheritable'] = $isInheritable;
+
+        return $self;
+    }
+
+    /**
+     * When the webhook was last attempted. Version 1 only: always null on a version 2 webhook.
+     */
     public function withLastDeliveryAttemptAt(
         ?\DateTimeInterface $lastDeliveryAttemptAt
     ): self {
@@ -226,6 +291,9 @@ final class WebhookResponse implements BaseModel
         return $self;
     }
 
+    /**
+     * When the webhook last received an event. Version 1 only: always null on a version 2 webhook.
+     */
     public function withLastSuccessfulDeliveryAt(
         ?\DateTimeInterface $lastSuccessfulDeliveryAt
     ): self {
@@ -239,6 +307,23 @@ final class WebhookResponse implements BaseModel
     {
         $self = clone $this;
         $self['retryCount'] = $retryCount;
+
+        return $self;
+    }
+
+    /**
+     * The events a version 1 webhook's sender profile clones receive, as a response reports them.
+     *
+     * Its own type, field for field the same as the request's sender_profile. A response is not
+     * a request, whatever it carries.
+     *
+     * @param SenderProfile|SenderProfileShape|null $senderProfile
+     */
+    public function withSenderProfile(
+        SenderProfile|array|null $senderProfile
+    ): self {
+        $self = clone $this;
+        $self['senderProfile'] = $senderProfile;
 
         return $self;
     }
@@ -263,6 +348,18 @@ final class WebhookResponse implements BaseModel
     {
         $self = clone $this;
         $self['updatedAt'] = $updatedAt;
+
+        return $self;
+    }
+
+    /**
+     * Who delivers the webhook: 1 the older delivery, which will be retired, or 2 Svix. A webhook is
+     * created as version 2 unless the request asks for 1.
+     */
+    public function withWebhookVersion(int $webhookVersion): self
+    {
+        $self = clone $this;
+        $self['webhookVersion'] = $webhookVersion;
 
         return $self;
     }
