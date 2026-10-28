@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Ends one of your live calls. The call then ends the way any other call does once the disconnect is reported: an answered call as COMPLETED with call.completed, a call still ringing as NO_ANSWER, REJECTED or FAILED with call.failed. A call that has already ended answers 409, and so does a call with no phone leg, such as one between two app users.
+ * Ends one of your live calls. The call then ends the way any other call does once the disconnect is reported: an answered call as COMPLETED with call.completed, a call still ringing as NO_ANSWER, REJECTED or FAILED with call.failed. A call that has already ended answers 409, as do a call with no phone leg, such as one between two app users, and a call one of your voice agents answers.
  *
  * @see SentDm\Services\Voice\CallsService::hangup()
  *

@@ -7,21 +7,27 @@ namespace SentDm\Voice\Calls;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Voice\Calls\Call\Leg;
 
 /**
  * A call record.
  *
  * @phpstan-import-type CallPartyShape from \SentDm\Voice\Calls\CallParty
+ * @phpstan-import-type LegShape from \SentDm\Voice\Calls\Call\Leg
  * @phpstan-import-type CallTimelineEntryShape from \SentDm\Voice\Calls\CallTimelineEntry
  *
  * @phpstan-type CallShape = array{
  *   id?: string|null,
+ *   agentID?: string|null,
  *   answeredAt?: \DateTimeInterface|null,
+ *   callerIDUsed?: string|null,
+ *   connectedNumber?: string|null,
  *   direction?: string|null,
  *   durationSeconds?: int|null,
  *   endedAt?: \DateTimeInterface|null,
  *   failureReason?: string|null,
  *   from?: null|CallParty|CallPartyShape,
+ *   legs?: list<Leg|LegShape>|null,
  *   mode?: string|null,
  *   number?: string|null,
  *   price?: float|null,
@@ -44,10 +50,28 @@ final class Call implements BaseModel
     public ?string $id;
 
     /**
+     * The voice agent that answered the call, such as agent_9f2ab000-0000-4000-8000-000000000001. Null for an inapp call.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
+
+    /**
      * When the call was answered (UTC). Null until then, and always null for a call between two of your app users.
      */
     #[Optional('answered_at', nullable: true)]
     public ?\DateTimeInterface $answeredAt;
+
+    /**
+     * The caller id shown on the phone leg, in E.164 format: the one your answer chose, or the owning number when it chose none. Null for a call with no phone leg.
+     */
+    #[Optional('caller_id_used', nullable: true)]
+    public ?string $callerIDUsed;
+
+    /**
+     * The phone number the call was connected to, in E.164 format: the number your answer dialed, or the fallback number a call to one of your voice agents reached. Null when the call was not connected to a phone number.
+     */
+    #[Optional('connected_number', nullable: true)]
+    public ?string $connectedNumber;
 
     /**
      * outbound for a call placed from your app, inbound for a call to one of your numbers.
@@ -68,7 +92,7 @@ final class Call implements BaseModel
     public ?\DateTimeInterface $endedAt;
 
     /**
-     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected or no_answer. Null while the call is live, when it completed, and when it failed without a recorded reason.
+     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected, no_answer, or for an agent call agent_busy or agent_unreachable. Null while the call is live, when it completed, and when it failed without a recorded reason.
      */
     #[Optional('failure_reason', nullable: true)]
     public ?string $failureReason;
@@ -80,7 +104,15 @@ final class Call implements BaseModel
     public ?CallParty $from;
 
     /**
-     * The calling mode: inapp for a call between people in your app and phone numbers, routed by your number's callback URL.
+     * The legs the price covers, one entry per billed leg, each with its own cost: a call your answer connected to a phone number ran the caller's leg to your number and the leg to the connected number at once, and both are billed. Null until the call has been priced.
+     *
+     * @var list<Leg>|null $legs
+     */
+    #[Optional(list: Leg::class, nullable: true)]
+    public ?array $legs;
+
+    /**
+     * The calling mode: inapp for a call between people in your app and phone numbers, routed by your number's callback URL; agent for a call one of your voice agents answered.
      */
     #[Optional]
     public ?string $mode;
@@ -140,17 +172,22 @@ final class Call implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param CallParty|CallPartyShape|null $from
+     * @param list<Leg|LegShape>|null $legs
      * @param list<CallTimelineEntry|CallTimelineEntryShape>|null $timeline
      * @param CallParty|CallPartyShape|null $to
      */
     public static function with(
         ?string $id = null,
+        ?string $agentID = null,
         ?\DateTimeInterface $answeredAt = null,
+        ?string $callerIDUsed = null,
+        ?string $connectedNumber = null,
         ?string $direction = null,
         ?int $durationSeconds = null,
         ?\DateTimeInterface $endedAt = null,
         ?string $failureReason = null,
         CallParty|array|null $from = null,
+        ?array $legs = null,
         ?string $mode = null,
         ?string $number = null,
         ?float $price = null,
@@ -163,12 +200,16 @@ final class Call implements BaseModel
         $self = new self;
 
         null !== $id && $self['id'] = $id;
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $answeredAt && $self['answeredAt'] = $answeredAt;
+        null !== $callerIDUsed && $self['callerIDUsed'] = $callerIDUsed;
+        null !== $connectedNumber && $self['connectedNumber'] = $connectedNumber;
         null !== $direction && $self['direction'] = $direction;
         null !== $durationSeconds && $self['durationSeconds'] = $durationSeconds;
         null !== $endedAt && $self['endedAt'] = $endedAt;
         null !== $failureReason && $self['failureReason'] = $failureReason;
         null !== $from && $self['from'] = $from;
+        null !== $legs && $self['legs'] = $legs;
         null !== $mode && $self['mode'] = $mode;
         null !== $number && $self['number'] = $number;
         null !== $price && $self['price'] = $price;
@@ -193,12 +234,45 @@ final class Call implements BaseModel
     }
 
     /**
+     * The voice agent that answered the call, such as agent_9f2ab000-0000-4000-8000-000000000001. Null for an inapp call.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
+
+        return $self;
+    }
+
+    /**
      * When the call was answered (UTC). Null until then, and always null for a call between two of your app users.
      */
     public function withAnsweredAt(?\DateTimeInterface $answeredAt): self
     {
         $self = clone $this;
         $self['answeredAt'] = $answeredAt;
+
+        return $self;
+    }
+
+    /**
+     * The caller id shown on the phone leg, in E.164 format: the one your answer chose, or the owning number when it chose none. Null for a call with no phone leg.
+     */
+    public function withCallerIDUsed(?string $callerIDUsed): self
+    {
+        $self = clone $this;
+        $self['callerIDUsed'] = $callerIDUsed;
+
+        return $self;
+    }
+
+    /**
+     * The phone number the call was connected to, in E.164 format: the number your answer dialed, or the fallback number a call to one of your voice agents reached. Null when the call was not connected to a phone number.
+     */
+    public function withConnectedNumber(?string $connectedNumber): self
+    {
+        $self = clone $this;
+        $self['connectedNumber'] = $connectedNumber;
 
         return $self;
     }
@@ -237,7 +311,7 @@ final class Call implements BaseModel
     }
 
     /**
-     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected or no_answer. Null while the call is live, when it completed, and when it failed without a recorded reason.
+     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected, no_answer, or for an agent call agent_busy or agent_unreachable. Null while the call is live, when it completed, and when it failed without a recorded reason.
      */
     public function withFailureReason(?string $failureReason): self
     {
@@ -261,7 +335,20 @@ final class Call implements BaseModel
     }
 
     /**
-     * The calling mode: inapp for a call between people in your app and phone numbers, routed by your number's callback URL.
+     * The legs the price covers, one entry per billed leg, each with its own cost: a call your answer connected to a phone number ran the caller's leg to your number and the leg to the connected number at once, and both are billed. Null until the call has been priced.
+     *
+     * @param list<Leg|LegShape>|null $legs
+     */
+    public function withLegs(?array $legs): self
+    {
+        $self = clone $this;
+        $self['legs'] = $legs;
+
+        return $self;
+    }
+
+    /**
+     * The calling mode: inapp for a call between people in your app and phone numbers, routed by your number's callback URL; agent for a call one of your voice agents answered.
      */
     public function withMode(string $mode): self
     {
