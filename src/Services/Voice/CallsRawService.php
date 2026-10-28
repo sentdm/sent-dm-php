@@ -27,6 +27,8 @@ use SentDm\Voice\Calls\CallRetrieveParams;
  *
  * Every call is a record under `/v3/voice/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
  *
+ * **Voice agents.** `POST /v3/voice/agents` creates an agent that answers calls through the Sent Voice Gateway: `session_type` says whether Sent carries the call as text (speech recognised and spoken for the agent) or as audio, `websocket_url` is where the gateway dials the agent for each call (leave it out and the agent dials in with your API key), and `tools`, `transfer_targets`, `fallback` and `limits` say what it may do on a call. The agent's `signing_secret` is shown on create and on `POST /v3/voice/agents/{id}/rotate-secret` only. Voices and languages for text sessions come from `GET /v3/voice/voices`. A number takes calls to an agent once it is bound to it on `/v3/channels/voice`.
+ *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class CallsRawService implements CallsRawContract
@@ -40,7 +42,7 @@ final class CallsRawService implements CallsRawContract
     /**
      * @api
      *
-     * Retrieves one of your calls by id: the parties, the owning number, the current status with its failure reason, duration, price, recording availability, and a timeline of when the call entered each status.
+     * Retrieves one of your calls by id: the parties, the owning number, the phone number the call was connected to and the caller id it showed, the current status with its failure reason, duration, price with the billed legs and what each cost, recording availability, and a timeline of when the call entered each status.
      *
      * @param string $id The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{xProfileID?: string}|CallRetrieveParams $params
@@ -76,11 +78,13 @@ final class CallsRawService implements CallsRawContract
     /**
      * @api
      *
-     * Retrieves a paginated list of your calls, most recent first. Filter by direction, status, the owning number, and the time the call started (from and to are inclusive). Use the call webhooks for real-time updates; this list is for looking calls up afterwards.
+     * Retrieves a paginated list of your calls, most recent first. Filter by direction, status, the owning number, the mode (inapp, or agent for calls your voice agents answered), the agent that answered, and the time the call started (from and to are inclusive). Each call carries the phone number it was connected to, the caller id it showed, and the billed legs with what each cost. Use the call webhooks for real-time updates; this list is for looking calls up afterwards.
      *
      * @param array{
+     *   agentID?: string|null,
      *   direction?: string|null,
      *   from?: \DateTimeInterface|null,
+     *   mode?: string|null,
      *   number?: string|null,
      *   page?: int,
      *   pageSize?: int,
@@ -103,7 +107,17 @@ final class CallsRawService implements CallsRawContract
             $requestOptions,
         );
         $query_params = array_flip(
-            ['direction', 'from', 'number', 'page', 'pageSize', 'status', 'to']
+            [
+                'agentID',
+                'direction',
+                'from',
+                'mode',
+                'number',
+                'page',
+                'pageSize',
+                'status',
+                'to',
+            ],
         );
 
         /** @var array<string,string> */
@@ -115,7 +129,7 @@ final class CallsRawService implements CallsRawContract
             path: 'v3/voice/calls',
             query: Util::array_transform_keys(
                 array_intersect_key($parsed, $query_params),
-                ['pageSize' => 'page_size']
+                ['agentID' => 'agent_id', 'pageSize' => 'page_size'],
             ),
             headers: Util::array_transform_keys(
                 $header_params,
@@ -130,7 +144,7 @@ final class CallsRawService implements CallsRawContract
     /**
      * @api
      *
-     * Ends one of your live calls. The call then ends the way any other call does once the disconnect is reported: an answered call as COMPLETED with call.completed, a call still ringing as NO_ANSWER, REJECTED or FAILED with call.failed. A call that has already ended answers 409, and so does a call with no phone leg, such as one between two app users.
+     * Ends one of your live calls. The call then ends the way any other call does once the disconnect is reported: an answered call as COMPLETED with call.completed, a call still ringing as NO_ANSWER, REJECTED or FAILED with call.failed. A call that has already ended answers 409, as do a call with no phone leg, such as one between two app users, and a call one of your voice agents answers.
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{
@@ -211,7 +225,7 @@ final class CallsRawService implements CallsRawContract
     /**
      * @api
      *
-     * Starts or stops recording one of your live calls. Use start to begin recording mid-call, or stop to end a recording, whether it was started here or by a connect answer with record set. A call that has already ended answers 409, and so does a call with no phone leg, such as one between two app users, which can't be recorded.
+     * Starts or stops recording one of your live calls. Use start to begin recording mid-call, or stop to end a recording, whether it was started here or by a connect answer with record set. A call that has already ended answers 409, as do a call with no phone leg, such as one between two app users, and a call one of your voice agents answers, neither of which can be recorded this way.
      *
      * @param string $id Path param: The call id from the route, as carried by call webhooks and the calls list, for example call_9f2ab000-0000-4000-8000-000000000001
      * @param array{

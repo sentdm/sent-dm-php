@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Retrieves a paginated list of webhooks for the authenticated customer.
+ * Retrieves a paginated list of webhooks for the authenticated customer. Each version 1 webhook includes its sender_profile selection.
  *
  * @see SentDm\Services\WebhooksService::list()
  *

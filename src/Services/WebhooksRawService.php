@@ -52,17 +52,19 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Creates a new webhook endpoint for the authenticated customer.
+     * Creates a new webhook endpoint for the authenticated customer. A webhook is version 2 unless the request sets webhook_version to 1: Svix delivers it, signed with the webhook-id, webhook-timestamp and webhook-signature headers, and retries it on its own schedule, so retry_count and timeout_seconds apply to version 1 only. sender_profile applies to version 1 only and is ignored on version 2; is_inheritable applies to version 2 only. A version 1 webhook's response returns its sender_profile selection, with an empty event_types when it is not cloned onto sender profiles; a version 2 webhook's response leaves sender_profile out.
      *
      * @param array{
      *   displayName?: string,
      *   endpointURL?: string,
      *   eventFilters?: array<string,list<string>>|null,
      *   eventTypes?: list<string>,
+     *   isInheritable?: bool,
      *   retryCount?: int,
      *   sandbox?: bool,
      *   senderProfile?: SenderProfile|SenderProfileShape|null,
      *   timeoutSeconds?: int,
+     *   webhookVersion?: int|null,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
      * }|WebhookCreateParams $params
@@ -104,7 +106,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Retrieves a single webhook by ID for the authenticated customer.
+     * Retrieves a single webhook by ID for the authenticated customer. A version 1 webhook includes its sender_profile selection.
      *
      * @param array{xProfileID?: string}|WebhookRetrieveParams $params
      * @param RequestOpts|null $requestOptions
@@ -139,7 +141,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Updates an existing webhook for the authenticated customer.
+     * Updates an existing webhook for the authenticated customer. Its version does not change. sender_profile applies to a version 1 webhook and is_inheritable to a version 2 one; retry_count and timeout_seconds apply to version 1 only. A version 1 webhook's response returns its sender_profile selection as saved; a version 2 webhook's response leaves sender_profile out.
      *
      * @param string $id Path param
      * @param array{
@@ -147,6 +149,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *   endpointURL?: string,
      *   eventFilters?: array<string,list<string>>|null,
      *   eventTypes?: list<string>,
+     *   isInheritable?: bool|null,
      *   retryCount?: int,
      *   sandbox?: bool,
      *   senderProfile?: WebhookUpdateParams\SenderProfile|SenderProfileShape1|null,
@@ -193,7 +196,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Retrieves a paginated list of webhooks for the authenticated customer.
+     * Retrieves a paginated list of webhooks for the authenticated customer. Each version 1 webhook includes its sender_profile selection.
      *
      * @param array{
      *   isActive?: bool|null,
@@ -311,7 +314,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Retrieves a paginated list of delivery events for the specified webhook. If the webhook is cloned onto your sender profiles, the list includes what those clones received; read payload.account_id to tell whose event it is.
+     * Retrieves a paginated list of delivery events for the specified webhook, newest first. If the webhook is cloned onto your sender profiles (version 1) or inheritable by them (version 2, is_inheritable), the list includes their events; read payload.account_id to tell whose event it is. A sender profile may read its organization's inheritable webhook too, and gets the events about itself.
      *
      * @param string $id Path param
      * @param array{
@@ -358,7 +361,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Generates a new signing secret for the specified webhook. The old secret is immediately invalidated.
+     * Generates a new signing secret for the specified webhook. A version 1 webhook's old secret stops verifying at once. A version 2 webhook's deliveries are signed with the new secret at once, and with the old one as well for the next 24 hours, so a receiver can switch over without rejecting any; after that the old secret no longer verifies.
      *
      * @param string $id Path param
      * @param array{
@@ -403,7 +406,7 @@ final class WebhooksRawService implements WebhooksRawContract
     /**
      * @api
      *
-     * Sends a test event to the specified webhook endpoint to verify connectivity.
+     * Sends a test event to the specified webhook endpoint to verify connectivity. A version 1 webhook is tested at once and the answer says whether it was delivered; a version 2 webhook's test is queued with Svix, which delivers it right after, and the answer says it was queued.
      *
      * @param string $id Path param
      * @param array{

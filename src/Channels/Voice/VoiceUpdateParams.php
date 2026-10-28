@@ -21,9 +21,11 @@ use SentDm\Core\Contracts\BaseModel;
  * | `"status": "INACTIVE"` | turns calls off; the callback URL and the secret stay on the number |
  * | `"default_for_app_calls": true` | makes this the line app-originated calls are placed from when a voice token names no number |
  * | `"callback_url": "https://example.com/voice"` | replaces where Sent asks what to do with each call on the number; the signing secret and the status are kept |
+ * | `"agent_id": "agent_…"` | one of your voice agents answers calls to the number, within about an hour of the change (the provider applies the move on its own clock, and `routes_to` reads `agent` as soon as it has recorded it); it wins over `callback_url` for calls to the number, and calls your app places from it still follow your app. `routes_to` reads `agent_pending` while the number is still being moved to the agent |
+ * | `"agent_id": null` | unbinds the agent, so `callback_url` answers calls to the number again |
  * | key omitted | left exactly as it is |
  *
- * `status` is matched ignoring case. Any combination is accepted: `status: "ACTIVE"` with `default_for_app_calls: true` turns a number on as the new default, and a `callback_url` sent with either status is written too. A body that names none of the three is refused.
+ * `status` is matched ignoring case. Any combination is accepted: `status: "ACTIVE"` with `default_for_app_calls: true` turns a number on as the new default, and a `callback_url` sent with either status is written too. `agent_id` is applied first, so a refusal to move the number to or from the agent leaves everything as it was, and the `409` and `400` refusals below are decided before anything is written, so they leave everything as it was too. A body that names none of them is refused.
  *
  * A number can be on without a callback URL: calls placed from your app then connect straight to the number or user they dial, and calls to the number are declined.
  *
@@ -35,7 +37,9 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * **Making an inactive number the default is `400`.** Send `status: "ACTIVE"` in the same call.
  *
- * **A number you never turned voice on for is `404`.** Add it with `POST /v3/channels/voice`.
+ * **A number you never turned voice on for is `404`**, and so is an `agent_id` that is not one of your agents. Add the number with `POST /v3/channels/voice`.
+ *
+ * **`502` means the number could not be moved to or from the agent**, or an `agent_id` was sent while numbers cannot be bound to agents; nothing was written.
  *
  * The number is the E.164 value in the path with the plus sign URL-encoded (`%2B`).
  *
@@ -44,6 +48,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @see SentDm\Services\Channels\VoiceService::update()
  *
  * @phpstan-type VoiceUpdateParamsShape = array{
+ *   agentID?: string|null,
  *   callbackURL?: string|null,
  *   defaultForAppCalls?: bool|null,
  *   sandbox?: bool|null,
@@ -57,6 +62,14 @@ final class VoiceUpdateParams implements BaseModel
     /** @use SdkModel<VoiceUpdateParamsShape> */
     use SdkModel;
     use SdkParams;
+
+    /**
+     * One of your voice agents, such as agent_9f2ab000-0000-4000-8000-000000000001, to answer calls to
+     * the number, or null to unbind it so the callback URL answers them again. The agent wins over
+     * callback_url for calls to the number; calls your app places from it still follow your app.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
 
     /**
      * A new callback URL for the number, active or not: an absolute HTTP or HTTPS URL on a public host,
@@ -108,6 +121,7 @@ final class VoiceUpdateParams implements BaseModel
      * @param Status|value-of<Status>|null $status
      */
     public static function with(
+        ?string $agentID = null,
         ?string $callbackURL = null,
         ?bool $defaultForAppCalls = null,
         ?bool $sandbox = null,
@@ -117,12 +131,26 @@ final class VoiceUpdateParams implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $callbackURL && $self['callbackURL'] = $callbackURL;
         null !== $defaultForAppCalls && $self['defaultForAppCalls'] = $defaultForAppCalls;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $status && $self['status'] = $status;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    /**
+     * One of your voice agents, such as agent_9f2ab000-0000-4000-8000-000000000001, to answer calls to
+     * the number, or null to unbind it so the callback URL answers them again. The agent wins over
+     * callback_url for calls to the number; calls your app places from it still follow your app.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
 
         return $self;
     }

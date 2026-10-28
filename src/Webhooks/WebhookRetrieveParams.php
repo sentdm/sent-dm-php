@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Retrieves a single webhook by ID for the authenticated customer.
+ * Retrieves a single webhook by ID for the authenticated customer. A version 1 webhook includes its sender_profile selection.
  *
  * @see SentDm\Services\WebhooksService::retrieve()
  *

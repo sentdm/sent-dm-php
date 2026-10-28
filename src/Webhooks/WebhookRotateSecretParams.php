@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Generates a new signing secret for the specified webhook. The old secret is immediately invalidated.
+ * Generates a new signing secret for the specified webhook. A version 1 webhook's old secret stops verifying at once. A version 2 webhook's deliveries are signed with the new secret at once, and with the old one as well for the next 24 hours, so a receiver can switch over without rejecting any; after that the old secret no longer verifies.
  *
  * @see SentDm\Services\WebhooksService::rotateSecret()
  *

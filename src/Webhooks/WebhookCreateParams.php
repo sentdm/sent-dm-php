@@ -12,7 +12,7 @@ use SentDm\Core\Conversion\ListOf;
 use SentDm\Webhooks\WebhookCreateParams\SenderProfile;
 
 /**
- * Creates a new webhook endpoint for the authenticated customer.
+ * Creates a new webhook endpoint for the authenticated customer. A webhook is version 2 unless the request sets webhook_version to 1: Svix delivers it, signed with the webhook-id, webhook-timestamp and webhook-signature headers, and retries it on its own schedule, so retry_count and timeout_seconds apply to version 1 only. sender_profile applies to version 1 only and is ignored on version 2; is_inheritable applies to version 2 only. A version 1 webhook's response returns its sender_profile selection, with an empty event_types when it is not cloned onto sender profiles; a version 2 webhook's response leaves sender_profile out.
  *
  * @see SentDm\Services\WebhooksService::create()
  *
@@ -23,10 +23,12 @@ use SentDm\Webhooks\WebhookCreateParams\SenderProfile;
  *   endpointURL?: string|null,
  *   eventFilters?: array<string,list<string>>|null,
  *   eventTypes?: list<string>|null,
+ *   isInheritable?: bool|null,
  *   retryCount?: int|null,
  *   sandbox?: bool|null,
  *   senderProfile?: null|SenderProfile|SenderProfileShape,
  *   timeoutSeconds?: int|null,
+ *   webhookVersion?: int|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
  * }
@@ -51,6 +53,17 @@ final class WebhookCreateParams implements BaseModel
     #[Optional('event_types', list: 'string')]
     public ?array $eventTypes;
 
+    /**
+     * Also delivers every sender profile's events to this webhook, at the same URL and with the same signing
+     * secret, and lets each profile see the webhook and read the events about itself. Off by default: the
+     * organization's own events only. Only an organization's version 2 webhook can set it.
+     */
+    #[Optional('is_inheritable')]
+    public ?bool $isInheritable;
+
+    /**
+     * Delivery retries. Applies to version 1 only: Svix retries a version 2 webhook on its own schedule.
+     */
     #[Optional('retry_count')]
     public ?int $retryCount;
 
@@ -63,13 +76,24 @@ final class WebhookCreateParams implements BaseModel
 
     /**
      * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      */
     #[Optional('sender_profile', nullable: true)]
     public ?SenderProfile $senderProfile;
 
+    /**
+     * Delivery timeout. Applies to version 1 only.
+     */
     #[Optional('timeout_seconds')]
     public ?int $timeoutSeconds;
+
+    /**
+     * Who delivers the webhook: 2, the default, is delivered by Svix and signed with the
+     * webhook-id, webhook-timestamp and webhook-signature headers; 1 is the older
+     * delivery, signed with the X-Webhook-* headers, which will be retired.
+     */
+    #[Optional('webhook_version', nullable: true)]
+    public ?int $webhookVersion;
 
     #[Optional]
     public ?string $idempotencyKey;
@@ -96,10 +120,12 @@ final class WebhookCreateParams implements BaseModel
         ?string $endpointURL = null,
         ?array $eventFilters = null,
         ?array $eventTypes = null,
+        ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
         SenderProfile|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
+        ?int $webhookVersion = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
     ): self {
@@ -109,10 +135,12 @@ final class WebhookCreateParams implements BaseModel
         null !== $endpointURL && $self['endpointURL'] = $endpointURL;
         null !== $eventFilters && $self['eventFilters'] = $eventFilters;
         null !== $eventTypes && $self['eventTypes'] = $eventTypes;
+        null !== $isInheritable && $self['isInheritable'] = $isInheritable;
         null !== $retryCount && $self['retryCount'] = $retryCount;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $senderProfile && $self['senderProfile'] = $senderProfile;
         null !== $timeoutSeconds && $self['timeoutSeconds'] = $timeoutSeconds;
+        null !== $webhookVersion && $self['webhookVersion'] = $webhookVersion;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
@@ -157,6 +185,22 @@ final class WebhookCreateParams implements BaseModel
         return $self;
     }
 
+    /**
+     * Also delivers every sender profile's events to this webhook, at the same URL and with the same signing
+     * secret, and lets each profile see the webhook and read the events about itself. Off by default: the
+     * organization's own events only. Only an organization's version 2 webhook can set it.
+     */
+    public function withIsInheritable(bool $isInheritable): self
+    {
+        $self = clone $this;
+        $self['isInheritable'] = $isInheritable;
+
+        return $self;
+    }
+
+    /**
+     * Delivery retries. Applies to version 1 only: Svix retries a version 2 webhook on its own schedule.
+     */
     public function withRetryCount(int $retryCount): self
     {
         $self = clone $this;
@@ -179,7 +223,7 @@ final class WebhookCreateParams implements BaseModel
 
     /**
      * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
-     * and future profile. Responses never return it.
+     * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      *
      * @param SenderProfile|SenderProfileShape|null $senderProfile
      */
@@ -192,10 +236,26 @@ final class WebhookCreateParams implements BaseModel
         return $self;
     }
 
+    /**
+     * Delivery timeout. Applies to version 1 only.
+     */
     public function withTimeoutSeconds(int $timeoutSeconds): self
     {
         $self = clone $this;
         $self['timeoutSeconds'] = $timeoutSeconds;
+
+        return $self;
+    }
+
+    /**
+     * Who delivers the webhook: 2, the default, is delivered by Svix and signed with the
+     * webhook-id, webhook-timestamp and webhook-signature headers; 1 is the older
+     * delivery, signed with the X-Webhook-* headers, which will be retired.
+     */
+    public function withWebhookVersion(?int $webhookVersion): self
+    {
+        $self = clone $this;
+        $self['webhookVersion'] = $webhookVersion;
 
         return $self;
     }
