@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.41.0](https://github.com/sentdm/sent-dm-php/compare/v0.40.0...v0.41.0) (2026-10-28)
+
+
+### Features
+
+* **api:** add voice agents, the voice catalogue and agent_id ([2376192](https://github.com/sentdm/sent-dm-php/commit/2376192d6cd89a4d68b3b0f348742367521fa44d))
+* **api:** sync generated SDKs from the committed spec ([93d19ba](https://github.com/sentdm/sent-dm-php/commit/93d19ba08743079360f8bb920eab8eac62d8516b))
+* **api:** sync OpenAPI spec from production ([ec628f6](https://github.com/sentdm/sent-dm-php/commit/ec628f6c4b729a2fc44f3da8a1b87f5c5031663b))
+
 ## [0.40.0](https://github.com/sentdm/sent-dm-php/compare/v0.39.1...v0.40.0) (2026-10-23)
 
 
