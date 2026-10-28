@@ -6,7 +6,9 @@ namespace SentDm\Services;
 
 use SentDm\Client;
 use SentDm\ServiceContracts\VoiceContract;
+use SentDm\Services\Voice\AgentsService;
 use SentDm\Services\Voice\CallsService;
+use SentDm\Services\Voice\CatalogueService;
 use SentDm\Services\Voice\TokensService;
 
 final class VoiceService implements VoiceContract
@@ -27,6 +29,16 @@ final class VoiceService implements VoiceContract
     public TokensService $tokens;
 
     /**
+     * @api
+     */
+    public AgentsService $agents;
+
+    /**
+     * @api
+     */
+    public CatalogueService $catalogue;
+
+    /**
      * @internal
      */
     public function __construct(private Client $client)
@@ -34,5 +46,7 @@ final class VoiceService implements VoiceContract
         $this->raw = new VoiceRawService($client);
         $this->calls = new CallsService($client);
         $this->tokens = new TokensService($client);
+        $this->agents = new AgentsService($client);
+        $this->catalogue = new CatalogueService($client);
     }
 }
