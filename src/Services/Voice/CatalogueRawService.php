@@ -9,9 +9,9 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
-use SentDm\ServiceContracts\Voice\VoicesRawContract;
-use SentDm\Voice\Voices\APIResponseOfVoiceCatalogue;
-use SentDm\Voice\Voices\VoiceListParams;
+use SentDm\ServiceContracts\Voice\CatalogueRawContract;
+use SentDm\Voice\Catalogue\APIResponseOfVoiceCatalogue;
+use SentDm\Voice\Catalogue\CatalogueListParams;
 
 /**
  * Phone calls from the numbers you hold, driven by your own callback URL.
@@ -24,7 +24,7 @@ use SentDm\Voice\Voices\VoiceListParams;
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
-final class VoicesRawService implements VoicesRawContract
+final class CatalogueRawService implements CatalogueRawContract
 {
     // @phpstan-ignore-next-line
     /**
@@ -37,7 +37,7 @@ final class VoicesRawService implements VoicesRawContract
      *
      * The names a voice agent's `speech.voice` and `speech.language` accept, with the default marked. The list grows as voices are added; a name is never removed without notice.
      *
-     * @param array{xProfileID?: string}|VoiceListParams $params
+     * @param array{xProfileID?: string}|CatalogueListParams $params
      * @param RequestOpts|null $requestOptions
      *
      * @return BaseResponse<APIResponseOfVoiceCatalogue>
@@ -45,10 +45,10 @@ final class VoicesRawService implements VoicesRawContract
      * @throws APIException
      */
     public function list(
-        array|VoiceListParams $params,
+        array|CatalogueListParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse {
-        [$parsed, $options] = VoiceListParams::parseRequest(
+        [$parsed, $options] = CatalogueListParams::parseRequest(
             $params,
             $requestOptions,
         );

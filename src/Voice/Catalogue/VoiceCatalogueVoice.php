@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Voice\Voices;
+namespace SentDm\Voice\Catalogue;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;

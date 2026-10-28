@@ -8,8 +8,8 @@ use SentDm\Client;
 use SentDm\ServiceContracts\VoiceContract;
 use SentDm\Services\Voice\AgentsService;
 use SentDm\Services\Voice\CallsService;
+use SentDm\Services\Voice\CatalogueService;
 use SentDm\Services\Voice\TokensService;
-use SentDm\Services\Voice\VoicesService;
 
 final class VoiceService implements VoiceContract
 {
@@ -36,7 +36,7 @@ final class VoiceService implements VoiceContract
     /**
      * @api
      */
-    public VoicesService $voices;
+    public CatalogueService $catalogue;
 
     /**
      * @internal
@@ -47,6 +47,6 @@ final class VoiceService implements VoiceContract
         $this->calls = new CallsService($client);
         $this->tokens = new TokensService($client);
         $this->agents = new AgentsService($client);
-        $this->voices = new VoicesService($client);
+        $this->catalogue = new CatalogueService($client);
     }
 }

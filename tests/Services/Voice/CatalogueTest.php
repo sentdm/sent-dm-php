@@ -7,14 +7,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Voice\Voices\APIResponseOfVoiceCatalogue;
+use SentDm\Voice\Catalogue\APIResponseOfVoiceCatalogue;
 use Tests\UnsupportedMockTests;
 
 /**
  * @internal
  */
 #[CoversNothing]
-final class VoicesTest extends TestCase
+final class CatalogueTest extends TestCase
 {
     protected Client $client;
 
@@ -35,7 +35,7 @@ final class VoicesTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->voice->voices->list();
+        $result = $this->client->voice->catalogue->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfVoiceCatalogue::class, $result);

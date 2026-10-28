@@ -8,8 +8,8 @@ use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
-use SentDm\ServiceContracts\Voice\VoicesContract;
-use SentDm\Voice\Voices\APIResponseOfVoiceCatalogue;
+use SentDm\ServiceContracts\Voice\CatalogueContract;
+use SentDm\Voice\Catalogue\APIResponseOfVoiceCatalogue;
 
 /**
  * Phone calls from the numbers you hold, driven by your own callback URL.
@@ -22,19 +22,19 @@ use SentDm\Voice\Voices\APIResponseOfVoiceCatalogue;
  *
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
-final class VoicesService implements VoicesContract
+final class CatalogueService implements CatalogueContract
 {
     /**
      * @api
      */
-    public VoicesRawService $raw;
+    public CatalogueRawService $raw;
 
     /**
      * @internal
      */
     public function __construct(private Client $client)
     {
-        $this->raw = new VoicesRawService($client);
+        $this->raw = new CatalogueRawService($client);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Voice\Voices;
+namespace SentDm\Voice\Catalogue;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -13,7 +13,7 @@ use SentDm\Webhooks\ErrorDetail;
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type VoiceCatalogueShape from \SentDm\Voice\Voices\VoiceCatalogue
+ * @phpstan-import-type VoiceCatalogueShape from \SentDm\Voice\Catalogue\VoiceCatalogue
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Voice\Voices;
+namespace SentDm\Voice\Catalogue;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -12,13 +12,13 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * The names a voice agent's `speech.voice` and `speech.language` accept, with the default marked. The list grows as voices are added; a name is never removed without notice.
  *
- * @see SentDm\Services\Voice\VoicesService::list()
+ * @see SentDm\Services\Voice\CatalogueService::list()
  *
- * @phpstan-type VoiceListParamsShape = array{xProfileID?: string|null}
+ * @phpstan-type CatalogueListParamsShape = array{xProfileID?: string|null}
  */
-final class VoiceListParams implements BaseModel
+final class CatalogueListParams implements BaseModel
 {
-    /** @use SdkModel<VoiceListParamsShape> */
+    /** @use SdkModel<CatalogueListParamsShape> */
     use SdkModel;
     use SdkParams;
 

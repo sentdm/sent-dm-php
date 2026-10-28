@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Voice\Voices;
+namespace SentDm\Voice\Catalogue;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -12,7 +12,7 @@ use SentDm\Core\Contracts\BaseModel;
  * The voices and languages a text-session agent may name in its speech settings: what
  * GET /v3/voice/voices and the admin GET /voice/voices answer, in one shape.
  *
- * @phpstan-import-type VoiceCatalogueVoiceShape from \SentDm\Voice\Voices\VoiceCatalogueVoice
+ * @phpstan-import-type VoiceCatalogueVoiceShape from \SentDm\Voice\Catalogue\VoiceCatalogueVoice
  *
  * @phpstan-type VoiceCatalogueShape = array{
  *   languages?: list<string>|null,

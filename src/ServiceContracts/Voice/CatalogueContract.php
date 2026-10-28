@@ -4,29 +4,25 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts\Voice;
 
-use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
-use SentDm\Voice\Voices\APIResponseOfVoiceCatalogue;
-use SentDm\Voice\Voices\VoiceListParams;
+use SentDm\Voice\Catalogue\APIResponseOfVoiceCatalogue;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
-interface VoicesRawContract
+interface CatalogueContract
 {
     /**
      * @api
      *
-     * @param array<string,mixed>|VoiceListParams $params
+     * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
-     *
-     * @return BaseResponse<APIResponseOfVoiceCatalogue>
      *
      * @throws APIException
      */
     public function list(
-        array|VoiceListParams $params,
+        ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): BaseResponse;
+    ): APIResponseOfVoiceCatalogue;
 }
