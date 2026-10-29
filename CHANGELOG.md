@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.42.0](https://github.com/sentdm/sent-dm-php/compare/v0.41.0...v0.42.0) (2026-10-29)
+
+
+### Features
+
+* **api:** sync generated SDKs from the committed spec ([20cf8b3](https://github.com/sentdm/sent-dm-php/commit/20cf8b3d63522d5e6d5ea94370e9981923c3a4ef))
+* **api:** sync generated SDKs from the committed spec ([4b21822](https://github.com/sentdm/sent-dm-php/commit/4b218224d839df8d17adb5ea6d62a8e2febec5b8))
+
+
+### Chores
+
+* **repo:** add the contributor contract and review rubric ([223a592](https://github.com/sentdm/sent-dm-php/commit/223a592aac8f5136028c3b0bd458ff11942a0a17))
+* **repo:** add the contributor contract and the review workflow ([1c5e7ca](https://github.com/sentdm/sent-dm-php/commit/1c5e7ca3c9651e7ff93cb5acd70fa1f5c7985d4e))
+* **repo:** rely on the managed Claude Code Review, drop the workflow ([2d86e42](https://github.com/sentdm/sent-dm-php/commit/2d86e4269e8d989df8746398336439e095deca47))
+* **repo:** restore the contributor contract and review rubric ([3e2b58a](https://github.com/sentdm/sent-dm-php/commit/3e2b58a851219f371d4ed1c448c5a5f7b3756831))
+* **repo:** restore the contributor contract and review rubric ([a4064d7](https://github.com/sentdm/sent-dm-php/commit/a4064d7d8110a24e7c939b808f582213796ed251))
+
 ## [0.41.0](https://github.com/sentdm/sent-dm-php/compare/v0.40.0...v0.41.0) (2026-10-28)
 
 
