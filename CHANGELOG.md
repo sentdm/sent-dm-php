@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.1](https://github.com/sentdm/sent-dm-php/compare/v0.43.0...v0.43.1) (2026-10-30)
+
+
+### Documentation
+
+* **api:** describe the default body type on template bodies ([6a67292](https://github.com/sentdm/sent-dm-php/commit/6a67292922af2f9505933ab924357796149e531c))
+
 ## [0.43.0](https://github.com/sentdm/sent-dm-php/compare/v0.42.0...v0.43.0) (2026-10-30)
 
 
