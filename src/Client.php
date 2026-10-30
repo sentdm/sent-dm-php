@@ -14,7 +14,6 @@ use SentDm\Services\ContactsService;
 use SentDm\Services\ConversationsService;
 use SentDm\Services\MeService;
 use SentDm\Services\MessagesService;
-use SentDm\Services\NumbersService;
 use SentDm\Services\ProfilesService;
 use SentDm\Services\TemplatesService;
 use SentDm\Services\UsersService;
@@ -48,11 +47,6 @@ class Client extends BaseClient
      * @api
      */
     public ProfilesService $profiles;
-
-    /**
-     * @api
-     */
-    public NumbersService $numbers;
 
     /**
      * @api
@@ -144,7 +138,6 @@ class Client extends BaseClient
         $this->users = new UsersService($this);
         $this->templates = new TemplatesService($this);
         $this->profiles = new ProfilesService($this);
-        $this->numbers = new NumbersService($this);
         $this->messages = new MessagesService($this);
         $this->contacts = new ContactsService($this);
         $this->conversations = new ConversationsService($this);
