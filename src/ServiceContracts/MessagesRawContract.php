@@ -8,6 +8,7 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageResendParams;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
@@ -65,6 +66,23 @@ interface MessagesRawContract
      */
     public function send(
         array|MessageSendParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse;
+
+    /**
+     * @api
+     *
+     * @param string $id Message ID
+     * @param array<string,mixed>|MessageResendParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<MessageSendResponse>
+     *
+     * @throws APIException
+     */
+    public function resend(
+        string $id,
+        array|MessageResendParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 }
