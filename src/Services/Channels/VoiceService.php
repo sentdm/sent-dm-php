@@ -12,6 +12,7 @@ use SentDm\Channels\Voice\APIResponseOfVoiceSecret;
 use SentDm\Channels\Voice\VoiceUpdateParams\Status;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Core\Omit;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Channels\VoiceContract;
@@ -181,8 +182,9 @@ final class VoiceService implements VoiceContract
      * With `sandbox: true` nothing is written: the request is validated against the stored number and the number is reported with `200` as it would read after the change.
      *
      * @param string $number Path param: The number in E.164 format with the plus sign URL-encoded, e.g. %2B12125550100
-     * @param string|null $agentID Body param: One of your voice agents, such as agent_9f2ab000-0000-4000-8000-000000000001, to answer calls to
-     * the number, or null to unbind it so the callback URL answers them again. The agent wins over
+     * @param string|null|Omit $agentID Body param: One of your voice agents, such as agent_9f2ab000-0000-4000-8000-000000000001, to answer calls to
+     * the number, or null to unbind it so the callback URL answers them again. Leave this
+     * parameter out entirely to leave the current binding alone. The agent wins over
      * callback_url for calls to the number; calls your app places from it still follow your app.
      * @param string|null $callbackURL Body param: A new callback URL for the number, active or not: an absolute HTTP or HTTPS URL on a public host,
      * where Sent asks what to do with each call. The signing secret is kept.
@@ -201,7 +203,7 @@ final class VoiceService implements VoiceContract
      */
     public function update(
         string $number,
-        ?string $agentID = null,
+        string|null|Omit $agentID = new Omit,
         ?string $callbackURL = null,
         ?bool $defaultForAppCalls = null,
         ?bool $sandbox = null,
@@ -210,9 +212,9 @@ final class VoiceService implements VoiceContract
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
     ): APIResponseOfVoiceNumber {
+        /** @var array<string, mixed> $params */
         $params = Util::removeNulls(
             [
-                'agentID' => $agentID,
                 'callbackURL' => $callbackURL,
                 'defaultForAppCalls' => $defaultForAppCalls,
                 'sandbox' => $sandbox,
@@ -221,6 +223,12 @@ final class VoiceService implements VoiceContract
                 'xProfileID' => $xProfileID,
             ],
         );
+
+        // agent_id carries meaning as an explicit null (unbind), so it skips removeNulls()
+        // entirely instead of being stripped alongside every other unset field above.
+        if (!($agentID instanceof Omit)) {
+            $params['agentID'] = $agentID;
+        }
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->update($number, params: $params, requestOptions: $requestOptions);
