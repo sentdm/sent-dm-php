@@ -263,7 +263,6 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-
         // @phpstan-ignore-next-line return.type
         return $this->client->request(
             method: 'delete',
