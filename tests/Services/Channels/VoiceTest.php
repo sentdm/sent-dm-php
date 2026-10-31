@@ -2,6 +2,8 @@
 
 namespace Tests\Services\Channels;
 
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Mock\Client as MockTransporter;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -69,6 +71,63 @@ final class VoiceTest extends TestCase
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfVoiceNumber::class, $result);
+    }
+
+    #[Test]
+    public function testUpdateSendsExplicitNullToUnbindAgent(): void
+    {
+        $transporter = new MockTransporter;
+        $transporter->setDefaultResponse(
+            Psr17FactoryDiscovery::findResponseFactory()
+                ->createResponse()
+                ->withStatus(200)
+                ->withHeader('Content-Type', 'application/json')
+                ->withBody(Psr17FactoryDiscovery::findStreamFactory()->createStream(
+                    json_encode(['data' => []], flags: Util::JSON_ENCODE_FLAGS) ?: ''
+                ))
+        );
+
+        $client = new Client(
+            baseUrl: 'http://localhost',
+            apiKey: 'My API Key',
+            requestOptions: ['transporter' => $transporter],
+        );
+
+        $client->channels->voice->update('+12125550100', agentID: null);
+
+        $this->assertNotFalse($requested = $transporter->getRequests()[0] ?? false);
+        /** @var array<string, mixed> $sent */
+        $sent = json_decode((string) $requested->getBody(), true);
+        $this->assertArrayHasKey('agent_id', $sent);
+        $this->assertNull($sent['agent_id']);
+    }
+
+    #[Test]
+    public function testUpdateOmitsAgentIdWhenNotPassed(): void
+    {
+        $transporter = new MockTransporter;
+        $transporter->setDefaultResponse(
+            Psr17FactoryDiscovery::findResponseFactory()
+                ->createResponse()
+                ->withStatus(200)
+                ->withHeader('Content-Type', 'application/json')
+                ->withBody(Psr17FactoryDiscovery::findStreamFactory()->createStream(
+                    json_encode(['data' => []], flags: Util::JSON_ENCODE_FLAGS) ?: ''
+                ))
+        );
+
+        $client = new Client(
+            baseUrl: 'http://localhost',
+            apiKey: 'My API Key',
+            requestOptions: ['transporter' => $transporter],
+        );
+
+        $client->channels->voice->update('+12125550100', status: 'ACTIVE');
+
+        $this->assertNotFalse($requested = $transporter->getRequests()[0] ?? false);
+        /** @var array<string, mixed> $sent */
+        $sent = json_decode((string) $requested->getBody(), true);
+        $this->assertArrayNotHasKey('agent_id', $sent);
     }
 
     #[Test]
