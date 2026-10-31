@@ -146,6 +146,13 @@ abstract class BaseClient
             ...$idempotencyHeaders,
         ];
 
+        // Generated methods always pass `body` for operations that define a request
+        // body, so only elide the content-type header when the operation has no body
+        // at all, not when an optional body param was omitted.
+        if (null === $body && !array_key_exists('Content-Type', $headers)) {
+            unset($mergedHeaders['Content-Type']);
+        }
+
         $req = ['method' => strtoupper($method), 'path' => $uri, 'query' => $mergedQuery, 'headers' => $mergedHeaders, 'body' => $body];
 
         return [$req, $options];

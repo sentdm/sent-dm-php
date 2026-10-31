@@ -63,7 +63,7 @@ class ClientTest extends TestCase
         $this->assertSame('', (string) $requested->getBody());
     }
 
-    public function testBodylessGetKeepsDefaultContentType(): void
+    public function testBodylessGetOmitsContentType(): void
     {
         $transporter = new Client;
         $mockRsp = Psr17FactoryDiscovery::findResponseFactory()
@@ -84,7 +84,7 @@ class ClientTest extends TestCase
 
         $this->assertNotFalse($requested = $transporter->getRequests()[0] ?? false);
         $this->assertSame('GET', $requested->getMethod());
-        $this->assertSame('application/json', $requested->getHeaderLine('content-type'));
+        $this->assertSame('', $requested->getHeaderLine('content-type'));
     }
 
     public function testDeleteWithExplicitBodyKeepsContentType(): void
@@ -106,5 +106,28 @@ class ClientTest extends TestCase
         $this->assertSame('DELETE', $requested->getMethod());
         $this->assertSame('application/json', $requested->getHeaderLine('content-type'));
         $this->assertSame('{}', (string) $requested->getBody());
+    }
+
+    public function testBodylessRequestKeepsAnExplicitContentTypeOverride(): void
+    {
+        $transporter = new Client;
+        $transporter->setDefaultResponse(
+            Psr17FactoryDiscovery::findResponseFactory()->createResponse()->withStatus(204)
+        );
+
+        $client = new \SentDm\Client(
+            baseUrl: 'http://localhost',
+            apiKey: 'My API Key',
+            requestOptions: ['transporter' => $transporter],
+        );
+
+        $client->request(
+            method: 'delete',
+            path: 'v3/webhooks/d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
+            headers: ['Content-Type' => 'application/json'],
+        );
+
+        $this->assertNotFalse($requested = $transporter->getRequests()[0] ?? false);
+        $this->assertSame('application/json', $requested->getHeaderLine('content-type'));
     }
 }
