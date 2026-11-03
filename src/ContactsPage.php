@@ -66,6 +66,17 @@ final class ContactsPage implements BaseModel, BasePage
             // @phpstan-ignore-next-line
             $this->data->offsetSet('contacts', value: $parsed);
         }
+
+        // Same second pass for the pagination object: hydration above runs without
+        // name translation, so has_more would never reach hasMore.
+        // @phpstan-ignore-next-line offsetAccess.nonOffsetAccessible
+        if (is_array($pagination = $this->parsedBody['data']['pagination'] ?? null)) {
+            // @phpstan-ignore-next-line
+            $this->data->offsetSet(
+                'pagination',
+                value: Conversion::coerce(Data\Pagination::class, value: $pagination)
+            );
+        }
     }
 
     /** @return list<TItem> */
@@ -98,10 +109,12 @@ final class ContactsPage implements BaseModel, BasePage
             return null;
         }
 
-        $nextRequest = array_merge_recursive(
-            $this->requestInfo,
-            ['query' => $curr + 1]
-        );
+        $nextRequest = $this->requestInfo;
+        // requestInfo['path'] is the resolved URI of the first request, query string
+        // included; joinUri() re-parses that query and merges it with the array
+        // below, so the stale page would survive next to the new one.
+        $nextRequest['path'] = explode('?', (string) $nextRequest['path'], 2)[0];
+        $nextRequest['query']['page'] = $curr + 1;
 
         // @phpstan-ignore-next-line return.type
         return [$nextRequest, $this->options];
