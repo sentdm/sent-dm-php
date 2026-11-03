@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Messages\MessageResendResponse\Data;
+namespace SentDm\Messages\MessageResendResponseData;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
