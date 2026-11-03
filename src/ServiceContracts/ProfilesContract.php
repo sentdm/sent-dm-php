@@ -259,5 +259,5 @@ interface ProfilesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ProfileCompleteResponse;
+    ): ?ProfileCompleteResponse;
 }

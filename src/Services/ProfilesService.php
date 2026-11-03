@@ -408,7 +408,7 @@ final class ProfilesService implements ProfilesContract
      *
      * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
-     * Final step in the profile compliance workflow. Validates all prerequisites (KYC, brand, campaigns, required documents), connects the profile to the SMS and WhatsApp channels, and marks it onboarded. Prerequisites are always validated first: if any fail the call returns 400 naming every unmet one, and nothing is started. If they pass and the profile is already onboarded, the call returns 200 and does nothing. Otherwise it returns 202 and calls the provided webhook URL when background processing finishes.
+     * Final step in the profile compliance workflow. Validates all prerequisites (KYC, brand, campaigns, required documents), connects the profile to the SMS and WhatsApp channels, and marks it onboarded. Prerequisites are always validated first: if any fail the call returns 400 naming every unmet one, and nothing is started. If they pass and the profile is already onboarded, the call returns 200 and does nothing. Otherwise it returns 202 and calls the provided webhook URL when background processing finishes. The live API has also been observed answering with a bare 204 instead, not something this operation's own spec documents; this method returns null in that case rather than throwing.
      *
      * Callable with the organization's API key or the profile's own key. The key's user must be an admin or owner of the profile, or of the organization it belongs to.
      *
@@ -445,7 +445,7 @@ final class ProfilesService implements ProfilesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ProfileCompleteResponse {
+    ): ?ProfileCompleteResponse {
         $params = Util::removeNulls(
             [
                 'webHookURL' => $webHookURL,
@@ -457,6 +457,13 @@ final class ProfilesService implements ProfilesContract
 
         // @phpstan-ignore-next-line argument.type
         $response = $this->raw->complete($profileID, params: $params, requestOptions: $requestOptions);
+
+        // A 204 carries no body to parse, same as every other endpoint that can answer with
+        // no content; without this check `parse()` hands back null and PHP throws trying to
+        // return it as the non-nullable response below.
+        if (204 === $response->getStatusCode()) {
+            return null;
+        }
 
         return $response->parse();
     }
