@@ -12,7 +12,6 @@ use SentDm\Core\Conversion;
 use SentDm\Core\Conversion\Contracts\Converter;
 use SentDm\Core\Conversion\Contracts\ConverterSource;
 use SentDm\Core\Conversion\ListOf;
-use SentDm\Core\Util;
 use SentDm\TemplatesPage\Data;
 
 /**
@@ -58,8 +57,10 @@ final class TemplatesPage implements BaseModel, BasePage
             return;
         }
 
+        // Translate wire names before __unserialize, which expects PHP property names.
+        $parsed = Conversion::coerce(self::class, value: $this->parsedBody);
         // @phpstan-ignore-next-line argument.type
-        self::__unserialize($this->parsedBody);
+        self::__unserialize($parsed instanceof self ? $parsed->toProperties() : $this->parsedBody);
 
         if (is_array($items = $this->data?->offsetGet('templates'))) {
             $parsed = Conversion::coerce(new ListOf($convert), value: $items);
@@ -92,16 +93,16 @@ final class TemplatesPage implements BaseModel, BasePage
     public function nextRequest(): ?array
     {
         /** @var int */
-        $curr = Util::dig($this->requestInfo, ['query', 'page']) ?? 1;
+        $curr = ((array) $this->requestInfo['query'])['page'] ?? 1;
         if (!($this
             ->data->pagination->hasMore ?? null) || !count($this->getItems())) {
             return null;
         }
 
-        $nextRequest = array_merge_recursive(
-            $this->requestInfo,
-            ['query' => $curr + 1]
-        );
+        $nextRequest = $this->requestInfo;
+        // The resolved path already contains the old query; buildRequest merges it again.
+        $nextRequest['path'] = explode('?', $nextRequest['path'], 2)[0];
+        $nextRequest['query']['page'] = $curr + 1;
 
         // @phpstan-ignore-next-line return.type
         return [$nextRequest, $this->options];
