@@ -36,33 +36,79 @@ class PageNavigationTest extends TestCase
         $second = $transporter->getRequests()[1] ?? null;
         $this->assertNotNull($second);
         parse_str($second->getUri()->getQuery(), $query);
-        $this->assertSame('2', $query['page'] ?? null);
-        $this->assertSame('1', $query['pageSize'] ?? null);
+        $this->assertSame(['page' => '2', 'page_size' => '1'], $query, 'second request: '.$second->getUri());
         $this->assertStringNotContainsString('?', $second->getUri()->getPath());
     }
 
-    public function testEveryPageHydratesHasMore(): void
+    public function testTemplatesPageHydratesHasMore(): void
     {
-        $cases = [
-            ['templates', fn ($client) => $client->templates->list()],
-            ['webhooks', fn ($client) => $client->webhooks->list()],
-            ['events', fn ($client) => $client->webhooks->listEvents('wh_123')],
-            ['messages', fn ($client) => $client->conversations->list()],
-            ['calls', fn ($client) => $client->voice->calls->list()],
-            ['agents', fn ($client) => $client->voice->agents->list()],
-        ];
+        foreach ([true, false] as $hasMore) {
+            $page = $this->client($this->transporter(['templates' => [['id' => 'tpl_1']]], $hasMore))->templates->list();
 
-        foreach ($cases as [$items, $list]) {
-            foreach ([true, false] as $hasMore) {
-                $transporter = new Client;
-                $transporter->setDefaultResponse($this->page([$items => [['id' => 'item_1']]], hasMore: $hasMore));
-
-                $page = $list($this->client($transporter));
-
-                $this->assertSame($hasMore, $page->data?->pagination?->hasMore, "{$items}: hasMore");
-                $this->assertSame($hasMore, $page->hasNextPage(), "{$items}: hasNextPage()");
-            }
+            $this->assertSame($hasMore, $page->data?->pagination?->hasMore);
+            $this->assertSame($hasMore, $page->hasNextPage());
         }
+    }
+
+    public function testWebhooksPageHydratesHasMore(): void
+    {
+        foreach ([true, false] as $hasMore) {
+            $page = $this->client($this->transporter(['webhooks' => [['id' => 'wh_1']]], $hasMore))->webhooks->list();
+
+            $this->assertSame($hasMore, $page->data?->pagination?->hasMore);
+            $this->assertSame($hasMore, $page->hasNextPage());
+        }
+    }
+
+    public function testWebhookEventsPageHydratesHasMore(): void
+    {
+        foreach ([true, false] as $hasMore) {
+            $page = $this->client($this->transporter(['events' => [['id' => 'evt_1']]], $hasMore))->webhooks->listEvents('wh_123');
+
+            $this->assertSame($hasMore, $page->data?->pagination?->hasMore);
+            $this->assertSame($hasMore, $page->hasNextPage());
+        }
+    }
+
+    public function testConversationsPageHydratesHasMore(): void
+    {
+        foreach ([true, false] as $hasMore) {
+            $page = $this->client($this->transporter(['messages' => [['id' => 'msg_1']]], $hasMore))->conversations->list();
+
+            $this->assertSame($hasMore, $page->data?->pagination?->hasMore);
+            $this->assertSame($hasMore, $page->hasNextPage());
+        }
+    }
+
+    public function testCallsPageHydratesHasMore(): void
+    {
+        foreach ([true, false] as $hasMore) {
+            $page = $this->client($this->transporter(['calls' => [['id' => 'call_1']]], $hasMore))->voice->calls->list();
+
+            $this->assertSame($hasMore, $page->data?->pagination?->hasMore);
+            $this->assertSame($hasMore, $page->hasNextPage());
+        }
+    }
+
+    public function testVoiceAgentsPageHydratesHasMore(): void
+    {
+        foreach ([true, false] as $hasMore) {
+            $page = $this->client($this->transporter(['agents' => [['id' => 'agent_1']]], $hasMore))->voice->agents->list();
+
+            $this->assertSame($hasMore, $page->data?->pagination?->hasMore);
+            $this->assertSame($hasMore, $page->hasNextPage());
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function transporter(array $data, bool $hasMore): Client
+    {
+        $transporter = new Client;
+        $transporter->setDefaultResponse($this->page($data, $hasMore));
+
+        return $transporter;
     }
 
     /**
