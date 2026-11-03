@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.44.0](https://github.com/sentdm/sent-dm-php/compare/v0.43.2...v0.44.0) (2026-11-03)
+
+
+### Features
+
+* **api:** add messages.resend to resend a message on its id ([87bda84](https://github.com/sentdm/sent-dm-php/commit/87bda8406e5193576cdf4c8f030285cf6aba484a))
+
 ## [0.43.2](https://github.com/sentdm/sent-dm-php/compare/v0.43.1...v0.43.2) (2026-11-03)
 
 
