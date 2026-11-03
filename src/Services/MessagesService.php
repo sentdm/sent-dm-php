@@ -48,6 +48,51 @@ final class MessagesService implements MessagesContract
     /**
      * @api
      *
+     * Resends a message you already sent, on the same message id, without rebuilding the request. The typical use is recovering a BLOCKED message — for example one refused for insufficient balance — after the account has been topped up.
+     *
+     * **A resend bills again.** Each accepted resend is a new delivery attempt and records a new charge against the same message id; a client that resends on every failure is charged on every loop.
+     *
+     * **Every policy runs again.** The resend goes back through the full send pipeline — consent, balance, KYC and channel quota, template approval, quiet hours and channel health — so it can land on BLOCKED, FILTERED or SCHEDULED again rather than being sent, exactly as a fresh send would. Status webhooks (message.sent, message.blocked, message.filtered, message.failed) fire again for the same message id, so consumers keyed on the id will see repeated transitions.
+     *
+     * **What can be resent.** A message in a terminal state — DELIVERED, FAILED, READ or BLOCKED — or one stuck at SENT for more than 15 minutes. A FILTERED message can never be resent: the recipient opted out or a routing rule refused the send. A message still in flight (QUEUED, PROCESSED, ROUTED), held for quiet hours (SCHEDULED), or SENT less than 15 minutes ago returns 409. Two concurrent resends of one id are serialised: one is accepted, the other gets 409.
+     *
+     * The resend keeps the channel the message was originally requested on; the channel cannot be changed on a resend — send a new message instead. `Idempotency-Key` is honoured, so a retried request replays the first accepted response instead of resending twice.
+     *
+     * The response has the same shape as `POST /v3/messages`: `recipients` has a single entry whose `message_id` is the id you resent.
+     *
+     * @param string $id Path param: Message ID
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
+     * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
+     * @param RequestOpts|null $requestOptions
+     *
+     * @throws APIException
+     */
+    public function resend(
+        string $id,
+        ?bool $sandbox = null,
+        ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
+    ): MessageSendResponse {
+        $params = Util::removeNulls(
+            [
+                'sandbox' => $sandbox,
+                'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
+            ],
+        );
+
+        // @phpstan-ignore-next-line argument.type
+        $response = $this->raw->resend($id, params: $params, requestOptions: $requestOptions);
+
+        return $response->parse();
+    }
+
+    /**
+     * @api
+     *
      * Retrieves the activity log for a specific message. Activities track the message lifecycle including acceptance, processing, sending, delivery, and any errors. A SCHEDULED entry carries scheduled_at, the release instant in UTC as it stood at that moment. Other entries have no scheduled_at key.
      *
      * @param string $id Message ID from route parameter
