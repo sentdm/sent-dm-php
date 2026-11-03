@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.43.2](https://github.com/sentdm/sent-dm-php/compare/v0.43.1...v0.43.2) (2026-11-03)
+
+
+### Bug Fixes
+
+* **api:** let channels.voice update() send an explicit null agent_id ([17d91b7](https://github.com/sentdm/sent-dm-php/commit/17d91b727cb1211e1aa6645cb998df03d6f8dc4d))
+* **api:** let channels.voice update() send an explicit null agent_id ([d932798](https://github.com/sentdm/sent-dm-php/commit/d9327985496081daf19b7a7a7542927a69bdcd30))
+* **client:** drop content-type header on bodyless delete requests ([89036c8](https://github.com/sentdm/sent-dm-php/commit/89036c88d9753025d009963d09b81e76ec375b97))
+* **client:** drop content-type on any bodyless request, not just delete ([502398c](https://github.com/sentdm/sent-dm-php/commit/502398c9873bce3721b6e89eb256bf52f61e35ed))
+* **client:** drop content-type on any bodyless request, not just delete ([f6daf50](https://github.com/sentdm/sent-dm-php/commit/f6daf50879b96c48036873dca3fde61f0401aeef))
+
+## [0.43.1](https://github.com/sentdm/sent-dm-php/compare/v0.43.0...v0.43.1) (2026-10-30)
+
+
+### Documentation
+
+* **api:** describe the default body type on template bodies ([6a67292](https://github.com/sentdm/sent-dm-php/commit/6a67292922af2f9505933ab924357796149e531c))
+
 ## [0.43.0](https://github.com/sentdm/sent-dm-php/compare/v0.42.0...v0.43.0) (2026-10-30)
 
 
