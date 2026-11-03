@@ -9,7 +9,6 @@ use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
-use SentDm\Messages\MessageResendResponse;
 use SentDm\Messages\MessageSendResponse;
 use Tests\UnsupportedMockTests;
 
@@ -43,7 +42,7 @@ final class MessagesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageResendResponse::class, $result);
+        $this->assertInstanceOf(MessageSendResponse::class, $result);
     }
 
     #[Test]

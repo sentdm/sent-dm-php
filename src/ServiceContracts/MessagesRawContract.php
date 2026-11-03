@@ -9,7 +9,6 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
 use SentDm\Messages\MessageResendParams;
-use SentDm\Messages\MessageResendResponse;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
@@ -28,7 +27,7 @@ interface MessagesRawContract
      * @param array<string,mixed>|MessageResendParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageResendResponse>
+     * @return BaseResponse<MessageSendResponse>
      *
      * @throws APIException
      */

@@ -7,7 +7,6 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
-use SentDm\Messages\MessageResendResponse;
 use SentDm\Messages\MessageSendParams\Channel;
 use SentDm\Messages\MessageSendParams\Template;
 use SentDm\Messages\MessageSendResponse;
@@ -38,7 +37,7 @@ interface MessagesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): MessageResendResponse;
+    ): MessageSendResponse;
 
     /**
      * @api

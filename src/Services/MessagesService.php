@@ -9,7 +9,6 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
-use SentDm\Messages\MessageResendResponse;
 use SentDm\Messages\MessageSendParams\Channel;
 use SentDm\Messages\MessageSendParams\Template;
 use SentDm\Messages\MessageSendResponse;
@@ -76,7 +75,7 @@ final class MessagesService implements MessagesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): MessageResendResponse {
+    ): MessageSendResponse {
         $params = Util::removeNulls(
             [
                 'sandbox' => $sandbox,

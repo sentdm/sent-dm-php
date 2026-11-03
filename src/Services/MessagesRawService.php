@@ -11,7 +11,6 @@ use SentDm\Core\Util;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
 use SentDm\Messages\MessageResendParams;
-use SentDm\Messages\MessageResendResponse;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
@@ -65,7 +64,7 @@ final class MessagesRawService implements MessagesRawContract
      * }|MessageResendParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageResendResponse>
+     * @return BaseResponse<MessageSendResponse>
      *
      * @throws APIException
      */
@@ -95,7 +94,7 @@ final class MessagesRawService implements MessagesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: MessageResendResponse::class,
+            convert: MessageSendResponse::class,
         );
     }
 
