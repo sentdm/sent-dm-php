@@ -14,6 +14,7 @@ use SentDm\Core\Conversion\Contracts\Converter;
 use SentDm\Core\Conversion\Contracts\ConverterSource;
 use SentDm\Core\Conversion\ListOf;
 use SentDm\Core\Util;
+use SentDm\Webhooks\PaginationMeta;
 
 /**
  * @phpstan-type ContactsPageShape = array{data?: Data|null}
@@ -66,6 +67,15 @@ final class ContactsPage implements BaseModel, BasePage
             // @phpstan-ignore-next-line
             $this->data->offsetSet('contacts', value: $parsed);
         }
+
+        // @phpstan-ignore-next-line offsetAccess.nonOffsetAccessible
+        if (is_array($pagination = $this->parsedBody['data']['pagination'] ?? null)) {
+            // @phpstan-ignore-next-line
+            $this->data->offsetSet(
+                'pagination',
+                value: Conversion::coerce(PaginationMeta::class, value: $pagination)
+            );
+        }
     }
 
     /** @return list<TItem> */
@@ -98,10 +108,13 @@ final class ContactsPage implements BaseModel, BasePage
             return null;
         }
 
-        $nextRequest = array_merge_recursive(
-            $this->requestInfo,
-            ['query' => $curr + 1]
-        );
+        $nextRequest = $this->requestInfo;
+        // requestInfo['path'] is the fully resolved URI from the first request, query
+        // string and all. joinUri() re-parses that embedded query and merges it with
+        // the query array below, so the stale page survives alongside the new one
+        // unless it's stripped here first.
+        $nextRequest['path'] = explode('?', (string) $nextRequest['path'], 2)[0];
+        $nextRequest['query']['page'] = $curr + 1;
 
         // @phpstan-ignore-next-line return.type
         return [$nextRequest, $this->options];

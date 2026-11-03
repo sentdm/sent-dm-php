@@ -7,13 +7,13 @@ namespace SentDm\WebhooksPage;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\WebhooksPage\Data\Pagination;
+use SentDm\Webhooks\PaginationMeta;
 
 /**
- * @phpstan-import-type PaginationShape from \SentDm\WebhooksPage\Data\Pagination
+ * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  *
  * @phpstan-type DataShape = array{
- *   pagination?: null|Pagination|PaginationShape, webhooks?: list<mixed>|null
+ *   pagination?: null|PaginationMeta|PaginationMetaShape, webhooks?: list<mixed>|null
  * }
  */
 final class Data implements BaseModel
@@ -21,8 +21,11 @@ final class Data implements BaseModel
     /** @use SdkModel<DataShape> */
     use SdkModel;
 
+    /**
+     * Pagination metadata for list responses.
+     */
     #[Optional]
-    public ?Pagination $pagination;
+    public ?PaginationMeta $pagination;
 
     /** @var list<mixed>|null $webhooks */
     #[Optional(list: 'mixed')]
@@ -38,11 +41,11 @@ final class Data implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Pagination|PaginationShape|null $pagination
+     * @param PaginationMeta|PaginationMetaShape|null $pagination
      * @param list<mixed>|null $webhooks
      */
     public static function with(
-        Pagination|array|null $pagination = null,
+        PaginationMeta|array|null $pagination = null,
         ?array $webhooks = null
     ): self {
         $self = new self;
@@ -54,9 +57,11 @@ final class Data implements BaseModel
     }
 
     /**
-     * @param Pagination|PaginationShape $pagination
+     * Pagination metadata for list responses.
+     *
+     * @param PaginationMeta|PaginationMetaShape $pagination
      */
-    public function withPagination(Pagination|array $pagination): self
+    public function withPagination(PaginationMeta|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;

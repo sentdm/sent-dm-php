@@ -7,13 +7,13 @@ namespace SentDm\WebhookEventsPage;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\WebhookEventsPage\Data\Pagination;
+use SentDm\Webhooks\PaginationMeta;
 
 /**
- * @phpstan-import-type PaginationShape from \SentDm\WebhookEventsPage\Data\Pagination
+ * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  *
  * @phpstan-type DataShape = array{
- *   events?: list<mixed>|null, pagination?: null|Pagination|PaginationShape
+ *   events?: list<mixed>|null, pagination?: null|PaginationMeta|PaginationMetaShape
  * }
  */
 final class Data implements BaseModel
@@ -25,8 +25,11 @@ final class Data implements BaseModel
     #[Optional(list: 'mixed')]
     public ?array $events;
 
+    /**
+     * Pagination metadata for list responses.
+     */
     #[Optional]
-    public ?Pagination $pagination;
+    public ?PaginationMeta $pagination;
 
     public function __construct()
     {
@@ -39,11 +42,11 @@ final class Data implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param list<mixed>|null $events
-     * @param Pagination|PaginationShape|null $pagination
+     * @param PaginationMeta|PaginationMetaShape|null $pagination
      */
     public static function with(
         ?array $events = null,
-        Pagination|array|null $pagination = null
+        PaginationMeta|array|null $pagination = null
     ): self {
         $self = new self;
 
@@ -65,9 +68,11 @@ final class Data implements BaseModel
     }
 
     /**
-     * @param Pagination|PaginationShape $pagination
+     * Pagination metadata for list responses.
+     *
+     * @param PaginationMeta|PaginationMetaShape $pagination
      */
-    public function withPagination(Pagination|array $pagination): self
+    public function withPagination(PaginationMeta|array $pagination): self
     {
         $self = clone $this;
         $self['pagination'] = $pagination;
