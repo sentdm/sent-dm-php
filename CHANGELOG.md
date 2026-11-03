@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.44.1](https://github.com/sentdm/sent-dm-php/compare/v0.44.0...v0.44.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* **pagination:** hydrate has_more and advance the page on getNextPage() ([bd08036](https://github.com/sentdm/sent-dm-php/commit/bd08036fa55eb5a7c6f8163ab9d4cec297880817))
+* **pagination:** hydrate has_more and advance the page on getNextPage() ([6e4b8f9](https://github.com/sentdm/sent-dm-php/commit/6e4b8f9962a52ac2babbb69836fe12003be5118f))
+
 ## [0.44.0](https://github.com/sentdm/sent-dm-php/compare/v0.43.2...v0.44.0) (2026-11-03)
 
 
