@@ -7,18 +7,19 @@ namespace SentDm\Messages;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Messages\MessageResendResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type MessageResendResponseDataShape from \SentDm\Messages\MessageResendResponseData
+ * @phpstan-import-type DataShape from \SentDm\Messages\MessageResendResponse\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type MessageResendResponseShape = array{
- *   data?: null|MessageResendResponseData|MessageResendResponseDataShape,
+ *   data?: null|Data|DataShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -43,7 +44,7 @@ final class MessageResendResponse implements BaseModel
      * answer with. From always returns this type.
      */
     #[Optional(nullable: true)]
-    public ?MessageResendResponseData $data;
+    public ?Data $data;
 
     /**
      * Error information.
@@ -73,12 +74,12 @@ final class MessageResendResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param MessageResendResponseData|MessageResendResponseDataShape|null $data
+     * @param Data|DataShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        MessageResendResponseData|array|null $data = null,
+        Data|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -106,9 +107,9 @@ final class MessageResendResponse implements BaseModel
      * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
      * answer with. From always returns this type.
      *
-     * @param MessageResendResponseData|MessageResendResponseDataShape|null $data
+     * @param Data|DataShape|null $data
      */
-    public function withData(MessageResendResponseData|array|null $data): self
+    public function withData(Data|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Messages;
+namespace SentDm\Messages\MessageResendResponse;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Messages\MessageResendResponseData\Recipient;
+use SentDm\Messages\MessageResendResponse\Data\Recipient;
 
 /**
  * The result of a multi-recipient send.
@@ -22,18 +22,18 @@ use SentDm\Messages\MessageResendResponseData\Recipient;
  * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
  * answer with. From always returns this type.
  *
- * @phpstan-import-type RecipientShape from \SentDm\Messages\MessageResendResponseData\Recipient
+ * @phpstan-import-type RecipientShape from \SentDm\Messages\MessageResendResponse\Data\Recipient
  *
- * @phpstan-type MessageResendResponseDataShape = array{
+ * @phpstan-type DataShape = array{
  *   recipients?: list<Recipient|RecipientShape>|null,
  *   status?: string|null,
  *   templateID?: string|null,
  *   templateName?: string|null,
  * }
  */
-final class MessageResendResponseData implements BaseModel
+final class Data implements BaseModel
 {
-    /** @use SdkModel<MessageResendResponseDataShape> */
+    /** @use SdkModel<DataShape> */
     use SdkModel;
 
     /** @var list<Recipient>|null $recipients */
