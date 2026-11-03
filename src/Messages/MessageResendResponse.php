@@ -1,0 +1,155 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SentDm\Messages;
+
+use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Concerns\SdkModel;
+use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\APIMeta;
+use SentDm\Webhooks\ErrorDetail;
+
+/**
+ * Standard API response envelope for all v3 endpoints.
+ *
+ * @phpstan-import-type MessageResendResponseDataShape from \SentDm\Messages\MessageResendResponseData
+ * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
+ * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
+ *
+ * @phpstan-type MessageResendResponseShape = array{
+ *   data?: null|MessageResendResponseData|MessageResendResponseDataShape,
+ *   error?: null|ErrorDetail|ErrorDetailShape,
+ *   meta?: null|APIMeta|APIMetaShape,
+ *   success?: bool|null,
+ * }
+ */
+final class MessageResendResponse implements BaseModel
+{
+    /** @use SdkModel<MessageResendResponseShape> */
+    use SdkModel;
+
+    /**
+     * The result of a multi-recipient send.
+     *
+     * Declared here rather than in the service layer. POST /v3/messages used to publish
+     * MessageSendResult — a type in Common.Services.Messaging.Contracts — so the public contract was
+     * whatever the send service happened to return, and changing that service for an internal reason changed the
+     * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
+     * endpoint makes.
+     *
+     * The shape of an immediate send: it never has a scheduled_at key. A send that carried
+     * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
+     * answer with. From always returns this type.
+     */
+    #[Optional(nullable: true)]
+    public ?MessageResendResponseData $data;
+
+    /**
+     * Error information.
+     */
+    #[Optional(nullable: true)]
+    public ?ErrorDetail $error;
+
+    /**
+     * Request and response metadata.
+     */
+    #[Optional]
+    public ?APIMeta $meta;
+
+    /**
+     * Indicates whether the request was successful.
+     */
+    #[Optional]
+    public ?bool $success;
+
+    public function __construct()
+    {
+        $this->initialize();
+    }
+
+    /**
+     * Construct an instance from the required parameters.
+     *
+     * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param MessageResendResponseData|MessageResendResponseDataShape|null $data
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param APIMeta|APIMetaShape|null $meta
+     */
+    public static function with(
+        MessageResendResponseData|array|null $data = null,
+        ErrorDetail|array|null $error = null,
+        APIMeta|array|null $meta = null,
+        ?bool $success = null,
+    ): self {
+        $self = new self;
+
+        null !== $data && $self['data'] = $data;
+        null !== $error && $self['error'] = $error;
+        null !== $meta && $self['meta'] = $meta;
+        null !== $success && $self['success'] = $success;
+
+        return $self;
+    }
+
+    /**
+     * The result of a multi-recipient send.
+     *
+     * Declared here rather than in the service layer. POST /v3/messages used to publish
+     * MessageSendResult — a type in Common.Services.Messaging.Contracts — so the public contract was
+     * whatever the send service happened to return, and changing that service for an internal reason changed the
+     * API. The service keeps its result; this is what a caller sees, and the mapping between them is a decision the
+     * endpoint makes.
+     *
+     * The shape of an immediate send: it never has a scheduled_at key. A send that carried
+     * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
+     * answer with. From always returns this type.
+     *
+     * @param MessageResendResponseData|MessageResendResponseDataShape|null $data
+     */
+    public function withData(MessageResendResponseData|array|null $data): self
+    {
+        $self = clone $this;
+        $self['data'] = $data;
+
+        return $self;
+    }
+
+    /**
+     * Error information.
+     *
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     */
+    public function withError(ErrorDetail|array|null $error): self
+    {
+        $self = clone $this;
+        $self['error'] = $error;
+
+        return $self;
+    }
+
+    /**
+     * Request and response metadata.
+     *
+     * @param APIMeta|APIMetaShape $meta
+     */
+    public function withMeta(APIMeta|array $meta): self
+    {
+        $self = clone $this;
+        $self['meta'] = $meta;
+
+        return $self;
+    }
+
+    /**
+     * Indicates whether the request was successful.
+     */
+    public function withSuccess(bool $success): self
+    {
+        $self = clone $this;
+        $self['success'] = $success;
+
+        return $self;
+    }
+}
