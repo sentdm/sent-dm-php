@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.0](https://github.com/sentdm/sent-dm-php/compare/v0.44.1...v0.45.0) (2026-11-04)
+
+
+### Features
+
+* **pagination:** expose page, page_size, total_count and total_pages on every page model ([1706a10](https://github.com/sentdm/sent-dm-php/commit/1706a100b4853a42bbd55b36a51058774a13b9e2))
+
 ## [0.44.1](https://github.com/sentdm/sent-dm-php/compare/v0.44.0...v0.44.1) (2026-11-03)
 
 
