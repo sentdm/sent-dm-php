@@ -40,7 +40,7 @@ final class TemplatesService implements TemplatesContract
     /**
      * @api
      *
-     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. There is no `name` field on create — the display name is derived from the template's content and can be changed afterwards with `PUT /v3/templates/{id}`.
+     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. `name` is optional: when omitted or blank, a name is generated from the template's content. It can be changed afterwards with `PUT /v3/templates/{id}`.
      *
      * @param bool $autoCreateForSp Body param: Create this template automatically on every sender profile of the organization, now and in future
      * (default: false). Accepted only from an organization that has been enabled for it, and only at
@@ -49,6 +49,8 @@ final class TemplatesService implements TemplatesContract
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
      * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US) (optional, auto-detected if not provided)
+     * @param string|null $name Body param: Template display name (optional). When omitted or blank, a name is generated from the template's
+     * content. It can be changed afterwards with PUT /v3/templates/{id}.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param bool $submitForReview Body param: Whether to submit the template for review after creation (default: false)
@@ -64,6 +66,7 @@ final class TemplatesService implements TemplatesContract
         ?string $creationSource = null,
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
+        ?string $name = null,
         ?bool $sandbox = null,
         ?bool $submitForReview = null,
         ?string $idempotencyKey = null,
@@ -77,6 +80,7 @@ final class TemplatesService implements TemplatesContract
                 'creationSource' => $creationSource,
                 'definition' => $definition,
                 'language' => $language,
+                'name' => $name,
                 'sandbox' => $sandbox,
                 'submitForReview' => $submitForReview,
                 'idempotencyKey' => $idempotencyKey,
