@@ -10,7 +10,7 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. There is no `name` field on create — the display name is derived from the template's content and can be changed afterwards with `PUT /v3/templates/{id}`.
+ * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. `name` is optional: when omitted or blank, a name is generated from the template's content. It can be changed afterwards with `PUT /v3/templates/{id}`.
  *
  * @see SentDm\Services\TemplatesService::create()
  *
@@ -22,6 +22,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   creationSource?: string|null,
  *   definition?: null|TemplateDefinition|TemplateDefinitionShape,
  *   language?: string|null,
+ *   name?: string|null,
  *   sandbox?: bool|null,
  *   submitForReview?: bool|null,
  *   idempotencyKey?: string|null,
@@ -67,6 +68,13 @@ final class TemplateCreateParams implements BaseModel
     public ?string $language;
 
     /**
+     * Template display name (optional). When omitted or blank, a name is generated from the template's
+     * content. It can be changed afterwards with PUT /v3/templates/{id}.
+     */
+    #[Optional(nullable: true)]
+    public ?string $name;
+
+    /**
      * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
@@ -103,6 +111,7 @@ final class TemplateCreateParams implements BaseModel
         ?string $creationSource = null,
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
+        ?string $name = null,
         ?bool $sandbox = null,
         ?bool $submitForReview = null,
         ?string $idempotencyKey = null,
@@ -115,6 +124,7 @@ final class TemplateCreateParams implements BaseModel
         null !== $creationSource && $self['creationSource'] = $creationSource;
         null !== $definition && $self['definition'] = $definition;
         null !== $language && $self['language'] = $language;
+        null !== $name && $self['name'] = $name;
         null !== $sandbox && $self['sandbox'] = $sandbox;
         null !== $submitForReview && $self['submitForReview'] = $submitForReview;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
@@ -178,6 +188,18 @@ final class TemplateCreateParams implements BaseModel
     {
         $self = clone $this;
         $self['language'] = $language;
+
+        return $self;
+    }
+
+    /**
+     * Template display name (optional). When omitted or blank, a name is generated from the template's
+     * content. It can be changed afterwards with PUT /v3/templates/{id}.
+     */
+    public function withName(?string $name): self
+    {
+        $self = clone $this;
+        $self['name'] = $name;
 
         return $self;
     }
