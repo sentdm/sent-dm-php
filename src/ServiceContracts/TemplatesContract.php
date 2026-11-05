@@ -27,6 +27,8 @@ interface TemplatesContract
      * @param string|null $creationSource Body param: Source of template creation (default: from-api)
      * @param TemplateDefinition|TemplateDefinitionShape $definition Body param: Complete definition of a message template including header, body, footer, and buttons
      * @param string|null $language Body param: Template language code (e.g., en_US) (optional, auto-detected if not provided)
+     * @param string|null $name Body param: Template display name (optional). When omitted or blank, a name is generated from the template's
+     * content. It can be changed afterwards with PUT /v3/templates/{id}.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param bool $submitForReview Body param: Whether to submit the template for review after creation (default: false)
@@ -42,6 +44,7 @@ interface TemplatesContract
         ?string $creationSource = null,
         TemplateDefinition|array|null $definition = null,
         ?string $language = null,
+        ?string $name = null,
         ?bool $sandbox = null,
         ?bool $submitForReview = null,
         ?string $idempotencyKey = null,
