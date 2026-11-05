@@ -10,6 +10,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageResendParams;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
@@ -41,6 +42,61 @@ final class MessagesRawService implements MessagesRawContract
      * @internal
      */
     public function __construct(private Client $client) {}
+
+    /**
+     * @api
+     *
+     * Resends a message you already sent, on the same message id, without rebuilding the request. The typical use is recovering a BLOCKED message — for example one refused for insufficient balance — after the account has been topped up.
+     *
+     * **A resend bills again.** Each accepted resend is a new delivery attempt and records a new charge against the same message id; a client that resends on every failure is charged on every loop.
+     *
+     * **Every policy runs again.** The resend goes back through the full send pipeline — consent, balance, KYC and channel quota, template approval, quiet hours and channel health — so it can land on BLOCKED, FILTERED or SCHEDULED again rather than being sent, exactly as a fresh send would. Status webhooks (message.sent, message.blocked, message.filtered, message.failed) fire again for the same message id, so consumers keyed on the id will see repeated transitions.
+     *
+     * **What can be resent.** A message in a terminal state — DELIVERED, FAILED, READ or BLOCKED — or one stuck at SENT for more than 15 minutes. A FILTERED message can never be resent: the recipient opted out or a routing rule refused the send. A message still in flight (QUEUED, PROCESSED, ROUTED), held for quiet hours (SCHEDULED), or SENT less than 15 minutes ago returns 409. Two concurrent resends of one id are serialised: one is accepted, the other gets 409.
+     *
+     * The resend keeps the channel the message was originally requested on; the channel cannot be changed on a resend — send a new message instead. `Idempotency-Key` is honoured, so a retried request replays the first accepted response instead of resending twice.
+     *
+     * The response has the same shape as `POST /v3/messages`: `recipients` has a single entry whose `message_id` is the id you resent.
+     *
+     * @param string $id Path param: Message ID
+     * @param array{
+     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     * }|MessageResendParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<MessageSendResponse>
+     *
+     * @throws APIException
+     */
+    public function resend(
+        string $id,
+        array|MessageResendParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse {
+        [$parsed, $options] = MessageResendParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
+
+        // @phpstan-ignore-next-line return.type
+        return $this->client->request(
+            method: 'post',
+            path: ['v3/messages/%1$s/resend', $id],
+            headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
+            options: $options,
+            convert: MessageSendResponse::class,
+        );
+    }
 
     /**
      * @api

@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.45.0](https://github.com/sentdm/sent-dm-php/compare/v0.44.1...v0.45.0) (2026-11-04)
+
+
+### Features
+
+* **pagination:** expose page, page_size, total_count and total_pages on every page model ([1706a10](https://github.com/sentdm/sent-dm-php/commit/1706a100b4853a42bbd55b36a51058774a13b9e2))
+
+## [0.44.1](https://github.com/sentdm/sent-dm-php/compare/v0.44.0...v0.44.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* **pagination:** hydrate has_more and advance the page on getNextPage() ([bd08036](https://github.com/sentdm/sent-dm-php/commit/bd08036fa55eb5a7c6f8163ab9d4cec297880817))
+* **pagination:** hydrate has_more and advance the page on getNextPage() ([6e4b8f9](https://github.com/sentdm/sent-dm-php/commit/6e4b8f9962a52ac2babbb69836fe12003be5118f))
+
+## [0.44.0](https://github.com/sentdm/sent-dm-php/compare/v0.43.2...v0.44.0) (2026-11-03)
+
+
+### Features
+
+* **api:** add messages.resend to resend a message on its id ([87bda84](https://github.com/sentdm/sent-dm-php/commit/87bda8406e5193576cdf4c8f030285cf6aba484a))
+
 ## [0.43.2](https://github.com/sentdm/sent-dm-php/compare/v0.43.1...v0.43.2) (2026-11-03)
 
 

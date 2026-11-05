@@ -13,7 +13,7 @@ The REST API documentation can be found on [docs.sent.dm](https://docs.sent.dm).
 <!-- x-release-please-start-version -->
 
 ```
-composer require "sentdm/sent-dm-php 0.43.2"
+composer require "sentdm/sent-dm-php 0.45.0"
 ```
 
 <!-- x-release-please-end -->
@@ -30,7 +30,7 @@ use SentDm\Client;
 
 $client = new Client(apiKey: getenv('SENT_DM_API_KEY') ?: 'My API Key');
 
-$response = $client->messages->send(
+$messageSendResponse = $client->messages->send(
   channel: ['sms', 'whatsapp'],
   template: [
     'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
@@ -40,7 +40,7 @@ $response = $client->messages->send(
   to: ['+14155551234', '+14155555678'],
 );
 
-var_dump($response->data);
+var_dump($messageSendResponse->data);
 ```
 
 ### Value Objects
@@ -89,7 +89,7 @@ use SentDm\Core\Exceptions\RateLimitException;
 use SentDm\Core\Exceptions\APIStatusException;
 
 try {
-  $response = $client->messages->send();
+  $messageSendResponse = $client->messages->send();
 } catch (APIConnectionException $e) {
   echo "The server could not be reached", PHP_EOL;
   var_dump($e->getPrevious());
@@ -159,7 +159,7 @@ Note: the `extra*` parameters of the same name overrides the documented paramete
 ```php
 <?php
 
-$response = $client->messages->send(
+$messageSendResponse = $client->messages->send(
   channel: ['sms'],
   template: [
     'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
