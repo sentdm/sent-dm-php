@@ -39,7 +39,7 @@ final class TemplatesRawService implements TemplatesRawContract
     /**
      * @api
      *
-     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. There is no `name` field on create — the display name is derived from the template's content and can be changed afterwards with `PUT /v3/templates/{id}`.
+     * Creates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission. `name` is optional: when omitted or blank, a name is generated from the template's content. It can be changed afterwards with `PUT /v3/templates/{id}`.
      *
      * @param array{
      *   autoCreateForSp?: bool,
@@ -47,6 +47,7 @@ final class TemplatesRawService implements TemplatesRawContract
      *   creationSource?: string|null,
      *   definition?: TemplateDefinition|TemplateDefinitionShape,
      *   language?: string|null,
+     *   name?: string|null,
      *   sandbox?: bool,
      *   submitForReview?: bool,
      *   idempotencyKey?: string,
