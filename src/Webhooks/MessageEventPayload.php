@@ -134,7 +134,7 @@ final class MessageEventPayload implements BaseModel
     public ?string $templateName;
 
     /**
-     * When the message reached MessageStatus, in UTC
+     * When the message reached MessageStatusEnum, in UTC
      * (yyyy-MM-ddTHH:mm:ssZ).
      */
     #[Optional('updated_at')]
@@ -365,7 +365,7 @@ final class MessageEventPayload implements BaseModel
     }
 
     /**
-     * When the message reached MessageStatus, in UTC
+     * When the message reached MessageStatusEnum, in UTC
      * (yyyy-MM-ddTHH:mm:ssZ).
      */
     public function withUpdatedAt(string $updatedAt): self
