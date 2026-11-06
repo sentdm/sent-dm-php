@@ -8,13 +8,15 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateVariable\Props;
 
 /**
- * @phpstan-import-type PropsShape from \SentDm\Templates\TemplateVariable\Props
+ * @phpstan-import-type TemplateVariablePropsShape from \SentDm\Templates\TemplateVariableProps
  *
  * @phpstan-type TemplateVariableShape = array{
- *   name: string, props: Props|PropsShape, type: string, id?: int|null
+ *   name: string,
+ *   props: TemplateVariableProps|TemplateVariablePropsShape,
+ *   type: string,
+ *   id?: int|null,
  * }
  */
 final class TemplateVariable implements BaseModel
@@ -30,7 +32,7 @@ final class TemplateVariable implements BaseModel
     public string $name;
 
     #[Required]
-    public Props $props;
+    public TemplateVariableProps $props;
 
     /**
      * One of variable, link or media. Decides which Props fields
@@ -74,13 +76,13 @@ final class TemplateVariable implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Props|PropsShape $props
+     * @param TemplateVariableProps|TemplateVariablePropsShape $props
      */
     public static function with(
         string $name,
-        Props|array $props,
+        TemplateVariableProps|array $props,
         string $type,
-        ?int $id = null
+        ?int $id = null,
     ): self {
         $self = new self;
 
@@ -106,9 +108,9 @@ final class TemplateVariable implements BaseModel
     }
 
     /**
-     * @param Props|PropsShape $props
+     * @param TemplateVariableProps|TemplateVariablePropsShape $props
      */
-    public function withProps(Props|array $props): self
+    public function withProps(TemplateVariableProps|array $props): self
     {
         $self = clone $this;
         $self['props'] = $props;

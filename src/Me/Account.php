@@ -1,0 +1,425 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SentDm\Me;
+
+use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Concerns\SdkModel;
+use SentDm\Core\Contracts\BaseModel;
+
+/**
+ * Account response for GET /v3/me endpoint.
+ * Returns organization (with profiles), user (standalone), or profile (child of an organization)
+ * data depending on the API key type. Always includes messaging channel configuration.
+ *
+ * @phpstan-import-type AccountChannelsShape from \SentDm\Me\AccountChannels
+ * @phpstan-import-type AccountProfileShape from \SentDm\Me\AccountProfile
+ * @phpstan-import-type ProfileSettingsShape from \SentDm\Me\ProfileSettings
+ *
+ * @phpstan-type AccountShape = array{
+ *   id?: string|null,
+ *   channels?: null|AccountChannels|AccountChannelsShape,
+ *   createdAt?: \DateTimeInterface|null,
+ *   description?: string|null,
+ *   email?: string|null,
+ *   enableTemplateAutoCreationForSp?: bool|null,
+ *   icon?: string|null,
+ *   name?: string|null,
+ *   organizationID?: string|null,
+ *   profiles?: list<AccountProfile|AccountProfileShape>|null,
+ *   sendingPhoneNumber?: string|null,
+ *   sendingPhoneNumberProfileID?: string|null,
+ *   settings?: null|ProfileSettings|ProfileSettingsShape,
+ *   shortName?: string|null,
+ *   status?: string|null,
+ *   type?: string|null,
+ * }
+ */
+final class Account implements BaseModel
+{
+    /** @use SdkModel<AccountShape> */
+    use SdkModel;
+
+    /**
+     * Customer ID (organization, account, or profile).
+     */
+    #[Optional]
+    public ?string $id;
+
+    /**
+     * Messaging channel configuration. All three channels are always present.
+     * Each channel has a "configured" flag; configured channels expose additional details.
+     */
+    #[Optional]
+    public ?AccountChannels $channels;
+
+    /**
+     * When the account was created.
+     */
+    #[Optional('created_at')]
+    public ?\DateTimeInterface $createdAt;
+
+    /**
+     * Account description.
+     */
+    #[Optional(nullable: true)]
+    public ?string $description;
+
+    /**
+     * Contact email address.
+     */
+    #[Optional(nullable: true)]
+    public ?string $email;
+
+    /**
+     * Whether this account may mark a template for automatic creation on its sender profiles. Granted by
+     * Sent per account and off by default, so it is what a template-create form reads to decide whether to
+     * offer the option at all — marking a template without it does nothing.
+     *
+     * Top-level rather than inside settings, which is written for type: "profile" only
+     * and so would never carry it to the account type that can act on it.
+     *
+     * This is the capability, not the stored flag: a profile reports false whatever its
+     * own row holds. A sender profile owns no sender profiles, so a template it marked would have nothing
+     * to be created on and the fan-out would never read the flag. The admin GET /customers/{id}
+     * reports the stored value instead, because that is the one an operator granted.
+     */
+    #[Optional('enable_template_auto_creation_for_sp')]
+    public ?bool $enableTemplateAutoCreationForSp;
+
+    /**
+     * Account icon URL.
+     */
+    #[Optional(nullable: true)]
+    public ?string $icon;
+
+    /**
+     * Account name.
+     */
+    #[Optional]
+    public ?string $name;
+
+    /**
+     * Organization ID (only for profile type — the parent organization).
+     */
+    #[Optional('organization_id', nullable: true)]
+    public ?string $organizationID;
+
+    /**
+     * List of profiles (populated for organization type, empty for user and profile types).
+     *
+     * @var list<AccountProfile>|null $profiles
+     */
+    #[Optional(list: AccountProfile::class)]
+    public ?array $profiles;
+
+    /**
+     * The SMS sender this account sends from in the United States, in E.164 form. Null when the account has
+     * no US SMS sender.
+     *
+     * The same value as channels.sms.phone_number, published under both names on purpose:
+     * sending_phone_number is what this value is already called on GET /v3/profiles, so the
+     * same key answers the same question whichever of the two endpoints you ask. Neither name is preferred
+     * over the other and neither is deprecated.
+     *
+     * The same value, not the same presence: this key is always written, including as null,
+     * whereas channels.sms.phone_number is left out entirely when there is no sender.
+     */
+    #[Optional('sending_phone_number', nullable: true)]
+    public ?string $sendingPhoneNumber;
+
+    /**
+     * The account that holds sending_phone_number in number inventory: normally this account
+     * itself, and a different account when the number is held elsewhere. Null when there is no US
+     * sender, or when the sender is not a number drawn from inventory — an alphanumeric sender ID or a
+     * short code.
+     */
+    #[Optional('sending_phone_number_profile_id', nullable: true)]
+    public ?string $sendingPhoneNumberProfileID;
+
+    /**
+     * Profile configuration settings.
+     */
+    #[Optional(nullable: true)]
+    public ?ProfileSettings $settings;
+
+    /**
+     * Short name / abbreviation (only for profile type).
+     */
+    #[Optional('short_name', nullable: true)]
+    public ?string $shortName;
+
+    /**
+     * Profile status (only for profile type): incomplete, pending_review, approved, etc.
+     */
+    #[Optional(nullable: true)]
+    public ?string $status;
+
+    /**
+     * Account type: "organization" (has profiles), "user" (no profiles), or "profile" (child of an organization).
+     */
+    #[Optional]
+    public ?string $type;
+
+    public function __construct()
+    {
+        $this->initialize();
+    }
+
+    /**
+     * Construct an instance from the required parameters.
+     *
+     * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param AccountChannels|AccountChannelsShape|null $channels
+     * @param list<AccountProfile|AccountProfileShape>|null $profiles
+     * @param ProfileSettings|ProfileSettingsShape|null $settings
+     */
+    public static function with(
+        ?string $id = null,
+        AccountChannels|array|null $channels = null,
+        ?\DateTimeInterface $createdAt = null,
+        ?string $description = null,
+        ?string $email = null,
+        ?bool $enableTemplateAutoCreationForSp = null,
+        ?string $icon = null,
+        ?string $name = null,
+        ?string $organizationID = null,
+        ?array $profiles = null,
+        ?string $sendingPhoneNumber = null,
+        ?string $sendingPhoneNumberProfileID = null,
+        ProfileSettings|array|null $settings = null,
+        ?string $shortName = null,
+        ?string $status = null,
+        ?string $type = null,
+    ): self {
+        $self = new self;
+
+        null !== $id && $self['id'] = $id;
+        null !== $channels && $self['channels'] = $channels;
+        null !== $createdAt && $self['createdAt'] = $createdAt;
+        null !== $description && $self['description'] = $description;
+        null !== $email && $self['email'] = $email;
+        null !== $enableTemplateAutoCreationForSp && $self['enableTemplateAutoCreationForSp'] = $enableTemplateAutoCreationForSp;
+        null !== $icon && $self['icon'] = $icon;
+        null !== $name && $self['name'] = $name;
+        null !== $organizationID && $self['organizationID'] = $organizationID;
+        null !== $profiles && $self['profiles'] = $profiles;
+        null !== $sendingPhoneNumber && $self['sendingPhoneNumber'] = $sendingPhoneNumber;
+        null !== $sendingPhoneNumberProfileID && $self['sendingPhoneNumberProfileID'] = $sendingPhoneNumberProfileID;
+        null !== $settings && $self['settings'] = $settings;
+        null !== $shortName && $self['shortName'] = $shortName;
+        null !== $status && $self['status'] = $status;
+        null !== $type && $self['type'] = $type;
+
+        return $self;
+    }
+
+    /**
+     * Customer ID (organization, account, or profile).
+     */
+    public function withID(string $id): self
+    {
+        $self = clone $this;
+        $self['id'] = $id;
+
+        return $self;
+    }
+
+    /**
+     * Messaging channel configuration. All three channels are always present.
+     * Each channel has a "configured" flag; configured channels expose additional details.
+     *
+     * @param AccountChannels|AccountChannelsShape $channels
+     */
+    public function withChannels(AccountChannels|array $channels): self
+    {
+        $self = clone $this;
+        $self['channels'] = $channels;
+
+        return $self;
+    }
+
+    /**
+     * When the account was created.
+     */
+    public function withCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $self = clone $this;
+        $self['createdAt'] = $createdAt;
+
+        return $self;
+    }
+
+    /**
+     * Account description.
+     */
+    public function withDescription(?string $description): self
+    {
+        $self = clone $this;
+        $self['description'] = $description;
+
+        return $self;
+    }
+
+    /**
+     * Contact email address.
+     */
+    public function withEmail(?string $email): self
+    {
+        $self = clone $this;
+        $self['email'] = $email;
+
+        return $self;
+    }
+
+    /**
+     * Whether this account may mark a template for automatic creation on its sender profiles. Granted by
+     * Sent per account and off by default, so it is what a template-create form reads to decide whether to
+     * offer the option at all — marking a template without it does nothing.
+     *
+     * Top-level rather than inside settings, which is written for type: "profile" only
+     * and so would never carry it to the account type that can act on it.
+     *
+     * This is the capability, not the stored flag: a profile reports false whatever its
+     * own row holds. A sender profile owns no sender profiles, so a template it marked would have nothing
+     * to be created on and the fan-out would never read the flag. The admin GET /customers/{id}
+     * reports the stored value instead, because that is the one an operator granted.
+     */
+    public function withEnableTemplateAutoCreationForSp(
+        bool $enableTemplateAutoCreationForSp
+    ): self {
+        $self = clone $this;
+        $self['enableTemplateAutoCreationForSp'] = $enableTemplateAutoCreationForSp;
+
+        return $self;
+    }
+
+    /**
+     * Account icon URL.
+     */
+    public function withIcon(?string $icon): self
+    {
+        $self = clone $this;
+        $self['icon'] = $icon;
+
+        return $self;
+    }
+
+    /**
+     * Account name.
+     */
+    public function withName(string $name): self
+    {
+        $self = clone $this;
+        $self['name'] = $name;
+
+        return $self;
+    }
+
+    /**
+     * Organization ID (only for profile type — the parent organization).
+     */
+    public function withOrganizationID(?string $organizationID): self
+    {
+        $self = clone $this;
+        $self['organizationID'] = $organizationID;
+
+        return $self;
+    }
+
+    /**
+     * List of profiles (populated for organization type, empty for user and profile types).
+     *
+     * @param list<AccountProfile|AccountProfileShape> $profiles
+     */
+    public function withProfiles(array $profiles): self
+    {
+        $self = clone $this;
+        $self['profiles'] = $profiles;
+
+        return $self;
+    }
+
+    /**
+     * The SMS sender this account sends from in the United States, in E.164 form. Null when the account has
+     * no US SMS sender.
+     *
+     * The same value as channels.sms.phone_number, published under both names on purpose:
+     * sending_phone_number is what this value is already called on GET /v3/profiles, so the
+     * same key answers the same question whichever of the two endpoints you ask. Neither name is preferred
+     * over the other and neither is deprecated.
+     *
+     * The same value, not the same presence: this key is always written, including as null,
+     * whereas channels.sms.phone_number is left out entirely when there is no sender.
+     */
+    public function withSendingPhoneNumber(?string $sendingPhoneNumber): self
+    {
+        $self = clone $this;
+        $self['sendingPhoneNumber'] = $sendingPhoneNumber;
+
+        return $self;
+    }
+
+    /**
+     * The account that holds sending_phone_number in number inventory: normally this account
+     * itself, and a different account when the number is held elsewhere. Null when there is no US
+     * sender, or when the sender is not a number drawn from inventory — an alphanumeric sender ID or a
+     * short code.
+     */
+    public function withSendingPhoneNumberProfileID(
+        ?string $sendingPhoneNumberProfileID
+    ): self {
+        $self = clone $this;
+        $self['sendingPhoneNumberProfileID'] = $sendingPhoneNumberProfileID;
+
+        return $self;
+    }
+
+    /**
+     * Profile configuration settings.
+     *
+     * @param ProfileSettings|ProfileSettingsShape|null $settings
+     */
+    public function withSettings(ProfileSettings|array|null $settings): self
+    {
+        $self = clone $this;
+        $self['settings'] = $settings;
+
+        return $self;
+    }
+
+    /**
+     * Short name / abbreviation (only for profile type).
+     */
+    public function withShortName(?string $shortName): self
+    {
+        $self = clone $this;
+        $self['shortName'] = $shortName;
+
+        return $self;
+    }
+
+    /**
+     * Profile status (only for profile type): incomplete, pending_review, approved, etc.
+     */
+    public function withStatus(?string $status): self
+    {
+        $self = clone $this;
+        $self['status'] = $status;
+
+        return $self;
+    }
+
+    /**
+     * Account type: "organization" (has profiles), "user" (no profiles), or "profile" (child of an organization).
+     */
+    public function withType(string $type): self
+    {
+        $self = clone $this;
+        $self['type'] = $type;
+
+        return $self;
+    }
+}

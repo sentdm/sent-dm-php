@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Numbers\NumberLookupResponse;
+use SentDm\Numbers\APIResponseOfNumberLookupResult;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -38,6 +38,6 @@ final class NumbersTest extends TestCase
         $result = $this->client->numbers->lookup('+12025551234');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(NumberLookupResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfNumberLookupResult::class, $result);
     }
 }

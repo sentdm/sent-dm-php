@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Profiles\APIResponseOfProfileCompletionResult;
 use SentDm\Profiles\APIResponseOfProfileDetail;
+use SentDm\Profiles\APIResponseOfProfilesList;
 use SentDm\Profiles\BillingContactInfo;
 use SentDm\Profiles\BrandsBrandData;
 use SentDm\Profiles\PaymentDetails;
-use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
-use SentDm\Profiles\ProfileListResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -215,7 +215,7 @@ interface ProfilesContract
     public function list(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ProfileListResponse;
+    ): APIResponseOfProfilesList;
 
     /**
      * @deprecated
@@ -259,5 +259,5 @@ interface ProfilesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ProfileCompleteResponse;
+    ): APIResponseOfProfileCompletionResult;
 }

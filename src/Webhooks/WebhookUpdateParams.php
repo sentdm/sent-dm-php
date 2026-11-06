@@ -9,14 +9,13 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Core\Conversion\ListOf;
-use SentDm\Webhooks\WebhookUpdateParams\SenderProfile;
 
 /**
  * Updates an existing webhook for the authenticated customer. Its version does not change. sender_profile applies to a version 1 webhook and is_inheritable to a version 2 one; retry_count and timeout_seconds apply to version 1 only. A version 1 webhook's response returns its sender_profile selection as saved; a version 2 webhook's response leaves sender_profile out.
  *
  * @see SentDm\Services\WebhooksService::update()
  *
- * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookUpdateParams\SenderProfile
+ * @phpstan-import-type WebhookSenderProfileConfigShape from \SentDm\Webhooks\WebhookSenderProfileConfig
  *
  * @phpstan-type WebhookUpdateParamsShape = array{
  *   displayName?: string|null,
@@ -26,7 +25,7 @@ use SentDm\Webhooks\WebhookUpdateParams\SenderProfile;
  *   isInheritable?: bool|null,
  *   retryCount?: int|null,
  *   sandbox?: bool|null,
- *   senderProfile?: null|SenderProfile|SenderProfileShape,
+ *   senderProfile?: null|WebhookSenderProfileConfig|WebhookSenderProfileConfigShape,
  *   timeoutSeconds?: int|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -74,7 +73,7 @@ final class WebhookUpdateParams implements BaseModel
      * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      */
     #[Optional('sender_profile', nullable: true)]
-    public ?SenderProfile $senderProfile;
+    public ?WebhookSenderProfileConfig $senderProfile;
 
     #[Optional('timeout_seconds')]
     public ?int $timeoutSeconds;
@@ -97,7 +96,7 @@ final class WebhookUpdateParams implements BaseModel
      *
      * @param array<string,list<string>>|null $eventFilters
      * @param list<string>|null $eventTypes
-     * @param SenderProfile|SenderProfileShape|null $senderProfile
+     * @param WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null $senderProfile
      */
     public static function with(
         ?string $displayName = null,
@@ -107,7 +106,7 @@ final class WebhookUpdateParams implements BaseModel
         ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
-        SenderProfile|array|null $senderProfile = null,
+        WebhookSenderProfileConfig|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -203,10 +202,10 @@ final class WebhookUpdateParams implements BaseModel
      * Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
      * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      *
-     * @param SenderProfile|SenderProfileShape|null $senderProfile
+     * @param WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null $senderProfile
      */
     public function withSenderProfile(
-        SenderProfile|array|null $senderProfile
+        WebhookSenderProfileConfig|array|null $senderProfile
     ): self {
         $self = clone $this;
         $self['senderProfile'] = $senderProfile;

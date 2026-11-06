@@ -6,9 +6,9 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
-use SentDm\Conversations\ConversationMessagesList\Message;
 use SentDm\ConversationsPage;
 use SentDm\Core\Util;
+use SentDm\Messages\Message;
 use Tests\UnsupportedMockTests;
 
 /**

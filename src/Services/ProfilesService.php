@@ -7,13 +7,13 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Profiles\APIResponseOfProfileCompletionResult;
 use SentDm\Profiles\APIResponseOfProfileDetail;
+use SentDm\Profiles\APIResponseOfProfilesList;
 use SentDm\Profiles\BillingContactInfo;
 use SentDm\Profiles\BrandsBrandData;
 use SentDm\Profiles\PaymentDetails;
-use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
-use SentDm\Profiles\ProfileListResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ProfilesContract;
 use SentDm\Services\Profiles\CampaignsService;
@@ -357,7 +357,7 @@ final class ProfilesService implements ProfilesContract
     public function list(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
-    ): ProfileListResponse {
+    ): APIResponseOfProfilesList {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -445,7 +445,7 @@ final class ProfilesService implements ProfilesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): ProfileCompleteResponse {
+    ): APIResponseOfProfileCompletionResult {
         $params = Util::removeNulls(
             [
                 'webHookURL' => $webHookURL,
