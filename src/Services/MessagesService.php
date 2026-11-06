@@ -7,6 +7,7 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Messages\MessageCancelResponse;
 use SentDm\Messages\MessageGetActivitiesResponse;
 use SentDm\Messages\MessageGetStatusResponse;
 use SentDm\Messages\MessageSendParams\Channel;
@@ -43,6 +44,55 @@ final class MessagesService implements MessagesContract
     public function __construct(private Client $client)
     {
         $this->raw = new MessagesRawService($client);
+    }
+
+    /**
+     * @api
+     *
+     * Calls off a message you scheduled with `scheduled_at`, before it is released for sending. The message moves to `CANCELLED`, which is terminal, and it is never sent.
+     *
+     * **Only a SCHEDULED message can be cancelled.** A message that has already been released — queued, in flight, or finished — returns 409. The release sweeper runs continuously, so a cancellation sent within about a minute of the scheduled instant can lose that race and be refused; cancel with time to spare.
+     *
+     * **One message per call.** A send to many recipients, or on several channels, becomes one message per recipient × channel, each with its own id; cancel the ones you want stopped. There is no bulk cancellation.
+     *
+     * **Cancelling is free**, and nothing was charged for the hold in the first place — a scheduled message is only priced and billed at release.
+     *
+     * **A cancellation fires `message.cancelled`** on your webhook, exactly once, carrying the `scheduled_at` that was called off so a consumer can un-record the send it was expecting. Cancelling the same message again returns this same response and fires no second event. `Idempotency-Key` is honoured.
+     *
+     * A cancelled message cannot be resent — send a new one.
+     *
+     * The response is the message itself, in the same shape `GET /v3/messages/{id}` returns, so the `status` you read back is the one now stored on the row, and `scheduled_at` is the time it would have gone out. `GET /v3/messages/{id}` keeps reporting both afterwards.
+     *
+     * `events` is the message lifecycle as it stood immediately before the cancellation: the CANCELLED entry is written asynchronously and lands a moment later, so read `status` for the outcome. If you need the entry itself, re-fetch the message after a few seconds — `GET /v3/messages/{id}` is cached briefly, so an immediate re-fetch can still show the pre-cancellation state.
+     *
+     * @param string $id Path param: Message ID
+     * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
+     * Useful for testing integrations without actual execution
+     * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
+     * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
+     * @param RequestOpts|null $requestOptions
+     *
+     * @throws APIException
+     */
+    public function cancel(
+        string $id,
+        ?bool $sandbox = null,
+        ?string $idempotencyKey = null,
+        ?string $xProfileID = null,
+        RequestOptions|array|null $requestOptions = null,
+    ): MessageCancelResponse {
+        $params = Util::removeNulls(
+            [
+                'sandbox' => $sandbox,
+                'idempotencyKey' => $idempotencyKey,
+                'xProfileID' => $xProfileID,
+            ],
+        );
+
+        // @phpstan-ignore-next-line argument.type
+        $response = $this->raw->cancel($id, params: $params, requestOptions: $requestOptions);
+
+        return $response->parse();
     }
 
     /**
