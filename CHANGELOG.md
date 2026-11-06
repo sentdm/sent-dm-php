@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.47.0](https://github.com/sentdm/sent-dm-php/compare/v0.46.0...v0.47.0) (2026-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** stable names for shared models; typed methods for sender profiles, channels, compliance requirements and message cancel
+
+### Features
+
+* **api:** stable names for shared models; typed methods for sender profiles, channels, compliance requirements and message cancel ([34339cc](https://github.com/sentdm/sent-dm-php/commit/34339ccbe0c3c34e9a35c34f1f91a3b99f95fabd))
+
 ## [0.46.0](https://github.com/sentdm/sent-dm-php/compare/v0.45.0...v0.46.0) (2026-11-05)
 
 
