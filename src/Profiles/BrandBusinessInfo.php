@@ -7,7 +7,6 @@ namespace SentDm\Profiles;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\BrandBusinessInfo\EntityType;
 
 /**
  * Business details and address for brand KYC.

@@ -6,13 +6,13 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Profiles\APIResponseOfProfileCompletionResult;
 use SentDm\Profiles\APIResponseOfProfileDetail;
+use SentDm\Profiles\APIResponseOfProfilesList;
 use SentDm\Profiles\ProfileCompleteParams;
-use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileDeleteParams;
 use SentDm\Profiles\ProfileListParams;
-use SentDm\Profiles\ProfileListResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
 use SentDm\RequestOptions;
@@ -85,7 +85,7 @@ interface ProfilesRawContract
      * @param array<string,mixed>|ProfileListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileListResponse>
+     * @return BaseResponse<APIResponseOfProfilesList>
      *
      * @throws APIException
      */
@@ -122,7 +122,7 @@ interface ProfilesRawContract
      * @param array<string,mixed>|ProfileCompleteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileCompleteResponse>
+     * @return BaseResponse<APIResponseOfProfileCompletionResult>
      *
      * @throws APIException
      */

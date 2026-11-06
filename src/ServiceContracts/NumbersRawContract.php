@@ -6,8 +6,8 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Numbers\APIResponseOfNumberLookupResult;
 use SentDm\Numbers\NumberLookupParams;
-use SentDm\Numbers\NumberLookupResponse;
 use SentDm\RequestOptions;
 
 /**
@@ -21,7 +21,7 @@ interface NumbersRawContract
      * @param array<string,mixed>|NumberLookupParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<NumberLookupResponse>
+     * @return BaseResponse<APIResponseOfNumberLookupResult>
      *
      * @throws APIException
      */

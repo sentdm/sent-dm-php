@@ -8,18 +8,17 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateHeader\Location;
 
 /**
  * Header section of a message template.
  *
- * @phpstan-import-type LocationShape from \SentDm\Templates\TemplateHeader\Location
+ * @phpstan-import-type TemplateHeaderLocationShape from \SentDm\Templates\TemplateHeaderLocation
  * @phpstan-import-type TemplateVariableShape from \SentDm\Templates\TemplateVariable
  *
  * @phpstan-type TemplateHeaderShape = array{
  *   template: string,
  *   exampleURL?: string|null,
- *   location?: null|Location|LocationShape,
+ *   location?: null|TemplateHeaderLocation|TemplateHeaderLocationShape,
  *   staticResource?: bool|null,
  *   type?: string|null,
  *   variables?: list<TemplateVariable|TemplateVariableShape>|null,
@@ -56,7 +55,7 @@ final class TemplateHeader implements BaseModel
      * default a StaticResource header falls back to at send.
      */
     #[Optional(nullable: true)]
-    public ?Location $location;
+    public ?TemplateHeaderLocation $location;
 
     /**
      * Whether the asset registered at creation is reused when a caller omits the header's variable at send
@@ -120,13 +119,13 @@ final class TemplateHeader implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Location|LocationShape|null $location
+     * @param TemplateHeaderLocation|TemplateHeaderLocationShape|null $location
      * @param list<TemplateVariable|TemplateVariableShape>|null $variables
      */
     public static function with(
         string $template,
         ?string $exampleURL = null,
-        Location|array|null $location = null,
+        TemplateHeaderLocation|array|null $location = null,
         ?bool $staticResource = null,
         ?string $type = null,
         ?array $variables = null,
@@ -179,10 +178,11 @@ final class TemplateHeader implements BaseModel
      * {"type":"header","format":"location"} — so these values exist for Sent: a preview, and the
      * default a StaticResource header falls back to at send.
      *
-     * @param Location|LocationShape|null $location
+     * @param TemplateHeaderLocation|TemplateHeaderLocationShape|null $location
      */
-    public function withLocation(Location|array|null $location): self
-    {
+    public function withLocation(
+        TemplateHeaderLocation|array|null $location
+    ): self {
         $self = clone $this;
         $self['location'] = $location;
 

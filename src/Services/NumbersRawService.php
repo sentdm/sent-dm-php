@@ -8,8 +8,8 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Numbers\APIResponseOfNumberLookupResult;
 use SentDm\Numbers\NumberLookupParams;
-use SentDm\Numbers\NumberLookupResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\NumbersRawContract;
 
@@ -36,7 +36,7 @@ final class NumbersRawService implements NumbersRawContract
      * @param array{xProfileID?: string}|NumberLookupParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<NumberLookupResponse>
+     * @return BaseResponse<APIResponseOfNumberLookupResult>
      *
      * @throws APIException
      */
@@ -59,7 +59,7 @@ final class NumbersRawService implements NumbersRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: NumberLookupResponse::class,
+            convert: APIResponseOfNumberLookupResult::class,
         );
     }
 }

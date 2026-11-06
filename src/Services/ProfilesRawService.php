@@ -8,17 +8,17 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Profiles\APIResponseOfProfileCompletionResult;
 use SentDm\Profiles\APIResponseOfProfileDetail;
+use SentDm\Profiles\APIResponseOfProfilesList;
 use SentDm\Profiles\BillingContactInfo;
 use SentDm\Profiles\BrandsBrandData;
 use SentDm\Profiles\PaymentDetails;
 use SentDm\Profiles\ProfileCompleteParams;
-use SentDm\Profiles\ProfileCompleteResponse;
 use SentDm\Profiles\ProfileCreateParams;
 use SentDm\Profiles\ProfileCreateParams\WhatsappBusinessAccount;
 use SentDm\Profiles\ProfileDeleteParams;
 use SentDm\Profiles\ProfileListParams;
-use SentDm\Profiles\ProfileListResponse;
 use SentDm\Profiles\ProfileRetrieveParams;
 use SentDm\Profiles\ProfileUpdateParams;
 use SentDm\RequestOptions;
@@ -261,7 +261,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * @param array{xProfileID?: string}|ProfileListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileListResponse>
+     * @return BaseResponse<APIResponseOfProfilesList>
      *
      * @throws APIException
      */
@@ -283,7 +283,7 @@ final class ProfilesRawService implements ProfilesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: ProfileListResponse::class,
+            convert: APIResponseOfProfilesList::class,
         );
     }
 
@@ -370,7 +370,7 @@ final class ProfilesRawService implements ProfilesRawContract
      * }|ProfileCompleteParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<ProfileCompleteResponse>
+     * @return BaseResponse<APIResponseOfProfileCompletionResult>
      *
      * @throws APIException
      */
@@ -400,7 +400,7 @@ final class ProfilesRawService implements ProfilesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: ProfileCompleteResponse::class,
+            convert: APIResponseOfProfileCompletionResult::class,
         );
     }
 }
