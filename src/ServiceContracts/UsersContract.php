@@ -7,7 +7,7 @@ namespace SentDm\ServiceContracts;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Users\APIResponseOfUser;
-use SentDm\Users\UserListResponse;
+use SentDm\Users\APIResponseOfUsersList;
 
 /**
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
@@ -40,7 +40,7 @@ interface UsersContract
     public function list(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): UserListResponse;
+    ): APIResponseOfUsersList;
 
     /**
      * @api

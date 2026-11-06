@@ -8,20 +8,20 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\WebhookEventsPage;
+use SentDm\Webhooks\APIResponseOfWebhookEventTypesList;
+use SentDm\Webhooks\APIResponseOfWebhookSecret;
+use SentDm\Webhooks\APIResponseOfWebhookTest;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
 use SentDm\Webhooks\WebhookDeleteParams;
+use SentDm\Webhooks\WebhookDelivery;
 use SentDm\Webhooks\WebhookListEventsParams;
-use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesParams;
-use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
-use SentDm\Webhooks\WebhookRotateSecretResponse;
 use SentDm\Webhooks\WebhookTestParams;
-use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\Webhooks\WebhookToggleStatusParams;
 use SentDm\Webhooks\WebhookUpdateParams;
 use SentDm\WebhooksPage;
@@ -116,7 +116,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookListEventTypesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookListEventTypesResponse>
+     * @return BaseResponse<APIResponseOfWebhookEventTypesList>
      *
      * @throws APIException
      */
@@ -132,7 +132,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookEventsPage<WebhookListEventsResponse>>
+     * @return BaseResponse<WebhookEventsPage<WebhookDelivery>>
      *
      * @throws APIException
      */
@@ -149,7 +149,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookRotateSecretParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookRotateSecretResponse>
+     * @return BaseResponse<APIResponseOfWebhookSecret>
      *
      * @throws APIException
      */
@@ -166,7 +166,7 @@ interface WebhooksRawContract
      * @param array<string,mixed>|WebhookTestParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookTestResponse>
+     * @return BaseResponse<APIResponseOfWebhookTest>
      *
      * @throws APIException
      */

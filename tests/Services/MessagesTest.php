@@ -7,8 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Messages\MessageGetActivitiesResponse;
-use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\APIResponseOfCancelledMessage;
+use SentDm\Messages\APIResponseOfMessage;
+use SentDm\Messages\APIResponseOfMessageActivities;
 use SentDm\Messages\MessageSendResponse;
 use Tests\UnsupportedMockTests;
 
@@ -28,6 +29,21 @@ final class MessagesTest extends TestCase
         $client = new Client(apiKey: 'My API Key', baseUrl: $testUrl);
 
         $this->client = $client;
+    }
+
+    #[Test]
+    public function testCancel(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Mock server tests are disabled');
+        }
+
+        $result = $this->client->messages->cancel(
+            '8ba7b830-9dad-11d1-80b4-00c04fd430c8'
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(APIResponseOfCancelledMessage::class, $result);
     }
 
     #[Test]
@@ -57,7 +73,7 @@ final class MessagesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageGetActivitiesResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfMessageActivities::class, $result);
     }
 
     #[Test]
@@ -72,7 +88,7 @@ final class MessagesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageGetStatusResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfMessage::class, $result);
     }
 
     #[Test]

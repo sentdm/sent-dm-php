@@ -7,19 +7,18 @@ namespace SentDm\Messages;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Messages\MessageSendResponse\Data;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Messages\MessageSendResponse\Data
+ * @phpstan-import-type MessageSendResultShape from \SentDm\Messages\MessageSendResult
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
  * @phpstan-type MessageSendResponseShape = array{
- *   data?: null|Data|DataShape,
+ *   data?: null|MessageSendResult|MessageSendResultShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
@@ -44,7 +43,7 @@ final class MessageSendResponse implements BaseModel
      * answer with. From always returns this type.
      */
     #[Optional(nullable: true)]
-    public ?Data $data;
+    public ?MessageSendResult $data;
 
     /**
      * Error information.
@@ -74,12 +73,12 @@ final class MessageSendResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Data|DataShape|null $data
+     * @param MessageSendResult|MessageSendResultShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        Data|array|null $data = null,
+        MessageSendResult|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -107,9 +106,9 @@ final class MessageSendResponse implements BaseModel
      * scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides which of the two to
      * answer with. From always returns this type.
      *
-     * @param Data|DataShape|null $data
+     * @param MessageSendResult|MessageSendResultShape|null $data
      */
-    public function withData(Data|array|null $data): self
+    public function withData(MessageSendResult|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

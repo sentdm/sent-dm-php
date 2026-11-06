@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Numbers\NumberLookupResponse;
+use SentDm\Numbers\APIResponseOfNumberLookupResult;
 use SentDm\RequestOptions;
 
 /**
@@ -25,5 +25,5 @@ interface NumbersContract
         string $phoneNumber,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): NumberLookupResponse;
+    ): APIResponseOfNumberLookupResult;
 }

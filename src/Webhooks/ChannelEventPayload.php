@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SentDm\Webhooks;
 
+use SentDm\Channels\SMS\SuppliedCompliance;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\ChannelEventPayload\Compliance;
 
 /**
  * Body of a channel event: where one of the customer's channels stands in provisioning and
@@ -33,13 +33,13 @@ use SentDm\Webhooks\ChannelEventPayload\Compliance;
  * rule, without either showing up here. Those are separate surfaces and deliberately not modelled
  * on this payload.
  *
- * @phpstan-import-type ComplianceShape from \SentDm\Webhooks\ChannelEventPayload\Compliance
+ * @phpstan-import-type SuppliedComplianceShape from \SentDm\Channels\SMS\SuppliedCompliance
  *
  * @phpstan-type ChannelEventPayloadShape = array{
  *   country: string,
  *   accountID?: string|null,
  *   channel?: string|null,
- *   compliance?: null|Compliance|ComplianceShape,
+ *   compliance?: null|SuppliedCompliance|SuppliedComplianceShape,
  *   numberType?: string|null,
  *   reason?: string|null,
  *   reasonCode?: string|null,
@@ -96,7 +96,7 @@ final class ChannelEventPayload implements BaseModel
      * only when the market registers with nobody and compliance was not computed — nothing to show at all.
      */
     #[Optional(nullable: true)]
-    public ?Compliance $compliance;
+    public ?SuppliedCompliance $compliance;
 
     /**
      * The kind of sender the market uses, for example TEN_DLC, LOCAL, or
@@ -183,13 +183,13 @@ final class ChannelEventPayload implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Compliance|ComplianceShape|null $compliance
+     * @param SuppliedCompliance|SuppliedComplianceShape|null $compliance
      */
     public static function with(
         string $country,
         ?string $accountID = null,
         ?string $channel = null,
-        Compliance|array|null $compliance = null,
+        SuppliedCompliance|array|null $compliance = null,
         ?string $numberType = null,
         ?string $reason = null,
         ?string $reasonCode = null,
@@ -271,10 +271,11 @@ final class ChannelEventPayload implements BaseModel
      * absent says they were not fetched; empty says the market has been given none. The parent object is null
      * only when the market registers with nobody and compliance was not computed — nothing to show at all.
      *
-     * @param Compliance|ComplianceShape|null $compliance
+     * @param SuppliedCompliance|SuppliedComplianceShape|null $compliance
      */
-    public function withCompliance(Compliance|array|null $compliance): self
-    {
+    public function withCompliance(
+        SuppliedCompliance|array|null $compliance
+    ): self {
         $self = clone $this;
         $self['compliance'] = $compliance;
 

@@ -7,15 +7,14 @@ namespace SentDm\Webhooks;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\PaginationMeta\Cursors;
 
 /**
  * Pagination metadata for list responses.
  *
- * @phpstan-import-type CursorsShape from \SentDm\Webhooks\PaginationMeta\Cursors
+ * @phpstan-import-type PaginationCursorsShape from \SentDm\Webhooks\PaginationCursors
  *
  * @phpstan-type PaginationMetaShape = array{
- *   cursors?: null|Cursors|CursorsShape,
+ *   cursors?: null|PaginationCursors|PaginationCursorsShape,
  *   hasMore?: bool|null,
  *   page?: int|null,
  *   pageSize?: int|null,
@@ -34,7 +33,7 @@ final class PaginationMeta implements BaseModel
      * Cursor-based pagination. Never populated — see Cursors.
      */
     #[Optional(nullable: true)]
-    public ?Cursors $cursors;
+    public ?PaginationCursors $cursors;
 
     /**
      * Whether there are more pages after this one.
@@ -76,10 +75,10 @@ final class PaginationMeta implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Cursors|CursorsShape|null $cursors
+     * @param PaginationCursors|PaginationCursorsShape|null $cursors
      */
     public static function with(
-        Cursors|array|null $cursors = null,
+        PaginationCursors|array|null $cursors = null,
         ?bool $hasMore = null,
         ?int $page = null,
         ?int $pageSize = null,
@@ -101,9 +100,9 @@ final class PaginationMeta implements BaseModel
     /**
      * Cursor-based pagination. Never populated — see Cursors.
      *
-     * @param Cursors|CursorsShape|null $cursors
+     * @param PaginationCursors|PaginationCursorsShape|null $cursors
      */
-    public function withCursors(Cursors|array|null $cursors): self
+    public function withCursors(PaginationCursors|array|null $cursors): self
     {
         $self = clone $this;
         $self['cursors'] = $cursors;

@@ -10,13 +10,13 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksContract;
 use SentDm\WebhookEventsPage;
+use SentDm\Webhooks\APIResponseOfWebhookEventTypesList;
+use SentDm\Webhooks\APIResponseOfWebhookSecret;
+use SentDm\Webhooks\APIResponseOfWebhookTest;
 use SentDm\Webhooks\APIResponseWebhook;
-use SentDm\Webhooks\WebhookCreateParams\SenderProfile;
-use SentDm\Webhooks\WebhookListEventsResponse;
-use SentDm\Webhooks\WebhookListEventTypesResponse;
+use SentDm\Webhooks\WebhookDelivery;
 use SentDm\Webhooks\WebhookResponse;
-use SentDm\Webhooks\WebhookRotateSecretResponse;
-use SentDm\Webhooks\WebhookTestResponse;
+use SentDm\Webhooks\WebhookSenderProfileConfig;
 use SentDm\WebhooksPage;
 
 /**
@@ -26,8 +26,7 @@ use SentDm\WebhooksPage;
  *
  * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
  *
- * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookCreateParams\SenderProfile
- * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookUpdateParams\SenderProfile as SenderProfileShape1
+ * @phpstan-import-type WebhookSenderProfileConfigShape from \SentDm\Webhooks\WebhookSenderProfileConfig
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class WebhooksService implements WebhooksContract
@@ -60,7 +59,7 @@ final class WebhooksService implements WebhooksContract
      * @param int $retryCount Body param: Delivery retries. Applies to version 1 only: Svix retries a version 2 webhook on its own schedule.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
-     * @param SenderProfile|SenderProfileShape|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
+     * @param WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
      * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      * @param int $timeoutSeconds Body param: Delivery timeout. Applies to version 1 only.
      * @param int|null $webhookVersion body param: Who delivers the webhook: 2, the default, is delivered by Svix and signed with the
@@ -80,7 +79,7 @@ final class WebhooksService implements WebhooksContract
         ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
-        SenderProfile|array|null $senderProfile = null,
+        WebhookSenderProfileConfig|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
         ?int $webhookVersion = null,
         ?string $idempotencyKey = null,
@@ -148,7 +147,7 @@ final class WebhooksService implements WebhooksContract
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
-     * @param \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|SenderProfileShape1|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
+     * @param WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null $senderProfile Body param: Request-only: the events an organization webhook's sender profile clones receive, one clone per existing
      * and future profile. A version 1 webhook's responses report it as WebhookSenderProfileV3Response.
      * @param int $timeoutSeconds Body param
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -166,7 +165,7 @@ final class WebhooksService implements WebhooksContract
         ?bool $isInheritable = null,
         ?int $retryCount = null,
         ?bool $sandbox = null,
-        \SentDm\Webhooks\WebhookUpdateParams\SenderProfile|array|null $senderProfile = null,
+        WebhookSenderProfileConfig|array|null $senderProfile = null,
         ?int $timeoutSeconds = null,
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
@@ -270,7 +269,7 @@ final class WebhooksService implements WebhooksContract
     public function listEventTypes(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
-    ): WebhookListEventTypesResponse {
+    ): APIResponseOfWebhookEventTypesList {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type
@@ -291,7 +290,7 @@ final class WebhooksService implements WebhooksContract
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.
      * @param RequestOpts|null $requestOptions
      *
-     * @return WebhookEventsPage<WebhookListEventsResponse>
+     * @return WebhookEventsPage<WebhookDelivery>
      *
      * @throws APIException
      */
@@ -338,7 +337,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookRotateSecretResponse {
+    ): APIResponseOfWebhookSecret {
         $params = Util::removeNulls(
             [
                 'sandbox' => $sandbox,
@@ -375,7 +374,7 @@ final class WebhooksService implements WebhooksContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): WebhookTestResponse {
+    ): APIResponseOfWebhookTest {
         $params = Util::removeNulls(
             [
                 'eventType' => $eventType,

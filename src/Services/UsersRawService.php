@@ -11,9 +11,9 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersRawContract;
 use SentDm\Users\APIResponseOfUser;
+use SentDm\Users\APIResponseOfUsersList;
 use SentDm\Users\UserInviteParams;
 use SentDm\Users\UserListParams;
-use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
 use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
@@ -77,7 +77,7 @@ final class UsersRawService implements UsersRawContract
      * @param array{xProfileID?: string}|UserListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserListResponse>
+     * @return BaseResponse<APIResponseOfUsersList>
      *
      * @throws APIException
      */
@@ -99,7 +99,7 @@ final class UsersRawService implements UsersRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: UserListResponse::class,
+            convert: APIResponseOfUsersList::class,
         );
     }
 
