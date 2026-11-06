@@ -8,19 +8,19 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Messages\APIResponseOfCancelledMessage;
+use SentDm\Messages\APIResponseOfMessage;
+use SentDm\Messages\APIResponseOfMessageActivities;
 use SentDm\Messages\MessageCancelParams;
-use SentDm\Messages\MessageCancelResponse;
-use SentDm\Messages\MessageGetActivitiesResponse;
-use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\MessageChannelOptions;
 use SentDm\Messages\MessageResendParams;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
-use SentDm\Messages\MessageSendParams\Channel;
-use SentDm\Messages\MessageSendParams\Template;
 use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MessagesRawContract;
+use SentDm\Templates\TemplateRef;
 
 /**
  * Send a message and follow what happened to it.
@@ -33,8 +33,8 @@ use SentDm\ServiceContracts\MessagesRawContract;
  *
  * **A scheduled message can be called off.** `POST /v3/messages/{id}/cancel` cancels a send you scheduled with `scheduled_at`, as long as it has not been released yet. Cancelling is free, fires `message.cancelled`, and is final — a cancelled message cannot be resent.
  *
- * @phpstan-import-type ChannelShape from \SentDm\Messages\MessageSendParams\Channel
- * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
+ * @phpstan-import-type MessageChannelOptionsShape from \SentDm\Messages\MessageChannelOptions
+ * @phpstan-import-type TemplateRefShape from \SentDm\Templates\TemplateRef
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class MessagesRawService implements MessagesRawContract
@@ -70,7 +70,7 @@ final class MessagesRawService implements MessagesRawContract
      * }|MessageCancelParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageCancelResponse>
+     * @return BaseResponse<APIResponseOfCancelledMessage>
      *
      * @throws APIException
      */
@@ -100,7 +100,7 @@ final class MessagesRawService implements MessagesRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: MessageCancelResponse::class,
+            convert: APIResponseOfCancelledMessage::class,
         );
     }
 
@@ -168,7 +168,7 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{xProfileID?: string}|MessageRetrieveActivitiesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetActivitiesResponse>
+     * @return BaseResponse<APIResponseOfMessageActivities>
      *
      * @throws APIException
      */
@@ -191,7 +191,7 @@ final class MessagesRawService implements MessagesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: MessageGetActivitiesResponse::class,
+            convert: APIResponseOfMessageActivities::class,
         );
     }
 
@@ -204,7 +204,7 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{xProfileID?: string}|MessageRetrieveStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetStatusResponse>
+     * @return BaseResponse<APIResponseOfMessage>
      *
      * @throws APIException
      */
@@ -227,7 +227,7 @@ final class MessagesRawService implements MessagesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: MessageGetStatusResponse::class,
+            convert: APIResponseOfMessage::class,
         );
     }
 
@@ -238,12 +238,12 @@ final class MessagesRawService implements MessagesRawContract
      *
      * @param array{
      *   channel?: list<string>|null,
-     *   channels?: array<string,list<Channel|ChannelShape>>|null,
+     *   channels?: array<string,list<MessageChannelOptions|MessageChannelOptionsShape>>|null,
      *   mediaURLs?: list<string>|null,
      *   sandbox?: bool,
      *   scheduledAt?: \DateTimeInterface|null,
      *   subject?: string|null,
-     *   template?: Template|TemplateShape|null,
+     *   template?: TemplateRef|TemplateRefShape|null,
      *   text?: string|null,
      *   to?: list<string>,
      *   idempotencyKey?: string,

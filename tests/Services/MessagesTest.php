@@ -7,9 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Messages\MessageCancelResponse;
-use SentDm\Messages\MessageGetActivitiesResponse;
-use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\APIResponseOfCancelledMessage;
+use SentDm\Messages\APIResponseOfMessage;
+use SentDm\Messages\APIResponseOfMessageActivities;
 use SentDm\Messages\MessageSendResponse;
 use Tests\UnsupportedMockTests;
 
@@ -43,7 +43,7 @@ final class MessagesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageCancelResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfCancelledMessage::class, $result);
     }
 
     #[Test]
@@ -73,7 +73,7 @@ final class MessagesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageGetActivitiesResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfMessageActivities::class, $result);
     }
 
     #[Test]
@@ -88,7 +88,7 @@ final class MessagesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MessageGetStatusResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfMessage::class, $result);
     }
 
     #[Test]

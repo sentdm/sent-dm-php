@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SentDm\Channels\SMS;
 
-use SentDm\Channels\SMS\SMSMarket\Compliance;
 use SentDm\Channels\SMS\SMSMarket\Status;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -17,11 +16,11 @@ use SentDm\Core\Contracts\BaseModel;
  * a profile can be live in one country and mid-registration in another — and each carries what it still owes,
  * rather than that being reported in a separate array a caller has to join on.
  *
- * @phpstan-import-type ComplianceShape from \SentDm\Channels\SMS\SMSMarket\Compliance
+ * @phpstan-import-type SuppliedComplianceShape from \SentDm\Channels\SMS\SuppliedCompliance
  * @phpstan-import-type SMSNumberShape from \SentDm\Channels\SMS\SMSNumber
  *
  * @phpstan-type SMSMarketShape = array{
- *   compliance?: null|Compliance|ComplianceShape,
+ *   compliance?: null|SuppliedCompliance|SuppliedComplianceShape,
  *   country?: string|null,
  *   numberType?: string|null,
  *   numbers?: list<SMSNumber|SMSNumberShape>|null,
@@ -52,7 +51,7 @@ final class SMSMarket implements BaseModel
      * only when the market registers with nobody and compliance was not computed — nothing to show at all.
      */
     #[Optional(nullable: true)]
-    public ?Compliance $compliance;
+    public ?SuppliedCompliance $compliance;
 
     #[Optional(nullable: true)]
     public ?string $country;
@@ -124,12 +123,12 @@ final class SMSMarket implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Compliance|ComplianceShape|null $compliance
+     * @param SuppliedCompliance|SuppliedComplianceShape|null $compliance
      * @param list<SMSNumber|SMSNumberShape>|null $numbers
      * @param Status|value-of<Status>|null $status
      */
     public static function with(
-        Compliance|array|null $compliance = null,
+        SuppliedCompliance|array|null $compliance = null,
         ?string $country = null,
         ?string $numberType = null,
         ?array $numbers = null,
@@ -167,10 +166,11 @@ final class SMSMarket implements BaseModel
      * absent says they were not fetched; empty says the market has been given none. The parent object is null
      * only when the market registers with nobody and compliance was not computed — nothing to show at all.
      *
-     * @param Compliance|ComplianceShape|null $compliance
+     * @param SuppliedCompliance|SuppliedComplianceShape|null $compliance
      */
-    public function withCompliance(Compliance|array|null $compliance): self
-    {
+    public function withCompliance(
+        SuppliedCompliance|array|null $compliance
+    ): self {
         $self = clone $this;
         $self['compliance'] = $compliance;
 

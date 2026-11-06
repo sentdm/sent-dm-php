@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\Users\APIResponseOfUser;
-use SentDm\Users\UserListResponse;
+use SentDm\Users\APIResponseOfUsersList;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -54,7 +54,7 @@ final class UsersTest extends TestCase
         $result = $this->client->users->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(UserListResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfUsersList::class, $result);
     }
 
     #[Test]

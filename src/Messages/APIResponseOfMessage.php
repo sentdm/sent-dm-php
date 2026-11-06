@@ -1,0 +1,145 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SentDm\Messages;
+
+use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Concerns\SdkModel;
+use SentDm\Core\Contracts\BaseModel;
+use SentDm\Webhooks\APIMeta;
+use SentDm\Webhooks\ErrorDetail;
+
+/**
+ * Standard API response envelope for all v3 endpoints.
+ *
+ * @phpstan-import-type MessageShape from \SentDm\Messages\Message
+ * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
+ * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
+ *
+ * @phpstan-type APIResponseOfMessageShape = array{
+ *   data?: null|Message|MessageShape,
+ *   error?: null|ErrorDetail|ErrorDetailShape,
+ *   meta?: null|APIMeta|APIMetaShape,
+ *   success?: bool|null,
+ * }
+ */
+final class APIResponseOfMessage implements BaseModel
+{
+    /** @use SdkModel<APIResponseOfMessageShape> */
+    use SdkModel;
+
+    /**
+     * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+     *
+     * The shape of a message that was sent immediately: it never has a scheduled_at key. A message that is
+     * or was held for a later instant is a ScheduledMessageResponse, and the endpoint decides which of
+     * the two to answer with. From
+     * always returns this type.
+     */
+    #[Optional(nullable: true)]
+    public ?Message $data;
+
+    /**
+     * Error information.
+     */
+    #[Optional(nullable: true)]
+    public ?ErrorDetail $error;
+
+    /**
+     * Request and response metadata.
+     */
+    #[Optional]
+    public ?APIMeta $meta;
+
+    /**
+     * Indicates whether the request was successful.
+     */
+    #[Optional]
+    public ?bool $success;
+
+    public function __construct()
+    {
+        $this->initialize();
+    }
+
+    /**
+     * Construct an instance from the required parameters.
+     *
+     * You must use named parameters to construct any parameters with a default value.
+     *
+     * @param Message|MessageShape|null $data
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     * @param APIMeta|APIMetaShape|null $meta
+     */
+    public static function with(
+        Message|array|null $data = null,
+        ErrorDetail|array|null $error = null,
+        APIMeta|array|null $meta = null,
+        ?bool $success = null,
+    ): self {
+        $self = new self;
+
+        null !== $data && $self['data'] = $data;
+        null !== $error && $self['error'] = $error;
+        null !== $meta && $self['meta'] = $meta;
+        null !== $success && $self['success'] = $success;
+
+        return $self;
+    }
+
+    /**
+     * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+     *
+     * The shape of a message that was sent immediately: it never has a scheduled_at key. A message that is
+     * or was held for a later instant is a ScheduledMessageResponse, and the endpoint decides which of
+     * the two to answer with. From
+     * always returns this type.
+     *
+     * @param Message|MessageShape|null $data
+     */
+    public function withData(Message|array|null $data): self
+    {
+        $self = clone $this;
+        $self['data'] = $data;
+
+        return $self;
+    }
+
+    /**
+     * Error information.
+     *
+     * @param ErrorDetail|ErrorDetailShape|null $error
+     */
+    public function withError(ErrorDetail|array|null $error): self
+    {
+        $self = clone $this;
+        $self['error'] = $error;
+
+        return $self;
+    }
+
+    /**
+     * Request and response metadata.
+     *
+     * @param APIMeta|APIMetaShape $meta
+     */
+    public function withMeta(APIMeta|array $meta): self
+    {
+        $self = clone $this;
+        $self['meta'] = $meta;
+
+        return $self;
+    }
+
+    /**
+     * Indicates whether the request was successful.
+     */
+    public function withSuccess(bool $success): self
+    {
+        $self = clone $this;
+        $self['success'] = $success;
+
+        return $self;
+    }
+}

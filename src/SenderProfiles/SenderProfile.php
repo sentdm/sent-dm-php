@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace SentDm\SenderProfiles;
 
 use SentDm\Channels\ChannelsState;
+use SentDm\Channels\SMS\SuppliedCompliance;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\SenderProfiles\SenderProfile\Compliance;
 
 /**
  * A sender profile as the API reports it — the same document the create call accepts, plus the read-only
@@ -21,14 +21,14 @@ use SentDm\SenderProfiles\SenderProfile\Compliance;
  *
  * @phpstan-import-type SenderProfileBillingShape from \SentDm\SenderProfiles\SenderProfileBilling
  * @phpstan-import-type ChannelsStateShape from \SentDm\Channels\ChannelsState
- * @phpstan-import-type ComplianceShape from \SentDm\SenderProfiles\SenderProfile\Compliance
+ * @phpstan-import-type SuppliedComplianceShape from \SentDm\Channels\SMS\SuppliedCompliance
  *
  * @phpstan-type SenderProfileShape = array{
  *   id?: string|null,
  *   apiKey?: string|null,
  *   billing?: null|SenderProfileBilling|SenderProfileBillingShape,
  *   channels?: null|ChannelsState|ChannelsStateShape,
- *   compliance?: null|Compliance|ComplianceShape,
+ *   compliance?: null|SuppliedCompliance|SuppliedComplianceShape,
  *   createdAt?: \DateTimeInterface|null,
  *   description?: string|null,
  *   name?: string|null,
@@ -93,7 +93,7 @@ final class SenderProfile implements BaseModel
      * only when the market registers with nobody and compliance was not computed — nothing to show at all.
      */
     #[Optional(nullable: true)]
-    public ?Compliance $compliance;
+    public ?SuppliedCompliance $compliance;
 
     #[Optional('created_at')]
     public ?\DateTimeInterface $createdAt;
@@ -130,14 +130,14 @@ final class SenderProfile implements BaseModel
      *
      * @param SenderProfileBilling|SenderProfileBillingShape|null $billing
      * @param ChannelsState|ChannelsStateShape|null $channels
-     * @param Compliance|ComplianceShape|null $compliance
+     * @param SuppliedCompliance|SuppliedComplianceShape|null $compliance
      */
     public static function with(
         ?string $id = null,
         ?string $apiKey = null,
         SenderProfileBilling|array|null $billing = null,
         ChannelsState|array|null $channels = null,
-        Compliance|array|null $compliance = null,
+        SuppliedCompliance|array|null $compliance = null,
         ?\DateTimeInterface $createdAt = null,
         ?string $description = null,
         ?string $name = null,
@@ -236,10 +236,11 @@ final class SenderProfile implements BaseModel
      * absent says they were not fetched; empty says the market has been given none. The parent object is null
      * only when the market registers with nobody and compliance was not computed — nothing to show at all.
      *
-     * @param Compliance|ComplianceShape|null $compliance
+     * @param SuppliedCompliance|SuppliedComplianceShape|null $compliance
      */
-    public function withCompliance(Compliance|array|null $compliance): self
-    {
+    public function withCompliance(
+        SuppliedCompliance|array|null $compliance
+    ): self {
         $self = clone $this;
         $self['compliance'] = $compliance;
 

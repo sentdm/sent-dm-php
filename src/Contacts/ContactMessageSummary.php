@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace SentDm\Contacts;
 
-use SentDm\Contacts\ContactMessageSummary\ChannelScore;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-import-type ChannelScoreShape from \SentDm\Contacts\ContactMessageSummary\ChannelScore
+ * @phpstan-import-type ChannelScoreShape from \SentDm\Contacts\ChannelScore
  *
  * @phpstan-type ContactMessageSummaryShape = array{
  *   channelScores?: list<ChannelScore|ChannelScoreShape>|null,

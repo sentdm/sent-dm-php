@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
-use SentDm\Me\MeGetResponse;
+use SentDm\Me\APIResponseOfAccount;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -38,6 +38,6 @@ final class MeTest extends TestCase
         $result = $this->client->me->retrieve();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(MeGetResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfAccount::class, $result);
     }
 }

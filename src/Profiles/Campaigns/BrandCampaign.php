@@ -7,7 +7,7 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\BrandCampaign\Status;
+use SentDm\Profiles\TcrCampaignStatus;
 
 /**
  * A 10DLC campaign registered for a brand.
@@ -34,7 +34,7 @@ use SentDm\Profiles\Campaigns\BrandCampaign\Status;
  *   optoutKeywords?: string|null,
  *   optoutMessage?: string|null,
  *   privacyPolicyLink?: string|null,
- *   status?: null|Status|value-of<Status>,
+ *   status?: null|TcrCampaignStatus|value-of<TcrCampaignStatus>,
  *   submittedAt?: \DateTimeInterface|null,
  *   submittedToTcr?: bool|null,
  *   tcrCampaignID?: string|null,
@@ -115,8 +115,8 @@ final class BrandCampaign implements BaseModel
     #[Optional(nullable: true)]
     public ?string $privacyPolicyLink;
 
-    /** @var value-of<Status>|null $status */
-    #[Optional(enum: Status::class, nullable: true)]
+    /** @var value-of<TcrCampaignStatus>|null $status */
+    #[Optional(enum: TcrCampaignStatus::class, nullable: true)]
     public ?string $status;
 
     #[Optional(nullable: true)]
@@ -171,7 +171,7 @@ final class BrandCampaign implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Status|value-of<Status>|null $status
+     * @param TcrCampaignStatus|value-of<TcrCampaignStatus>|null $status
      * @param list<CampaignUseCase|CampaignUseCaseShape>|null $useCases
      */
     public static function with(
@@ -194,7 +194,7 @@ final class BrandCampaign implements BaseModel
         ?string $optoutKeywords = null,
         ?string $optoutMessage = null,
         ?string $privacyPolicyLink = null,
-        Status|string|null $status = null,
+        TcrCampaignStatus|string|null $status = null,
         ?\DateTimeInterface $submittedAt = null,
         ?bool $submittedToTcr = null,
         ?string $tcrCampaignID = null,
@@ -402,9 +402,9 @@ final class BrandCampaign implements BaseModel
     }
 
     /**
-     * @param Status|value-of<Status>|null $status
+     * @param TcrCampaignStatus|value-of<TcrCampaignStatus>|null $status
      */
-    public function withStatus(Status|string|null $status): self
+    public function withStatus(TcrCampaignStatus|string|null $status): self
     {
         $self = clone $this;
         $self['status'] = $status;

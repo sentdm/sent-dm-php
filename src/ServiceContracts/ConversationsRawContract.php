@@ -6,10 +6,10 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Conversations\ConversationListMessagesParams;
 use SentDm\Conversations\ConversationListParams;
-use SentDm\Conversations\ConversationMessagesList\Message;
 use SentDm\ConversationsPage;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Messages\Message;
 use SentDm\RequestOptions;
 
 /**

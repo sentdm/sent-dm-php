@@ -6,10 +6,10 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Messages\APIResponseOfCancelledMessage;
+use SentDm\Messages\APIResponseOfMessage;
+use SentDm\Messages\APIResponseOfMessageActivities;
 use SentDm\Messages\MessageCancelParams;
-use SentDm\Messages\MessageCancelResponse;
-use SentDm\Messages\MessageGetActivitiesResponse;
-use SentDm\Messages\MessageGetStatusResponse;
 use SentDm\Messages\MessageResendParams;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
@@ -29,7 +29,7 @@ interface MessagesRawContract
      * @param array<string,mixed>|MessageCancelParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageCancelResponse>
+     * @return BaseResponse<APIResponseOfCancelledMessage>
      *
      * @throws APIException
      */
@@ -63,7 +63,7 @@ interface MessagesRawContract
      * @param array<string,mixed>|MessageRetrieveActivitiesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetActivitiesResponse>
+     * @return BaseResponse<APIResponseOfMessageActivities>
      *
      * @throws APIException
      */
@@ -80,7 +80,7 @@ interface MessagesRawContract
      * @param array<string,mixed>|MessageRetrieveStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetStatusResponse>
+     * @return BaseResponse<APIResponseOfMessage>
      *
      * @throws APIException
      */

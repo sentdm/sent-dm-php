@@ -9,25 +9,24 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Core\Conversion\ListOf;
-use SentDm\Messages\MessageSendParams\Channel;
-use SentDm\Messages\MessageSendParams\Template;
+use SentDm\Templates\TemplateRef;
 
 /**
  * Sends a message to one or more recipients using a template. Supports multi-channel broadcast — when multiple channels are specified (e.g. ["sms", "whatsapp"]), a separate message is created for each (recipient, channel) pair. To choose which of your own numbers a send goes out from, use 'channels': {"sms": [{"from": ["+12125550000", "+14155550000"]}]}. Each channel holds a list of entries, each with 'from' and optionally 'country' and 'strategy'; 'country' and 'strategy' are stored but not acted on yet, so every entry's numbers apply to every recipient on that channel. Every number listed must be an active sender on your account. Like the other account-level preconditions below, that is checked per message rather than when the request is received: the request is still accepted with 202, and each affected message is reported as BLOCKED with error code BUSINESS_029 on GET /messages/{id} and the message.blocked webhook. Each channel's numbers restrict which numbers that channel may use; it does not choose channels — 'channel' does, and the two can be combined. With 'channel' left at auto-detect, a recipient best served by a channel you listed no numbers for still goes out on it. Where several of the listed numbers could serve a recipient, routing prefers the one whose area code matches theirs. Keys: sms, whatsapp, rcs, mms. Returns immediately with per-recipient message IDs for async tracking via webhooks or the GET /messages/{id} endpoint. Sends gated before any delivery attempt do not reject the request — an account-level precondition such as insufficient balance, a template not approved for sending, or free-form content with no open conversation with the contact. The send is accepted with 202 and the affected messages are reported as BLOCKED on GET /messages/{id} and the message.blocked webhook. To send later, set scheduled_at (ISO-8601 with an explicit UTC offset; a value without one is rejected) between 1 minute and 30 days ahead: the response is a ScheduledSendMessageResponse (the same fields plus scheduled_at; status is still QUEUED), each message then moves to SCHEDULED, is held and released at that time (within a few minutes), and a message.scheduled webhook fires once it is held. Balance and template approval are evaluated at release, not at acceptance. Quiet hours are not checked when the request is accepted: if the time falls inside a legally protected quiet-hours window for a recipient, that message is moved to the next allowed time at release and a second message.scheduled webhook reports the new scheduled_at. An account may hold at most 1,000,000 scheduled messages at once: a message scheduled past that is reported as BLOCKED (LIMIT_001) instead of being held.
  *
  * @see SentDm\Services\MessagesService::send()
  *
- * @phpstan-import-type ChannelShape from \SentDm\Messages\MessageSendParams\Channel
- * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
+ * @phpstan-import-type MessageChannelOptionsShape from \SentDm\Messages\MessageChannelOptions
+ * @phpstan-import-type TemplateRefShape from \SentDm\Templates\TemplateRef
  *
  * @phpstan-type MessageSendParamsShape = array{
  *   channel?: list<string>|null,
- *   channels?: array<string,list<Channel|ChannelShape>>|null,
+ *   channels?: array<string,list<MessageChannelOptions|MessageChannelOptionsShape>>|null,
  *   mediaURLs?: list<string>|null,
  *   sandbox?: bool|null,
  *   scheduledAt?: \DateTimeInterface|null,
  *   subject?: string|null,
- *   template?: null|Template|TemplateShape,
+ *   template?: null|TemplateRef|TemplateRefShape,
  *   text?: string|null,
  *   to?: list<string>|null,
  *   idempotencyKey?: string|null,
@@ -75,9 +74,9 @@ final class MessageSendParams implements BaseModel
      * each affected message is recorded BLOCKED with error code BUSINESS_029 and reported on
      * GET /v3/messages and the status webhook.
      *
-     * @var array<string,list<Channel>>|null $channels
+     * @var array<string,list<MessageChannelOptions>>|null $channels
      */
-    #[Optional(map: new ListOf(Channel::class), nullable: true)]
+    #[Optional(map: new ListOf(MessageChannelOptions::class), nullable: true)]
     public ?array $channels;
 
     /**
@@ -132,7 +131,7 @@ final class MessageSendParams implements BaseModel
      * SDK-style template reference: resolve by ID or by name, with optional parameters.
      */
     #[Optional(nullable: true)]
-    public ?Template $template;
+    public ?TemplateRef $template;
 
     /**
      * Plain-text (free-form) message body. Provide either Template or this.
@@ -165,9 +164,9 @@ final class MessageSendParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param list<string>|null $channel
-     * @param array<string,list<Channel|ChannelShape>>|null $channels
+     * @param array<string,list<MessageChannelOptions|MessageChannelOptionsShape>>|null $channels
      * @param list<string>|null $mediaURLs
-     * @param Template|TemplateShape|null $template
+     * @param TemplateRef|TemplateRefShape|null $template
      * @param list<string>|null $to
      */
     public static function with(
@@ -177,7 +176,7 @@ final class MessageSendParams implements BaseModel
         ?bool $sandbox = null,
         ?\DateTimeInterface $scheduledAt = null,
         ?string $subject = null,
-        Template|array|null $template = null,
+        TemplateRef|array|null $template = null,
         ?string $text = null,
         ?array $to = null,
         ?string $idempotencyKey = null,
@@ -240,7 +239,7 @@ final class MessageSendParams implements BaseModel
      * each affected message is recorded BLOCKED with error code BUSINESS_029 and reported on
      * GET /v3/messages and the status webhook.
      *
-     * @param array<string,list<Channel|ChannelShape>>|null $channels
+     * @param array<string,list<MessageChannelOptions|MessageChannelOptionsShape>>|null $channels
      */
     public function withChannels(?array $channels): self
     {
@@ -321,9 +320,9 @@ final class MessageSendParams implements BaseModel
     /**
      * SDK-style template reference: resolve by ID or by name, with optional parameters.
      *
-     * @param Template|TemplateShape|null $template
+     * @param TemplateRef|TemplateRefShape|null $template
      */
-    public function withTemplate(Template|array|null $template): self
+    public function withTemplate(TemplateRef|array|null $template): self
     {
         $self = clone $this;
         $self['template'] = $template;

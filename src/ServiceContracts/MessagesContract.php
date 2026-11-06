@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Messages\MessageCancelResponse;
-use SentDm\Messages\MessageGetActivitiesResponse;
-use SentDm\Messages\MessageGetStatusResponse;
-use SentDm\Messages\MessageSendParams\Channel;
-use SentDm\Messages\MessageSendParams\Template;
+use SentDm\Messages\APIResponseOfCancelledMessage;
+use SentDm\Messages\APIResponseOfMessage;
+use SentDm\Messages\APIResponseOfMessageActivities;
+use SentDm\Messages\MessageChannelOptions;
 use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
+use SentDm\Templates\TemplateRef;
 
 /**
- * @phpstan-import-type ChannelShape from \SentDm\Messages\MessageSendParams\Channel
- * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
+ * @phpstan-import-type MessageChannelOptionsShape from \SentDm\Messages\MessageChannelOptions
+ * @phpstan-import-type TemplateRefShape from \SentDm\Templates\TemplateRef
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 interface MessagesContract
@@ -38,7 +38,7 @@ interface MessagesContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): MessageCancelResponse;
+    ): APIResponseOfCancelledMessage;
 
     /**
      * @api
@@ -73,7 +73,7 @@ interface MessagesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): MessageGetActivitiesResponse;
+    ): APIResponseOfMessageActivities;
 
     /**
      * @api
@@ -88,7 +88,7 @@ interface MessagesContract
         string $id,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): MessageGetStatusResponse;
+    ): APIResponseOfMessage;
 
     /**
      * @api
@@ -97,7 +97,7 @@ interface MessagesContract
      * Each channel produces a separate message per recipient.
      * "sent" = auto-detect.
      * Defaults to ["sent"] (auto-detect) if omitted.
-     * @param array<string,list<Channel|ChannelShape>>|null $channels Body param: Which of your own numbers to send from, keyed by channel, each channel holding a list of entries:
+     * @param array<string,list<MessageChannelOptions|MessageChannelOptionsShape>>|null $channels Body param: Which of your own numbers to send from, keyed by channel, each channel holding a list of entries:
      * {"sms": [{"country": "US", "from": ["+12125550000", "+14155550000"]}, {"from": ["+447700800001"]}]}.
      * Any real channel may be a key; sent, which is auto-detect rather than a channel, is rejected.
      * country and strategy are accepted and stored but not acted on yet: every entry's
@@ -145,7 +145,7 @@ interface MessagesContract
      * message.scheduled webhook reports the new scheduled_at.
      * @param string|null $subject Body param: Subject line for this send, overriding the template's. MMS only; ignored on every other channel.
      * Most handsets render it above the body, some ignore it entirely.
-     * @param Template|TemplateShape|null $template body param: SDK-style template reference: resolve by ID or by name, with optional parameters
+     * @param TemplateRef|TemplateRefShape|null $template body param: SDK-style template reference: resolve by ID or by name, with optional parameters
      * @param string|null $text Body param: Plain-text (free-form) message body. Provide either Template or this.
      * @param list<string> $to Body param: List of recipient phone numbers in E.164 format (multi-recipient fan-out)
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
@@ -161,7 +161,7 @@ interface MessagesContract
         ?bool $sandbox = null,
         ?\DateTimeInterface $scheduledAt = null,
         ?string $subject = null,
-        Template|array|null $template = null,
+        TemplateRef|array|null $template = null,
         ?string $text = null,
         ?array $to = null,
         ?string $idempotencyKey = null,
