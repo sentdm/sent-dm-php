@@ -7,7 +7,7 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Numbers\NumberLookupResponse;
+use SentDm\Numbers\APIResponseOfNumberLookupResult;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\NumbersContract;
 
@@ -47,7 +47,7 @@ final class NumbersService implements NumbersContract
         string $phoneNumber,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): NumberLookupResponse {
+    ): APIResponseOfNumberLookupResult {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

@@ -8,9 +8,9 @@ use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
 use SentDm\Users\APIResponseOfUser;
+use SentDm\Users\APIResponseOfUsersList;
 use SentDm\Users\UserInviteParams;
 use SentDm\Users\UserListParams;
-use SentDm\Users\UserListResponse;
 use SentDm\Users\UserRemoveParams;
 use SentDm\Users\UserRetrieveParams;
 use SentDm\Users\UserUpdateRoleParams;
@@ -43,7 +43,7 @@ interface UsersRawContract
      * @param array<string,mixed>|UserListParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<UserListResponse>
+     * @return BaseResponse<APIResponseOfUsersList>
      *
      * @throws APIException
      */

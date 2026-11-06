@@ -10,7 +10,7 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\UsersContract;
 use SentDm\Users\APIResponseOfUser;
-use SentDm\Users\UserListResponse;
+use SentDm\Users\APIResponseOfUsersList;
 
 /**
  * The people who can sign in to your organization, and what each may do.
@@ -71,7 +71,7 @@ final class UsersService implements UsersContract
     public function list(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
-    ): UserListResponse {
+    ): APIResponseOfUsersList {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

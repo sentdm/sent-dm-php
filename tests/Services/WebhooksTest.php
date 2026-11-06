@@ -8,12 +8,12 @@ use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
 use SentDm\WebhookEventsPage;
+use SentDm\Webhooks\APIResponseOfWebhookEventTypesList;
+use SentDm\Webhooks\APIResponseOfWebhookSecret;
+use SentDm\Webhooks\APIResponseOfWebhookTest;
 use SentDm\Webhooks\APIResponseWebhook;
-use SentDm\Webhooks\WebhookListEventsResponse;
-use SentDm\Webhooks\WebhookListEventTypesResponse;
+use SentDm\Webhooks\WebhookDelivery;
 use SentDm\Webhooks\WebhookResponse;
-use SentDm\Webhooks\WebhookRotateSecretResponse;
-use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\WebhooksPage;
 use Tests\UnsupportedMockTests;
 
@@ -121,7 +121,7 @@ final class WebhooksTest extends TestCase
         $result = $this->client->webhooks->listEventTypes();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookListEventTypesResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfWebhookEventTypesList::class, $result);
     }
 
     #[Test]
@@ -140,7 +140,7 @@ final class WebhooksTest extends TestCase
 
         if ($item = $page->getItems()[0] ?? null) {
             // @phpstan-ignore-next-line method.alreadyNarrowedType
-            $this->assertInstanceOf(WebhookListEventsResponse::class, $item);
+            $this->assertInstanceOf(WebhookDelivery::class, $item);
         }
     }
 
@@ -156,7 +156,7 @@ final class WebhooksTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookRotateSecretResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfWebhookSecret::class, $result);
     }
 
     #[Test]
@@ -171,7 +171,7 @@ final class WebhooksTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(WebhookTestResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfWebhookTest::class, $result);
     }
 
     #[Test]

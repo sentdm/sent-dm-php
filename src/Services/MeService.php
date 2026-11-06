@@ -7,7 +7,7 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Me\MeGetResponse;
+use SentDm\Me\APIResponseOfAccount;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MeContract;
 
@@ -62,7 +62,7 @@ final class MeService implements MeContract
     public function retrieve(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null
-    ): MeGetResponse {
+    ): APIResponseOfAccount {
         $params = Util::removeNulls(['xProfileID' => $xProfileID]);
 
         // @phpstan-ignore-next-line argument.type

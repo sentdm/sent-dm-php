@@ -7,9 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SentDm\Client;
 use SentDm\Core\Util;
+use SentDm\Profiles\APIResponseOfProfileCompletionResult;
 use SentDm\Profiles\APIResponseOfProfileDetail;
-use SentDm\Profiles\ProfileCompleteResponse;
-use SentDm\Profiles\ProfileListResponse;
+use SentDm\Profiles\APIResponseOfProfilesList;
 use Tests\UnsupportedMockTests;
 
 /**
@@ -83,7 +83,7 @@ final class ProfilesTest extends TestCase
         $result = $this->client->profiles->list();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ProfileListResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfProfilesList::class, $result);
     }
 
     #[Test]
@@ -114,7 +114,10 @@ final class ProfilesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ProfileCompleteResponse::class, $result);
+        $this->assertInstanceOf(
+            APIResponseOfProfileCompletionResult::class,
+            $result
+        );
     }
 
     #[Test]
@@ -133,6 +136,9 @@ final class ProfilesTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(ProfileCompleteResponse::class, $result);
+        $this->assertInstanceOf(
+            APIResponseOfProfileCompletionResult::class,
+            $result
+        );
     }
 }

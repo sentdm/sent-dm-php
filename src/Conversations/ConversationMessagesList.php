@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace SentDm\Conversations;
 
-use SentDm\Conversations\ConversationMessagesList\Message;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Messages\Message;
 use SentDm\Webhooks\PaginationMeta;
 
 /**
  * A paginated list of messages — used by both conversation read endpoints.
  *
- * @phpstan-import-type MessageShape from \SentDm\Conversations\ConversationMessagesList\Message
+ * @phpstan-import-type MessageShape from \SentDm\Messages\Message
  * @phpstan-import-type PaginationMetaShape from \SentDm\Webhooks\PaginationMeta
  *
  * @phpstan-type ConversationMessagesListShape = array{

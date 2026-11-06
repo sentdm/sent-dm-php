@@ -6,7 +6,7 @@ namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Me\MeGetResponse;
+use SentDm\Me\APIResponseOfAccount;
 use SentDm\Me\MeRetrieveParams;
 use SentDm\RequestOptions;
 
@@ -21,7 +21,7 @@ interface MeRawContract
      * @param array<string,mixed>|MeRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MeGetResponse>
+     * @return BaseResponse<APIResponseOfAccount>
      *
      * @throws APIException
      */

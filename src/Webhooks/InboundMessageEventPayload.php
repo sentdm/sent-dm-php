@@ -8,19 +8,18 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\InboundMessageEventPayload\Media;
 
 /**
  * Body of a message.received event. Delivered when a contact messages one of your numbers.
  *
- * @phpstan-import-type MediaShape from \SentDm\Webhooks\InboundMessageEventPayload\Media
+ * @phpstan-import-type InboundMediaShape from \SentDm\Webhooks\InboundMedia
  *
  * @phpstan-type InboundMessageEventPayloadShape = array{
  *   inboundNumber: string,
  *   receivedAt: string,
  *   accountID?: string|null,
  *   channel?: string|null,
- *   media?: list<Media|MediaShape>|null,
+ *   media?: list<InboundMedia|InboundMediaShape>|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
  *   referral?: mixed,
@@ -68,9 +67,9 @@ final class InboundMessageEventPayload implements BaseModel
      * link, not a fresh one, so once it lapses the entry remains with whatever the carrier declared
      * about the file but the file is no longer reachable.
      *
-     * @var list<Media>|null $media
+     * @var list<InboundMedia>|null $media
      */
-    #[Optional(list: Media::class, nullable: true)]
+    #[Optional(list: InboundMedia::class, nullable: true)]
     public ?array $media;
 
     /**
@@ -138,7 +137,7 @@ final class InboundMessageEventPayload implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<Media|MediaShape>|null $media
+     * @param list<InboundMedia|InboundMediaShape>|null $media
      */
     public static function with(
         string $inboundNumber,
@@ -224,7 +223,7 @@ final class InboundMessageEventPayload implements BaseModel
      * link, not a fresh one, so once it lapses the entry remains with whatever the carrier declared
      * about the file but the file is no longer reachable.
      *
-     * @param list<Media|MediaShape>|null $media
+     * @param list<InboundMedia|InboundMediaShape>|null $media
      */
     public function withMedia(?array $media): self
     {

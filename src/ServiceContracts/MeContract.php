@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SentDm\ServiceContracts;
 
 use SentDm\Core\Exceptions\APIException;
-use SentDm\Me\MeGetResponse;
+use SentDm\Me\APIResponseOfAccount;
 use SentDm\RequestOptions;
 
 /**
@@ -24,5 +24,5 @@ interface MeContract
     public function retrieve(
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): MeGetResponse;
+    ): APIResponseOfAccount;
 }

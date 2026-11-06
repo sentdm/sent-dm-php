@@ -8,7 +8,7 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Me\MeGetResponse;
+use SentDm\Me\APIResponseOfAccount;
 use SentDm\Me\MeRetrieveParams;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MeRawContract;
@@ -52,7 +52,7 @@ final class MeRawService implements MeRawContract
      * @param array{xProfileID?: string}|MeRetrieveParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MeGetResponse>
+     * @return BaseResponse<APIResponseOfAccount>
      *
      * @throws APIException
      */
@@ -74,7 +74,7 @@ final class MeRawService implements MeRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: MeGetResponse::class,
+            convert: APIResponseOfAccount::class,
         );
     }
 }

@@ -7,7 +7,6 @@ namespace SentDm\Templates;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Templates\TemplateBody\Mms;
 
 /**
  * Body section of a message template.
@@ -22,11 +21,11 @@ use SentDm\Templates\TemplateBody\Mms;
  * channel. rcs is the one true override: it may accompany either strategy to vary the copy,
  * but cannot stand alone.
  *
- * @phpstan-import-type MmsShape from \SentDm\Templates\TemplateBody\Mms
+ * @phpstan-import-type TemplateMmsBodyContentShape from \SentDm\Templates\TemplateMmsBodyContent
  * @phpstan-import-type TemplateBodyContentShape from \SentDm\Templates\TemplateBodyContent
  *
  * @phpstan-type TemplateBodyShape = array{
- *   mms?: null|Mms|MmsShape,
+ *   mms?: null|TemplateMmsBodyContent|TemplateMmsBodyContentShape,
  *   multiChannel?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   rcs?: null|TemplateBodyContent|TemplateBodyContentShape,
  *   sms?: null|TemplateBodyContent|TemplateBodyContentShape,
@@ -48,7 +47,7 @@ final class TemplateBody implements BaseModel
      * adding to it.
      */
     #[Optional(nullable: true)]
-    public ?Mms $mms;
+    public ?TemplateMmsBodyContent $mms;
 
     /**
      * The shared body, used for every channel. One half of the choice described above.
@@ -86,14 +85,14 @@ final class TemplateBody implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Mms|MmsShape|null $mms
+     * @param TemplateMmsBodyContent|TemplateMmsBodyContentShape|null $mms
      * @param TemplateBodyContent|TemplateBodyContentShape|null $multiChannel
      * @param TemplateBodyContent|TemplateBodyContentShape|null $rcs
      * @param TemplateBodyContent|TemplateBodyContentShape|null $sms
      * @param TemplateBodyContent|TemplateBodyContentShape|null $whatsapp
      */
     public static function with(
-        Mms|array|null $mms = null,
+        TemplateMmsBodyContent|array|null $mms = null,
         TemplateBodyContent|array|null $multiChannel = null,
         TemplateBodyContent|array|null $rcs = null,
         TemplateBodyContent|array|null $sms = null,
@@ -119,9 +118,9 @@ final class TemplateBody implements BaseModel
      * MMS-specific copy, a subject or attachments. When present it replaces that body on MMS rather than
      * adding to it.
      *
-     * @param Mms|MmsShape|null $mms
+     * @param TemplateMmsBodyContent|TemplateMmsBodyContentShape|null $mms
      */
-    public function withMms(Mms|array|null $mms): self
+    public function withMms(TemplateMmsBodyContent|array|null $mms): self
     {
         $self = clone $this;
         $self['mms'] = $mms;

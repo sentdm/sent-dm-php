@@ -1,0 +1,110 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SentDm\SenderProfiles;
+
+use SentDm\Core\Attributes\Optional;
+use SentDm\Core\Concerns\SdkModel;
+use SentDm\Core\Contracts\BaseModel;
+
+/**
+ * The profile's own WhatsApp Business Account, named by the two identifiers the organization cannot answer
+ * for you.
+ *
+ * No mode: a profile's WABA is its own or it has none. Sharing the organization's would mean
+ * sharing its inbox and its throughput, which makes the two indistinguishable to a recipient — so
+ * inheriting is not offered rather than refused.
+ *
+ * Everything derivable is derived. Whenever this block is present, the solution the account
+ * arrived through, the client business portfolio that owns it, the access token and that token's expiry are
+ * all resolved from the organization by
+ * IPartnerSolutionService.ResolveAccountCredentialsAsync — the first two off the org's shared-account
+ * listing, the token minted against the org's own solution. They were previously asked for and are no
+ * longer accepted: solution_id and owner_business_id are Meta's answer about provenance, so
+ * taking them from the caller let a request assert a partnership Meta disagreed with, and the listing has to
+ * be consulted regardless because it is what proves the account is one this organization may reach.
+ *
+ * No access token, and there never was one here: it is minted per client business portfolio and
+ * rotates roughly every sixty days, so a pasted value would be stale before it was useful. Asking a
+ * customer to mint a System User token in Meta Business Manager is skilled work in a console they were
+ * never meant to see, and it would say nothing about which solution the account came from or when it is
+ * revoked.
+ *
+ * @phpstan-type SenderProfileWhatsappShape = array{
+ *   phoneNumberID?: string|null, wabaID?: string|null
+ * }
+ */
+final class SenderProfileWhatsapp implements BaseModel
+{
+    /** @use SdkModel<SenderProfileWhatsappShape> */
+    use SdkModel;
+
+    /**
+     * The Meta phone-number id this profile sends from. Must already be registered under
+     * WabaId.
+     *
+     * Optional. Omit it to attach the account now and settle the number later: the channel reads as
+     * ACTION_NEEDED with CHANNEL_007, and the profile's WhatsApp messages fail until a number
+     * is named. They do not fall back to the organization's account. Nothing picks one on your behalf.
+     */
+    #[Optional('phone_number_id', nullable: true)]
+    public ?string $phoneNumberID;
+
+    /**
+     * WhatsApp Business Account id — one of the accounts shared into your organization. Required: the
+     * organization holds one per client, and nothing but the caller says which belongs to this profile.
+     */
+    #[Optional('waba_id', nullable: true)]
+    public ?string $wabaID;
+
+    public function __construct()
+    {
+        $this->initialize();
+    }
+
+    /**
+     * Construct an instance from the required parameters.
+     *
+     * You must use named parameters to construct any parameters with a default value.
+     */
+    public static function with(
+        ?string $phoneNumberID = null,
+        ?string $wabaID = null
+    ): self {
+        $self = new self;
+
+        null !== $phoneNumberID && $self['phoneNumberID'] = $phoneNumberID;
+        null !== $wabaID && $self['wabaID'] = $wabaID;
+
+        return $self;
+    }
+
+    /**
+     * The Meta phone-number id this profile sends from. Must already be registered under
+     * WabaId.
+     *
+     * Optional. Omit it to attach the account now and settle the number later: the channel reads as
+     * ACTION_NEEDED with CHANNEL_007, and the profile's WhatsApp messages fail until a number
+     * is named. They do not fall back to the organization's account. Nothing picks one on your behalf.
+     */
+    public function withPhoneNumberID(?string $phoneNumberID): self
+    {
+        $self = clone $this;
+        $self['phoneNumberID'] = $phoneNumberID;
+
+        return $self;
+    }
+
+    /**
+     * WhatsApp Business Account id — one of the accounts shared into your organization. Required: the
+     * organization holds one per client, and nothing but the caller says which belongs to this profile.
+     */
+    public function withWabaID(?string $wabaID): self
+    {
+        $self = clone $this;
+        $self['wabaID'] = $wabaID;
+
+        return $self;
+    }
+}
