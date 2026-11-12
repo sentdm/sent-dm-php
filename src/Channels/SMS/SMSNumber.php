@@ -12,7 +12,10 @@ use SentDm\Core\Contracts\BaseModel;
  * One number of an SMS market.
  *
  * @phpstan-type SMSNumberShape = array{
- *   areaCode?: string|null, senderValue?: string|null, status?: string|null
+ *   areaCode?: string|null,
+ *   campaignID?: string|null,
+ *   senderValue?: string|null,
+ *   status?: string|null,
  * }
  */
 final class SMSNumber implements BaseModel
@@ -26,6 +29,14 @@ final class SMSNumber implements BaseModel
      */
     #[Optional('area_code', nullable: true)]
     public ?string $areaCode;
+
+    /**
+     * The campaign the number is on, or is owed for: the id of its entry in compliance.campaigns.
+     * Omitted for a market that registers no campaigns, and where the campaign is not known — a number recorded
+     * without one, or one owed on a campaign inherited from the organization.
+     */
+    #[Optional('campaign_id', nullable: true)]
+    public ?string $campaignID;
 
     /**
      * The number, or null while it is still to be assigned.
@@ -52,12 +63,14 @@ final class SMSNumber implements BaseModel
      */
     public static function with(
         ?string $areaCode = null,
+        ?string $campaignID = null,
         ?string $senderValue = null,
         ?string $status = null,
     ): self {
         $self = new self;
 
         null !== $areaCode && $self['areaCode'] = $areaCode;
+        null !== $campaignID && $self['campaignID'] = $campaignID;
         null !== $senderValue && $self['senderValue'] = $senderValue;
         null !== $status && $self['status'] = $status;
 
@@ -72,6 +85,19 @@ final class SMSNumber implements BaseModel
     {
         $self = clone $this;
         $self['areaCode'] = $areaCode;
+
+        return $self;
+    }
+
+    /**
+     * The campaign the number is on, or is owed for: the id of its entry in compliance.campaigns.
+     * Omitted for a market that registers no campaigns, and where the campaign is not known — a number recorded
+     * without one, or one owed on a campaign inherited from the organization.
+     */
+    public function withCampaignID(?string $campaignID): self
+    {
+        $self = clone $this;
+        $self['campaignID'] = $campaignID;
 
         return $self;
     }
