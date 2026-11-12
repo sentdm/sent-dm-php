@@ -8,10 +8,9 @@ use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 use SentDm\Core\Conversion\ListOf;
-use SentDm\Webhooks\WebhookResponse\SenderProfile;
 
 /**
- * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookResponse\SenderProfile
+ * @phpstan-import-type WebhookSenderProfileShape from \SentDm\Webhooks\WebhookSenderProfile
  *
  * @phpstan-type WebhookResponseShape = array{
  *   id?: string|null,
@@ -27,7 +26,7 @@ use SentDm\Webhooks\WebhookResponse\SenderProfile;
  *   lastDeliveryAttemptAt?: \DateTimeInterface|null,
  *   lastSuccessfulDeliveryAt?: \DateTimeInterface|null,
  *   retryCount?: int|null,
- *   senderProfile?: null|SenderProfile|SenderProfileShape,
+ *   senderProfile?: null|WebhookSenderProfile|WebhookSenderProfileShape,
  *   signingSecret?: string|null,
  *   timeoutSeconds?: int|null,
  *   updatedAt?: \DateTimeInterface|null,
@@ -105,7 +104,7 @@ final class WebhookResponse implements BaseModel
      * a request, whatever it carries.
      */
     #[Optional('sender_profile', nullable: true)]
-    public ?SenderProfile $senderProfile;
+    public ?WebhookSenderProfile $senderProfile;
 
     #[Optional('signing_secret', nullable: true)]
     public ?string $signingSecret;
@@ -135,7 +134,7 @@ final class WebhookResponse implements BaseModel
      *
      * @param array<string,list<string>>|null $eventFilters
      * @param list<string>|null $eventTypes
-     * @param SenderProfile|SenderProfileShape|null $senderProfile
+     * @param WebhookSenderProfile|WebhookSenderProfileShape|null $senderProfile
      */
     public static function with(
         ?string $id = null,
@@ -151,7 +150,7 @@ final class WebhookResponse implements BaseModel
         ?\DateTimeInterface $lastDeliveryAttemptAt = null,
         ?\DateTimeInterface $lastSuccessfulDeliveryAt = null,
         ?int $retryCount = null,
-        SenderProfile|array|null $senderProfile = null,
+        WebhookSenderProfile|array|null $senderProfile = null,
         ?string $signingSecret = null,
         ?int $timeoutSeconds = null,
         ?\DateTimeInterface $updatedAt = null,
@@ -317,10 +316,10 @@ final class WebhookResponse implements BaseModel
      * Its own type, field for field the same as the request's sender_profile. A response is not
      * a request, whatever it carries.
      *
-     * @param SenderProfile|SenderProfileShape|null $senderProfile
+     * @param WebhookSenderProfile|WebhookSenderProfileShape|null $senderProfile
      */
     public function withSenderProfile(
-        SenderProfile|array|null $senderProfile
+        WebhookSenderProfile|array|null $senderProfile
     ): self {
         $self = clone $this;
         $self['senderProfile'] = $senderProfile;

@@ -7,7 +7,7 @@ namespace SentDm\Profiles\Campaigns;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\Campaigns\BrandCampaign\Status;
+use SentDm\Profiles\TcrCampaignStatus;
 
 /**
  * A 10DLC campaign registered for a brand.
@@ -27,6 +27,7 @@ use SentDm\Profiles\Campaigns\BrandCampaign\Status;
  *   hasSubmissionTransaction?: bool|null,
  *   helpKeywords?: string|null,
  *   helpMessage?: string|null,
+ *   isInherited?: bool|null,
  *   messageFlow?: string|null,
  *   name?: string|null,
  *   optinKeywords?: string|null,
@@ -34,7 +35,7 @@ use SentDm\Profiles\Campaigns\BrandCampaign\Status;
  *   optoutKeywords?: string|null,
  *   optoutMessage?: string|null,
  *   privacyPolicyLink?: string|null,
- *   status?: null|Status|value-of<Status>,
+ *   status?: null|TcrCampaignStatus|value-of<TcrCampaignStatus>,
  *   submittedAt?: \DateTimeInterface|null,
  *   submittedToTcr?: bool|null,
  *   tcrCampaignID?: string|null,
@@ -94,6 +95,14 @@ final class BrandCampaign implements BaseModel
     #[Optional(nullable: true)]
     public ?string $helpMessage;
 
+    /**
+     * Whether the campaign is the organization's, which the profile runs on, rather than one of the profile's own.
+     * A profile running on its organization's campaign can hold campaigns of its own beside it, and the list
+     * returns both.
+     */
+    #[Optional]
+    public ?bool $isInherited;
+
     #[Optional(nullable: true)]
     public ?string $messageFlow;
 
@@ -115,8 +124,8 @@ final class BrandCampaign implements BaseModel
     #[Optional(nullable: true)]
     public ?string $privacyPolicyLink;
 
-    /** @var value-of<Status>|null $status */
-    #[Optional(enum: Status::class, nullable: true)]
+    /** @var value-of<TcrCampaignStatus>|null $status */
+    #[Optional(enum: TcrCampaignStatus::class, nullable: true)]
     public ?string $status;
 
     #[Optional(nullable: true)]
@@ -171,7 +180,7 @@ final class BrandCampaign implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Status|value-of<Status>|null $status
+     * @param TcrCampaignStatus|value-of<TcrCampaignStatus>|null $status
      * @param list<CampaignUseCase|CampaignUseCaseShape>|null $useCases
      */
     public static function with(
@@ -187,6 +196,7 @@ final class BrandCampaign implements BaseModel
         ?bool $hasSubmissionTransaction = null,
         ?string $helpKeywords = null,
         ?string $helpMessage = null,
+        ?bool $isInherited = null,
         ?string $messageFlow = null,
         ?string $name = null,
         ?string $optinKeywords = null,
@@ -194,7 +204,7 @@ final class BrandCampaign implements BaseModel
         ?string $optoutKeywords = null,
         ?string $optoutMessage = null,
         ?string $privacyPolicyLink = null,
-        Status|string|null $status = null,
+        TcrCampaignStatus|string|null $status = null,
         ?\DateTimeInterface $submittedAt = null,
         ?bool $submittedToTcr = null,
         ?string $tcrCampaignID = null,
@@ -219,6 +229,7 @@ final class BrandCampaign implements BaseModel
         null !== $hasSubmissionTransaction && $self['hasSubmissionTransaction'] = $hasSubmissionTransaction;
         null !== $helpKeywords && $self['helpKeywords'] = $helpKeywords;
         null !== $helpMessage && $self['helpMessage'] = $helpMessage;
+        null !== $isInherited && $self['isInherited'] = $isInherited;
         null !== $messageFlow && $self['messageFlow'] = $messageFlow;
         null !== $name && $self['name'] = $name;
         null !== $optinKeywords && $self['optinKeywords'] = $optinKeywords;
@@ -345,6 +356,19 @@ final class BrandCampaign implements BaseModel
         return $self;
     }
 
+    /**
+     * Whether the campaign is the organization's, which the profile runs on, rather than one of the profile's own.
+     * A profile running on its organization's campaign can hold campaigns of its own beside it, and the list
+     * returns both.
+     */
+    public function withIsInherited(bool $isInherited): self
+    {
+        $self = clone $this;
+        $self['isInherited'] = $isInherited;
+
+        return $self;
+    }
+
     public function withMessageFlow(?string $messageFlow): self
     {
         $self = clone $this;
@@ -402,9 +426,9 @@ final class BrandCampaign implements BaseModel
     }
 
     /**
-     * @param Status|value-of<Status>|null $status
+     * @param TcrCampaignStatus|value-of<TcrCampaignStatus>|null $status
      */
-    public function withStatus(Status|string|null $status): self
+    public function withStatus(TcrCampaignStatus|string|null $status): self
     {
         $self = clone $this;
         $self['status'] = $status;

@@ -7,11 +7,11 @@ namespace SentDm\Services;
 use SentDm\Client;
 use SentDm\Conversations\ConversationListMessagesParams;
 use SentDm\Conversations\ConversationListParams;
-use SentDm\Conversations\ConversationMessagesList\Message;
 use SentDm\ConversationsPage;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
+use SentDm\Messages\Message;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ConversationsRawContract;
 

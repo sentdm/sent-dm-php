@@ -11,21 +11,21 @@ use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\WebhooksRawContract;
 use SentDm\WebhookEventsPage;
+use SentDm\Webhooks\APIResponseOfWebhookEventTypesList;
+use SentDm\Webhooks\APIResponseOfWebhookSecret;
+use SentDm\Webhooks\APIResponseOfWebhookTest;
 use SentDm\Webhooks\APIResponseWebhook;
 use SentDm\Webhooks\WebhookCreateParams;
-use SentDm\Webhooks\WebhookCreateParams\SenderProfile;
 use SentDm\Webhooks\WebhookDeleteParams;
+use SentDm\Webhooks\WebhookDelivery;
 use SentDm\Webhooks\WebhookListEventsParams;
-use SentDm\Webhooks\WebhookListEventsResponse;
 use SentDm\Webhooks\WebhookListEventTypesParams;
-use SentDm\Webhooks\WebhookListEventTypesResponse;
 use SentDm\Webhooks\WebhookListParams;
 use SentDm\Webhooks\WebhookResponse;
 use SentDm\Webhooks\WebhookRetrieveParams;
 use SentDm\Webhooks\WebhookRotateSecretParams;
-use SentDm\Webhooks\WebhookRotateSecretResponse;
+use SentDm\Webhooks\WebhookSenderProfileConfig;
 use SentDm\Webhooks\WebhookTestParams;
-use SentDm\Webhooks\WebhookTestResponse;
 use SentDm\Webhooks\WebhookToggleStatusParams;
 use SentDm\Webhooks\WebhookUpdateParams;
 use SentDm\WebhooksPage;
@@ -37,8 +37,7 @@ use SentDm\WebhooksPage;
  *
  * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
  *
- * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookCreateParams\SenderProfile
- * @phpstan-import-type SenderProfileShape from \SentDm\Webhooks\WebhookUpdateParams\SenderProfile as SenderProfileShape1
+ * @phpstan-import-type WebhookSenderProfileConfigShape from \SentDm\Webhooks\WebhookSenderProfileConfig
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class WebhooksRawService implements WebhooksRawContract
@@ -62,7 +61,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *   isInheritable?: bool,
      *   retryCount?: int,
      *   sandbox?: bool,
-     *   senderProfile?: SenderProfile|SenderProfileShape|null,
+     *   senderProfile?: WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null,
      *   timeoutSeconds?: int,
      *   webhookVersion?: int|null,
      *   idempotencyKey?: string,
@@ -152,7 +151,7 @@ final class WebhooksRawService implements WebhooksRawContract
      *   isInheritable?: bool|null,
      *   retryCount?: int,
      *   sandbox?: bool,
-     *   senderProfile?: WebhookUpdateParams\SenderProfile|SenderProfileShape1|null,
+     *   senderProfile?: WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null,
      *   timeoutSeconds?: int,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
@@ -284,7 +283,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * @param array{xProfileID?: string}|WebhookListEventTypesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookListEventTypesResponse>
+     * @return BaseResponse<APIResponseOfWebhookEventTypesList>
      *
      * @throws APIException
      */
@@ -306,7 +305,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: WebhookListEventTypesResponse::class,
+            convert: APIResponseOfWebhookEventTypesList::class,
         );
     }
 
@@ -321,7 +320,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookListEventsParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookEventsPage<WebhookListEventsResponse>>
+     * @return BaseResponse<WebhookEventsPage<WebhookDelivery>>
      *
      * @throws APIException
      */
@@ -352,7 +351,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: WebhookListEventsResponse::class,
+            convert: WebhookDelivery::class,
             page: WebhookEventsPage::class,
         );
     }
@@ -368,7 +367,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookRotateSecretParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookRotateSecretResponse>
+     * @return BaseResponse<APIResponseOfWebhookSecret>
      *
      * @throws APIException
      */
@@ -398,7 +397,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: WebhookRotateSecretResponse::class,
+            convert: APIResponseOfWebhookSecret::class,
         );
     }
 
@@ -416,7 +415,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * }|WebhookTestParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<WebhookTestResponse>
+     * @return BaseResponse<APIResponseOfWebhookTest>
      *
      * @throws APIException
      */
@@ -446,7 +445,7 @@ final class WebhooksRawService implements WebhooksRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: WebhookTestResponse::class,
+            convert: APIResponseOfWebhookTest::class,
         );
     }
 

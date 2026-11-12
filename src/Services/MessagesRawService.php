@@ -8,17 +8,19 @@ use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
-use SentDm\Messages\MessageGetActivitiesResponse;
-use SentDm\Messages\MessageGetStatusResponse;
+use SentDm\Messages\APIResponseOfCancelledMessage;
+use SentDm\Messages\APIResponseOfMessage;
+use SentDm\Messages\APIResponseOfMessageActivities;
+use SentDm\Messages\MessageCancelParams;
+use SentDm\Messages\MessageChannelOptions;
 use SentDm\Messages\MessageResendParams;
 use SentDm\Messages\MessageRetrieveActivitiesParams;
 use SentDm\Messages\MessageRetrieveStatusParams;
 use SentDm\Messages\MessageSendParams;
-use SentDm\Messages\MessageSendParams\Channel;
-use SentDm\Messages\MessageSendParams\Template;
 use SentDm\Messages\MessageSendResponse;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\MessagesRawContract;
+use SentDm\Templates\TemplateRef;
 
 /**
  * Send a message and follow what happened to it.
@@ -31,8 +33,8 @@ use SentDm\ServiceContracts\MessagesRawContract;
  *
  * **A scheduled message can be called off.** `POST /v3/messages/{id}/cancel` cancels a send you scheduled with `scheduled_at`, as long as it has not been released yet. Cancelling is free, fires `message.cancelled`, and is final — a cancelled message cannot be resent.
  *
- * @phpstan-import-type ChannelShape from \SentDm\Messages\MessageSendParams\Channel
- * @phpstan-import-type TemplateShape from \SentDm\Messages\MessageSendParams\Template
+ * @phpstan-import-type MessageChannelOptionsShape from \SentDm\Messages\MessageChannelOptions
+ * @phpstan-import-type TemplateRefShape from \SentDm\Templates\TemplateRef
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class MessagesRawService implements MessagesRawContract
@@ -42,6 +44,65 @@ final class MessagesRawService implements MessagesRawContract
      * @internal
      */
     public function __construct(private Client $client) {}
+
+    /**
+     * @api
+     *
+     * Calls off a message you scheduled with `scheduled_at`, before it is released for sending. The message moves to `CANCELLED`, which is terminal, and it is never sent.
+     *
+     * **Only a SCHEDULED message can be cancelled.** A message that has already been released — queued, in flight, or finished — returns 409. The release sweeper runs continuously, so a cancellation sent within about a minute of the scheduled instant can lose that race and be refused; cancel with time to spare.
+     *
+     * **One message per call.** A send to many recipients, or on several channels, becomes one message per recipient × channel, each with its own id; cancel the ones you want stopped. There is no bulk cancellation.
+     *
+     * **Cancelling is free**, and nothing was charged for the hold in the first place — a scheduled message is only priced and billed at release.
+     *
+     * **A cancellation fires `message.cancelled`** on your webhook, exactly once, carrying the `scheduled_at` that was called off so a consumer can un-record the send it was expecting. Cancelling the same message again returns this same response and fires no second event. `Idempotency-Key` is honoured.
+     *
+     * A cancelled message cannot be resent — send a new one.
+     *
+     * The response is the message itself, in the same shape `GET /v3/messages/{id}` returns, so the `status` you read back is the one now stored on the row, and `scheduled_at` is the time it would have gone out. `GET /v3/messages/{id}` keeps reporting both afterwards.
+     *
+     * `events` is the message lifecycle as it stood immediately before the cancellation: the CANCELLED entry is written asynchronously and lands a moment later, so read `status` for the outcome. If you need the entry itself, re-fetch the message after a few seconds — `GET /v3/messages/{id}` is cached briefly, so an immediate re-fetch can still show the pre-cancellation state.
+     *
+     * @param string $id Path param: Message ID
+     * @param array{
+     *   sandbox?: bool, idempotencyKey?: string, xProfileID?: string
+     * }|MessageCancelParams $params
+     * @param RequestOpts|null $requestOptions
+     *
+     * @return BaseResponse<APIResponseOfCancelledMessage>
+     *
+     * @throws APIException
+     */
+    public function cancel(
+        string $id,
+        array|MessageCancelParams $params,
+        RequestOptions|array|null $requestOptions = null,
+    ): BaseResponse {
+        [$parsed, $options] = MessageCancelParams::parseRequest(
+            $params,
+            $requestOptions,
+        );
+        $header_params = [
+            'idempotencyKey' => 'Idempotency-Key', 'xProfileID' => 'x-profile-id',
+        ];
+
+        // @phpstan-ignore-next-line return.type
+        return $this->client->request(
+            method: 'post',
+            path: ['v3/messages/%1$s/cancel', $id],
+            headers: Util::array_transform_keys(
+                array_intersect_key($parsed, array_flip(array_keys($header_params))),
+                $header_params,
+            ),
+            body: (object) array_diff_key(
+                $parsed,
+                array_flip(array_keys($header_params))
+            ),
+            options: $options,
+            convert: APIResponseOfCancelledMessage::class,
+        );
+    }
 
     /**
      * @api
@@ -107,7 +168,7 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{xProfileID?: string}|MessageRetrieveActivitiesParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetActivitiesResponse>
+     * @return BaseResponse<APIResponseOfMessageActivities>
      *
      * @throws APIException
      */
@@ -130,7 +191,7 @@ final class MessagesRawService implements MessagesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: MessageGetActivitiesResponse::class,
+            convert: APIResponseOfMessageActivities::class,
         );
     }
 
@@ -143,7 +204,7 @@ final class MessagesRawService implements MessagesRawContract
      * @param array{xProfileID?: string}|MessageRetrieveStatusParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<MessageGetStatusResponse>
+     * @return BaseResponse<APIResponseOfMessage>
      *
      * @throws APIException
      */
@@ -166,7 +227,7 @@ final class MessagesRawService implements MessagesRawContract
                 ['xProfileID' => 'x-profile-id']
             ),
             options: $options,
-            convert: MessageGetStatusResponse::class,
+            convert: APIResponseOfMessage::class,
         );
     }
 
@@ -177,12 +238,12 @@ final class MessagesRawService implements MessagesRawContract
      *
      * @param array{
      *   channel?: list<string>|null,
-     *   channels?: array<string,list<Channel|ChannelShape>>|null,
+     *   channels?: array<string,list<MessageChannelOptions|MessageChannelOptionsShape>>|null,
      *   mediaURLs?: list<string>|null,
      *   sandbox?: bool,
      *   scheduledAt?: \DateTimeInterface|null,
      *   subject?: string|null,
-     *   template?: Template|TemplateShape|null,
+     *   template?: TemplateRef|TemplateRefShape|null,
      *   text?: string|null,
      *   to?: list<string>,
      *   idempotencyKey?: string,

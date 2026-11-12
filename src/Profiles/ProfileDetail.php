@@ -7,14 +7,12 @@ namespace SentDm\Profiles;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Profiles\ProfileDetail\BillingContact;
-use SentDm\Profiles\ProfileDetail\Brand;
 
 /**
  * Detailed profile response for v3 API.
  *
- * @phpstan-import-type BillingContactShape from \SentDm\Profiles\ProfileDetail\BillingContact
- * @phpstan-import-type BrandShape from \SentDm\Profiles\ProfileDetail\Brand
+ * @phpstan-import-type BillingContactShape from \SentDm\Profiles\BillingContact
+ * @phpstan-import-type BrandWithKYCShape from \SentDm\Profiles\BrandWithKYC
  *
  * @phpstan-type ProfileDetailShape = array{
  *   id?: string|null,
@@ -23,7 +21,7 @@ use SentDm\Profiles\ProfileDetail\Brand;
  *   allowTemplateSharing?: bool|null,
  *   billingContact?: null|BillingContact|BillingContactShape,
  *   billingModel?: string|null,
- *   brand?: null|Brand|BrandShape,
+ *   brand?: null|BrandWithKYC|BrandWithKYCShape,
  *   createdAt?: \DateTimeInterface|null,
  *   description?: string|null,
  *   email?: string|null,
@@ -97,7 +95,7 @@ final class ProfileDetail implements BaseModel
      * Brand response with nested contact, business, and compliance sections — mirrors the request structure.
      */
     #[Optional(nullable: true)]
-    public ?Brand $brand;
+    public ?BrandWithKYC $brand;
 
     /**
      * When the profile was created.
@@ -238,7 +236,7 @@ final class ProfileDetail implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param BillingContact|BillingContactShape|null $billingContact
-     * @param Brand|BrandShape|null $brand
+     * @param BrandWithKYC|BrandWithKYCShape|null $brand
      */
     public static function with(
         ?string $id = null,
@@ -247,7 +245,7 @@ final class ProfileDetail implements BaseModel
         ?bool $allowTemplateSharing = null,
         BillingContact|array|null $billingContact = null,
         ?string $billingModel = null,
-        Brand|array|null $brand = null,
+        BrandWithKYC|array|null $brand = null,
         ?\DateTimeInterface $createdAt = null,
         ?string $description = null,
         ?string $email = null,
@@ -375,9 +373,9 @@ final class ProfileDetail implements BaseModel
     /**
      * Brand response with nested contact, business, and compliance sections — mirrors the request structure.
      *
-     * @param Brand|BrandShape|null $brand
+     * @param BrandWithKYC|BrandWithKYCShape|null $brand
      */
-    public function withBrand(Brand|array|null $brand): self
+    public function withBrand(BrandWithKYC|array|null $brand): self
     {
         $self = clone $this;
         $self['brand'] = $brand;

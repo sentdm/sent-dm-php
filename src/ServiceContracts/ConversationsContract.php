@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts;
 
-use SentDm\Conversations\ConversationMessagesList\Message;
 use SentDm\ConversationsPage;
 use SentDm\Core\Exceptions\APIException;
+use SentDm\Messages\Message;
 use SentDm\RequestOptions;
 
 /**

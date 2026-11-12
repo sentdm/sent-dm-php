@@ -10,12 +10,14 @@ use SentDm\Core\BaseClient;
 use SentDm\Core\Implementation\StreamingHttpClient;
 use SentDm\Core\Util;
 use SentDm\Services\ChannelsService;
+use SentDm\Services\ComplianceService;
 use SentDm\Services\ContactsService;
 use SentDm\Services\ConversationsService;
 use SentDm\Services\MeService;
 use SentDm\Services\MessagesService;
 use SentDm\Services\NumbersService;
 use SentDm\Services\ProfilesService;
+use SentDm\Services\SenderProfilesService;
 use SentDm\Services\TemplatesService;
 use SentDm\Services\UsersService;
 use SentDm\Services\VoiceService;
@@ -52,6 +54,11 @@ class Client extends BaseClient
     /**
      * @api
      */
+    public SenderProfilesService $senderProfiles;
+
+    /**
+     * @api
+     */
     public NumbersService $numbers;
 
     /**
@@ -78,6 +85,11 @@ class Client extends BaseClient
      * @api
      */
     public ChannelsService $channels;
+
+    /**
+     * @api
+     */
+    public ComplianceService $compliance;
 
     /**
      * @api
@@ -117,7 +129,7 @@ class Client extends BaseClient
             'Accept' => 'application/json',
             'User-Agent' => sprintf('Sent/PHP %s', VERSION),
             'X-Stainless-Lang' => 'php',
-            'X-Stainless-Package-Version' => '0.46.0',
+            'X-Stainless-Package-Version' => '0.47.0',
             'X-Stainless-Arch' => Util::machtype(),
             'X-Stainless-OS' => Util::ostype(),
             'X-Stainless-Runtime' => php_sapi_name(),
@@ -144,12 +156,14 @@ class Client extends BaseClient
         $this->users = new UsersService($this);
         $this->templates = new TemplatesService($this);
         $this->profiles = new ProfilesService($this);
+        $this->senderProfiles = new SenderProfilesService($this);
         $this->numbers = new NumbersService($this);
         $this->messages = new MessagesService($this);
         $this->contacts = new ContactsService($this);
         $this->conversations = new ConversationsService($this);
         $this->voice = new VoiceService($this);
         $this->channels = new ChannelsService($this);
+        $this->compliance = new ComplianceService($this);
         $this->me = new MeService($this);
     }
 

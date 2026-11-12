@@ -7,13 +7,12 @@ namespace SentDm\Voice\Calls;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Voice\Calls\Call\Leg;
 
 /**
  * A call record.
  *
  * @phpstan-import-type CallPartyShape from \SentDm\Voice\Calls\CallParty
- * @phpstan-import-type LegShape from \SentDm\Voice\Calls\Call\Leg
+ * @phpstan-import-type CallLegShape from \SentDm\Voice\Calls\CallLeg
  * @phpstan-import-type CallTimelineEntryShape from \SentDm\Voice\Calls\CallTimelineEntry
  *
  * @phpstan-type CallShape = array{
@@ -27,7 +26,7 @@ use SentDm\Voice\Calls\Call\Leg;
  *   endedAt?: \DateTimeInterface|null,
  *   failureReason?: string|null,
  *   from?: null|CallParty|CallPartyShape,
- *   legs?: list<Leg|LegShape>|null,
+ *   legs?: list<CallLeg|CallLegShape>|null,
  *   mode?: string|null,
  *   number?: string|null,
  *   price?: float|null,
@@ -92,7 +91,7 @@ final class Call implements BaseModel
     public ?\DateTimeInterface $endedAt;
 
     /**
-     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected, no_answer, or for an agent call agent_busy or agent_unreachable. Null while the call is live, when it completed, and when it failed without a recorded reason.
+     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, payment_method_missing, destination_blocked, callback_not_configured, rejected, no_answer, or for an agent call agent_busy or agent_unreachable. Null while the call is live, when it completed, and when it failed without a recorded reason.
      */
     #[Optional('failure_reason', nullable: true)]
     public ?string $failureReason;
@@ -106,9 +105,9 @@ final class Call implements BaseModel
     /**
      * The legs the price covers, one entry per billed leg, each with its own cost: a call your answer connected to a phone number ran the caller's leg to your number and the leg to the connected number at once, and both are billed. Null until the call has been priced.
      *
-     * @var list<Leg>|null $legs
+     * @var list<CallLeg>|null $legs
      */
-    #[Optional(list: Leg::class, nullable: true)]
+    #[Optional(list: CallLeg::class, nullable: true)]
     public ?array $legs;
 
     /**
@@ -172,7 +171,7 @@ final class Call implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param CallParty|CallPartyShape|null $from
-     * @param list<Leg|LegShape>|null $legs
+     * @param list<CallLeg|CallLegShape>|null $legs
      * @param list<CallTimelineEntry|CallTimelineEntryShape>|null $timeline
      * @param CallParty|CallPartyShape|null $to
      */
@@ -311,7 +310,7 @@ final class Call implements BaseModel
     }
 
     /**
-     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, destination_blocked, callback_not_configured, rejected, no_answer, or for an agent call agent_busy or agent_unreachable. Null while the call is live, when it completed, and when it failed without a recorded reason.
+     * Why the call did not complete: callback_timeout, invalid_answer, insufficient_balance, payment_method_missing, destination_blocked, callback_not_configured, rejected, no_answer, or for an agent call agent_busy or agent_unreachable. Null while the call is live, when it completed, and when it failed without a recorded reason.
      */
     public function withFailureReason(?string $failureReason): self
     {
@@ -337,7 +336,7 @@ final class Call implements BaseModel
     /**
      * The legs the price covers, one entry per billed leg, each with its own cost: a call your answer connected to a phone number ran the caller's leg to your number and the leg to the connected number at once, and both are billed. Null until the call has been priced.
      *
-     * @param list<Leg|LegShape>|null $legs
+     * @param list<CallLeg|CallLegShape>|null $legs
      */
     public function withLegs(?array $legs): self
     {
