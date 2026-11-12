@@ -14,6 +14,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\Channels\SMSContract;
+use SentDm\Services\Channels\SMS\TenDlcService;
 
 /**
  * The senders you send from, one per channel.
@@ -40,11 +41,17 @@ final class SMSService implements SMSContract
     public SMSRawService $raw;
 
     /**
+     * @api
+     */
+    public TenDlcService $tenDlc;
+
+    /**
      * @internal
      */
     public function __construct(private Client $client)
     {
         $this->raw = new SMSRawService($client);
+        $this->tenDlc = new TenDlcService($client);
     }
 
     /**
