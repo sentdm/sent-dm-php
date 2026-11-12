@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.0](https://github.com/sentdm/sent-dm-php/compare/v0.48.0...v0.49.0) (2026-11-12)
+
+
+### Features
+
+* **api:** methods for the US 10DLC campaigns, numbers and market compliance ([c08a176](https://github.com/sentdm/sent-dm-php/commit/c08a17694b6acff9a26a49fe7cdc4bd6046055a8))
+
 ## [0.48.0](https://github.com/sentdm/sent-dm-php/compare/v0.47.0...v0.48.0) (2026-11-12)
 
 
