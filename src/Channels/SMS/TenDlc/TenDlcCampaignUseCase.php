@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams;
+namespace SentDm\Channels\SMS\TenDlc;
 
-use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1\UseCase;
+use SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase\UseCase;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * @phpstan-type UseCase1Shape = array{
+ * @phpstan-type TenDlcCampaignUseCaseShape = array{
  *   sampleMessages: list<mixed>, useCase: UseCase|value-of<UseCase>
  * }
  */
-final class UseCase1 implements BaseModel
+final class TenDlcCampaignUseCase implements BaseModel
 {
-    /** @use SdkModel<UseCase1Shape> */
+    /** @use SdkModel<TenDlcCampaignUseCaseShape> */
     use SdkModel;
 
     /**
@@ -36,17 +36,17 @@ final class UseCase1 implements BaseModel
     public string $useCase;
 
     /**
-     * `new UseCase1()` is missing required properties by the API.
+     * `new TenDlcCampaignUseCase()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * UseCase1::with(sampleMessages: ..., useCase: ...)
+     * TenDlcCampaignUseCase::with(sampleMessages: ..., useCase: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new UseCase1)->withSampleMessages(...)->withUseCase(...)
+     * (new TenDlcCampaignUseCase)->withSampleMessages(...)->withUseCase(...)
      * ```
      */
     public function __construct()

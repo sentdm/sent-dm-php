@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1;
+namespace SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase;
 
 /**
  * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume decides those.
