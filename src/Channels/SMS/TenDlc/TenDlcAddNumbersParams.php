@@ -33,8 +33,8 @@ use SentDm\Core\Conversion\ListOf;
  * @phpstan-type TenDlcAddNumbersParamsShape = array{
  *   campaignID: string,
  *   numbers: list<null|SMSNumberRequest|SMSNumberRequestShape>,
+ *   idempotencyKey: string,
  *   sandbox?: bool|null,
- *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
  * }
  */
@@ -61,15 +61,15 @@ final class TenDlcAddNumbersParams implements BaseModel
     #[Required(type: new ListOf(SMSNumberRequest::class, nullable: true))]
     public array $numbers;
 
+    #[Required]
+    public string $idempotencyKey;
+
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
      */
     #[Optional]
     public ?bool $sandbox;
-
-    #[Optional]
-    public ?string $idempotencyKey;
 
     #[Optional]
     public ?string $xProfileID;
@@ -79,13 +79,16 @@ final class TenDlcAddNumbersParams implements BaseModel
      *
      * To enforce required parameters use
      * ```
-     * TenDlcAddNumbersParams::with(campaignID: ..., numbers: ...)
+     * TenDlcAddNumbersParams::with(campaignID: ..., numbers: ..., idempotencyKey: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new TenDlcAddNumbersParams)->withCampaignID(...)->withNumbers(...)
+     * (new TenDlcAddNumbersParams)
+     *   ->withCampaignID(...)
+     *   ->withNumbers(...)
+     *   ->withIdempotencyKey(...)
      * ```
      */
     public function __construct()
@@ -103,17 +106,17 @@ final class TenDlcAddNumbersParams implements BaseModel
     public static function with(
         string $campaignID,
         array $numbers,
+        string $idempotencyKey,
         ?bool $sandbox = null,
-        ?string $idempotencyKey = null,
         ?string $xProfileID = null,
     ): self {
         $self = new self;
 
         $self['campaignID'] = $campaignID;
         $self['numbers'] = $numbers;
+        $self['idempotencyKey'] = $idempotencyKey;
 
         null !== $sandbox && $self['sandbox'] = $sandbox;
-        null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
 
         return $self;
@@ -146,6 +149,14 @@ final class TenDlcAddNumbersParams implements BaseModel
         return $self;
     }
 
+    public function withIdempotencyKey(string $idempotencyKey): self
+    {
+        $self = clone $this;
+        $self['idempotencyKey'] = $idempotencyKey;
+
+        return $self;
+    }
+
     /**
      * Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution.
@@ -154,14 +165,6 @@ final class TenDlcAddNumbersParams implements BaseModel
     {
         $self = clone $this;
         $self['sandbox'] = $sandbox;
-
-        return $self;
-    }
-
-    public function withIdempotencyKey(string $idempotencyKey): self
-    {
-        $self = clone $this;
-        $self['idempotencyKey'] = $idempotencyKey;
 
         return $self;
     }

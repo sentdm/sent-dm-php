@@ -36,7 +36,38 @@ final class TenDlcTest extends TestCase
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->channels->sms->tenDlc->addCampaign();
+        $result = $this->client->channels->sms->tenDlc->addCampaign(
+            idempotencyKey: 'req_abc123_retry1'
+        );
+
+        // @phpstan-ignore-next-line method.alreadyNarrowedType
+        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
+    }
+
+    #[Test]
+    public function testAddCampaignWithOptionalParams(): void
+    {
+        if (UnsupportedMockTests::$skip) {
+            $this->markTestSkipped('Mock server tests are disabled');
+        }
+
+        $result = $this->client->channels->sms->tenDlc->addCampaign(
+            idempotencyKey: 'req_abc123_retry1',
+            description: 'description',
+            helpKeywords: 'help_keywords',
+            helpMessage: 'help_message',
+            messageFlow: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            optInKeywords: 'opt_in_keywords',
+            optInMessage: 'opt_in_message',
+            optOutKeywords: 'opt_out_keywords',
+            optOutMessage: 'opt_out_message',
+            privacyPolicyLink: 'privacy_policy_link',
+            sandbox: false,
+            termsAndConditionsLink: 'terms_and_conditions_link',
+            useCases: [['sampleMessages' => [(object) []], 'useCase' => 'MARKETING']],
+            volume: 'volume',
+            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+        );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
@@ -51,7 +82,8 @@ final class TenDlcTest extends TestCase
 
         $result = $this->client->channels->sms->tenDlc->addNumbers(
             campaignID: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
-            numbers: [[]]
+            numbers: [[]],
+            idempotencyKey: 'req_abc123_retry1',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
@@ -68,8 +100,8 @@ final class TenDlcTest extends TestCase
         $result = $this->client->channels->sms->tenDlc->addNumbers(
             campaignID: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
             numbers: [['areaCode' => '415', 'quantity' => 2]],
-            sandbox: false,
             idempotencyKey: 'req_abc123_retry1',
+            sandbox: false,
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
