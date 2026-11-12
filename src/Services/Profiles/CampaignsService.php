@@ -132,7 +132,7 @@ final class CampaignsService implements CampaignsContract
      *
      * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be removed in a future release. It still behaves exactly as before, so nothing needs to change today — but new integrations should use `/v3/sender-profiles`, which models a profile's markets, compliance, brand, campaigns and billing explicitly.
      *
-     * Retrieves all campaigns linked to the profile's brand, including use cases and sample messages. Returns inherited campaigns if inherit_tcr_campaign=true.
+     * Retrieves all campaigns linked to the profile's brand, including use cases and sample messages. A profile with inherit_tcr_campaign=true gets its organization's campaigns and, beside them, any campaign of its own (added with POST /v3/channels/sms/compliances/US/TEN_DLC/campaigns); `isInherited` says which is which.
      *
      * @param string $profileID Profile ID from route
      * @param string $xProfileID Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.

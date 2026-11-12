@@ -17,7 +17,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * `{ "name": "Example Retail", "short_name": "Example" }`. `short_name` is the SMS sender id and is required. Inbox and opt-out list come from your organization. Its brand and campaign are your organization's only where `compliance` says `{ "inherit": true }` — omitted, the profile has neither. Billing defaults to the profile's own balance, with your organization covering what it cannot.
  *
- * **A sender is not one of them.** The brand and the campaign can be inherited; a number cannot. A profile either has a sender of its own — `channels.sms` — or it has none and terminates through the shared routes for that country.
+ * **A sender is not one of them.** The brand and the campaign can be inherited; a number cannot. A profile either has a sender of its own — `channels.sms` — or it has none and reaches only the countries Sent runs a shared route for. The US has none: without a `TEN_DLC` number of its own, a profile's SMS to US numbers ends as `FAILED` with `DELIVERY_003`.
  *
  * ## Saying what a profile owns
  *

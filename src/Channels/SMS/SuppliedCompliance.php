@@ -7,6 +7,7 @@ namespace SentDm\Channels\SMS;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Core\Conversion\MapOf;
 
 /**
  * What a market has been given: the identity it registers under, its programme, and any documents attached.
@@ -28,6 +29,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-type SuppliedComplianceShape = array{
  *   brand?: array<string,mixed>|null,
  *   campaign?: array<string,mixed>|null,
+ *   campaigns?: list<array<string,mixed>>|null,
  *   documents?: list<SuppliedDocument|SuppliedDocumentShape>|null,
  * }
  */
@@ -73,6 +75,28 @@ final class SuppliedCompliance implements BaseModel
     public ?array $campaign;
 
     /**
+     * Every campaign this market registers, each with inherit saying whose it is — oldest first.
+     *
+     * A list, because a market can now be on more than one. POST
+     * /v3/channels/sms/compliances/US/TEN_DLC/campaigns adds a campaign of the customer's own beside the one it has, and a
+     * profile running on its organization's campaign keeps that one when it adds its own. Campaign
+     * can only show one of them, so it stays as it was, for callers that read it, and this is where the rest
+     * are.
+     *
+     * The organization's campaign reads "inherit": true and the customer's own read
+     * "inherit": false. Each entry is the shape of Campaign plus id, the campaign's own
+     * id, so several can be told apart. Campaign carries no id, because it is sent back to
+     * PATCH, which refuses a key it does not declare; this list is read-only.
+     *
+     * Absent for a market that registers with nobody; empty for one that registers and has no campaign
+     * yet.
+     *
+     * @var list<array<string,mixed>>|null $campaigns
+     */
+    #[Optional(list: new MapOf('mixed'), nullable: true)]
+    public ?array $campaigns;
+
+    /**
      * What has been supplied for this market.
      *
      * Files, not values — the declared halves above carry the values. A document cannot be a JSON value,
@@ -99,17 +123,20 @@ final class SuppliedCompliance implements BaseModel
      *
      * @param array<string,mixed>|null $brand
      * @param array<string,mixed>|null $campaign
+     * @param list<array<string,mixed>>|null $campaigns
      * @param list<SuppliedDocument|SuppliedDocumentShape>|null $documents
      */
     public static function with(
         ?array $brand = null,
         ?array $campaign = null,
-        ?array $documents = null
+        ?array $campaigns = null,
+        ?array $documents = null,
     ): self {
         $self = new self;
 
         null !== $brand && $self['brand'] = $brand;
         null !== $campaign && $self['campaign'] = $campaign;
+        null !== $campaigns && $self['campaigns'] = $campaigns;
         null !== $documents && $self['documents'] = $documents;
 
         return $self;
@@ -157,6 +184,33 @@ final class SuppliedCompliance implements BaseModel
     {
         $self = clone $this;
         $self['campaign'] = $campaign;
+
+        return $self;
+    }
+
+    /**
+     * Every campaign this market registers, each with inherit saying whose it is — oldest first.
+     *
+     * A list, because a market can now be on more than one. POST
+     * /v3/channels/sms/compliances/US/TEN_DLC/campaigns adds a campaign of the customer's own beside the one it has, and a
+     * profile running on its organization's campaign keeps that one when it adds its own. Campaign
+     * can only show one of them, so it stays as it was, for callers that read it, and this is where the rest
+     * are.
+     *
+     * The organization's campaign reads "inherit": true and the customer's own read
+     * "inherit": false. Each entry is the shape of Campaign plus id, the campaign's own
+     * id, so several can be told apart. Campaign carries no id, because it is sent back to
+     * PATCH, which refuses a key it does not declare; this list is read-only.
+     *
+     * Absent for a market that registers with nobody; empty for one that registers and has no campaign
+     * yet.
+     *
+     * @param list<array<string,mixed>>|null $campaigns
+     */
+    public function withCampaigns(?array $campaigns): self
+    {
+        $self = clone $this;
+        $self['campaigns'] = $campaigns;
 
         return $self;
     }
