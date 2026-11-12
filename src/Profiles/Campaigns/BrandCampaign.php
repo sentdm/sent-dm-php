@@ -27,6 +27,7 @@ use SentDm\Profiles\TcrCampaignStatus;
  *   hasSubmissionTransaction?: bool|null,
  *   helpKeywords?: string|null,
  *   helpMessage?: string|null,
+ *   isInherited?: bool|null,
  *   messageFlow?: string|null,
  *   name?: string|null,
  *   optinKeywords?: string|null,
@@ -93,6 +94,14 @@ final class BrandCampaign implements BaseModel
 
     #[Optional(nullable: true)]
     public ?string $helpMessage;
+
+    /**
+     * Whether the campaign is the organization's, which the profile runs on, rather than one of the profile's own.
+     * A profile running on its organization's campaign can hold campaigns of its own beside it, and the list
+     * returns both.
+     */
+    #[Optional]
+    public ?bool $isInherited;
 
     #[Optional(nullable: true)]
     public ?string $messageFlow;
@@ -187,6 +196,7 @@ final class BrandCampaign implements BaseModel
         ?bool $hasSubmissionTransaction = null,
         ?string $helpKeywords = null,
         ?string $helpMessage = null,
+        ?bool $isInherited = null,
         ?string $messageFlow = null,
         ?string $name = null,
         ?string $optinKeywords = null,
@@ -219,6 +229,7 @@ final class BrandCampaign implements BaseModel
         null !== $hasSubmissionTransaction && $self['hasSubmissionTransaction'] = $hasSubmissionTransaction;
         null !== $helpKeywords && $self['helpKeywords'] = $helpKeywords;
         null !== $helpMessage && $self['helpMessage'] = $helpMessage;
+        null !== $isInherited && $self['isInherited'] = $isInherited;
         null !== $messageFlow && $self['messageFlow'] = $messageFlow;
         null !== $name && $self['name'] = $name;
         null !== $optinKeywords && $self['optinKeywords'] = $optinKeywords;
@@ -341,6 +352,19 @@ final class BrandCampaign implements BaseModel
     {
         $self = clone $this;
         $self['helpMessage'] = $helpMessage;
+
+        return $self;
+    }
+
+    /**
+     * Whether the campaign is the organization's, which the profile runs on, rather than one of the profile's own.
+     * A profile running on its organization's campaign can hold campaigns of its own beside it, and the list
+     * returns both.
+     */
+    public function withIsInherited(bool $isInherited): self
+    {
+        $self = clone $this;
+        $self['isInherited'] = $isInherited;
 
         return $self;
     }

@@ -26,7 +26,6 @@ use SentDm\Core\Contracts\BaseModel;
  *   numbers?: list<SMSNumber|SMSNumberShape>|null,
  *   reason?: string|null,
  *   reasonCode?: string|null,
- *   senderValue?: string|null,
  *   status?: null|Status|value-of<Status>,
  * }
  */
@@ -88,13 +87,6 @@ final class SMSMarket implements BaseModel
     public ?string $reasonCode;
 
     /**
-     * The sender itself. Null until a carrier-assigned number is procured. For a market holding several numbers,
-     * the first active one (the first assigned while none is active) — every number is in numbers.
-     */
-    #[Optional('sender_value', nullable: true)]
-    public ?string $senderValue;
-
-    /**
      * Where this market's sender stands, in terms of who is holding it up — PROVISIONING,
      * ACTION_NEEDED, PENDING_REVIEW or ACTIVE. Read-only.
      *
@@ -134,7 +126,6 @@ final class SMSMarket implements BaseModel
         ?array $numbers = null,
         ?string $reason = null,
         ?string $reasonCode = null,
-        ?string $senderValue = null,
         Status|string|null $status = null,
     ): self {
         $self = new self;
@@ -145,7 +136,6 @@ final class SMSMarket implements BaseModel
         null !== $numbers && $self['numbers'] = $numbers;
         null !== $reason && $self['reason'] = $reason;
         null !== $reasonCode && $self['reasonCode'] = $reasonCode;
-        null !== $senderValue && $self['senderValue'] = $senderValue;
         null !== $status && $self['status'] = $status;
 
         return $self;
@@ -232,18 +222,6 @@ final class SMSMarket implements BaseModel
     {
         $self = clone $this;
         $self['reasonCode'] = $reasonCode;
-
-        return $self;
-    }
-
-    /**
-     * The sender itself. Null until a carrier-assigned number is procured. For a market holding several numbers,
-     * the first active one (the first assigned while none is active) — every number is in numbers.
-     */
-    public function withSenderValue(?string $senderValue): self
-    {
-        $self = clone $this;
-        $self['senderValue'] = $senderValue;
 
         return $self;
     }
