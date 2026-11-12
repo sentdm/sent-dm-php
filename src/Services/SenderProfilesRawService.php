@@ -27,7 +27,7 @@ use SentDm\ServiceContracts\SenderProfilesRawContract;
  *
  * **Everything is inherited unless the profile owns it.** `{ "name": "…" }` alone gives you a usable profile immediately, running on your identity, your inbox and your billing. Supply a capability's fields and the profile owns that one instead.
  *
- * **A sender is the exception.** A brand and a campaign can be inherited; a number cannot. A profile either has a sender of its own or terminates through your shared routes.
+ * **A sender is the exception.** A brand and a campaign can be inherited; a number cannot. A profile either has a sender of its own or reaches only the countries Sent runs a shared route for, and the US is not one of them.
  *
  * To act for a profile on any other resource, send `x-profile-id` with your organization key rather than looking for a parallel set of endpoints.
  *
@@ -53,7 +53,7 @@ final class SenderProfilesRawService implements SenderProfilesRawContract
      *
      * `{ "name": "Example Retail", "short_name": "Example" }`. `short_name` is the SMS sender id and is required. Inbox and opt-out list come from your organization. Its brand and campaign are your organization's only where `compliance` says `{ "inherit": true }` — omitted, the profile has neither. Billing defaults to the profile's own balance, with your organization covering what it cannot.
      *
-     * **A sender is not one of them.** The brand and the campaign can be inherited; a number cannot. A profile either has a sender of its own — `channels.sms` — or it has none and terminates through the shared routes for that country.
+     * **A sender is not one of them.** The brand and the campaign can be inherited; a number cannot. A profile either has a sender of its own — `channels.sms` — or it has none and reaches only the countries Sent runs a shared route for. The US has none: without a `TEN_DLC` number of its own, a profile's SMS to US numbers ends as `FAILED` with `DELIVERY_003`.
      *
      * ## Saying what a profile owns
      *
