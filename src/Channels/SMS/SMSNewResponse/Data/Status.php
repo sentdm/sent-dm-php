@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS\SMSMarket;
+namespace SentDm\Channels\SMS\SMSNewResponse\Data;
 
 /**
  * Where this market's sender stands, in terms of who is holding it up — PROVISIONING,

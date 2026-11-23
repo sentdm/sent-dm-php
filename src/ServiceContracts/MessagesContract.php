@@ -145,7 +145,7 @@ interface MessagesContract
      * message.scheduled webhook reports the new scheduled_at.
      * @param string|null $subject Body param: Subject line for this send, overriding the template's. MMS only; ignored on every other channel.
      * Most handsets render it above the body, some ignore it entirely.
-     * @param TemplateRef|TemplateRefShape|null $template body param: SDK-style template reference: resolve by ID or by name, with optional parameters
+     * @param TemplateRef|TemplateRefShape|null $template body param: SDK-style template reference: resolve by id, by slug or by name (exactly one), with optional parameters
      * @param string|null $text Body param: Plain-text (free-form) message body. Provide either Template or this.
      * @param list<string> $to Body param: List of recipient phone numbers in E.164 format (multi-recipient fan-out)
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.

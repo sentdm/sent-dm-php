@@ -14,6 +14,8 @@ use SentDm\RequestOptions;
 interface ComplianceContract
 {
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param string|null $channel Query param: Channel the sender is for: sms, whatsapp or rcs. Defaults to sms, which is the only one answered today — the other two are 501 until their requirements are declared.

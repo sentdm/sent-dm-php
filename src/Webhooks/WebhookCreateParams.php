@@ -18,6 +18,7 @@ use SentDm\Core\Conversion\ListOf;
  * @phpstan-import-type WebhookSenderProfileConfigShape from \SentDm\Webhooks\WebhookSenderProfileConfig
  *
  * @phpstan-type WebhookCreateParamsShape = array{
+ *   agentID?: string|null,
  *   displayName?: string|null,
  *   endpointURL?: string|null,
  *   eventFilters?: array<string,list<string>>|null,
@@ -37,6 +38,14 @@ final class WebhookCreateParams implements BaseModel
     /** @use SdkModel<WebhookCreateParamsShape> */
     use SdkModel;
     use SdkParams;
+
+    /**
+     * One of your Sent agents: the webhook then receives only that agent's events, its agent events and the
+     * messages it sent or received, and is never inheritable: is_inheritable set with it is refused. Only the account
+     * the agent runs on can set it, and only on a version 2 webhook.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
 
     #[Optional('display_name')]
     public ?string $displayName;
@@ -115,6 +124,7 @@ final class WebhookCreateParams implements BaseModel
      * @param WebhookSenderProfileConfig|WebhookSenderProfileConfigShape|null $senderProfile
      */
     public static function with(
+        ?string $agentID = null,
         ?string $displayName = null,
         ?string $endpointURL = null,
         ?array $eventFilters = null,
@@ -130,6 +140,7 @@ final class WebhookCreateParams implements BaseModel
     ): self {
         $self = new self;
 
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $displayName && $self['displayName'] = $displayName;
         null !== $endpointURL && $self['endpointURL'] = $endpointURL;
         null !== $eventFilters && $self['eventFilters'] = $eventFilters;
@@ -142,6 +153,19 @@ final class WebhookCreateParams implements BaseModel
         null !== $webhookVersion && $self['webhookVersion'] = $webhookVersion;
         null !== $idempotencyKey && $self['idempotencyKey'] = $idempotencyKey;
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    /**
+     * One of your Sent agents: the webhook then receives only that agent's events, its agent events and the
+     * messages it sent or received, and is never inheritable: is_inheritable set with it is refused. Only the account
+     * the agent runs on can set it, and only on a version 2 webhook.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
 
         return $self;
     }

@@ -54,6 +54,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * Creates a new webhook endpoint for the authenticated customer. A webhook is version 2 unless the request sets webhook_version to 1: Svix delivers it, signed with the webhook-id, webhook-timestamp and webhook-signature headers, and retries it on its own schedule, so retry_count and timeout_seconds apply to version 1 only. sender_profile applies to version 1 only and is ignored on version 2; is_inheritable applies to version 2 only. A version 1 webhook's response returns its sender_profile selection, with an empty event_types when it is not cloned onto sender profiles; a version 2 webhook's response leaves sender_profile out.
      *
      * @param array{
+     *   agentID?: string|null,
      *   displayName?: string,
      *   endpointURL?: string,
      *   eventFilters?: array<string,list<string>>|null,
@@ -198,6 +199,7 @@ final class WebhooksRawService implements WebhooksRawContract
      * Retrieves a paginated list of webhooks for the authenticated customer. Each version 1 webhook includes its sender_profile selection.
      *
      * @param array{
+     *   agentID?: string|null,
      *   isActive?: bool|null,
      *   page?: int,
      *   pageSize?: int,
@@ -218,7 +220,9 @@ final class WebhooksRawService implements WebhooksRawContract
             $params,
             $requestOptions,
         );
-        $query_params = array_flip(['isActive', 'page', 'pageSize', 'search']);
+        $query_params = array_flip(
+            ['agentID', 'isActive', 'page', 'pageSize', 'search']
+        );
 
         /** @var array<string,string> */
         $header_params = array_diff_key($parsed, $query_params);
@@ -229,7 +233,11 @@ final class WebhooksRawService implements WebhooksRawContract
             path: 'v3/webhooks',
             query: Util::array_transform_keys(
                 array_intersect_key($parsed, $query_params),
-                ['isActive' => 'is_active', 'pageSize' => 'page_size'],
+                [
+                    'agentID' => 'agent_id',
+                    'isActive' => 'is_active',
+                    'pageSize' => 'page_size',
+                ],
             ),
             headers: Util::array_transform_keys(
                 $header_params,
