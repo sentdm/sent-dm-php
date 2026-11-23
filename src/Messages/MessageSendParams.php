@@ -128,7 +128,7 @@ final class MessageSendParams implements BaseModel
     public ?string $subject;
 
     /**
-     * SDK-style template reference: resolve by ID or by name, with optional parameters.
+     * SDK-style template reference: resolve by id, by slug or by name (exactly one), with optional parameters.
      */
     #[Optional(nullable: true)]
     public ?TemplateRef $template;
@@ -318,7 +318,7 @@ final class MessageSendParams implements BaseModel
     }
 
     /**
-     * SDK-style template reference: resolve by ID or by name, with optional parameters.
+     * SDK-style template reference: resolve by id, by slug or by name (exactly one), with optional parameters.
      *
      * @param TemplateRef|TemplateRefShape|null $template
      */

@@ -5,8 +5,7 @@ namespace Tests\Services\Channels;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SentDm\Channels\SMS\APIResponseOfListOfSMSMarket;
-use SentDm\Channels\SMS\APIResponseOfSMSMarket;
+use SentDm\Channels\SMS\SMSNewResponse;
 use SentDm\Client;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
@@ -39,7 +38,7 @@ final class SMSTest extends TestCase
         $result = $this->client->channels->sms->create(numberType: 'TEN_DLC');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
+        $this->assertInstanceOf(SMSNewResponse::class, $result);
     }
 
     #[Test]
@@ -54,7 +53,7 @@ final class SMSTest extends TestCase
             areaCodes: ['415', '628'],
             compliance: [
                 'brand' => [
-                    'businessName' => 'business_name',
+                    'businessName' => 'xxx',
                     'city' => 'city',
                     'contactEmail' => 'dev@stainless.com',
                     'contactName' => 'contact_name',
@@ -67,20 +66,20 @@ final class SMSTest extends TestCase
                     'postalCode' => 'postal_code',
                     'state' => 'state',
                     'street' => 'street',
-                    'taxID' => 'tax_id',
+                    'taxID' => 'xx',
                     'taxIDType' => 'tax_id_type',
                     'website' => 'website',
                 ],
                 'campaign' => [
-                    'description' => 'description',
+                    'description' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                     'helpKeywords' => 'help_keywords',
-                    'helpMessage' => 'help_message',
+                    'helpMessage' => 'xxxxxxxxxxxxxxxxxxxx',
                     'inherit' => true,
                     'messageFlow' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                     'optInKeywords' => 'opt_in_keywords',
-                    'optInMessage' => 'opt_in_message',
+                    'optInMessage' => 'xxxxxxxxxxxxxxxxxxxx',
                     'optOutKeywords' => 'opt_out_keywords',
-                    'optOutMessage' => 'opt_out_message',
+                    'optOutMessage' => 'xxxxxxxxxxxxxxxxxxxx',
                     'privacyPolicyLink' => 'privacy_policy_link',
                     'termsAndConditionsLink' => 'terms_and_conditions_link',
                     'useCases' => [
@@ -89,7 +88,6 @@ final class SMSTest extends TestCase
                     'volume' => 'volume',
                 ],
             ],
-            country: 'US',
             numbers: [['areaCode' => 'area_code', 'quantity' => 0]],
             sandbox: false,
             senderValue: null,
@@ -98,118 +96,6 @@ final class SMSTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testRetrieve(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->retrieve('ten_dlc', country: 'US');
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testRetrieveWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->retrieve(
-            'ten_dlc',
-            country: 'US',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testUpdate(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->update('ten_dlc', country: 'US');
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testUpdateWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->update(
-            'ten_dlc',
-            country: 'US',
-            compliance: [
-                'brand' => [
-                    'businessName' => 'business_name',
-                    'city' => 'city',
-                    'contactEmail' => 'dev@stainless.com',
-                    'contactName' => 'contact_name',
-                    'contactPhone' => 'contact_phone',
-                    'country' => 'country',
-                    'einIssuingCountry' => 'ein_issuing_country',
-                    'entityType' => 'PRIVATE_PROFIT',
-                    'inherit' => true,
-                    'legalName' => 'legal_name',
-                    'postalCode' => 'postal_code',
-                    'state' => 'state',
-                    'street' => 'street',
-                    'taxID' => 'tax_id',
-                    'taxIDType' => 'tax_id_type',
-                    'website' => 'website',
-                ],
-                'campaign' => [
-                    'description' => 'description',
-                    'helpKeywords' => 'help_keywords',
-                    'helpMessage' => 'help_message',
-                    'inherit' => true,
-                    'messageFlow' => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                    'optInKeywords' => 'opt_in_keywords',
-                    'optInMessage' => 'opt_in_message',
-                    'optOutKeywords' => 'opt_out_keywords',
-                    'optOutMessage' => 'opt_out_message',
-                    'privacyPolicyLink' => 'privacy_policy_link',
-                    'termsAndConditionsLink' => 'terms_and_conditions_link',
-                    'useCases' => [
-                        ['sampleMessages' => [(object) []], 'useCase' => 'MARKETING'],
-                    ],
-                    'volume' => 'volume',
-                ],
-            ],
-            sandbox: false,
-            idempotencyKey: 'req_abc123_retry1',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testList(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->list();
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfListOfSMSMarket::class, $result);
+        $this->assertInstanceOf(SMSNewResponse::class, $result);
     }
 }

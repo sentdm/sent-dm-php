@@ -2,15 +2,19 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS;
+namespace SentDm\Channels\ChannelsState;
 
-use SentDm\Channels\SMS\SMSMarket\Status;
+use SentDm\Channels\ChannelsState\SMS\Status;
+use SentDm\Channels\SMS\SMSNumber;
+use SentDm\Channels\SMS\SuppliedCompliance;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * One SMS market the profile sends in — its sender, where that sender stands, and what the market wants.
+ * One market the profile sends in on a channel — its sender, where that sender stands, and what the market wants.
+ * Named for no one channel, as the routes it answers are not (/v3/channels/{channel}/{country}/{type}); SMS is
+ * the channel with markets today.
  *
  * A profile may send in several: it is a tenant, not a market. Each carries its own status, because
  * a profile can be live in one country and mid-registration in another — and each carries what it still owes,
@@ -19,7 +23,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type SuppliedComplianceShape from \SentDm\Channels\SMS\SuppliedCompliance
  * @phpstan-import-type SMSNumberShape from \SentDm\Channels\SMS\SMSNumber
  *
- * @phpstan-type SMSMarketShape = array{
+ * @phpstan-type SMSShape = array{
  *   compliance?: null|SuppliedCompliance|SuppliedComplianceShape,
  *   country?: string|null,
  *   numberType?: string|null,
@@ -29,9 +33,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   status?: null|Status|value-of<Status>,
  * }
  */
-final class SMSMarket implements BaseModel
+final class SMS implements BaseModel
 {
-    /** @use SdkModel<SMSMarketShape> */
+    /** @use SdkModel<SMSShape> */
     use SdkModel;
 
     /**
