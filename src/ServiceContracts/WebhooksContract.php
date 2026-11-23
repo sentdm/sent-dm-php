@@ -25,6 +25,9 @@ interface WebhooksContract
     /**
      * @api
      *
+     * @param string|null $agentID Body param: One of your Sent agents: the webhook then receives only that agent's events, its agent events and the
+     * messages it sent or received, and is never inheritable: is_inheritable set with it is refused. Only the account
+     * the agent runs on can set it, and only on a version 2 webhook.
      * @param string $displayName Body param
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
@@ -48,6 +51,7 @@ interface WebhooksContract
      * @throws APIException
      */
     public function create(
+        ?string $agentID = null,
         ?string $displayName = null,
         ?string $endpointURL = null,
         ?array $eventFilters = null,
@@ -86,7 +90,8 @@ interface WebhooksContract
      * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
      * @param bool|null $isInheritable Body param: Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
-     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable, and never an
+     * agent's.
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -118,6 +123,7 @@ interface WebhooksContract
     /**
      * @api
      *
+     * @param string|null $agentID query param: Only the webhooks of this Sent agent
      * @param bool|null $isActive Query param
      * @param int $page Query param
      * @param int $pageSize Query param
@@ -130,6 +136,7 @@ interface WebhooksContract
      * @throws APIException
      */
     public function list(
+        ?string $agentID = null,
         ?bool $isActive = null,
         ?int $page = null,
         ?int $pageSize = null,
