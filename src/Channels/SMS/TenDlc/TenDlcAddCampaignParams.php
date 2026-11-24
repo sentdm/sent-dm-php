@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SentDm\Channels\SMS\TenDlc;
 
-use SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams\UseCase1 as UseCase;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
 use SentDm\Core\Concerns\SdkModel;
@@ -32,7 +31,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\Channels\SMS\TenDlcService::addCampaign()
  *
- * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams\UseCase1
+ * @phpstan-import-type TenDlcCampaignUseCaseShape from \SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase
  *
  * @phpstan-type TenDlcAddCampaignParamsShape = array{
  *   description: string,
@@ -45,7 +44,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   optOutMessage: string,
  *   privacyPolicyLink: string,
  *   termsAndConditionsLink: string,
- *   useCases: list<UseCase|UseCase1Shape>,
+ *   useCases: list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>,
  *   volume: string,
  *   idempotencyKey: string,
  *   sandbox?: bool|null,
@@ -121,9 +120,9 @@ final class TenDlcAddCampaignParams implements BaseModel
     /**
      * Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      *
-     * @var list<UseCase> $useCases
+     * @var list<TenDlcCampaignUseCase> $useCases
      */
-    #[Required('use_cases', list: UseCase::class)]
+    #[Required('use_cases', list: TenDlcCampaignUseCase::class)]
     public array $useCases;
 
     /**
@@ -196,7 +195,7 @@ final class TenDlcAddCampaignParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<UseCase|UseCase1Shape> $useCases
+     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape> $useCases
      */
     public static function with(
         string $description,
@@ -351,7 +350,7 @@ final class TenDlcAddCampaignParams implements BaseModel
     /**
      * Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      *
-     * @param list<UseCase|UseCase1Shape> $useCases
+     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape> $useCases
      */
     public function withUseCases(array $useCases): self
     {

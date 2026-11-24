@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace SentDm\Services\Channels\SMS;
 
 use SentDm\Channels\Markets\APIResponseOfChannelMarket;
-use SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams\UseCase1 as UseCase;
+use SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase;
 use SentDm\Channels\SMS\TenDlc\TenDlcListCampaignsResponse;
-use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1;
 use SentDm\Client;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
@@ -27,8 +26,7 @@ use SentDm\ServiceContracts\Channels\SMS\TenDlcContract;
  *
  * Call `GET /v3/compliance/requirements` first — it answers what a market demands before you hold it, with a body you can fill in and post.
  *
- * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams\UseCase1
- * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1 as UseCase1Shape1
+ * @phpstan-import-type TenDlcCampaignUseCaseShape from \SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class TenDlcService implements TenDlcContract
@@ -77,7 +75,7 @@ final class TenDlcService implements TenDlcContract
      * @param string $optOutMessage Body param: Opt-out confirmation. TCR optoutMessage. Its presence is what sets subscriberOptout. Required when `compliance.campaign.inherit != true`.
      * @param string $privacyPolicyLink Body param: Privacy policy URL. TCR privacyPolicyLink. Required when `compliance.campaign.inherit != true`.
      * @param string $termsAndConditionsLink Body param: Terms and conditions URL. TCR termsAndConditionsLink. Required when `compliance.campaign.inherit != true`.
-     * @param list<UseCase|UseCase1Shape> $useCases Body param: Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
+     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape> $useCases Body param: Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      * @param string $volume Body param: Expected monthly volume. Required whenever the campaign's fields are written. A whole number of messages, e.g. 1000 or 10000. Decides how the campaign registers and which fee tier applies: below the low-volume threshold it registers as LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting it registers the campaign at the higher-fee standard tier. Required when `compliance.campaign.inherit != true`, whenever its block is written.
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
@@ -185,7 +183,7 @@ final class TenDlcService implements TenDlcContract
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
      * @param string $termsAndConditionsLink Body param: Terms and conditions URL. TCR termsAndConditionsLink. Required when `compliance.campaign.inherit != true`.
-     * @param list<UseCase1|UseCase1Shape1> $useCases Body param: Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
+     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape> $useCases Body param: Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      * @param string $volume Body param: Expected monthly volume. Required whenever the campaign's fields are written. A whole number of messages, e.g. 1000 or 10000. Decides how the campaign registers and which fee tier applies: below the low-volume threshold it registers as LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting it registers the campaign at the higher-fee standard tier. Required when `compliance.campaign.inherit != true`, whenever its block is written.
      * @param string $idempotencyKey Header param: Unique key to ensure idempotent request processing. Must be 1-255 alphanumeric characters, hyphens, or underscores. Responses are cached for 24 hours per key per customer.
      * @param string $xProfileID Header param: Profile UUID to scope the request to a child profile. Only organization API keys can use this header. The profile must belong to the calling organization.

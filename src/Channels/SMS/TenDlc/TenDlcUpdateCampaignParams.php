@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SentDm\Channels\SMS\TenDlc;
 
-use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1 as UseCase;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
@@ -25,7 +24,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\Channels\SMS\TenDlcService::updateCampaign()
  *
- * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1
+ * @phpstan-import-type TenDlcCampaignUseCaseShape from \SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase
  *
  * @phpstan-type TenDlcUpdateCampaignParamsShape = array{
  *   description?: string|null,
@@ -39,7 +38,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   privacyPolicyLink?: string|null,
  *   sandbox?: bool|null,
  *   termsAndConditionsLink?: string|null,
- *   useCases?: list<UseCase|UseCase1Shape>|null,
+ *   useCases?: list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>|null,
  *   volume?: string|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -121,9 +120,9 @@ final class TenDlcUpdateCampaignParams implements BaseModel
     /**
      * Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      *
-     * @var list<UseCase>|null $useCases
+     * @var list<TenDlcCampaignUseCase>|null $useCases
      */
-    #[Optional('use_cases', list: UseCase::class)]
+    #[Optional('use_cases', list: TenDlcCampaignUseCase::class)]
     public ?array $useCases;
 
     /**
@@ -148,7 +147,7 @@ final class TenDlcUpdateCampaignParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<UseCase|UseCase1Shape>|null $useCases
+     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>|null $useCases
      */
     public static function with(
         ?string $description = null,
@@ -314,7 +313,7 @@ final class TenDlcUpdateCampaignParams implements BaseModel
     /**
      * Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      *
-     * @param list<UseCase|UseCase1Shape> $useCases
+     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape> $useCases
      */
     public function withUseCases(array $useCases): self
     {

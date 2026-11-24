@@ -6,11 +6,10 @@ namespace SentDm\Services\Channels\SMS;
 
 use SentDm\Channels\Markets\APIResponseOfChannelMarket;
 use SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams;
-use SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams\UseCase1 as UseCase;
+use SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase;
 use SentDm\Channels\SMS\TenDlc\TenDlcListCampaignsParams;
 use SentDm\Channels\SMS\TenDlc\TenDlcListCampaignsResponse;
 use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams;
-use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
@@ -31,8 +30,7 @@ use SentDm\ServiceContracts\Channels\SMS\TenDlcRawContract;
  *
  * Call `GET /v3/compliance/requirements` first — it answers what a market demands before you hold it, with a body you can fill in and post.
  *
- * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams\UseCase1
- * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1 as UseCase1Shape1
+ * @phpstan-import-type TenDlcCampaignUseCaseShape from \SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase
  * @phpstan-import-type RequestOpts from \SentDm\RequestOptions
  */
 final class TenDlcRawService implements TenDlcRawContract
@@ -75,7 +73,7 @@ final class TenDlcRawService implements TenDlcRawContract
      *   optOutMessage: string,
      *   privacyPolicyLink: string,
      *   termsAndConditionsLink: string,
-     *   useCases: list<UseCase|UseCase1Shape>,
+     *   useCases: list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>,
      *   volume: string,
      *   idempotencyKey: string,
      *   sandbox?: bool,
@@ -182,7 +180,7 @@ final class TenDlcRawService implements TenDlcRawContract
      *   privacyPolicyLink?: string,
      *   sandbox?: bool,
      *   termsAndConditionsLink?: string,
-     *   useCases?: list<UseCase1|UseCase1Shape1>,
+     *   useCases?: list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>,
      *   volume?: string,
      *   idempotencyKey?: string,
      *   xProfileID?: string,
