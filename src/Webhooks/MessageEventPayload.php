@@ -21,10 +21,13 @@ use SentDm\Core\Contracts\BaseModel;
  *   channel?: string|null,
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
+ *   parentMessageID?: string|null,
  *   reason?: string|null,
  *   reasonCode?: string|null,
  *   scheduleReason?: string|null,
  *   scheduledAt?: string|null,
+ *   sentAgentID?: string|null,
+ *   sentInstanceID?: string|null,
  *   templateID?: string|null,
  *   templateName?: string|null,
  *   updatedAt?: string|null,
@@ -84,6 +87,14 @@ final class MessageEventPayload implements BaseModel
     public ?string $outboundNumber;
 
     /**
+     * When this message is another send of a message you sent earlier, the id of that original message; omitted for
+     * every other message. The new send has its own message_id, so this ties its events back to the message
+     * you sent. Always the first message, however many sends lie between them.
+     */
+    #[Optional('parent_message_id', nullable: true)]
+    public ?string $parentMessageID;
+
+    /**
      * A human-readable sentence for ReasonCode, for example "The recipient is not registered on
      * this channel". Omitted whenever reason_code is.
      */
@@ -119,6 +130,19 @@ final class MessageEventPayload implements BaseModel
      */
     #[Optional('scheduled_at', nullable: true)]
     public ?string $scheduledAt;
+
+    /**
+     * The Sent agent (Sent Agents) that sent this message, when one did. Not the RCS agent_id above:
+     * that names the RCS sender agent, this names the autonomous agent running on the account.
+     */
+    #[Optional('sent_agent_id', nullable: true)]
+    public ?string $sentAgentID;
+
+    /**
+     * The conversation (agent × contact) the message belongs to, when a Sent agent sent it.
+     */
+    #[Optional('sent_instance_id', nullable: true)]
+    public ?string $sentInstanceID;
 
     /**
      * The template the message was sent from, when it was sent from one.
@@ -172,10 +196,13 @@ final class MessageEventPayload implements BaseModel
         ?string $channel = null,
         ?string $messageID = null,
         ?string $outboundNumber = null,
+        ?string $parentMessageID = null,
         ?string $reason = null,
         ?string $reasonCode = null,
         ?string $scheduleReason = null,
         ?string $scheduledAt = null,
+        ?string $sentAgentID = null,
+        ?string $sentInstanceID = null,
         ?string $templateID = null,
         ?string $templateName = null,
         ?string $updatedAt = null,
@@ -190,10 +217,13 @@ final class MessageEventPayload implements BaseModel
         null !== $channel && $self['channel'] = $channel;
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
+        null !== $parentMessageID && $self['parentMessageID'] = $parentMessageID;
         null !== $reason && $self['reason'] = $reason;
         null !== $reasonCode && $self['reasonCode'] = $reasonCode;
         null !== $scheduleReason && $self['scheduleReason'] = $scheduleReason;
         null !== $scheduledAt && $self['scheduledAt'] = $scheduledAt;
+        null !== $sentAgentID && $self['sentAgentID'] = $sentAgentID;
+        null !== $sentInstanceID && $self['sentInstanceID'] = $sentInstanceID;
         null !== $templateID && $self['templateID'] = $templateID;
         null !== $templateName && $self['templateName'] = $templateName;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
@@ -285,6 +315,19 @@ final class MessageEventPayload implements BaseModel
     }
 
     /**
+     * When this message is another send of a message you sent earlier, the id of that original message; omitted for
+     * every other message. The new send has its own message_id, so this ties its events back to the message
+     * you sent. Always the first message, however many sends lie between them.
+     */
+    public function withParentMessageID(?string $parentMessageID): self
+    {
+        $self = clone $this;
+        $self['parentMessageID'] = $parentMessageID;
+
+        return $self;
+    }
+
+    /**
      * A human-readable sentence for ReasonCode, for example "The recipient is not registered on
      * this channel". Omitted whenever reason_code is.
      */
@@ -337,6 +380,29 @@ final class MessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['scheduledAt'] = $scheduledAt;
+
+        return $self;
+    }
+
+    /**
+     * The Sent agent (Sent Agents) that sent this message, when one did. Not the RCS agent_id above:
+     * that names the RCS sender agent, this names the autonomous agent running on the account.
+     */
+    public function withSentAgentID(?string $sentAgentID): self
+    {
+        $self = clone $this;
+        $self['sentAgentID'] = $sentAgentID;
+
+        return $self;
+    }
+
+    /**
+     * The conversation (agent × contact) the message belongs to, when a Sent agent sent it.
+     */
+    public function withSentInstanceID(?string $sentInstanceID): self
+    {
+        $self = clone $this;
+        $self['sentInstanceID'] = $sentInstanceID;
 
         return $self;
     }

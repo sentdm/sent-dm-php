@@ -29,6 +29,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   direction?: string|null,
  *   events?: list<MessageStatusEvent|MessageStatusEventShape>|null,
  *   messageBody?: null|MessageBody|MessageBodyShape,
+ *   parentMessageID?: string|null,
  *   phone?: string|null,
  *   phoneInternational?: string|null,
  *   price?: float|null,
@@ -84,6 +85,13 @@ final class Message implements BaseModel
      */
     #[Optional('message_body', nullable: true)]
     public ?MessageBody $messageBody;
+
+    /**
+     * When this message is another send of a message you sent earlier, the id of that original message; null for
+     * every other message. Always the first message, however many sends lie between them.
+     */
+    #[Optional('parent_message_id', nullable: true)]
+    public ?string $parentMessageID;
 
     #[Optional]
     public ?string $phone;
@@ -150,6 +158,7 @@ final class Message implements BaseModel
         ?string $direction = null,
         ?array $events = null,
         MessageBody|array|null $messageBody = null,
+        ?string $parentMessageID = null,
         ?string $phone = null,
         ?string $phoneInternational = null,
         ?float $price = null,
@@ -172,6 +181,7 @@ final class Message implements BaseModel
         null !== $direction && $self['direction'] = $direction;
         null !== $events && $self['events'] = $events;
         null !== $messageBody && $self['messageBody'] = $messageBody;
+        null !== $parentMessageID && $self['parentMessageID'] = $parentMessageID;
         null !== $phone && $self['phone'] = $phone;
         null !== $phoneInternational && $self['phoneInternational'] = $phoneInternational;
         null !== $price && $self['price'] = $price;
@@ -270,6 +280,18 @@ final class Message implements BaseModel
     {
         $self = clone $this;
         $self['messageBody'] = $messageBody;
+
+        return $self;
+    }
+
+    /**
+     * When this message is another send of a message you sent earlier, the id of that original message; null for
+     * every other message. Always the first message, however many sends lie between them.
+     */
+    public function withParentMessageID(?string $parentMessageID): self
+    {
+        $self = clone $this;
+        $self['parentMessageID'] = $parentMessageID;
 
         return $self;
     }

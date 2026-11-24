@@ -49,6 +49,9 @@ final class WebhooksService implements WebhooksContract
      *
      * Creates a new webhook endpoint for the authenticated customer. A webhook is version 2 unless the request sets webhook_version to 1: Svix delivers it, signed with the webhook-id, webhook-timestamp and webhook-signature headers, and retries it on its own schedule, so retry_count and timeout_seconds apply to version 1 only. sender_profile applies to version 1 only and is ignored on version 2; is_inheritable applies to version 2 only. A version 1 webhook's response returns its sender_profile selection, with an empty event_types when it is not cloned onto sender profiles; a version 2 webhook's response leaves sender_profile out.
      *
+     * @param string|null $agentID Body param: One of your Sent agents: the webhook then receives only that agent's events, its agent events and the
+     * messages it sent or received, and is never inheritable: is_inheritable set with it is refused. Only the account
+     * the agent runs on can set it, and only on a version 2 webhook.
      * @param string $displayName Body param
      * @param string $endpointURL Body param
      * @param array<string,list<string>>|null $eventFilters Body param
@@ -72,6 +75,7 @@ final class WebhooksService implements WebhooksContract
      * @throws APIException
      */
     public function create(
+        ?string $agentID = null,
         ?string $displayName = null,
         ?string $endpointURL = null,
         ?array $eventFilters = null,
@@ -88,6 +92,7 @@ final class WebhooksService implements WebhooksContract
     ): APIResponseWebhook {
         $params = Util::removeNulls(
             [
+                'agentID' => $agentID,
                 'displayName' => $displayName,
                 'endpointURL' => $endpointURL,
                 'eventFilters' => $eventFilters,
@@ -143,7 +148,8 @@ final class WebhooksService implements WebhooksContract
      * @param array<string,list<string>>|null $eventFilters Body param
      * @param list<string> $eventTypes Body param
      * @param bool|null $isInheritable Body param: Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
-     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable, and never an
+     * agent's.
      * @param int $retryCount Body param
      * @param bool $sandbox Body param: Sandbox flag - when true, the operation is simulated without side effects
      * Useful for testing integrations without actual execution
@@ -198,6 +204,7 @@ final class WebhooksService implements WebhooksContract
      *
      * Retrieves a paginated list of webhooks for the authenticated customer. Each version 1 webhook includes its sender_profile selection.
      *
+     * @param string|null $agentID query param: Only the webhooks of this Sent agent
      * @param bool|null $isActive Query param
      * @param int $page Query param
      * @param int $pageSize Query param
@@ -210,6 +217,7 @@ final class WebhooksService implements WebhooksContract
      * @throws APIException
      */
     public function list(
+        ?string $agentID = null,
         ?bool $isActive = null,
         ?int $page = null,
         ?int $pageSize = null,
@@ -219,6 +227,7 @@ final class WebhooksService implements WebhooksContract
     ): WebhooksPage {
         $params = Util::removeNulls(
             [
+                'agentID' => $agentID,
                 'isActive' => $isActive,
                 'page' => $page,
                 'pageSize' => $pageSize,

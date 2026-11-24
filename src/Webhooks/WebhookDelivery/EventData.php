@@ -7,6 +7,7 @@ namespace SentDm\Webhooks\WebhookDelivery;
 use SentDm\Core\Concerns\SdkUnion;
 use SentDm\Core\Conversion\Contracts\Converter;
 use SentDm\Core\Conversion\Contracts\ConverterSource;
+use SentDm\Webhooks\AgentEvent;
 use SentDm\Webhooks\CallEvent;
 use SentDm\Webhooks\ChannelEvent;
 use SentDm\Webhooks\ContactEvent;
@@ -42,9 +43,10 @@ use SentDm\Webhooks\TemplateEvent;
  * @phpstan-import-type ContactEventShape from \SentDm\Webhooks\ContactEvent
  * @phpstan-import-type LinkEventShape from \SentDm\Webhooks\LinkEvent
  * @phpstan-import-type CallEventShape from \SentDm\Webhooks\CallEvent
+ * @phpstan-import-type AgentEventShape from \SentDm\Webhooks\AgentEvent
  *
- * @phpstan-type EventDataVariants = MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent
- * @phpstan-type EventDataShape = EventDataVariants|MessageEventShape|InboundMessageEventShape|TemplateEventShape|ChannelEventShape|ContactEventShape|LinkEventShape|CallEventShape
+ * @phpstan-type EventDataVariants = MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent|AgentEvent
+ * @phpstan-type EventDataShape = EventDataVariants|MessageEventShape|InboundMessageEventShape|TemplateEventShape|ChannelEventShape|ContactEventShape|LinkEventShape|CallEventShape|AgentEventShape
  */
 final class EventData implements ConverterSource
 {
@@ -63,6 +65,7 @@ final class EventData implements ConverterSource
             ContactEvent::class,
             LinkEvent::class,
             CallEvent::class,
+            AgentEvent::class,
         ];
     }
 }
