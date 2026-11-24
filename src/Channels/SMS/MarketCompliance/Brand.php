@@ -99,7 +99,7 @@ final class Brand implements BaseModel
     public ?string $legalName;
 
     /**
-     * Postal code. Required when `compliance.brand.inherit != true`.
+     * Postal code. Five digits for a US registration. Required when `compliance.brand.inherit != true`.
      */
     #[Optional('postal_code')]
     public ?string $postalCode;
@@ -129,7 +129,7 @@ final class Brand implements BaseModel
     public ?string $taxIDType;
 
     /**
-     * Website. TCR website. Optional, and worth sending: carriers weigh it when vetting, so a brand that has one and omits it is vetted on less than it could be.
+     * Website. TCR website. Required whenever the identity's fields are sent, as the dashboard requires it: carriers weigh it when vetting. Not reported as outstanding on an identity already stored without one, which may be filed and no longer changeable. Required when `compliance.brand.inherit != true`, whenever its block is written.
      */
     #[Optional]
     public ?string $website;
@@ -299,7 +299,7 @@ final class Brand implements BaseModel
     }
 
     /**
-     * Postal code. Required when `compliance.brand.inherit != true`.
+     * Postal code. Five digits for a US registration. Required when `compliance.brand.inherit != true`.
      */
     public function withPostalCode(string $postalCode): self
     {
@@ -354,7 +354,7 @@ final class Brand implements BaseModel
     }
 
     /**
-     * Website. TCR website. Optional, and worth sending: carriers weigh it when vetting, so a brand that has one and omits it is vetted on less than it could be.
+     * Website. TCR website. Required whenever the identity's fields are sent, as the dashboard requires it: carriers weigh it when vetting. Not reported as outstanding on an identity already stored without one, which may be filed and no longer changeable. Required when `compliance.brand.inherit != true`, whenever its block is written.
      */
     public function withWebsite(string $website): self
     {

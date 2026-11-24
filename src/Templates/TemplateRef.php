@@ -9,10 +9,13 @@ use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
- * SDK-style template reference: resolve by ID or by name, with optional parameters.
+ * SDK-style template reference: resolve by id, by slug or by name (exactly one), with optional parameters.
  *
  * @phpstan-type TemplateRefShape = array{
- *   id?: string|null, name?: string|null, parameters?: array<string,string>|null
+ *   id?: string|null,
+ *   name?: string|null,
+ *   parameters?: array<string,string>|null,
+ *   slug?: string|null,
  * }
  */
 final class TemplateRef implements BaseModel
@@ -21,13 +24,13 @@ final class TemplateRef implements BaseModel
     use SdkModel;
 
     /**
-     * Template ID (mutually exclusive with name).
+     * Template ID (mutually exclusive with slug and name).
      */
     #[Optional(nullable: true)]
     public ?string $id;
 
     /**
-     * Template name (mutually exclusive with id).
+     * Template name (mutually exclusive with id and slug).
      */
     #[Optional(nullable: true)]
     public ?string $name;
@@ -54,6 +57,13 @@ final class TemplateRef implements BaseModel
     #[Optional(map: 'string', nullable: true)]
     public ?array $parameters;
 
+    /**
+     * Template slug (mutually exclusive with id and name): the stable name every template on this account carries
+     * (GET /v3/templates lists them). Compared case-insensitively.
+     */
+    #[Optional(nullable: true)]
+    public ?string $slug;
+
     public function __construct()
     {
         $this->initialize();
@@ -69,19 +79,21 @@ final class TemplateRef implements BaseModel
     public static function with(
         ?string $id = null,
         ?string $name = null,
-        ?array $parameters = null
+        ?array $parameters = null,
+        ?string $slug = null,
     ): self {
         $self = new self;
 
         null !== $id && $self['id'] = $id;
         null !== $name && $self['name'] = $name;
         null !== $parameters && $self['parameters'] = $parameters;
+        null !== $slug && $self['slug'] = $slug;
 
         return $self;
     }
 
     /**
-     * Template ID (mutually exclusive with name).
+     * Template ID (mutually exclusive with slug and name).
      */
     public function withID(?string $id): self
     {
@@ -92,7 +104,7 @@ final class TemplateRef implements BaseModel
     }
 
     /**
-     * Template name (mutually exclusive with id).
+     * Template name (mutually exclusive with id and slug).
      */
     public function withName(?string $name): self
     {
@@ -125,6 +137,18 @@ final class TemplateRef implements BaseModel
     {
         $self = clone $this;
         $self['parameters'] = $parameters;
+
+        return $self;
+    }
+
+    /**
+     * Template slug (mutually exclusive with id and name): the stable name every template on this account carries
+     * (GET /v3/templates lists them). Compared case-insensitively.
+     */
+    public function withSlug(?string $slug): self
+    {
+        $self = clone $this;
+        $self['slug'] = $slug;
 
         return $self;
     }
