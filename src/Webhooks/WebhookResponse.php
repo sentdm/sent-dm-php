@@ -14,6 +14,7 @@ use SentDm\Core\Conversion\ListOf;
  *
  * @phpstan-type WebhookResponseShape = array{
  *   id?: string|null,
+ *   agentID?: string|null,
  *   consecutiveFailures?: int|null,
  *   createdAt?: \DateTimeInterface|null,
  *   customerID?: string|null,
@@ -40,6 +41,12 @@ final class WebhookResponse implements BaseModel
 
     #[Optional]
     public ?string $id;
+
+    /**
+     * The Sent agent whose events alone this webhook receives; absent on a webhook of the whole account.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
 
     /**
      * Failed attempts since the last success. Version 1 only: always 0 on a version 2 webhook, whose deliveries
@@ -138,6 +145,7 @@ final class WebhookResponse implements BaseModel
      */
     public static function with(
         ?string $id = null,
+        ?string $agentID = null,
         ?int $consecutiveFailures = null,
         ?\DateTimeInterface $createdAt = null,
         ?string $customerID = null,
@@ -159,6 +167,7 @@ final class WebhookResponse implements BaseModel
         $self = new self;
 
         null !== $id && $self['id'] = $id;
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $consecutiveFailures && $self['consecutiveFailures'] = $consecutiveFailures;
         null !== $createdAt && $self['createdAt'] = $createdAt;
         null !== $customerID && $self['customerID'] = $customerID;
@@ -184,6 +193,17 @@ final class WebhookResponse implements BaseModel
     {
         $self = clone $this;
         $self['id'] = $id;
+
+        return $self;
+    }
+
+    /**
+     * The Sent agent whose events alone this webhook receives; absent on a webhook of the whole account.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
 
         return $self;
     }

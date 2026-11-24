@@ -12,6 +12,8 @@ use SentDm\Core\Contracts\BaseModel;
 /**
  * Template response for v3 API.
  *
+ * @phpstan-import-type TemplateDefinitionShape from \SentDm\Templates\TemplateDefinition
+ *
  * @phpstan-type TemplateShape = array{
  *   customerID: string,
  *   id?: string|null,
@@ -19,9 +21,11 @@ use SentDm\Core\Contracts\BaseModel;
  *   category?: string|null,
  *   channels?: list<string>|null,
  *   createdAt?: \DateTimeInterface|null,
+ *   definition?: null|TemplateDefinition|TemplateDefinitionShape,
  *   isPublished?: bool|null,
  *   language?: string|null,
  *   name?: string|null,
+ *   slug?: string|null,
  *   status?: string|null,
  *   updatedAt?: \DateTimeInterface|null,
  *   variables?: list<string>|null,
@@ -94,6 +98,12 @@ final class Template implements BaseModel
     public ?\DateTimeInterface $createdAt;
 
     /**
+     * Complete definition of a message template including header, body, footer, and buttons.
+     */
+    #[Optional(nullable: true)]
+    public ?TemplateDefinition $definition;
+
+    /**
      * Whether the template is published and active.
      */
     #[Optional('is_published')]
@@ -110,6 +120,13 @@ final class Template implements BaseModel
      */
     #[Optional]
     public ?string $name;
+
+    /**
+     * The template's slug: a stable, URL-safe name a send can use in place of the id (template.slug on
+     * POST /v3/messages). Given at creation from the name and never changed.
+     */
+    #[Optional(nullable: true)]
+    public ?string $slug;
 
     /**
      * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
@@ -157,6 +174,7 @@ final class Template implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      *
      * @param list<string>|null $channels
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition
      * @param list<string>|null $variables
      */
     public static function with(
@@ -166,9 +184,11 @@ final class Template implements BaseModel
         ?string $category = null,
         ?array $channels = null,
         ?\DateTimeInterface $createdAt = null,
+        TemplateDefinition|array|null $definition = null,
         ?bool $isPublished = null,
         ?string $language = null,
         ?string $name = null,
+        ?string $slug = null,
         ?string $status = null,
         ?\DateTimeInterface $updatedAt = null,
         ?array $variables = null,
@@ -182,9 +202,11 @@ final class Template implements BaseModel
         null !== $category && $self['category'] = $category;
         null !== $channels && $self['channels'] = $channels;
         null !== $createdAt && $self['createdAt'] = $createdAt;
+        null !== $definition && $self['definition'] = $definition;
         null !== $isPublished && $self['isPublished'] = $isPublished;
         null !== $language && $self['language'] = $language;
         null !== $name && $self['name'] = $name;
+        null !== $slug && $self['slug'] = $slug;
         null !== $status && $self['status'] = $status;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
         null !== $variables && $self['variables'] = $variables;
@@ -284,6 +306,20 @@ final class Template implements BaseModel
     }
 
     /**
+     * Complete definition of a message template including header, body, footer, and buttons.
+     *
+     * @param TemplateDefinition|TemplateDefinitionShape|null $definition
+     */
+    public function withDefinition(
+        TemplateDefinition|array|null $definition
+    ): self {
+        $self = clone $this;
+        $self['definition'] = $definition;
+
+        return $self;
+    }
+
+    /**
      * Whether the template is published and active.
      */
     public function withIsPublished(bool $isPublished): self
@@ -312,6 +348,18 @@ final class Template implements BaseModel
     {
         $self = clone $this;
         $self['name'] = $name;
+
+        return $self;
+    }
+
+    /**
+     * The template's slug: a stable, URL-safe name a send can use in place of the id (template.slug on
+     * POST /v3/messages). Given at creation from the name and never changed.
+     */
+    public function withSlug(?string $slug): self
+    {
+        $self = clone $this;
+        $self['slug'] = $slug;
 
         return $self;
     }

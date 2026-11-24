@@ -10,6 +10,8 @@ use SentDm\Core\Concerns\SdkParams;
 use SentDm\Core\Contracts\BaseModel;
 
 /**
+ * **Deprecated.** Use `GET /v3/channels/{channel}/{country}/compliance` instead, and expect this to be removed in a future release. It answers exactly as before, so nothing needs to change today.
+ *
  * **Call this first.** It returns what a channel, country and sender type demand before you can send there — and `setup[]`, the calls that satisfy those demands, in order, each with a body you can copy and send as it stands. You never have to track forty countries' rules yourself.
  *
  * ## Channel
@@ -42,6 +44,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * `required` is `false` and `requirements` is empty, and the single `setup` step carries no `compliance` array at all. A `sender_id_pattern` may still be present — many markets constrain the sender string without registering anything.
  *
+ * @deprecated
  * @see SentDm\Services\ComplianceService::retrieveRequirements()
  *
  * @phpstan-type ComplianceRetrieveRequirementsParamsShape = array{
