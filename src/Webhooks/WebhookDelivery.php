@@ -69,7 +69,7 @@ final class WebhookDelivery implements BaseModel
      * @var EventDataVariants|null $eventData
      */
     #[Optional('event_data')]
-    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent|null $eventData;
+    public MessageEvent|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent|AgentEvent|null $eventData;
 
     #[Optional('event_type')]
     public ?string $eventType;
@@ -104,7 +104,7 @@ final class WebhookDelivery implements BaseModel
         ?int $deliveryAttempts = null,
         ?string $deliveryStatus = null,
         ?string $errorMessage = null,
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent|null $eventData = null,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent|AgentEvent|null $eventData = null,
         ?string $eventType = null,
         ?int $httpStatusCode = null,
         ?\DateTimeInterface $processingCompletedAt = null,
@@ -191,7 +191,7 @@ final class WebhookDelivery implements BaseModel
      * @param EventDataShape $eventData
      */
     public function withEventData(
-        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent $eventData,
+        MessageEvent|array|InboundMessageEvent|TemplateEvent|ChannelEvent|ContactEvent|LinkEvent|CallEvent|AgentEvent $eventData,
     ): self {
         $self = clone $this;
         $self['eventData'] = $eventData;
