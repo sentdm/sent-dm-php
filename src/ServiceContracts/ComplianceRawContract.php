@@ -16,6 +16,8 @@ use SentDm\RequestOptions;
 interface ComplianceRawContract
 {
     /**
+     * @deprecated
+     *
      * @api
      *
      * @param array<string,mixed>|ComplianceRetrieveRequirementsParams $params

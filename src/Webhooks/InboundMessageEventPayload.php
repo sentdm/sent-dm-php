@@ -23,6 +23,8 @@ use SentDm\Core\Contracts\BaseModel;
  *   messageID?: string|null,
  *   outboundNumber?: string|null,
  *   referral?: mixed,
+ *   sentAgentID?: string|null,
+ *   sentInstanceID?: string|null,
  *   text?: string|null,
  *   updatedAt?: string|null,
  * }
@@ -99,6 +101,19 @@ final class InboundMessageEventPayload implements BaseModel
     public mixed $referral;
 
     /**
+     * The Sent agent whose conversation this reply arrived in, when the contact is in one, as on the messages it sent.
+     * Absent otherwise.
+     */
+    #[Optional('sent_agent_id', nullable: true)]
+    public ?string $sentAgentID;
+
+    /**
+     * The conversation (agent × contact) the reply belongs to, when it belongs to one.
+     */
+    #[Optional('sent_instance_id', nullable: true)]
+    public ?string $sentInstanceID;
+
+    /**
      * The message body. Sent as null when the inbound message carried no text, for
      * example a media-only message. The field is always present, so read it and check for null
      * rather than checking whether the key exists.
@@ -148,6 +163,8 @@ final class InboundMessageEventPayload implements BaseModel
         ?string $messageID = null,
         ?string $outboundNumber = null,
         mixed $referral = null,
+        ?string $sentAgentID = null,
+        ?string $sentInstanceID = null,
         ?string $text = null,
         ?string $updatedAt = null,
     ): self {
@@ -162,6 +179,8 @@ final class InboundMessageEventPayload implements BaseModel
         null !== $messageID && $self['messageID'] = $messageID;
         null !== $outboundNumber && $self['outboundNumber'] = $outboundNumber;
         null !== $referral && $self['referral'] = $referral;
+        null !== $sentAgentID && $self['sentAgentID'] = $sentAgentID;
+        null !== $sentInstanceID && $self['sentInstanceID'] = $sentInstanceID;
         null !== $text && $self['text'] = $text;
         null !== $updatedAt && $self['updatedAt'] = $updatedAt;
 
@@ -270,6 +289,29 @@ final class InboundMessageEventPayload implements BaseModel
     {
         $self = clone $this;
         $self['referral'] = $referral;
+
+        return $self;
+    }
+
+    /**
+     * The Sent agent whose conversation this reply arrived in, when the contact is in one, as on the messages it sent.
+     * Absent otherwise.
+     */
+    public function withSentAgentID(?string $sentAgentID): self
+    {
+        $self = clone $this;
+        $self['sentAgentID'] = $sentAgentID;
+
+        return $self;
+    }
+
+    /**
+     * The conversation (agent × contact) the reply belongs to, when it belongs to one.
+     */
+    public function withSentInstanceID(?string $sentInstanceID): self
+    {
+        $self = clone $this;
+        $self['sentInstanceID'] = $sentInstanceID;
 
         return $self;
     }

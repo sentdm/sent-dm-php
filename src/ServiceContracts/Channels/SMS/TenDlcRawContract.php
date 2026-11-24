@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts\Channels\SMS;
 
-use SentDm\Channels\SMS\APIResponseOfSMSMarket;
-use SentDm\Channels\SMS\TenDlc\APIResponseOfSuppliedCompliance;
+use SentDm\Channels\Markets\APIResponseOfChannelMarket;
 use SentDm\Channels\SMS\TenDlc\TenDlcAddCampaignParams;
-use SentDm\Channels\SMS\TenDlc\TenDlcAddNumbersParams;
-use SentDm\Channels\SMS\TenDlc\TenDlcRetrieveComplianceParams;
+use SentDm\Channels\SMS\TenDlc\TenDlcListCampaignsParams;
+use SentDm\Channels\SMS\TenDlc\TenDlcListCampaignsResponse;
 use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
@@ -25,7 +24,7 @@ interface TenDlcRawContract
      * @param array<string,mixed>|TenDlcAddCampaignParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfSMSMarket>
+     * @return BaseResponse<APIResponseOfChannelMarket>
      *
      * @throws APIException
      */
@@ -37,30 +36,15 @@ interface TenDlcRawContract
     /**
      * @api
      *
-     * @param array<string,mixed>|TenDlcAddNumbersParams $params
+     * @param array<string,mixed>|TenDlcListCampaignsParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfSMSMarket>
+     * @return BaseResponse<TenDlcListCampaignsResponse>
      *
      * @throws APIException
      */
-    public function addNumbers(
-        array|TenDlcAddNumbersParams $params,
-        RequestOptions|array|null $requestOptions = null,
-    ): BaseResponse;
-
-    /**
-     * @api
-     *
-     * @param array<string,mixed>|TenDlcRetrieveComplianceParams $params
-     * @param RequestOpts|null $requestOptions
-     *
-     * @return BaseResponse<APIResponseOfSuppliedCompliance>
-     *
-     * @throws APIException
-     */
-    public function retrieveCompliance(
-        array|TenDlcRetrieveComplianceParams $params,
+    public function listCampaigns(
+        array|TenDlcListCampaignsParams $params,
         RequestOptions|array|null $requestOptions = null,
     ): BaseResponse;
 
@@ -71,7 +55,7 @@ interface TenDlcRawContract
      * @param array<string,mixed>|TenDlcUpdateCampaignParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<APIResponseOfSMSMarket>
+     * @return BaseResponse<APIResponseOfChannelMarket>
      *
      * @throws APIException
      */
