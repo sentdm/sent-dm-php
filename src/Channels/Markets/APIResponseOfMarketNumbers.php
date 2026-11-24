@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS;
+namespace SentDm\Channels\Markets;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -13,29 +13,27 @@ use SentDm\Webhooks\ErrorDetail;
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type SMSMarketShape from \SentDm\Channels\SMS\SMSMarket
+ * @phpstan-import-type MarketNumbersShape from \SentDm\Channels\Markets\MarketNumbers
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type APIResponseOfListOfSMSMarketShape = array{
- *   data?: list<SMSMarket|SMSMarketShape>|null,
+ * @phpstan-type APIResponseOfMarketNumbersShape = array{
+ *   data?: null|MarketNumbers|MarketNumbersShape,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class APIResponseOfListOfSMSMarket implements BaseModel
+final class APIResponseOfMarketNumbers implements BaseModel
 {
-    /** @use SdkModel<APIResponseOfListOfSMSMarketShape> */
+    /** @use SdkModel<APIResponseOfMarketNumbersShape> */
     use SdkModel;
 
     /**
-     * The response data (null if error).
-     *
-     * @var list<SMSMarket>|null $data
+     * The numbers a customer holds in one market: GET /v3/channels/{channel}/{country}/{type}/numbers.
      */
-    #[Optional(list: SMSMarket::class, nullable: true)]
-    public ?array $data;
+    #[Optional(nullable: true)]
+    public ?MarketNumbers $data;
 
     /**
      * Error information.
@@ -65,12 +63,12 @@ final class APIResponseOfListOfSMSMarket implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<SMSMarket|SMSMarketShape>|null $data
+     * @param MarketNumbers|MarketNumbersShape|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        ?array $data = null,
+        MarketNumbers|array|null $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -86,11 +84,11 @@ final class APIResponseOfListOfSMSMarket implements BaseModel
     }
 
     /**
-     * The response data (null if error).
+     * The numbers a customer holds in one market: GET /v3/channels/{channel}/{country}/{type}/numbers.
      *
-     * @param list<SMSMarket|SMSMarketShape>|null $data
+     * @param MarketNumbers|MarketNumbersShape|null $data
      */
-    public function withData(?array $data): self
+    public function withData(MarketNumbers|array|null $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

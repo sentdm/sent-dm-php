@@ -53,7 +53,8 @@ final class WebhookUpdateParams implements BaseModel
 
     /**
      * Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
-     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable, and never an
+     * agent's.
      */
     #[Optional('is_inheritable', nullable: true)]
     public ?bool $isInheritable;
@@ -168,7 +169,8 @@ final class WebhookUpdateParams implements BaseModel
 
     /**
      * Makes this webhook inheritable by the organization's sender profiles (see create), or stops it being
-     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable.
+     * inheritable. Omit or pass null to keep it as it is. Only a version 2 webhook can be inheritable, and never an
+     * agent's.
      */
     public function withIsInheritable(?bool $isInheritable): self
     {

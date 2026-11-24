@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS;
+namespace SentDm\Channels\Markets;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
@@ -16,6 +16,8 @@ use SentDm\Core\Contracts\BaseModel;
  * ## What `compliance` carries
  *
  * A market that registers with a compliance regime reports `brand` — the identity the registration is filed against — and `campaign`, the programme filed against it. Each carries `inherit`, saying whether it is yours or your organization's.
+ *
+ * `compliance.brand.vetting` is the brand's external vetting at The Campaign Registry, read-only: `score` (0-100, the figure US carriers set 10DLC throughput by), `status` (`PENDING`, `UNSCORE`, `ACTIVE`, `FAILED` or `EXPIRED`; carriers read the score of an `ACTIVE` vet only), `vetted_at` and `expires_at`. It is `null` while no vetting record is held for the brand, and `score` is `null` for a vet that has none yet. A profile on your organization's brand reads your organization's vetting.
  *
  * A market that registers with nobody has neither, so **both keys are absent** rather than null: absent says this market does not ask, where null would say it asks and you supplied nothing. It reports `documents` instead.
  *
@@ -35,17 +37,20 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * Send `x-profile-id` with an organization key to read one of your profiles' markets.
  *
- * @see SentDm\Services\Channels\SMSService::retrieve()
+ * @see SentDm\Services\Channels\MarketsService::retrieve()
  *
- * @phpstan-type SMSRetrieveParamsShape = array{
- *   country: string, xProfileID?: string|null
+ * @phpstan-type MarketRetrieveParamsShape = array{
+ *   channel: string, country: string, xProfileID?: string|null
  * }
  */
-final class SMSRetrieveParams implements BaseModel
+final class MarketRetrieveParams implements BaseModel
 {
-    /** @use SdkModel<SMSRetrieveParamsShape> */
+    /** @use SdkModel<MarketRetrieveParamsShape> */
     use SdkModel;
     use SdkParams;
+
+    #[Required]
+    public string $channel;
 
     #[Required]
     public string $country;
@@ -54,17 +59,17 @@ final class SMSRetrieveParams implements BaseModel
     public ?string $xProfileID;
 
     /**
-     * `new SMSRetrieveParams()` is missing required properties by the API.
+     * `new MarketRetrieveParams()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * SMSRetrieveParams::with(country: ...)
+     * MarketRetrieveParams::with(channel: ..., country: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new SMSRetrieveParams)->withCountry(...)
+     * (new MarketRetrieveParams)->withChannel(...)->withCountry(...)
      * ```
      */
     public function __construct()
@@ -78,14 +83,24 @@ final class SMSRetrieveParams implements BaseModel
      * You must use named parameters to construct any parameters with a default value.
      */
     public static function with(
+        string $channel,
         string $country,
         ?string $xProfileID = null
     ): self {
         $self = new self;
 
+        $self['channel'] = $channel;
         $self['country'] = $country;
 
         null !== $xProfileID && $self['xProfileID'] = $xProfileID;
+
+        return $self;
+    }
+
+    public function withChannel(string $channel): self
+    {
+        $self = clone $this;
+        $self['channel'] = $channel;
 
         return $self;
     }

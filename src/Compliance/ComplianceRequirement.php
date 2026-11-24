@@ -17,6 +17,8 @@ use SentDm\Core\Contracts\BaseModel;
  *   key?: string|null,
  *   label?: string|null,
  *   maxItems?: int|null,
+ *   maxLength?: int|null,
+ *   minItems?: int|null,
  *   minLength?: int|null,
  *   notes?: string|null,
  *   options?: list<string>|null,
@@ -67,6 +69,18 @@ final class ComplianceRequirement implements BaseModel
      */
     #[Optional('max_items', nullable: true)]
     public ?int $maxItems;
+
+    /**
+     * Longest acceptable value, where the market caps it. On a list of strings, each item's.
+     */
+    #[Optional('max_length', nullable: true)]
+    public ?int $maxLength;
+
+    /**
+     * Fewest entries this value accepts, where the market sets a minimum.
+     */
+    #[Optional('min_items', nullable: true)]
+    public ?int $minItems;
 
     /**
      * Shortest acceptable value, where the market sets one. TCR refuses a consent narrative under 40
@@ -129,6 +143,8 @@ final class ComplianceRequirement implements BaseModel
         ?string $key = null,
         ?string $label = null,
         ?int $maxItems = null,
+        ?int $maxLength = null,
+        ?int $minItems = null,
         ?int $minLength = null,
         ?string $notes = null,
         ?array $options = null,
@@ -143,6 +159,8 @@ final class ComplianceRequirement implements BaseModel
         null !== $key && $self['key'] = $key;
         null !== $label && $self['label'] = $label;
         null !== $maxItems && $self['maxItems'] = $maxItems;
+        null !== $maxLength && $self['maxLength'] = $maxLength;
+        null !== $minItems && $self['minItems'] = $minItems;
         null !== $minLength && $self['minLength'] = $minLength;
         null !== $notes && $self['notes'] = $notes;
         null !== $options && $self['options'] = $options;
@@ -212,6 +230,28 @@ final class ComplianceRequirement implements BaseModel
     {
         $self = clone $this;
         $self['maxItems'] = $maxItems;
+
+        return $self;
+    }
+
+    /**
+     * Longest acceptable value, where the market caps it. On a list of strings, each item's.
+     */
+    public function withMaxLength(?int $maxLength): self
+    {
+        $self = clone $this;
+        $self['maxLength'] = $maxLength;
+
+        return $self;
+    }
+
+    /**
+     * Fewest entries this value accepts, where the market sets a minimum.
+     */
+    public function withMinItems(?int $minItems): self
+    {
+        $self = clone $this;
+        $self['minItems'] = $minItems;
 
         return $self;
     }

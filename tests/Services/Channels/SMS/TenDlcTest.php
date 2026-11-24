@@ -5,8 +5,8 @@ namespace Tests\Services\Channels\SMS;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SentDm\Channels\SMS\APIResponseOfSMSMarket;
-use SentDm\Channels\SMS\TenDlc\APIResponseOfSuppliedCompliance;
+use SentDm\Channels\Markets\APIResponseOfChannelMarket;
+use SentDm\Channels\SMS\TenDlc\TenDlcListCampaignsResponse;
 use SentDm\Client;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
@@ -37,11 +37,30 @@ final class TenDlcTest extends TestCase
         }
 
         $result = $this->client->channels->sms->tenDlc->addCampaign(
-            idempotencyKey: 'req_abc123_retry1'
+            description: 'Appointment reminders for patients who opted in when booking.',
+            helpKeywords: 'help_keywords',
+            helpMessage: 'xxxxxxxxxxxxxxxxxxxx',
+            messageFlow: 'Patients opt in on the booking form by checking a consent box.',
+            optInKeywords: 'opt_in_keywords',
+            optInMessage: 'xxxxxxxxxxxxxxxxxxxx',
+            optOutKeywords: 'opt_out_keywords',
+            optOutMessage: 'xxxxxxxxxxxxxxxxxxxx',
+            privacyPolicyLink: 'privacy_policy_link',
+            termsAndConditionsLink: 'terms_and_conditions_link',
+            useCases: [
+                [
+                    'sampleMessages' => [
+                        'Reminder: your appointment is tomorrow at 10:00. Reply STOP to opt out.',
+                    ],
+                    'useCase' => 'ACCOUNT_NOTIFICATION',
+                ],
+            ],
+            volume: 'volume',
+            idempotencyKey: 'req_abc123_retry1',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
+        $this->assertInstanceOf(APIResponseOfChannelMarket::class, $result);
     }
 
     #[Test]
@@ -52,74 +71,45 @@ final class TenDlcTest extends TestCase
         }
 
         $result = $this->client->channels->sms->tenDlc->addCampaign(
-            idempotencyKey: 'req_abc123_retry1',
-            description: 'description',
+            description: 'Appointment reminders for patients who opted in when booking.',
             helpKeywords: 'help_keywords',
-            helpMessage: 'help_message',
-            messageFlow: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            helpMessage: 'xxxxxxxxxxxxxxxxxxxx',
+            messageFlow: 'Patients opt in on the booking form by checking a consent box.',
             optInKeywords: 'opt_in_keywords',
-            optInMessage: 'opt_in_message',
+            optInMessage: 'xxxxxxxxxxxxxxxxxxxx',
             optOutKeywords: 'opt_out_keywords',
-            optOutMessage: 'opt_out_message',
+            optOutMessage: 'xxxxxxxxxxxxxxxxxxxx',
             privacyPolicyLink: 'privacy_policy_link',
-            sandbox: false,
             termsAndConditionsLink: 'terms_and_conditions_link',
-            useCases: [['sampleMessages' => [(object) []], 'useCase' => 'MARKETING']],
+            useCases: [
+                [
+                    'sampleMessages' => [
+                        'Reminder: your appointment is tomorrow at 10:00. Reply STOP to opt out.',
+                    ],
+                    'useCase' => 'ACCOUNT_NOTIFICATION',
+                ],
+            ],
             volume: 'volume',
-            xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testAddNumbers(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->tenDlc->addNumbers(
-            campaignID: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
-            numbers: [[]],
-            idempotencyKey: 'req_abc123_retry1',
-        );
-
-        // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
-    }
-
-    #[Test]
-    public function testAddNumbersWithOptionalParams(): void
-    {
-        if (UnsupportedMockTests::$skip) {
-            $this->markTestSkipped('Mock server tests are disabled');
-        }
-
-        $result = $this->client->channels->sms->tenDlc->addNumbers(
-            campaignID: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
-            numbers: [['areaCode' => '415', 'quantity' => 2]],
             idempotencyKey: 'req_abc123_retry1',
             sandbox: false,
             xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
+        $this->assertInstanceOf(APIResponseOfChannelMarket::class, $result);
     }
 
     #[Test]
-    public function testRetrieveCompliance(): void
+    public function testListCampaigns(): void
     {
         if (UnsupportedMockTests::$skip) {
             $this->markTestSkipped('Mock server tests are disabled');
         }
 
-        $result = $this->client->channels->sms->tenDlc->retrieveCompliance();
+        $result = $this->client->channels->sms->tenDlc->listCampaigns();
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSuppliedCompliance::class, $result);
+        $this->assertInstanceOf(TenDlcListCampaignsResponse::class, $result);
     }
 
     #[Test]
@@ -134,6 +124,6 @@ final class TenDlcTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(APIResponseOfSMSMarket::class, $result);
+        $this->assertInstanceOf(APIResponseOfChannelMarket::class, $result);
     }
 }
