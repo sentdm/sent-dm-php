@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Channels\SMS\TenDlc;
 
+use SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1 as UseCase;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Concerns\SdkParams;
@@ -14,7 +15,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * ## What to send
  *
- * The fields to change, at the top level of the body, under the `compliance.campaign.*` keys `GET /v3/compliance/requirements?country=US&type=TEN_DLC` lists, without that prefix. A field you leave out keeps its value, and a rejected one is keyed by its name. `id` and `"inherit": false` are ignored, so an entry of `compliance.campaigns` can be sent as read; `"inherit": true` is `400`, because this call changes a campaign's fields, not whose campaign you run on. The campaign only: add numbers with `POST /v3/channels/sms/numbers/US/TEN_DLC`, and change the brand or documents with `PATCH /v3/channels/sms/US/TEN_DLC`.
+ * The fields to change, at the top level of the body, under their keys (`description`, `message_flow`, `use_cases`, `help_message`, …). A field you leave out keeps its value, and a rejected one is keyed by its name. `id` and `"inherit": false` are ignored, so an entry of `campaigns` can be sent as read; `"inherit": true` is `400`, because this call changes a campaign's fields, not whose campaign you run on. The campaign only: add numbers with `POST /v3/channels/sms/US/TEN_DLC/numbers`, and change the brand or documents with `PATCH /v3/channels/sms/US/TEN_DLC`.
  *
  * ## When it can be changed
  *
@@ -24,7 +25,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @see SentDm\Services\Channels\SMS\TenDlcService::updateCampaign()
  *
- * @phpstan-import-type TenDlcCampaignUseCaseShape from \SentDm\Channels\SMS\TenDlc\TenDlcCampaignUseCase
+ * @phpstan-import-type UseCase1Shape from \SentDm\Channels\SMS\TenDlc\TenDlcUpdateCampaignParams\UseCase1
  *
  * @phpstan-type TenDlcUpdateCampaignParamsShape = array{
  *   description?: string|null,
@@ -38,7 +39,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   privacyPolicyLink?: string|null,
  *   sandbox?: bool|null,
  *   termsAndConditionsLink?: string|null,
- *   useCases?: list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>|null,
+ *   useCases?: list<UseCase|UseCase1Shape>|null,
  *   volume?: string|null,
  *   idempotencyKey?: string|null,
  *   xProfileID?: string|null,
@@ -120,13 +121,13 @@ final class TenDlcUpdateCampaignParams implements BaseModel
     /**
      * Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      *
-     * @var list<TenDlcCampaignUseCase>|null $useCases
+     * @var list<UseCase>|null $useCases
      */
-    #[Optional('use_cases', list: TenDlcCampaignUseCase::class)]
+    #[Optional('use_cases', list: UseCase::class)]
     public ?array $useCases;
 
     /**
-     * Expected monthly volume. Decides how the campaign registers and which fee tier applies: below the low-volume threshold it registers as LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting it registers the campaign at the higher-fee standard tier.
+     * Expected monthly volume. Required whenever the campaign's fields are written. A whole number of messages, e.g. 1000 or 10000. Decides how the campaign registers and which fee tier applies: below the low-volume threshold it registers as LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting it registers the campaign at the higher-fee standard tier. Required when `compliance.campaign.inherit != true`, whenever its block is written.
      */
     #[Optional]
     public ?string $volume;
@@ -147,7 +148,7 @@ final class TenDlcUpdateCampaignParams implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape>|null $useCases
+     * @param list<UseCase|UseCase1Shape>|null $useCases
      */
     public static function with(
         ?string $description = null,
@@ -313,7 +314,7 @@ final class TenDlcUpdateCampaignParams implements BaseModel
     /**
      * Use cases. What the campaign sends, and an example of each. One to five entries; how they register is decided by volume, never declared. Required when `compliance.campaign.inherit != true`.
      *
-     * @param list<TenDlcCampaignUseCase|TenDlcCampaignUseCaseShape> $useCases
+     * @param list<UseCase|UseCase1Shape> $useCases
      */
     public function withUseCases(array $useCases): self
     {
@@ -324,7 +325,7 @@ final class TenDlcUpdateCampaignParams implements BaseModel
     }
 
     /**
-     * Expected monthly volume. Decides how the campaign registers and which fee tier applies: below the low-volume threshold it registers as LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting it registers the campaign at the higher-fee standard tier.
+     * Expected monthly volume. Required whenever the campaign's fields are written. A whole number of messages, e.g. 1000 or 10000. Decides how the campaign registers and which fee tier applies: below the low-volume threshold it registers as LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting it registers the campaign at the higher-fee standard tier. Required when `compliance.campaign.inherit != true`, whenever its block is written.
      */
     public function withVolume(string $volume): self
     {

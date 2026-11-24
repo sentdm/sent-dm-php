@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS;
+namespace SentDm\Channels\Markets;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
@@ -16,13 +16,13 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * Send `x-profile-id` with an organization key to list one of your profiles' markets.
  *
- * @see SentDm\Services\Channels\SMSService::list()
+ * @see SentDm\Services\Channels\MarketsService::list()
  *
- * @phpstan-type SMSListParamsShape = array{xProfileID?: string|null}
+ * @phpstan-type MarketListParamsShape = array{xProfileID?: string|null}
  */
-final class SMSListParams implements BaseModel
+final class MarketListParams implements BaseModel
 {
-    /** @use SdkModel<SMSListParamsShape> */
+    /** @use SdkModel<MarketListParamsShape> */
     use SdkModel;
     use SdkParams;
 
