@@ -2,32 +2,29 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookDelivery\EventData;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
-use SentDm\Webhooks\WebhookDelivery\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload\Payload;
 
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares this shape and
  * varies only in Payload.
  *
- * @phpstan-import-type PayloadShape from \SentDm\Webhooks\WebhookDelivery\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload\Payload
+ * @phpstan-import-type AgentEventPayloadShape from \SentDm\Webhooks\AgentEventPayload
  *
- * @phpstan-type SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayloadShape = array{
+ * @phpstan-type AgentEventShape = array{
  *   event?: string|null,
  *   field?: string|null,
- *   payload?: null|Payload|PayloadShape,
+ *   payload?: null|AgentEventPayload|AgentEventPayloadShape,
  *   requestID?: string|null,
  *   timestamp?: string|null,
  * }
  */
-final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload implements BaseModel
+final class AgentEvent implements BaseModel
 {
-    /**
-     * @use SdkModel<SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayloadShape>
-     */
+    /** @use SdkModel<AgentEventShape> */
     use SdkModel;
 
     /**
@@ -50,7 +47,7 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebh
      * forwarded without renaming: EventId is its id, so a subscriber can dedupe a redelivery.
      */
     #[Optional(nullable: true)]
-    public ?Payload $payload;
+    public ?AgentEventPayload $payload;
 
     /**
      * The event-specific body.
@@ -76,12 +73,12 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebh
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param AgentEventPayload|AgentEventPayloadShape|null $payload
      */
     public static function with(
         ?string $event = null,
         ?string $field = null,
-        Payload|array|null $payload = null,
+        AgentEventPayload|array|null $payload = null,
         ?string $requestID = null,
         ?string $timestamp = null,
     ): self {
@@ -125,9 +122,9 @@ final class SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebh
      * Body of an agent.* webhook (Sent Agents). The event is the agent service's own record,
      * forwarded without renaming: EventId is its id, so a subscriber can dedupe a redelivery.
      *
-     * @param Payload|PayloadShape|null $payload
+     * @param AgentEventPayload|AgentEventPayloadShape|null $payload
      */
-    public function withPayload(Payload|array|null $payload): self
+    public function withPayload(AgentEventPayload|array|null $payload): self
     {
         $self = clone $this;
         $self['payload'] = $payload;
