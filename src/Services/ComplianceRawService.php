@@ -33,7 +33,11 @@ final class ComplianceRawService implements ComplianceRawContract
     public function __construct(private Client $client) {}
 
     /**
+     * @deprecated
+     *
      * @api
+     *
+     * **Deprecated.** Use `GET /v3/channels/{channel}/{country}/compliance` instead, and expect this to be removed in a future release. It answers exactly as before, so nothing needs to change today.
      *
      * **Call this first.** It returns what a channel, country and sender type demand before you can send there — and `setup[]`, the calls that satisfy those demands, in order, each with a body you can copy and send as it stands. You never have to track forty countries' rules yourself.
      *
