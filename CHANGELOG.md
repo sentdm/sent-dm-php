@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.50.0](https://github.com/sentdm/sent-dm-php/compare/v0.49.0...v0.50.0) (2026-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** markets move to channels.markets and 10DLC numbers to markets.add_numbers
+
+### Features
+
+* **api:** markets move to channels.markets and 10DLC numbers to markets.add_numbers ([543e8fc](https://github.com/sentdm/sent-dm-php/commit/543e8fc9dcd6f2c55c0f432e1323dd730723e5c1))
+
 ## [0.49.0](https://github.com/sentdm/sent-dm-php/compare/v0.48.0...v0.49.0) (2026-11-12)
 
 
