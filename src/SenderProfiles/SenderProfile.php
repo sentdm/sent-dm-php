@@ -25,6 +25,8 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-type SenderProfileShape = array{
  *   id?: string|null,
+ *   agentError?: string|null,
+ *   agentID?: string|null,
  *   apiKey?: string|null,
  *   billing?: null|SenderProfileBilling|SenderProfileBillingShape,
  *   channels?: null|ChannelsState|ChannelsStateShape,
@@ -44,6 +46,20 @@ final class SenderProfile implements BaseModel
 
     #[Optional]
     public ?string $id;
+
+    /**
+     * Why no agent was made from agent_template_id, when the profile was created and the agent could not be:
+     * the profile stands, and the agent can be made with POST /v3/agents and template_id.
+     */
+    #[Optional('agent_error', nullable: true)]
+    public ?string $agentError;
+
+    /**
+     * The draft agent made from agent_template_id when the profile was created. Only on that answer, and
+     * left out when none was asked for.
+     */
+    #[Optional('agent_id', nullable: true)]
+    public ?string $agentID;
 
     /**
      * The API key for this profile.
@@ -134,6 +150,8 @@ final class SenderProfile implements BaseModel
      */
     public static function with(
         ?string $id = null,
+        ?string $agentError = null,
+        ?string $agentID = null,
         ?string $apiKey = null,
         SenderProfileBilling|array|null $billing = null,
         ChannelsState|array|null $channels = null,
@@ -148,6 +166,8 @@ final class SenderProfile implements BaseModel
         $self = new self;
 
         null !== $id && $self['id'] = $id;
+        null !== $agentError && $self['agentError'] = $agentError;
+        null !== $agentID && $self['agentID'] = $agentID;
         null !== $apiKey && $self['apiKey'] = $apiKey;
         null !== $billing && $self['billing'] = $billing;
         null !== $channels && $self['channels'] = $channels;
@@ -166,6 +186,30 @@ final class SenderProfile implements BaseModel
     {
         $self = clone $this;
         $self['id'] = $id;
+
+        return $self;
+    }
+
+    /**
+     * Why no agent was made from agent_template_id, when the profile was created and the agent could not be:
+     * the profile stands, and the agent can be made with POST /v3/agents and template_id.
+     */
+    public function withAgentError(?string $agentError): self
+    {
+        $self = clone $this;
+        $self['agentError'] = $agentError;
+
+        return $self;
+    }
+
+    /**
+     * The draft agent made from agent_template_id when the profile was created. Only on that answer, and
+     * left out when none was asked for.
+     */
+    public function withAgentID(?string $agentID): self
+    {
+        $self = clone $this;
+        $self['agentID'] = $agentID;
 
         return $self;
     }
