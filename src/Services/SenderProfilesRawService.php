@@ -139,11 +139,16 @@ final class SenderProfilesRawService implements SenderProfilesRawContract
      *
      * All fields on the agent form are required except `opt_in_screenshot_url`. The full form must be submitted in one go so the carrier review has everything it needs. A carrier approval no API call can trigger is arranged offline, so the status reports `PROVISIONING` until it is.
      *
+     * ## An agent
+     *
+     * `agent_template_id` (optional) names one of your organization's agent templates (`GET /v3/agents/templates`). As soon as the profile exists, a draft agent is made from it on the profile, and the answer's `agent_id` is that agent: give it the profile's numbers and activate it through `/v3/agents` with the profile's `x-profile-id`. The template is checked before the profile is made: one that is not your organization's is a `404`, agents not enabled a `403`, and no profile is made. Should the agent fail once the profile exists, the profile stands and `agent_error` says why; make the agent with `POST /v3/agents` and `template_id`.
+     *
      * ## Responses
      *
      * `201` when the profile is complete on return — the fully-inherited case, where nothing needs registering. `202` when something is still provisioning, with per-capability status and outstanding requirements. `409` when the WhatsApp account supplied is already recorded. `400` covers a wrong value as well as a missing one: a missing brand under `TEN_DLC`, a brand or campaign inherited under `TEN_DLC` that your organization does not have yet, an unknown compliance key, a bad type, a sender id the market does not allow, a `waba_id` that is not one of the accounts shared into your organization, or a WhatsApp account Meta rejects. `502` when Meta could not be reached to verify the WhatsApp account; nothing was created, so retry.
      *
      * @param array{
+     *   agentTemplateID?: string|null,
      *   billing?: SenderProfileBillingRequest|SenderProfileBillingRequestShape|null,
      *   channels?: SenderProfileChannels|SenderProfileChannelsShape|null,
      *   compliance?: MarketCompliance|MarketComplianceShape,
