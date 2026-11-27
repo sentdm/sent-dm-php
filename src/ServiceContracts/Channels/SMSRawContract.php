@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts\Channels;
 
+use SentDm\Channels\Markets\APIResponseOfChannelMarket;
 use SentDm\Channels\SMS\SMSCreateParams;
-use SentDm\Channels\SMS\SMSNewResponse;
 use SentDm\Core\Contracts\BaseResponse;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
@@ -21,7 +21,7 @@ interface SMSRawContract
      * @param array<string,mixed>|SMSCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<SMSNewResponse>
+     * @return BaseResponse<APIResponseOfChannelMarket>
      *
      * @throws APIException
      */

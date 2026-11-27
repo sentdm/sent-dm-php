@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SentDm\Channels;
 
-use SentDm\Channels\ChannelsState\SMS;
+use SentDm\Channels\Markets\ChannelMarket;
 use SentDm\Channels\Rcs\RcsAgent;
 use SentDm\Channels\Voice\VoiceNumber;
 use SentDm\Channels\Whatsapp\WhatsappChannel;
@@ -18,7 +18,7 @@ use SentDm\Core\Contracts\BaseModel;
  *
  * @phpstan-import-type MmsMarketShape from \SentDm\Channels\MmsMarket
  * @phpstan-import-type RcsAgentShape from \SentDm\Channels\Rcs\RcsAgent
- * @phpstan-import-type SMSShape from \SentDm\Channels\ChannelsState\SMS
+ * @phpstan-import-type ChannelMarketShape from \SentDm\Channels\Markets\ChannelMarket
  * @phpstan-import-type VoiceNumberShape from \SentDm\Channels\Voice\VoiceNumber
  * @phpstan-import-type WhatsappChannelShape from \SentDm\Channels\Whatsapp\WhatsappChannel
  *
@@ -26,7 +26,7 @@ use SentDm\Core\Contracts\BaseModel;
  *   customerID?: string|null,
  *   mms?: list<MmsMarket|MmsMarketShape>|null,
  *   rcs?: null|RcsAgent|RcsAgentShape,
- *   sms?: list<SMS|SMSShape>|null,
+ *   sms?: list<ChannelMarket|ChannelMarketShape>|null,
  *   voice?: list<VoiceNumber|VoiceNumberShape>|null,
  *   whatsapp?: null|WhatsappChannel|WhatsappChannelShape,
  * }
@@ -75,8 +75,8 @@ final class ChannelsState implements BaseModel
     #[Optional(nullable: true)]
     public ?RcsAgent $rcs;
 
-    /** @var list<SMS>|null $sms */
-    #[Optional(list: SMS::class)]
+    /** @var list<ChannelMarket>|null $sms */
+    #[Optional(list: ChannelMarket::class)]
     public ?array $sms;
 
     /**
@@ -107,7 +107,7 @@ final class ChannelsState implements BaseModel
      *
      * @param list<MmsMarket|MmsMarketShape>|null $mms
      * @param RcsAgent|RcsAgentShape|null $rcs
-     * @param list<SMS|SMSShape>|null $sms
+     * @param list<ChannelMarket|ChannelMarketShape>|null $sms
      * @param list<VoiceNumber|VoiceNumberShape>|null $voice
      * @param WhatsappChannel|WhatsappChannelShape|null $whatsapp
      */
@@ -188,7 +188,7 @@ final class ChannelsState implements BaseModel
     }
 
     /**
-     * @param list<SMS|SMSShape> $sms
+     * @param list<ChannelMarket|ChannelMarketShape> $sms
      */
     public function withSMS(array $sms): self
     {

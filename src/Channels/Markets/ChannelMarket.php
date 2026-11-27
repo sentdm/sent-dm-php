@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\ChannelsState;
+namespace SentDm\Channels\Markets;
 
-use SentDm\Channels\ChannelsState\SMS\Status;
+use SentDm\Channels\Markets\ChannelMarket\Status;
 use SentDm\Channels\SMS\SMSNumber;
 use SentDm\Channels\SMS\SuppliedCompliance;
 use SentDm\Core\Attributes\Optional;
@@ -23,7 +23,7 @@ use SentDm\Core\Contracts\BaseModel;
  * @phpstan-import-type SuppliedComplianceShape from \SentDm\Channels\SMS\SuppliedCompliance
  * @phpstan-import-type SMSNumberShape from \SentDm\Channels\SMS\SMSNumber
  *
- * @phpstan-type SMSShape = array{
+ * @phpstan-type ChannelMarketShape = array{
  *   compliance?: null|SuppliedCompliance|SuppliedComplianceShape,
  *   country?: string|null,
  *   numberType?: string|null,
@@ -33,9 +33,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   status?: null|Status|value-of<Status>,
  * }
  */
-final class SMS implements BaseModel
+final class ChannelMarket implements BaseModel
 {
-    /** @use SdkModel<SMSShape> */
+    /** @use SdkModel<ChannelMarketShape> */
     use SdkModel;
 
     /**

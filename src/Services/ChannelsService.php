@@ -10,6 +10,7 @@ use SentDm\Core\Exceptions\APIException;
 use SentDm\Core\Util;
 use SentDm\RequestOptions;
 use SentDm\ServiceContracts\ChannelsContract;
+use SentDm\Services\Channels\MarketsService;
 use SentDm\Services\Channels\RcsService;
 use SentDm\Services\Channels\SMSService;
 use SentDm\Services\Channels\VoiceService;
@@ -40,6 +41,11 @@ final class ChannelsService implements ChannelsContract
     /**
      * @api
      */
+    public MarketsService $markets;
+
+    /**
+     * @api
+     */
     public SMSService $sms;
 
     /**
@@ -63,6 +69,7 @@ final class ChannelsService implements ChannelsContract
     public function __construct(private Client $client)
     {
         $this->raw = new ChannelsRawService($client);
+        $this->markets = new MarketsService($client);
         $this->sms = new SMSService($client);
         $this->rcs = new RcsService($client);
         $this->whatsapp = new WhatsappService($client);

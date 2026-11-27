@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Webhooks\WebhookDelivery\EventData\SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload;
+namespace SentDm\Webhooks;
 
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Attributes\Required;
@@ -13,7 +13,7 @@ use SentDm\Core\Contracts\BaseModel;
  * Body of an agent.* webhook (Sent Agents). The event is the agent service's own record,
  * forwarded without renaming: EventId is its id, so a subscriber can dedupe a redelivery.
  *
- * @phpstan-type PayloadShape = array{
+ * @phpstan-type AgentEventPayloadShape = array{
  *   eventID: string,
  *   occurredAt: string,
  *   accountID?: string|null,
@@ -28,9 +28,9 @@ use SentDm\Core\Contracts\BaseModel;
  *   sequence?: int|null,
  * }
  */
-final class Payload implements BaseModel
+final class AgentEventPayload implements BaseModel
 {
-    /** @use SdkModel<PayloadShape> */
+    /** @use SdkModel<AgentEventPayloadShape> */
     use SdkModel;
 
     /**
@@ -111,17 +111,17 @@ final class Payload implements BaseModel
     public ?int $sequence;
 
     /**
-     * `new Payload()` is missing required properties by the API.
+     * `new AgentEventPayload()` is missing required properties by the API.
      *
      * To enforce required parameters use
      * ```
-     * Payload::with(eventID: ..., occurredAt: ...)
+     * AgentEventPayload::with(eventID: ..., occurredAt: ...)
      * ```
      *
      * Otherwise ensure the following setters are called
      *
      * ```
-     * (new Payload)->withEventID(...)->withOccurredAt(...)
+     * (new AgentEventPayload)->withEventID(...)->withOccurredAt(...)
      * ```
      */
     public function __construct()

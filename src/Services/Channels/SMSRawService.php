@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SentDm\Services\Channels;
 
+use SentDm\Channels\Markets\APIResponseOfChannelMarket;
 use SentDm\Channels\SMS\MarketCompliance;
 use SentDm\Channels\SMS\SMSCreateParams;
 use SentDm\Channels\SMS\SMSCreateParams\NumberType;
-use SentDm\Channels\SMS\SMSNewResponse;
 use SentDm\Channels\SMS\SMSNumberRequest;
 use SentDm\Client;
 use SentDm\Core\Contracts\BaseResponse;
@@ -96,7 +96,7 @@ final class SMSRawService implements SMSRawContract
      * }|SMSCreateParams $params
      * @param RequestOpts|null $requestOptions
      *
-     * @return BaseResponse<SMSNewResponse>
+     * @return BaseResponse<APIResponseOfChannelMarket>
      *
      * @throws APIException
      */
@@ -125,7 +125,7 @@ final class SMSRawService implements SMSRawContract
                 array_flip(array_keys($header_params))
             ),
             options: $options,
-            convert: SMSNewResponse::class,
+            convert: APIResponseOfChannelMarket::class,
         );
     }
 }

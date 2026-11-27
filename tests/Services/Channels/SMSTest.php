@@ -5,7 +5,7 @@ namespace Tests\Services\Channels;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SentDm\Channels\SMS\SMSNewResponse;
+use SentDm\Channels\Markets\APIResponseOfChannelMarket;
 use SentDm\Client;
 use SentDm\Core\Util;
 use Tests\UnsupportedMockTests;
@@ -38,7 +38,7 @@ final class SMSTest extends TestCase
         $result = $this->client->channels->sms->create(numberType: 'TEN_DLC');
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(SMSNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfChannelMarket::class, $result);
     }
 
     #[Test]
@@ -96,6 +96,6 @@ final class SMSTest extends TestCase
         );
 
         // @phpstan-ignore-next-line method.alreadyNarrowedType
-        $this->assertInstanceOf(SMSNewResponse::class, $result);
+        $this->assertInstanceOf(APIResponseOfChannelMarket::class, $result);
     }
 }

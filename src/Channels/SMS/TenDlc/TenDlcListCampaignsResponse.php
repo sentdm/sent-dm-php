@@ -2,45 +2,40 @@
 
 declare(strict_types=1);
 
-namespace SentDm\Channels\SMS;
+namespace SentDm\Channels\SMS\TenDlc;
 
-use SentDm\Channels\SMS\SMSNewResponse\Data;
 use SentDm\Core\Attributes\Optional;
 use SentDm\Core\Concerns\SdkModel;
 use SentDm\Core\Contracts\BaseModel;
+use SentDm\Core\Conversion\MapOf;
 use SentDm\Webhooks\APIMeta;
 use SentDm\Webhooks\ErrorDetail;
 
 /**
  * Standard API response envelope for all v3 endpoints.
  *
- * @phpstan-import-type DataShape from \SentDm\Channels\SMS\SMSNewResponse\Data
  * @phpstan-import-type ErrorDetailShape from \SentDm\Webhooks\ErrorDetail
  * @phpstan-import-type APIMetaShape from \SentDm\Webhooks\APIMeta
  *
- * @phpstan-type SMSNewResponseShape = array{
- *   data?: null|Data|DataShape,
+ * @phpstan-type TenDlcListCampaignsResponseShape = array{
+ *   data?: list<array<string,mixed>>|null,
  *   error?: null|ErrorDetail|ErrorDetailShape,
  *   meta?: null|APIMeta|APIMetaShape,
  *   success?: bool|null,
  * }
  */
-final class SMSNewResponse implements BaseModel
+final class TenDlcListCampaignsResponse implements BaseModel
 {
-    /** @use SdkModel<SMSNewResponseShape> */
+    /** @use SdkModel<TenDlcListCampaignsResponseShape> */
     use SdkModel;
 
     /**
-     * One market the profile sends in on a channel — its sender, where that sender stands, and what the market wants.
-     * Named for no one channel, as the routes it answers are not (/v3/channels/{channel}/{country}/{type}); SMS is
-     * the channel with markets today.
+     * The response data (null if error).
      *
-     * A profile may send in several: it is a tenant, not a market. Each carries its own status, because
-     * a profile can be live in one country and mid-registration in another — and each carries what it still owes,
-     * rather than that being reported in a separate array a caller has to join on.
+     * @var list<array<string,mixed>>|null $data
      */
-    #[Optional(nullable: true)]
-    public ?Data $data;
+    #[Optional(list: new MapOf('mixed'), nullable: true)]
+    public ?array $data;
 
     /**
      * Error information.
@@ -70,12 +65,12 @@ final class SMSNewResponse implements BaseModel
      *
      * You must use named parameters to construct any parameters with a default value.
      *
-     * @param Data|DataShape|null $data
+     * @param list<array<string,mixed>>|null $data
      * @param ErrorDetail|ErrorDetailShape|null $error
      * @param APIMeta|APIMetaShape|null $meta
      */
     public static function with(
-        Data|array|null $data = null,
+        ?array $data = null,
         ErrorDetail|array|null $error = null,
         APIMeta|array|null $meta = null,
         ?bool $success = null,
@@ -91,17 +86,11 @@ final class SMSNewResponse implements BaseModel
     }
 
     /**
-     * One market the profile sends in on a channel — its sender, where that sender stands, and what the market wants.
-     * Named for no one channel, as the routes it answers are not (/v3/channels/{channel}/{country}/{type}); SMS is
-     * the channel with markets today.
+     * The response data (null if error).
      *
-     * A profile may send in several: it is a tenant, not a market. Each carries its own status, because
-     * a profile can be live in one country and mid-registration in another — and each carries what it still owes,
-     * rather than that being reported in a separate array a caller has to join on.
-     *
-     * @param Data|DataShape|null $data
+     * @param list<array<string,mixed>>|null $data
      */
-    public function withData(Data|array|null $data): self
+    public function withData(?array $data): self
     {
         $self = clone $this;
         $self['data'] = $data;

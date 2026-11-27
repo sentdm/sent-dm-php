@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SentDm\ServiceContracts\Channels;
 
+use SentDm\Channels\Markets\APIResponseOfChannelMarket;
 use SentDm\Channels\SMS\MarketCompliance;
 use SentDm\Channels\SMS\SMSCreateParams\NumberType;
-use SentDm\Channels\SMS\SMSNewResponse;
 use SentDm\Channels\SMS\SMSNumberRequest;
 use SentDm\Core\Exceptions\APIException;
 use SentDm\RequestOptions;
@@ -79,5 +79,5 @@ interface SMSContract
         ?string $idempotencyKey = null,
         ?string $xProfileID = null,
         RequestOptions|array|null $requestOptions = null,
-    ): SMSNewResponse;
+    ): APIResponseOfChannelMarket;
 }
