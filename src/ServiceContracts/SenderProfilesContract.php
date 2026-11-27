@@ -24,6 +24,11 @@ interface SenderProfilesContract
     /**
      * @api
      *
+     * @param string|null $agentTemplateID Body param: One of the organization's agent templates (GET /v3/agents/templates with the organization's key) to
+     * make an agent from on the new profile as soon as it exists. The agent is a draft with the template's
+     * definition; give it the profile's numbers and activate it through /v3/agents with the profile's
+     * x-profile-id. Agents must be enabled for the organization. A sender profile's own template cannot be
+     * used: it is that profile's alone.
      * @param SenderProfileBillingRequest|SenderProfileBillingRequestShape|null $billing Body param: Who pays for what a sender profile sends.
      *
      * Ownership reads the same way as BrandRequest and CampaignRequest:
@@ -61,6 +66,7 @@ interface SenderProfilesContract
      * @throws APIException
      */
     public function create(
+        ?string $agentTemplateID = null,
         SenderProfileBillingRequest|array|null $billing = null,
         SenderProfileChannels|array|null $channels = null,
         MarketCompliance|array|null $compliance = null,
